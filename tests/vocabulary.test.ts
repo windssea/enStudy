@@ -9,9 +9,9 @@ import { selectTopicItems } from "../packages/domain/selection";
 describe("dedicated vocabulary training", () => {
   it("contains 360 sense entries across eighteen real themes and six years", () => {
     expect(vocabularyRelease.themes).toHaveLength(18);
-    expect(vocabularyRelease.items).toHaveLength(1080);
+    expect(vocabularyRelease.items).toHaveLength(1440);
     expect(vocabularyRelease.themes.flatMap((t) => t.words)).toHaveLength(360);
-    expect(new Set(vocabularyRelease.items.map((i) => i.id)).size).toBe(1080);
+    expect(new Set(vocabularyRelease.items.map((i) => i.id)).size).toBe(1440);
     for (let grade = 1; grade <= 6; grade++)
       expect(wordThemes.filter((t) => t.grade === grade)).toHaveLength(3);
     expect(wordThemes.every((theme) => !Object.hasOwn(theme, "words"))).toBe(
@@ -30,17 +30,25 @@ describe("dedicated vocabulary training", () => {
         ).toHaveLength(1);
       }
       expect(item.modality).toBe(
-        item.wordMode === "meaning"
-          ? "recognition"
-          : item.wordMode === "spelling"
-            ? "spelling"
-            : "context-recognition",
+        item.wordMode === "listening"
+          ? "listening-choice"
+          : item.wordMode === "meaning"
+            ? "recognition"
+            : item.wordMode === "spelling"
+              ? "spelling"
+              : "context-recognition",
       );
     }
   });
   it("supports 20 unique entries for every theme and mode", () => {
     for (const theme of wordThemes)
-      for (const mode of ["mixed", "meaning", "spelling", "context"]) {
+      for (const mode of [
+        "mixed",
+        "meaning",
+        "spelling",
+        "context",
+        "listening",
+      ]) {
         const pool = vocabularyRelease.items.filter(
           (i) =>
             i.wordThemeId === theme.id &&

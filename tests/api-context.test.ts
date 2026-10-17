@@ -13,7 +13,7 @@ describe("learning request identity context", () => {
     await api("/sessions", { clientRequestId: "example" });
     const options = fetch.mock.calls[0] as unknown as [string, RequestInit];
     expect(new Headers(options[1].headers).get("X-EQ-Player-Version")).toBe(
-      "2",
+      "3",
     );
     expect(new Headers(options[1].headers).get("X-EQ-Child-ID")).toBe(
       "child-shown-in-page",

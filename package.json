@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -22,6 +22,7 @@
     "verify:ai": "node scripts/smoke-ai.mjs",
     "verify:voice": "node scripts/smoke-voice.mjs",
     "verify:workshops": "node scripts/smoke-workshops.mjs",
+    "verify:listening-reading": "node scripts/smoke-listening-reading.mjs",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "cf:whoami": "wrangler whoami",
     "cf:plan": "node scripts/cloudflare.mjs plan",

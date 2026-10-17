@@ -35,6 +35,31 @@ export function structuredCanonical(
   exercise: Exercise,
   answer: Answer,
 ): string | null {
+  if (exercise.type === "evidence") {
+    if (
+      !Array.isArray(answer) ||
+      answer.length !== 2 ||
+      !exercise.passage?.some((s) => s.id === answer[0]) ||
+      typeof answer[1] !== "string" ||
+      !exercise.choices?.some(
+        (c) => normalizeText(c) === normalizeText(answer[1]),
+      )
+    )
+      return null;
+    return JSON.stringify([answer[0], normalizeText(answer[1])]);
+  }
+  if (
+    exercise.type === "listen" &&
+    (typeof answer !== "string" ||
+      !exercise.choices?.some(
+        (c) => normalizeText(c) === normalizeText(answer),
+      ))
+  )
+    return null;
+  if (exercise.type === "order" && exercise.punctuationTokens)
+    return JSON.stringify(
+      normalizeText(joinParts(Array.isArray(answer) ? answer : [answer])),
+    );
   if (exercise.type === "sort") {
     const result = sortPlacements(exercise, answer);
     return result
@@ -64,5 +89,7 @@ export function joinParts(parts: string[]) {
   return parts.join(" ").replace(/\s+([.,!?;:])/g, "$1");
 }
 export function emptyAnswer(exercise: Exercise): Answer {
-  return ["order", "sort", "repair"].includes(exercise.type) ? [] : "";
+  return ["order", "sort", "repair", "evidence"].includes(exercise.type)
+    ? []
+    : "";
 }

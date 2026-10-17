@@ -7,6 +7,8 @@ import patterns from "../../content/pattern-release.v1.json";
 import vocabulary from "../../content/vocabulary-release.v1.json";
 import workshop from "../../content/workshop-release.v1.json";
 import workshopLatest from "../../content/workshop-release.latest.json";
+import story from "../../content/story-course-release.v1.json";
+import wordListening from "../../content/word-listening-release.v1.json";
 import { structuredCanonical, sortPlacements } from "../domain/structured";
 import type {
   Answer,
@@ -37,6 +39,7 @@ export interface PrivateExercise extends Exercise {
   repairs?: { partId: string; replacements: string[] }[];
   solutionSentences?: string[];
   evidenceTargets?: string[];
+  evidenceSolutions?: { sentenceId: string; answer: string }[];
 }
 export const courseRelease = course as unknown as {
   id: string;
@@ -52,9 +55,23 @@ export const courseExpansion = expansionLatest as unknown as {
   items: PrivateExercise[];
 };
 export const courseCatalog = {
-  id: "course-catalog-v2",
-  lessons: [...courseRelease.lessons, ...courseExpansion.lessons],
-  items: [...courseRelease.items, ...courseExpansion.items],
+  id: "course-catalog-v3",
+  lessons: [
+    ...courseRelease.lessons,
+    ...courseExpansion.lessons,
+    ...story.lessons,
+  ] as CourseLesson[],
+  items: [
+    ...courseRelease.items,
+    ...courseExpansion.items,
+    ...story.items,
+  ] as PrivateExercise[],
+};
+export const storyRelease = story as unknown as {
+  id: string;
+  manifestHash: string;
+  lessons: CourseLesson[];
+  items: PrivateExercise[];
 };
 export const topicRelease = topics as unknown as {
   id: string;
@@ -88,6 +105,8 @@ export const exercises = [
   ...patternRelease.items,
   ...vocabulary.items,
   ...workshopLatest.items,
+  ...story.items,
+  ...wordListening.items,
 ] as PrivateExercise[];
 export const workshopRelease = workshopLatest as unknown as {
   id: string;
@@ -95,13 +114,27 @@ export const workshopRelease = workshopLatest as unknown as {
   workshops: import("../contracts/index").Workshop[];
   items: PrivateExercise[];
 };
-export const vocabularyRelease = vocabulary as unknown as {
+const originalVocabulary = vocabulary as unknown as {
   id: string;
   manifestHash: string;
   items: PrivateExercise[];
   totalWords: number;
   totalItems: number;
   themes: (WordTheme & { words: WordCard[] })[];
+};
+export const vocabularyRelease = {
+  ...originalVocabulary,
+  id: "vocabulary-catalog-v2",
+  items: [
+    ...originalVocabulary.items,
+    ...wordListening.items,
+  ] as PrivateExercise[],
+  totalItems: 1440,
+  themes: originalVocabulary.themes.map((theme) => ({
+    ...theme,
+    items: 80,
+    modes: [...theme.modes, "listening"] as WordMode[],
+  })),
 };
 export const wordThemes: WordTheme[] = vocabularyRelease.themes.map(
   ({ words, ...theme }) => theme,
@@ -130,6 +163,8 @@ export function publicExercise(exercise: PrivateExercise): Exercise {
     audioText,
     sorting,
     editing,
+    passage,
+    punctuationTokens,
   } = exercise;
   return {
     id,
@@ -145,6 +180,8 @@ export function publicExercise(exercise: PrivateExercise): Exercise {
     audioText,
     sorting,
     editing,
+    passage,
+    punctuationTokens,
   };
 }
 export function normalise(answer: Answer): string {
@@ -159,10 +196,20 @@ export function gradeAnswer(
   exercise: PrivateExercise,
   answer: Answer,
 ): boolean {
-  if (exercise.type === "sort" || exercise.type === "repair") {
+  if (
+    exercise.type === "sort" ||
+    exercise.type === "repair" ||
+    exercise.type === "evidence"
+  ) {
     const canonical = structuredCanonical(exercise, answer);
     return canonical !== null && exercise.answers.includes(canonical);
   }
+  if (exercise.type === "order" && exercise.punctuationTokens)
+    return exercise.answers.some(
+      (a) =>
+        structuredCanonical(exercise, a) ===
+        structuredCanonical(exercise, answer),
+    );
   return exercise.answers.some(
     (accepted) => normalise(accepted) === normalise(answer),
   );
@@ -176,6 +223,37 @@ export function sampleList(category?: Category): Exercise[] {
     .map(publicExercise);
 }
 export function structuredFeedback(item: PrivateExercise, answer: Answer) {
+  if (
+    item.type === "evidence" &&
+    item.passage &&
+    item.evidenceSolutions &&
+    Array.isArray(answer)
+  ) {
+    const expected = item.evidenceSolutions[0];
+    return {
+      details: [
+        {
+          label: "原文依据",
+          submitted:
+            item.passage.find((s) => s.id === answer[0])?.text ?? "未选择",
+          expected: item.passage.find((s) => s.id === expected.sentenceId)!
+            .text,
+          correct: item.evidenceSolutions.some(
+            (s) => s.sentenceId === answer[0],
+          ),
+        },
+        {
+          label: "问题答案",
+          submitted: answer[1],
+          expected: expected.answer,
+          correct: item.evidenceSolutions.some(
+            (s) => normalise(s.answer) === normalise(answer[1]),
+          ),
+        },
+      ],
+      correctedSentence: item.solutionSentences?.[0],
+    };
+  }
   if (item.type === "sort" && item.sorting && item.placements) {
     const submitted = sortPlacements(item, answer)!;
     const label = (id: string) =>

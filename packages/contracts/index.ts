@@ -16,12 +16,15 @@ export interface Exercise {
   title: string;
   prompt: string;
   context: string;
-  type: "choice" | "input" | "order" | "sort" | "repair";
+  type:
+    "choice" | "input" | "order" | "sort" | "repair" | "listen" | "evidence";
   choices?: string[];
   tokens?: string[];
   gradeMin: number;
   reading?: string;
   audioText?: string;
+  passage?: { id: string; text: string }[];
+  punctuationTokens?: boolean;
   sorting?: {
     cards: { id: string; text: string }[];
     groups: { id: string; label: string }[];
@@ -37,6 +40,7 @@ export interface LearningSession {
   assignmentId: string;
   exercise: Exercise;
   hintLevel: number;
+  listening?: { heard: boolean; textSupport: boolean };
   position?: number;
   total?: number;
   lessonId?: string | null;
@@ -110,7 +114,8 @@ export interface TopicStats {
 export interface PatternStats extends TopicStats {
   contexts: number;
 }
-export type WordMode = "mixed" | "meaning" | "spelling" | "context";
+export type WordMode =
+  "mixed" | "meaning" | "spelling" | "context" | "listening";
 export interface WordCard {
   id: string;
   word: string;
@@ -157,7 +162,7 @@ export interface Receipt {
     correct: boolean;
   }[];
   correctedSentence?: string;
-  support?: "hint" | "example";
+  support?: "hint" | "example" | "transcript";
   eventId: string;
   outcome: "correct" | "incorrect" | "hinted";
   independentEvidence: boolean;

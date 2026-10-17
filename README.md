@@ -1,6 +1,6 @@
 # 英语探险岛
 
-面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.17：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。课程48/288节，覆盖各年级前两个单元的文字核心内容；云端仍为v0.8，后续本地阶段尚未发布。
+面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.18：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。课程72/288节，覆盖各年级前三个单元；前48节以文字核心为主，新24节混合听句、阅读找线索与受控语法。云端仍为v0.8，后续本地阶段尚未发布。
 
 [开发预览](https://development.english-quest-dev.pages.dev) 通过GitHub Actions发布。M1加入管理员登录（账号admin，密码使用用户指定值）、关闭注册、儿童档案管理与刷新续学；开发测试身份继续只限本机。验证与剩余范围见[M1进展](docs/23-next-phase-progress.md)。
 
@@ -42,7 +42,9 @@ v0.16新增[英语小剧场](http://127.0.0.1:5173/#talk)：P1–P6六个角色�
 
 v0.17新增[分类与句子修正工坊](http://127.0.0.1:5173/#workshops)：12组、288个卡片组合和96句修正，随机5/10/20题，逐项核对、按能力分开的复习、语义相同答案幂等、跨题型示范证据，以及落卡进篮的3D演示和2D替代。152项单元与412项本地运行检查通过，实际遍历384项结构化任务的纯判题，12工坊各完成5题真实流程；见[工坊实现与验证](docs/36-interactive-workshops.md)。组合复用目标词，不等于384个独立知识点；实际PC/iPad视觉与触控验收待完成。
 
-同家庭多成人邀请、全面错因诊断与开放场景迁移、专用评估内容、离线队列、AI出题与实时语音、教材精确映射及剩余240课仍在里程碑待办中。当前只需儿童昵称和年级，不需要真实姓名或生日；设备朗读不等同于AI语音对话。
+v0.18新增各年级第三单元24课/216个不同任务，以及现有360词条的听词辨义（共1440项词汇任务）。听音需确认或明确使用文字辅助，辅助记录不可撤回；阅读需选原文线索和答案，新增拼句接受已声明的时间短语前置。164项单元与449项本地运行检查通过；24课216题已实际保存，真实声音与PC/iPad操作仍待验，详见[听辨、阅读与课程记录](docs/37-listening-and-evidence-reading.md)。可从[本机地图](http://127.0.0.1:5173/#map)进入第三单元，或在[单词特训](http://127.0.0.1:5173/#words)选择听词辨义。
+
+同家庭多成人邀请、全面错因诊断与开放场景迁移、专用评估内容、离线队列、AI出题与实时语音、教材精确映射及剩余216课仍在里程碑待办中。当前只需儿童昵称和年级，不需要真实姓名或生日；设备朗读不等同于AI语音对话。
 
 ## 检查和部署
 
@@ -58,6 +60,7 @@ npm run verify:course
 npm run verify:course-expansion
 npm run verify:voice
 npm run verify:workshops
+npm run verify:listening-reading
 npm run verify:topics
 npm run verify:training
 npm run verify:patterns

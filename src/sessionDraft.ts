@@ -20,9 +20,13 @@ export function reconcileDraft(
           Array.isArray(answer) &&
           answer.length
         ? `${previous.exercise.editing?.parts.find((p) => p.id === answer[0])?.text ?? "词块"} → ${answer[1] ?? "未填写"}`
-        : Array.isArray(answer)
-          ? answer.join(" ")
-          : answer;
+        : previous?.exercise.type === "evidence" &&
+            Array.isArray(answer) &&
+            answer.length
+          ? `原文依据：${previous.exercise.passage?.find((s) => s.id === answer[0])?.text ?? "未选择"}；答案：${answer[1] ?? "未选择"}`
+          : Array.isArray(answer)
+            ? answer.join(" ")
+            : answer;
   return {
     answer: emptyAnswer(next.exercise),
     backup: previous && text.trim() ? text : null,

@@ -26,7 +26,7 @@ export async function api<T>(
       method: body === undefined ? "GET" : "POST",
       credentials: "same-origin",
       headers: {
-        "X-EQ-Player-Version": "2",
+        "X-EQ-Player-Version": "3",
         ...(body === undefined ? {} : { "Content-Type": "application/json" }),
         ...(learningChild ? { "X-EQ-Child-ID": learningChild } : {}),
       },

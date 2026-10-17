@@ -420,7 +420,7 @@ export default function FamilySpace({
             <p className="notice">完成一轮练习后，这里就会留下孩子的小进步。</p>
           )}
           <p className="footnote">
-            提示或当天看过示范后的答对会单独记录；完成一课不代表已经完全掌握。
+            提示、文字辅助或当天看过示范后的答对会单独记录；完成一课不代表已经完全掌握。
           </p>
         </section>
       )}

@@ -9,7 +9,16 @@ import { api } from "./api";
 import SpeechButton from "./SpeechButton";
 import SceneStage from "./SceneStage";
 const modes: { id: WordMode; title: string; description: string }[] = [
-  { id: "mixed", title: "混合挑战", description: "词义、拼写与语境轮流练" },
+  {
+    id: "mixed",
+    title: "混合挑战",
+    description: "听词、词义、拼写与语境轮流练",
+  },
+  {
+    id: "listening",
+    title: "听词辨义",
+    description: "先听英文，再选意思；也可用文字辅助",
+  },
   { id: "meaning", title: "认词义", description: "看到英文，找中文意思" },
   { id: "spelling", title: "练拼写", description: "看到中文，自己写英文" },
   { id: "context", title: "放进句子", description: "根据情景选合适的词" },

@@ -33,6 +33,7 @@ import { reconcileDraft } from "./sessionDraft";
 import {
   emptyAnswer,
   structuredCanonical,
+  joinParts,
 } from "../packages/domain/structured";
 const World = lazy(() => import("./World"));
 const WordTraining = lazy(() => import("./WordTraining"));
@@ -42,6 +43,8 @@ const TrainingFollowUps = lazy(() => import("./TrainingFollowUps"));
 const ConversationPlayground = lazy(() => import("./ConversationPlayground"));
 const Workshops = lazy(() => import("./Workshops"));
 const StructuredAnswer = lazy(() => import("./StructuredAnswer"));
+const ListeningPrompt = lazy(() => import("./ListeningPrompt"));
+const EvidenceAnswer = lazy(() => import("./EvidenceAnswer"));
 const labels: Record<string, string> = {
   grammar: "语法",
   tense: "时态",
@@ -637,8 +640,20 @@ export default function App() {
   }
   async function check() {
     if (!session || !canWriteSession) return;
+    if (
+      session.exercise.type === "listen" &&
+      !session.listening?.heard &&
+      !session.listening?.textSupport
+    ) {
+      setError("请先播放并确认听到，或选择文字辅助，再检查答案。");
+      return;
+    }
     if (structuredCanonical(session.exercise, answer) === null) {
-      setError("请放好全部卡片，或选好词块并填写修改，再检查吧。");
+      setError(
+        session.exercise.type === "evidence"
+          ? "先选支持答案的原文句，再选问题答案，一起检查吧。"
+          : "请放好全部卡片，或选好词块并填写修改，再检查吧。",
+      );
       return;
     }
     if (
@@ -1493,7 +1508,7 @@ export default function App() {
                     <h2>这一小轮，完成啦！</h2>
                     <p>
                       完成{lastResult.total}步练习 · 独立答对
-                      {lastResult.independent}步 · 含提示/示范共答对
+                      {lastResult.independent}步 · 含辅助共答对
                       {lastResult.correct}步
                     </p>
                     <p>
@@ -1580,6 +1595,8 @@ export default function App() {
                               {
                                 "rule-classification": "词句分类",
                                 "sentence-editing": "句子修正",
+                                "listening-choice": "听音辨义 · 确认或辅助另记",
+                                "reading-evidence": "阅读理解 · 原文找依据",
                                 recognition: "辨认练习",
                                 "controlled-production": "受控表达",
                               } as Record<string, string>
@@ -1776,6 +1793,35 @@ export default function App() {
                 >
                   <legend className="visually-hidden">当前题目作答</legend>
                   <h2 className="question">{session.exercise.prompt}</h2>
+                  {session.exercise.type === "listen" && (
+                    <Suspense fallback={<p role="status">正在准备本题声音…</p>}>
+                      <ListeningPrompt
+                        key={`${session.assignmentId}:${session.leaseVersion}`}
+                        session={session}
+                        disabled={busy || !canWriteSession}
+                        answered={Boolean(receipt)}
+                        onState={(state) =>
+                          setSession((current) =>
+                            current?.assignmentId === session.assignmentId &&
+                            current.leaseId === session.leaseId
+                              ? { ...current, listening: state }
+                              : current,
+                          )
+                        }
+                      />
+                    </Suspense>
+                  )}
+                  {session.exercise.type === "evidence" && (
+                    <Suspense fallback={<p role="status">正在准备小故事…</p>}>
+                      <EvidenceAnswer
+                        key={session.assignmentId}
+                        exercise={session.exercise}
+                        answer={answer}
+                        onChange={setAnswer}
+                        disabled={busy || !canWriteSession || Boolean(receipt)}
+                      />
+                    </Suspense>
+                  )}
                   {(session.exercise.type === "sort" ||
                     session.exercise.type === "repair") && (
                     <Suspense fallback={<p role="status">正在准备互动卡片…</p>}>
@@ -1788,11 +1834,18 @@ export default function App() {
                       />
                     </Suspense>
                   )}
-                  {session.exercise.type === "choice" && (
+                  {(session.exercise.type === "choice" ||
+                    session.exercise.type === "listen") && (
                     <div className="answer-options">
                       {session.exercise.choices?.map((o) => (
                         <button
-                          disabled={busy || Boolean(receipt)}
+                          disabled={
+                            busy ||
+                            Boolean(receipt) ||
+                            (session.exercise.type === "listen" &&
+                              !session.listening?.heard &&
+                              !session.listening?.textSupport)
+                          }
                           className="answer-option"
                           aria-pressed={answer === o}
                           key={o}
@@ -1868,6 +1921,12 @@ export default function App() {
                             </button>
                           ))}
                       </div>
+                      {session.exercise.punctuationTokens &&
+                        Array.isArray(answer) && (
+                          <p className="order-preview" lang="en">
+                            {answer.length ? joinParts(answer) : "…"}
+                          </p>
+                        )}
                     </>
                   )}
                   {hint && (
@@ -1885,9 +1944,11 @@ export default function App() {
                         {receipt.outcome === "correct"
                           ? "这一步，想对了！"
                           : receipt.outcome === "hinted"
-                            ? receipt.support === "example"
-                              ? "跟着示范，完成了这一步。"
-                              : "跟着提示，完成了这一步。"
+                            ? receipt.support === "transcript"
+                              ? "借助文字，完成了这一步。"
+                              : receipt.support === "example"
+                                ? "跟着示范，完成了这一步。"
+                                : "跟着提示，完成了这一步。"
                             : "先看看这个规律，再用新题练习。"}
                       </strong>
                       <p>{receipt.feedback}</p>

@@ -231,6 +231,7 @@ try {
     "0013_training_cycles.sql",
     "0015_teaching_exposure.sql",
     "0017_ai_voice.sql",
+    "0021_listening_inputs.sql",
   ])
     for (const sql of statements(await readFile(`migrations/${name}`, "utf8")))
       await db.prepare(sql).run();

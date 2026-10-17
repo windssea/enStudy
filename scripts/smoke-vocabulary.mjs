@@ -7,7 +7,12 @@ assert.ok(local || url.protocol === "https:");
 const bank = JSON.parse(
     await readFile("content/vocabulary-release.v1.json", "utf8"),
   ),
-  byId = new Map(bank.items.map((item) => [item.id, item]));
+  listening = JSON.parse(
+    await readFile("content/word-listening-release.v1.json", "utf8"),
+  ),
+  byId = new Map(
+    [...bank.items, ...listening.items].map((item) => [item.id, item]),
+  );
 const jar = new Map(),
   ip = `198.19.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 254) + 1}`;
 let child,
@@ -21,6 +26,7 @@ async function request(path, body) {
   const response = await fetch(`${url.origin}/api/v1${path}`, {
     method: body === undefined ? "GET" : "POST",
     headers: {
+      "X-EQ-Player-Version": "3",
       ...(local ? { "CF-Connecting-IP": ip } : {}),
       ...(body === undefined
         ? {}
@@ -53,6 +59,17 @@ async function finish(session) {
     const item = byId.get(session.exercise.id);
     assert.ok(item && !Object.hasOwn(session.exercise, "answers"));
     words.push(item.wordId);
+    if (session.exercise.type === "listen")
+      assert.equal(
+        (
+          await request(`/sessions/${session.id}/listening`, {
+            assignmentId: session.assignmentId,
+            leaseId: session.leaseId,
+            mode: "heard",
+          })
+        ).status,
+        200,
+      );
     const receipt = await request("/attempts", {
       sessionId: session.id,
       assignmentId: session.assignmentId,
@@ -76,7 +93,7 @@ try {
   const metadata = (await request("/lessons")).data.vocabulary;
   check(
     metadata.totalWords === 360 &&
-      metadata.totalItems === 1080 &&
+      metadata.totalItems === 1440 &&
       metadata.themes.length === 18,
     "vocabulary catalog contains 360 entries and eighteen graded themes",
   );
@@ -134,7 +151,7 @@ try {
       (await open("animals", "mixed", 100)).status === 422,
     "invalid vocabulary mode and round size rejected",
   );
-  for (const mode of ["mixed", "meaning", "spelling", "context"]) {
+  for (const mode of ["mixed", "meaning", "spelling", "context", "listening"]) {
     const round = await open("animals", mode, 10);
     assert.equal(round.status, 201);
     assert.equal(round.data.source, "vocabulary");
@@ -145,7 +162,7 @@ try {
   }
   check(
     true,
-    "all four word training modes use the intended theme and task type",
+    "all five word training modes use the intended theme and task type",
   );
   const body = {
       wordThemeId: "animals",

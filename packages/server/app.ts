@@ -67,6 +67,12 @@ type Bindings = {
 };
 export const app = new Hono<Bindings>();
 class PlayerUpdateRequired extends Error {}
+const supportsExercise = (type: string, version?: string) =>
+  ["listen", "evidence"].includes(type)
+    ? version === "3"
+    : ["sort", "repair"].includes(type)
+      ? ["2", "3"].includes(version ?? "")
+      : true;
 const UUID =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 // Old foundation lessons displayed every practice sentence before starting.
@@ -378,6 +384,8 @@ interface Assignment {
   training_phase: TrainingPhase | null;
   checkpoint: number | null;
   training_topic_id: string | null;
+  heard_at: number | null;
+  transcript_at: number | null;
 }
 async function loadSession(
   db: D1Database,
@@ -386,7 +394,7 @@ async function loadSession(
 ): Promise<Assignment | null> {
   return db
     .prepare(
-      `SELECT s.id,s.lease_id,s.lease_grant_id,s.lease_version,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.item_version,si.hint_level,si.presentation_json,tr.cycle_id,tr.phase AS training_phase,tr.checkpoint,tc.topic_id AS training_topic_id,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor LEFT JOIN training_phase_runs tr ON tr.session_id=s.id LEFT JOIN training_cycles tc ON tc.id=tr.cycle_id WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
+      `SELECT s.id,s.lease_id,s.lease_grant_id,s.lease_version,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.item_version,si.hint_level,si.presentation_json,li.heard_at,li.transcript_at,tr.cycle_id,tr.phase AS training_phase,tr.checkpoint,tc.topic_id AS training_topic_id,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor LEFT JOIN listening_inputs li ON li.assignment_id=si.id LEFT JOIN training_phase_runs tr ON tr.session_id=s.id LEFT JOIN training_cycles tc ON tc.id=tr.cycle_id WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
     )
     .bind(id, actor.householdId, actor.childId)
     .first<Assignment>();
@@ -397,10 +405,7 @@ function sessionPayload(
   playerVersion?: string,
 ): LearningSession {
   const exercise = exerciseVersion(row.item_id, row.item_version)!;
-  if (
-    (exercise.type === "sort" || exercise.type === "repair") &&
-    playerVersion !== "2"
-  )
+  if (!supportsExercise(exercise.type, playerVersion))
     throw new PlayerUpdateRequired();
   return {
     id: row.id,
@@ -415,6 +420,14 @@ function sessionPayload(
     state: row.state,
     assignmentId: row.assignment_id,
     hintLevel: row.hint_level,
+    ...(exercise.type === "listen"
+      ? {
+          listening: {
+            heard: !!row.heard_at,
+            textSupport: !!row.transcript_at,
+          },
+        }
+      : {}),
     position: row.cursor + 1,
     total: row.total,
     lessonId: row.lesson_id,
@@ -437,6 +450,104 @@ function sessionPayload(
 }
 const grantAuthorization =
   "EXISTS(SELECT 1 FROM child_grants g WHERE g.id=? AND g.revoked_at IS NULL AND g.expires_at>? AND (g.parent_session_id IS NULL OR EXISTS(SELECT 1 FROM account_sessions p WHERE p.id=g.parent_session_id AND p.revoked_at IS NULL AND p.expires_at>?)))";
+app.post("/api/v1/sessions/:id/listening", async (c) => {
+  const actor = c.get("actor"),
+    body = await c.req.json();
+  if (
+    !body ||
+    ![body.assignmentId, body.leaseId].every(
+      (value) => typeof value === "string" && UUID.test(value),
+    ) ||
+    !["heard", "text"].includes(body.mode)
+  )
+    return c.json(
+      fault("INVALID_LISTENING_INPUT", "请先听本题，或选择文字辅助。"),
+      422,
+    );
+  const row = await loadSession(c.env.DB, actor, c.req.param("id"));
+  if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
+  if (
+    row.assignment_id !== body.assignmentId ||
+    row.lease_id !== body.leaseId ||
+    row.lease_grant_id !== actor.grantId ||
+    row.state !== "active"
+  )
+    return c.json(
+      fault("LEASE_REPLACED", "本题或设备已经变化，请刷新后继续。"),
+      409,
+    );
+  const item = exerciseVersion(row.item_id, row.item_version)!;
+  if (item.type !== "listen")
+    return c.json(
+      fault("INVALID_LISTENING_INPUT", "这道题不需要听音状态。"),
+      422,
+    );
+  if (!supportsExercise(item.type, c.req.header("X-EQ-Player-Version")))
+    throw new PlayerUpdateRequired();
+  if (
+    (body.mode === "heard" && row.heard_at) ||
+    (body.mode === "text" && row.transcript_at)
+  )
+    return c.json({ heard: !!row.heard_at, textSupport: !!row.transcript_at });
+  const now = Date.now(),
+    guard = `EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.household_id=? AND s.child_id=? AND s.lease_id=? AND s.lease_grant_id=? AND s.state='active' AND si.id=? AND si.position=s.cursor AND NOT EXISTS(SELECT 1 FROM attempts a WHERE a.assignment_id=si.id))`;
+  try {
+    await c.env.DB.batch([
+      c.env.DB.prepare(
+        `INSERT INTO listening_inputs(assignment_id,household_id,child_id,heard_at,transcript_at) SELECT ?,?,?,?,? WHERE ${grantAuthorization} AND ${guard} ON CONFLICT(assignment_id) DO UPDATE SET heard_at=COALESCE(listening_inputs.heard_at,excluded.heard_at),transcript_at=COALESCE(listening_inputs.transcript_at,excluded.transcript_at)`,
+      ).bind(
+        body.assignmentId,
+        actor.householdId,
+        actor.childId,
+        body.mode === "heard" ? now : null,
+        body.mode === "text" ? now : null,
+        actor.grantId,
+        now,
+        now,
+        row.id,
+        actor.householdId,
+        actor.childId,
+        body.leaseId,
+        actor.grantId,
+        body.assignmentId,
+      ),
+      c.env.DB.prepare(
+        "INSERT INTO listening_commits(id,household_id,child_id,ok) VALUES(?,?,?,changes())",
+      ).bind(crypto.randomUUID(), actor.householdId, actor.childId),
+      ...(body.mode === "text"
+        ? await exposureStatements(
+            c.env.DB,
+            actor,
+            answerExposureKeys(item),
+            now,
+          )
+        : []),
+    ]);
+  } catch {
+    return c.json(
+      fault(
+        "LISTENING_NOT_SAVED",
+        "听音状态还没保存，题目或设备可能已变化，请刷新后重试。",
+      ),
+      409,
+    );
+  }
+  const saved = await loadSession(c.env.DB, actor, row.id);
+  if (
+    !saved ||
+    saved.assignment_id !== body.assignmentId ||
+    saved.lease_grant_id !== actor.grantId ||
+    saved.lease_id !== body.leaseId
+  )
+    return c.json(
+      fault("LEASE_REPLACED", "本题或设备已经变化，请刷新后继续。"),
+      409,
+    );
+  return c.json({
+    heard: !!saved.heard_at,
+    textSupport: !!saved.transcript_at,
+  });
+});
 async function sessionSnapshot(
   db: D1Database,
   actor: Actor,
@@ -709,7 +820,9 @@ app.post("/api/v1/sessions", async (c) => {
   if (
     body.wordMode !== undefined &&
     (!body.wordThemeId ||
-      !["mixed", "meaning", "spelling", "context"].includes(body.wordMode))
+      !["mixed", "meaning", "spelling", "context", "listening"].includes(
+        body.wordMode,
+      ))
   )
     return c.json(
       fault("INVALID_WORD_MODE", "请选择词义、拼写、语境或混合练习。"),
@@ -840,8 +953,10 @@ app.post("/api/v1/sessions", async (c) => {
       404,
     );
   if (
-    c.req.header("X-EQ-Player-Version") !== "2" &&
-    selected.some((item) => item.type === "sort" || item.type === "repair")
+    selected.some(
+      (item) =>
+        !supportsExercise(item.type, c.req.header("X-EQ-Player-Version")),
+    )
   )
     throw new PlayerUpdateRequired();
   const publication = await c.env.DB.prepare(
@@ -1284,6 +1399,14 @@ app.post("/api/v1/attempts", async (c) => {
         409,
       );
     const exercise = exerciseVersion(row.item_id, row.item_version)!;
+    if (exercise.type === "listen" && !row.heard_at && !row.transcript_at)
+      return c.json(
+        fault(
+          "LISTENING_INPUT_REQUIRED",
+          "请先播放并确认听到，或选择文字辅助，再检查答案。",
+        ),
+        409,
+      );
     const canonical = structuredCanonical(exercise, body.answer);
     if (canonical === null)
       return c.json(
@@ -1294,11 +1417,14 @@ app.post("/api/v1/attempts", async (c) => {
         422,
       );
     const evidenceKeys = await hashedExposureKeys(answerExposureKeys(exercise));
-    const support = row.hint_level
-      ? "hint"
-      : (await exampleShownToday(c.env.DB, actor, exercise))
-        ? "example"
-        : undefined;
+    const support =
+      exercise.type === "listen" && row.transcript_at
+        ? "transcript"
+        : row.hint_level
+          ? "hint"
+          : (await exampleShownToday(c.env.DB, actor, exercise))
+            ? "example"
+            : undefined;
     const correct = gradeAnswer(exercise, body.answer);
     const outcome = !correct ? "incorrect" : support ? "hinted" : "correct";
     const now = Date.now(),

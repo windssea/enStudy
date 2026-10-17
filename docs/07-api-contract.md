@@ -6,6 +6,8 @@ v0.17的`POST /sessions`新增互斥选择器workshopId，题目新增sort/repai
 
 能显示新题型的网页发送`X-EQ-Player-Version: 2`；旧页面遇到新题型收到409/PLAYER_UPDATE_REQUIRED，刷新后续用冻结任务，不把未知题型作为空白表单返回。
 
+v0.18网页升级到`X-EQ-Player-Version: 3`，新增listen/evidence；v2仍能继续分类和修正。听音状态使用`POST /sessions/:id/listening`，body为assignmentId、leaseId与mode=heard/text；已保存文字辅助不能撤回。wordMode新增listening，阅读作答使用`[sentenceId,answer]`。完整规则见[听读接口与证据](37-listening-and-evidence-reading.md#api状态与证据)。
+
 统一前缀 `/api/v1`，JSON UTF-8，Cookie 同源会话，所有修改操作验证 Origin/CSRF。成人认证相关端点交由已选认证库，业务接口禁止接受客户端声称的 adult_id 作为权限依据。这里定义核心开发契约，不是已实现 API。
 
 ## 端点
