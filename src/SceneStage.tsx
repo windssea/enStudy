@@ -32,7 +32,8 @@ export function MotionShell({
     </MotionContext.Provider>
   );
 }
-export type SceneKind = "words" | "workshop" | "garden" | "lesson" | "feedback";
+export type SceneKind =
+  "words" | "workshop" | "sorting" | "garden" | "lesson" | "feedback";
 export type Reaction = "correct" | "hinted" | "incorrect" | "thinking";
 const scripts: Record<
   Exclude<SceneKind, "feedback">,
@@ -52,6 +53,14 @@ const scripts: Record<
       "小词块，可以搭出大想法。",
       "I + like + cats. 小词块搭好啦！",
       "换一个词，就能说出新的想法。",
+    ],
+  },
+  sorting: {
+    action: "看看卡片落篮的动画",
+    lines: [
+      "先选卡片，再选篮子。分类可以慢慢想。",
+      "卡片落进篮子啦。这是动画演示，不会判题或增加进度。",
+      "真正放对了吗？等完成一题后，再看保存的结果。",
     ],
   },
   garden: {
@@ -114,7 +123,32 @@ function FlatScene({
         strokeWidth="18"
         strokeLinecap="round"
       />
-      {kind === "garden" ? (
+      {kind === "sorting" ? (
+        <g>
+          <path
+            d="M185 161h42l-5 35h-32Z"
+            fill="#ffd166"
+            stroke="#916c46"
+            strokeWidth="3"
+          />
+          <path
+            d="M233 161h42l-5 35h-32Z"
+            fill="#a5d7e4"
+            stroke="#2557d6"
+            strokeWidth="3"
+          />
+          <rect
+            x="211"
+            y="104"
+            width="39"
+            height="43"
+            rx="7"
+            fill="#a4dcc0"
+            stroke="#449e79"
+            strokeWidth="3"
+          />
+        </g>
+      ) : kind === "garden" ? (
         <g stroke="#449e79" strokeWidth="6" fill="#74c79c">
           <path d="M225 181v-55" />
           <ellipse

@@ -258,7 +258,9 @@ export function StageProp({
   });
   return (
     <group ref={group} position={[1.15, 0.8, 0]} rotation={[0, -0.2, 0]}>
-      {kind === "words" ? (
+      {kind === "sorting" ? (
+        <SortingMachine pulse={pulse} paused={paused} />
+      ) : kind === "words" ? (
         <>
           <Tile
             word="Aa"
@@ -343,6 +345,59 @@ export function StageProp({
           </group>
         </group>
       )}
+    </group>
+  );
+}
+
+function SortingMachine({ pulse, paused }: { pulse: number; paused: boolean }) {
+  const card = useRef<Group>(null),
+    seen = useRef(pulse),
+    start = useRef(-100);
+  useFrame(({ clock }) => {
+    if (seen.current !== pulse) {
+      seen.current = pulse;
+      start.current = clock.elapsedTime;
+    }
+    if (!card.current) return;
+    const t =
+        pulse === 0
+          ? 0
+          : paused
+            ? 1
+            : Math.min(
+                1,
+                Math.max(0, (clock.elapsedTime - start.current) / 0.85),
+              ),
+      side = pulse % 2 ? 1 : -1;
+    card.current.position.set(side * 0.48 * t, 1.1 - 1.4 * t, 0.25);
+    card.current.rotation.z = (1 - t) * 0.2;
+    card.current.scale.setScalar(0.52 - 0.14 * t);
+  });
+  return (
+    <group position={[0, -0.2, 0]}>
+      {[-1, 1].map((side, index) => (
+        <group key={side} position={[side * 0.5, -0.38, 0]}>
+          <mesh>
+            <boxGeometry args={[0.8, 0.18, 0.62]} />
+            <meshStandardMaterial color={index ? "#a5d7e4" : "#ffd166"} />
+          </mesh>
+          {[-1, 1].map((z) => (
+            <mesh key={z} position={[0, 0.14, z * 0.29]}>
+              <boxGeometry args={[0.8, 0.3, 0.06]} />
+              <meshStandardMaterial color={index ? "#679de0" : "#edbd59"} />
+            </mesh>
+          ))}
+          {[-1, 1].map((x) => (
+            <mesh key={x} position={[x * 0.37, 0.14, 0]}>
+              <boxGeometry args={[0.06, 0.3, 0.62]} />
+              <meshStandardMaterial color={index ? "#679de0" : "#edbd59"} />
+            </mesh>
+          ))}
+        </group>
+      ))}
+      <group ref={card} position={[0, 1.1, 0.25]} scale={0.52}>
+        <Tile word="Aa" color="#a4dcc0" position={[0, 0, 0]} />
+      </group>
     </group>
   );
 }

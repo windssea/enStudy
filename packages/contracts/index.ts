@@ -1,18 +1,32 @@
 export type Category =
   "grammar" | "tense" | "forms" | "patterns" | "vocabulary" | "reading";
 export type Answer = string | string[];
+export interface Workshop {
+  id: string;
+  title: string;
+  grade: number;
+  description: string;
+  rule: string;
+  counts: { sort: number; repair: number };
+  items: number;
+}
 export interface Exercise {
   id: string;
   category: Category;
   title: string;
   prompt: string;
   context: string;
-  type: "choice" | "input" | "order";
+  type: "choice" | "input" | "order" | "sort" | "repair";
   choices?: string[];
   tokens?: string[];
   gradeMin: number;
   reading?: string;
   audioText?: string;
+  sorting?: {
+    cards: { id: string; text: string }[];
+    groups: { id: string; label: string }[];
+  };
+  editing?: { parts: { id: string; text: string }[] };
 }
 export interface LearningSession {
   id: string;
@@ -26,7 +40,14 @@ export interface LearningSession {
   position?: number;
   total?: number;
   lessonId?: string | null;
-  source?: "lesson" | "topic" | "pattern" | "vocabulary" | "review" | "single";
+  source?:
+    | "lesson"
+    | "topic"
+    | "pattern"
+    | "vocabulary"
+    | "workshop"
+    | "review"
+    | "single";
   training?: {
     cycleId: string;
     topicId: string;
@@ -129,6 +150,13 @@ export interface LearningSummary {
   recent: SessionResult[];
 }
 export interface Receipt {
+  details?: {
+    label: string;
+    submitted: string;
+    expected: string;
+    correct: boolean;
+  }[];
+  correctedSentence?: string;
   support?: "hint" | "example";
   eventId: string;
   outcome: "correct" | "incorrect" | "hinted";
@@ -217,6 +245,7 @@ export interface Progress {
   stars: number;
   cards: {
     skillId: string;
+    modality?: string;
     label: string;
     stage: number;
     dueAt: number;

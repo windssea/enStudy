@@ -2,6 +2,10 @@
 
 v0.16角色对话/语音的已实现路径见[实际接口表](35-ai-dialogue-and-voice.md#接口与协议)，使用`/learning/conversations`和`/ai/voice`；下表中的`/voice/turns`与实时会话是目标草案，未对外提供。
 
+v0.17的`POST /sessions`新增互斥选择器workshopId，题目新增sort/repair与结构化数组作答；`/progress`新增modality，已保存回执可含逐项details/correctedSentence。见[实际判题与兼容约束](36-interactive-workshops.md#判题与历史兼容)。
+
+能显示新题型的网页发送`X-EQ-Player-Version: 2`；旧页面遇到新题型收到409/PLAYER_UPDATE_REQUIRED，刷新后续用冻结任务，不把未知题型作为空白表单返回。
+
 统一前缀 `/api/v1`，JSON UTF-8，Cookie 同源会话，所有修改操作验证 Origin/CSRF。成人认证相关端点交由已选认证库，业务接口禁止接受客户端声称的 adult_id 作为权限依据。这里定义核心开发契约，不是已实现 API。
 
 ## 端点

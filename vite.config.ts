@@ -24,6 +24,8 @@ export default defineConfig({
         "**/migrations/**",
         "**/tests/**",
         "**/scripts/**",
+        "**/content/workshops-v1.mjs",
+        "**/content/workshop-release*.json",
         "**/.wrangler/**",
         "**/.cloudflare/**",
         "**/.git/**",

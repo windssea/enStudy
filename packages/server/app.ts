@@ -21,7 +21,10 @@ import {
   patternRelease,
   vocabularyRelease,
   wordThemes,
+  workshopRelease,
+  structuredFeedback,
 } from "./exercises";
+import { structuredCanonical } from "../domain/structured";
 import {
   selectReviewItems,
   selectTopicItems,
@@ -63,6 +66,7 @@ type Bindings = {
   Variables: { actor: Actor; requestId: string };
 };
 export const app = new Hono<Bindings>();
+class PlayerUpdateRequired extends Error {}
 const UUID =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 // Old foundation lessons displayed every practice sentence before starting.
@@ -133,6 +137,14 @@ app.use("*", async (c, next) => {
   })(c, next);
 });
 app.onError((error, c) => {
+  if (error instanceof PlayerUpdateRequired)
+    return c.json(
+      fault(
+        "PLAYER_UPDATE_REQUIRED",
+        "这段学习包含新的互动题型，请刷新页面后继续。已保存的答案和当前任务会保留。",
+      ),
+      409,
+    );
   if (error instanceof TrainingFault)
     return c.json(fault(error.code, error.message), 409);
   if (error instanceof SyntaxError)
@@ -182,6 +194,7 @@ app.get("/api/v1/lessons", (c) =>
       totalItems: vocabularyRelease.totalItems,
       themes: wordThemes,
     },
+    workshops: workshopRelease.workshops,
   }),
 );
 
@@ -351,7 +364,14 @@ interface Assignment {
   cursor: number;
   total: number;
   lesson_id: string | null;
-  source: "lesson" | "topic" | "pattern" | "vocabulary" | "review" | "single";
+  source:
+    | "lesson"
+    | "topic"
+    | "pattern"
+    | "vocabulary"
+    | "workshop"
+    | "review"
+    | "single";
   source_ref: string | null;
   presentation_json: string | null;
   cycle_id: string | null;
@@ -371,7 +391,17 @@ async function loadSession(
     .bind(id, actor.householdId, actor.childId)
     .first<Assignment>();
 }
-function sessionPayload(row: Assignment, actor: Actor): LearningSession {
+function sessionPayload(
+  row: Assignment,
+  actor: Actor,
+  playerVersion?: string,
+): LearningSession {
+  const exercise = exerciseVersion(row.item_id, row.item_version)!;
+  if (
+    (exercise.type === "sort" || exercise.type === "repair") &&
+    playerVersion !== "2"
+  )
+    throw new PlayerUpdateRequired();
   return {
     id: row.id,
     leaseId: row.lease_grant_id === actor.grantId ? row.lease_id : null,
@@ -400,14 +430,20 @@ function sessionPayload(row: Assignment, actor: Actor): LearningSession {
         }
       : {}),
     exercise: {
-      ...publicExercise(exerciseVersion(row.item_id, row.item_version)!),
+      ...publicExercise(exercise),
       ...(row.presentation_json ? JSON.parse(row.presentation_json) : {}),
     },
   };
 }
 const grantAuthorization =
   "EXISTS(SELECT 1 FROM child_grants g WHERE g.id=? AND g.revoked_at IS NULL AND g.expires_at>? AND (g.parent_session_id IS NULL OR EXISTS(SELECT 1 FROM account_sessions p WHERE p.id=g.parent_session_id AND p.revoked_at IS NULL AND p.expires_at>?)))";
-async function sessionSnapshot(db: D1Database, actor: Actor, row: Assignment) {
+async function sessionSnapshot(
+  db: D1Database,
+  actor: Actor,
+  row: Assignment,
+  playerVersion?: string,
+) {
+  const session = sessionPayload(row, actor, playerVersion);
   const attempt = await db
     .prepare(
       "SELECT receipt_json FROM attempts WHERE assignment_id=? AND household_id=? AND child_id=?",
@@ -422,7 +458,7 @@ async function sessionSnapshot(db: D1Database, actor: Actor, row: Assignment) {
     );
   return {
     childId: actor.childId,
-    session: sessionPayload(row, actor),
+    session,
     receipt: attempt ? JSON.parse(attempt.receipt_json) : null,
     hint: row.hint_level
       ? exerciseVersion(row.item_id, row.item_version)?.hint
@@ -440,7 +476,12 @@ app.get("/api/v1/sessions/current", async (c) => {
   const row = await loadSession(c.env.DB, actor, active.id);
   return c.json(
     row
-      ? await sessionSnapshot(c.env.DB, actor, row)
+      ? await sessionSnapshot(
+          c.env.DB,
+          actor,
+          row,
+          c.req.header("X-EQ-Player-Version"),
+        )
       : { childId: actor.childId, session: null },
   );
 });
@@ -497,7 +538,14 @@ app.post("/api/v1/sessions/:id/takeover", async (c) => {
         fault("LEASE_REPLACED", "这轮学习又换了设备，请先刷新进度。"),
         409,
       );
-    return c.json(await sessionSnapshot(c.env.DB, actor, current));
+    return c.json(
+      await sessionSnapshot(
+        c.env.DB,
+        actor,
+        current,
+        c.req.header("X-EQ-Player-Version"),
+      ),
+    );
   };
   const saved = await prior();
   if (saved) return replay(saved);
@@ -626,10 +674,18 @@ app.post("/api/v1/sessions", async (c) => {
     typeof body.topicId === "string",
     typeof body.patternId === "string",
     typeof body.wordThemeId === "string",
+    typeof body.workshopId === "string",
     body.mode === "review",
   ];
   if (
-    ["exerciseId", "lessonId", "topicId", "patternId", "wordThemeId"].some(
+    [
+      "exerciseId",
+      "lessonId",
+      "topicId",
+      "patternId",
+      "wordThemeId",
+      "workshopId",
+    ].some(
       (key) =>
         body[key] !== undefined &&
         (typeof body[key] !== "string" ||
@@ -643,7 +699,7 @@ app.post("/api/v1/sessions", async (c) => {
     return c.json(fault("INVALID_SESSION", "请选择一种有效的学习任务。"), 422);
   if (
     body.roundSize !== undefined &&
-    (!(body.topicId || body.patternId || body.wordThemeId) ||
+    (!(body.topicId || body.patternId || body.wordThemeId || body.workshopId) ||
       ![5, 10, 20].includes(body.roundSize))
   )
     return c.json(
@@ -679,18 +735,21 @@ app.post("/api/v1/sessions", async (c) => {
         ? "pattern"
         : body.wordThemeId
           ? "vocabulary"
-          : body.mode === "review"
-            ? "review"
-            : "single";
+          : body.workshopId
+            ? "workshop"
+            : body.mode === "review"
+              ? "review"
+              : "single";
   const reference = String(
     body.lessonId ??
       body.topicId ??
       body.patternId ??
       body.wordThemeId ??
+      body.workshopId ??
       body.exerciseId ??
       "due",
   );
-  const sourceRef = `${source}:${reference}${["topic", "pattern", "vocabulary"].includes(source) ? `:${body.roundSize ?? 10}` : ""}${source === "vocabulary" ? `:${body.wordMode ?? "mixed"}` : ""}${body.trainingCycleId ? `:training:${body.trainingCycleId}:${body.trainingVersion}` : ""}`;
+  const sourceRef = `${source}:${reference}${["topic", "pattern", "vocabulary", "workshop"].includes(source) ? `:${body.roundSize ?? 10}` : ""}${source === "vocabulary" ? `:${body.wordMode ?? "mixed"}` : ""}${body.trainingCycleId ? `:training:${body.trainingCycleId}:${body.trainingVersion}` : ""}`;
   const existing = await loadSession(c.env.DB, actor, body.clientRequestId);
   if (existing) {
     if (
@@ -706,7 +765,9 @@ app.post("/api/v1/sessions", async (c) => {
         fault("SESSION_CHANGED", "这次学习已结束或被新任务替换。"),
         409,
       );
-    return c.json(sessionPayload(existing, actor));
+    return c.json(
+      sessionPayload(existing, actor, c.req.header("X-EQ-Player-Version")),
+    );
   }
   const lesson = courseCatalog.lessons.find(
     (lesson) => lesson.id === body.lessonId,
@@ -728,7 +789,7 @@ app.post("/api/v1/sessions", async (c) => {
         : [];
   if (source === "lesson" && !lesson) selected = [];
   if (training) selected = training.items;
-  else if (["topic", "pattern", "vocabulary"].includes(source)) {
+  else if (["topic", "pattern", "vocabulary", "workshop"].includes(source)) {
     const recent = await c.env.DB.prepare(
       "SELECT si.item_id FROM session_items si JOIN learning_sessions s ON s.id=si.session_id WHERE si.household_id=? AND si.child_id=? ORDER BY s.created_at DESC,si.position LIMIT 400",
     )
@@ -740,18 +801,24 @@ app.post("/api/v1/sessions", async (c) => {
       ),
     );
     selected = selectTopicItems(
-      source === "vocabulary"
-        ? vocabularyRelease.items.filter(
-            (item) =>
-              item.wordThemeId === body.wordThemeId &&
-              ((body.wordMode ?? "mixed") === "mixed" ||
-                item.wordMode === body.wordMode),
-          )
-        : source === "pattern"
-          ? patternRelease.items.filter(
-              (item) => item.patternId === body.patternId,
+      source === "workshop"
+        ? workshopRelease.items
+            .filter((item) => item.workshopId === body.workshopId)
+            .map((item) => ({ ...item, pattern: item.type }))
+        : source === "vocabulary"
+          ? vocabularyRelease.items.filter(
+              (item) =>
+                item.wordThemeId === body.wordThemeId &&
+                ((body.wordMode ?? "mixed") === "mixed" ||
+                  item.wordMode === body.wordMode),
             )
-          : topicRelease.items.filter((item) => item.topicId === body.topicId),
+          : source === "pattern"
+            ? patternRelease.items.filter(
+                (item) => item.patternId === body.patternId,
+              )
+            : topicRelease.items.filter(
+                (item) => item.topicId === body.topicId,
+              ),
       recentFamilies,
       body.roundSize ?? 10,
     );
@@ -772,6 +839,11 @@ app.post("/api/v1/sessions", async (c) => {
       ),
       404,
     );
+  if (
+    c.req.header("X-EQ-Player-Version") !== "2" &&
+    selected.some((item) => item.type === "sort" || item.type === "repair")
+  )
+    throw new PlayerUpdateRequired();
   const publication = await c.env.DB.prepare(
     `SELECT i.id,l.release_id FROM items i JOIN lessons l ON l.id=i.lesson_id AND l.version=i.lesson_version JOIN content_releases r ON r.id=l.release_id JOIN release_items ri ON ri.release_id=r.id AND ri.item_id=i.id AND ri.item_version=i.version WHERE (${selected.map(() => "(i.id=? AND i.version=?)").join(" OR ")}) AND i.status='published' AND r.status='published'`,
   )
@@ -868,6 +940,15 @@ app.post("/api/v1/sessions", async (c) => {
           JSON.stringify({
             ...(item.choices ? { choices: shuffle(item.choices) } : {}),
             ...(item.tokens ? { tokens: shuffle(item.tokens) } : {}),
+            ...(item.sorting
+              ? {
+                  sorting: {
+                    ...item.sorting,
+                    cards: shuffle(item.sorting.cards),
+                    groups: shuffle(item.sorting.groups),
+                  },
+                }
+              : {}),
           }),
           origins.get(item.id)!,
           body.clientRequestId,
@@ -891,7 +972,9 @@ app.post("/api/v1/sessions", async (c) => {
   } catch (error) {
     const concurrent = await loadSession(c.env.DB, actor, body.clientRequestId);
     if (concurrent?.source_ref === sourceRef && concurrent.state === "active")
-      return c.json(sessionPayload(concurrent, actor));
+      return c.json(
+        sessionPayload(concurrent, actor, c.req.header("X-EQ-Player-Version")),
+      );
     if (training)
       throw new TrainingFault(
         "TRAINING_CHANGED",
@@ -901,7 +984,10 @@ app.post("/api/v1/sessions", async (c) => {
   }
   const created = await loadSession(c.env.DB, actor, body.clientRequestId);
   return created
-    ? c.json(sessionPayload(created, actor), 201)
+    ? c.json(
+        sessionPayload(created, actor, c.req.header("X-EQ-Player-Version")),
+        201,
+      )
     : c.json(
         fault(
           "TAKEOVER_REQUIRED",
@@ -943,7 +1029,9 @@ app.post("/api/v1/sessions/:id/next", async (c) => {
   if (!submitted || submitted.position > row.cursor)
     return c.json(fault("ANSWER_REQUIRED", "先完成当前这一步，再继续。"), 409);
   if (submitted.position < row.cursor)
-    return c.json({ session: sessionPayload(row, actor) });
+    return c.json({
+      session: sessionPayload(row, actor, c.req.header("X-EQ-Player-Version")),
+    });
   const authorization = grantAuthorization;
   const now = Date.now();
   if (row.cursor + 1 < row.total) {
@@ -973,7 +1061,13 @@ app.post("/api/v1/sessions/:id/next", async (c) => {
         fault("SESSION_CHANGED", "任务状态有变化，请重新打开。"),
         409,
       );
-    return c.json({ session: sessionPayload(updated, actor) });
+    return c.json({
+      session: sessionPayload(
+        updated,
+        actor,
+        c.req.header("X-EQ-Player-Version"),
+      ),
+    });
   }
   await c.env.DB.batch([
     c.env.DB.prepare(
@@ -1041,14 +1135,23 @@ app.get("/api/v1/sessions/:id/snapshot", async (c) => {
   const actor = c.get("actor"),
     row = await loadSession(c.env.DB, actor, c.req.param("id"));
   return row
-    ? c.json(await sessionSnapshot(c.env.DB, actor, row))
+    ? c.json(
+        await sessionSnapshot(
+          c.env.DB,
+          actor,
+          row,
+          c.req.header("X-EQ-Player-Version"),
+        ),
+      )
     : c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
 });
 app.get("/api/v1/sessions/:id", async (c) => {
   const actor = c.get("actor");
   const row = await loadSession(c.env.DB, actor, c.req.param("id"));
   if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
-  return c.json(sessionPayload(row, actor));
+  return c.json(
+    sessionPayload(row, actor, c.req.header("X-EQ-Player-Version")),
+  );
 });
 app.post("/api/v1/sessions/:id/hint", async (c) => {
   const actor = c.get("actor"),
@@ -1139,7 +1242,6 @@ app.post("/api/v1/attempts", async (c) => {
     normalise(body.answer).length > 500
   )
     return c.json(fault("INVALID_ATTEMPT", "答案或请求格式不正确。"), 422);
-  const canonical = JSON.stringify(normalise(body.answer));
   const prior = () =>
     c.env.DB.prepare(
       "SELECT a.event_id,a.answer_json,a.receipt_json,si.item_id,si.item_version FROM attempts a JOIN session_items si ON si.id=a.assignment_id WHERE a.household_id=? AND a.child_id=? AND (a.event_id=? OR a.assignment_id=?)",
@@ -1147,7 +1249,11 @@ app.post("/api/v1/attempts", async (c) => {
       .bind(actor.householdId, actor.childId, body.eventId, body.assignmentId)
       .first<StoredAttempt>();
   const respondPrior = async (stored: StoredAttempt) => {
-    if (stored.answer_json === canonical) {
+    const canonical = structuredCanonical(
+      exerciseVersion(stored.item_id, stored.item_version)!,
+      body.answer,
+    );
+    if (canonical !== null && stored.answer_json === canonical) {
       await recordExposure(
         c.env.DB,
         actor,
@@ -1178,6 +1284,15 @@ app.post("/api/v1/attempts", async (c) => {
         409,
       );
     const exercise = exerciseVersion(row.item_id, row.item_version)!;
+    const canonical = structuredCanonical(exercise, body.answer);
+    if (canonical === null)
+      return c.json(
+        fault(
+          "INCOMPLETE_ANSWER",
+          "请放好每张卡，或选出一个词块并填写修改，再一起检查。",
+        ),
+        422,
+      );
     const evidenceKeys = await hashedExposureKeys(answerExposureKeys(exercise));
     const support = row.hint_level
       ? "hint"
@@ -1211,6 +1326,7 @@ app.post("/api/v1/attempts", async (c) => {
     const next = schedule(card, day, outcome),
       sequence = child!.stream_version + 1;
     const receipt: Receipt = {
+      ...structuredFeedback(exercise, body.answer),
       ...(support ? { support } : {}),
       eventId: body.eventId,
       outcome,
@@ -1319,7 +1435,7 @@ app.get("/api/v1/progress", async (c) => {
     .bind(householdId, childId)
     .first();
   const cards = await c.env.DB.prepare(
-    "SELECT r.skill_id AS skillId,s.label, r.stage,r.due_at AS dueAt,r.lapses FROM review_cards r JOIN skills s ON s.id=r.skill_id WHERE r.household_id=? AND r.child_id=? ORDER BY r.due_at LIMIT 30",
+    "SELECT r.skill_id AS skillId,r.modality,s.label, r.stage,r.due_at AS dueAt,r.lapses FROM review_cards r JOIN skills s ON s.id=r.skill_id WHERE r.household_id=? AND r.child_id=? ORDER BY r.due_at,r.skill_id,r.modality LIMIT 30",
   )
     .bind(householdId, childId)
     .all();

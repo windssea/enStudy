@@ -30,12 +30,18 @@ import SceneStage, { MotionShell } from "./SceneStage";
 import FlatMap from "./FlatMap";
 import SessionAccess from "./SessionAccess";
 import { reconcileDraft } from "./sessionDraft";
+import {
+  emptyAnswer,
+  structuredCanonical,
+} from "../packages/domain/structured";
 const World = lazy(() => import("./World"));
 const WordTraining = lazy(() => import("./WordTraining"));
 const AiExplanation = lazy(() => import("./AiExplanation"));
 const TopicJourney = lazy(() => import("./TopicJourney"));
 const TrainingFollowUps = lazy(() => import("./TrainingFollowUps"));
 const ConversationPlayground = lazy(() => import("./ConversationPlayground"));
+const Workshops = lazy(() => import("./Workshops"));
+const StructuredAnswer = lazy(() => import("./StructuredAnswer"));
 const labels: Record<string, string> = {
   grammar: "语法",
   tense: "时态",
@@ -55,6 +61,7 @@ type View =
   | "review"
   | "parent"
   | "talk"
+  | "workshops"
   | "exercise"
   | "lesson";
 const readRoute = (): {
@@ -89,6 +96,7 @@ const readRoute = (): {
       "review",
       "parent",
       "talk",
+      "workshops",
       "exercise",
     ].includes(hash)
       ? hash
@@ -422,7 +430,7 @@ export default function App() {
     setSessionStopped(false);
     setReceipt(saved.receipt ?? null);
     setHint(saved.hint ?? "");
-    setAnswer(saved.session.exercise.type === "order" ? [] : "");
+    setAnswer(emptyAnswer(saved.session.exercise));
     eventId.current = crypto.randomUUID();
   }
   type SavedSession = {
@@ -576,6 +584,7 @@ export default function App() {
       topicId?: string;
       patternId?: string;
       wordThemeId?: string;
+      workshopId?: string;
       wordMode?: WordMode;
       mode?: "review";
       roundSize?: number;
@@ -609,7 +618,7 @@ export default function App() {
       pendingClaim.current = null;
       setSession(data);
       setFreshReceiptEvent(null);
-      setAnswer(data.exercise.type === "order" ? [] : "");
+      setAnswer(emptyAnswer(data.exercise));
       setReceipt(null);
       setHint("");
       eventId.current = crypto.randomUUID();
@@ -628,6 +637,10 @@ export default function App() {
   }
   async function check() {
     if (!session || !canWriteSession) return;
+    if (structuredCanonical(session.exercise, answer) === null) {
+      setError("请放好全部卡片，或选好词块并填写修改，再检查吧。");
+      return;
+    }
     if (
       (Array.isArray(answer) && !answer.length) ||
       (typeof answer === "string" && !answer.trim())
@@ -705,7 +718,7 @@ export default function App() {
         setSession(result.session);
         setReceipt(null);
         setHint("");
-        setAnswer(result.session.exercise.type === "order" ? [] : "");
+        setAnswer(emptyAnswer(result.session.exercise));
         eventId.current = crypto.randomUUID();
         window.scrollTo({ top: 0 });
         requestAnimationFrame(() => mainRef.current?.focus());
@@ -810,7 +823,9 @@ export default function App() {
               key={id}
               data-nav={id}
               aria-current={
-                view === id || (view === "talk" && id === "map")
+                view === id ||
+                (view === "talk" && id === "map") ||
+                (view === "workshops" && id === "topics")
                   ? "page"
                   : undefined
               }
@@ -835,9 +850,11 @@ export default function App() {
           <div>
             <small>原创英语探索 · 每天进步一点点</small>
             <strong>
-              {view === "talk"
-                ? "英语小剧场"
-                : (nav.find((n) => n[0] === view)?.[1] ?? "今天的小练习")}
+              {view === "workshops"
+                ? "英语互动工坊"
+                : view === "talk"
+                  ? "英语小剧场"
+                  : (nav.find((n) => n[0] === view)?.[1] ?? "今天的小练习")}
             </strong>
           </div>
           <div className="toolbar">
@@ -1292,6 +1309,19 @@ export default function App() {
                     个专题可练
                   </span>
                 </div>
+                <section className="card workshop-entry">
+                  <div>
+                    <span className="eyebrow">换一种练法</span>
+                    <h2>分类工坊与句子修理站</h2>
+                    <p>一次分好一组词，再找出句中一处需要修改的词块。</p>
+                  </div>
+                  <button
+                    className="secondary"
+                    onClick={() => move("workshops")}
+                  >
+                    进入互动工坊
+                  </button>
+                </section>
                 <div className="topic-grid">
                   {topics.map((t) => (
                     <article className="card topic-card" key={t.topic_id}>
@@ -1537,10 +1567,25 @@ export default function App() {
               ) : progress.cards.length ? (
                 <div className="card review-list">
                   {progress.cards.map((card) => (
-                    <div className="review-row" key={card.skillId}>
+                    <div
+                      className="review-row"
+                      key={`${card.skillId}:${card.modality ?? "legacy"}`}
+                    >
                       <Icon kind="leaf" />
                       <div>
                         <strong>{card.label ?? "学习目标"}</strong>
+                        {card.modality && (
+                          <p>
+                            {(
+                              {
+                                "rule-classification": "词句分类",
+                                "sentence-editing": "句子修正",
+                                recognition: "辨认练习",
+                                "controlled-production": "受控表达",
+                              } as Record<string, string>
+                            )[card.modality] ?? "词语与句子练习"}
+                          </p>
+                        )}
                         <p>
                           阶段{card.stage + 1} · 需要巩固{card.lapses}次
                         </p>
@@ -1579,6 +1624,17 @@ export default function App() {
                 key={identity.child?.id ?? "visitor"}
                 onBack={() => move("map")}
                 onParent={() => move("parent")}
+              />
+            </Suspense>
+          )}
+          {view === "workshops" && (
+            <Suspense fallback={<p role="status">正在准备分类和修正工坊…</p>}>
+              <Workshops
+                busy={busy}
+                onStart={(workshopId, roundSize) =>
+                  void start("", { workshopId, roundSize })
+                }
+                onBack={() => move("topics")}
               />
             </Suspense>
           )}
@@ -1634,24 +1690,28 @@ export default function App() {
                     session.training
                       ? openTraining(session.training.topicId)
                       : move(
-                          session.source === "vocabulary"
-                            ? "words"
-                            : session.source === "pattern"
-                              ? "patterns"
-                              : session.source === "topic"
-                                ? "topics"
-                                : "map",
+                          session.source === "workshop"
+                            ? "workshops"
+                            : session.source === "vocabulary"
+                              ? "words"
+                              : session.source === "pattern"
+                                ? "patterns"
+                                : session.source === "topic"
+                                  ? "topics"
+                                  : "map",
                         )
                   }
                 >
                   返回
-                  {session.source === "vocabulary"
-                    ? "单词特训"
-                    : session.source === "pattern"
-                      ? "固定句式"
-                      : session.source === "topic"
-                        ? "专题特训"
-                        : "学习地图"}
+                  {session.source === "workshop"
+                    ? "互动工坊"
+                    : session.source === "vocabulary"
+                      ? "单词特训"
+                      : session.source === "pattern"
+                        ? "固定句式"
+                        : session.source === "topic"
+                          ? "专题特训"
+                          : "学习地图"}
                 </button>
                 <span className="badge">
                   第{session.position ?? 1}步 / 共{session.total ?? 1}步
@@ -1681,6 +1741,12 @@ export default function App() {
                   </p>
                 )}
                 <h1>{session.exercise.title}</h1>
+                {session.exercise.type === "sort" && (
+                  <span className="badge">分类工坊 · 一整组放好后检查</span>
+                )}
+                {session.exercise.type === "repair" && (
+                  <span className="badge">句子修理站 · 找一处，改一处</span>
+                )}
                 <p className="lead">{session.exercise.context}</p>
                 <SceneStage
                   key={session.assignmentId}
@@ -1710,6 +1776,18 @@ export default function App() {
                 >
                   <legend className="visually-hidden">当前题目作答</legend>
                   <h2 className="question">{session.exercise.prompt}</h2>
+                  {(session.exercise.type === "sort" ||
+                    session.exercise.type === "repair") && (
+                    <Suspense fallback={<p role="status">正在准备互动卡片…</p>}>
+                      <StructuredAnswer
+                        key={session.assignmentId}
+                        exercise={session.exercise}
+                        answer={answer}
+                        onChange={setAnswer}
+                        disabled={!canWriteSession || busy || Boolean(receipt)}
+                      />
+                    </Suspense>
+                  )}
                   {session.exercise.type === "choice" && (
                     <div className="answer-options">
                       {session.exercise.choices?.map((o) => (
@@ -1813,6 +1891,32 @@ export default function App() {
                             : "先看看这个规律，再用新题练习。"}
                       </strong>
                       <p>{receipt.feedback}</p>
+                      {receipt.correctedSentence && (
+                        <p className="corrected-sentence" lang="en">
+                          {receipt.correctedSentence}
+                        </p>
+                      )}
+                      {receipt.details && (
+                        <ul
+                          className="structured-feedback"
+                          aria-label="逐张核对，整题结果以上方为准"
+                        >
+                          {receipt.details.map((part, i) => (
+                            <li key={i} data-correct={part.correct}>
+                              <strong>{part.label}</strong>
+                              <span>
+                                {part.correct
+                                  ? "这一步想对了"
+                                  : "这一步再看一看"}
+                              </span>
+                              <small>我的：{part.submitted}</small>
+                              {!part.correct && (
+                                <small>可以用：{part.expected}</small>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                       <small>
                         学习记录已保存 · 下次复习{receipt.nextReviewDay} ·
                         完成奖励+{receipt.rewardDelta}

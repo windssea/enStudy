@@ -711,7 +711,7 @@ export function createAiRoutes(
           context: item.context,
           prompt: item.prompt,
           standardExplanation: item.explanation,
-          exampleAnswer: item.answers[0],
+          exampleAnswer: item.solutionSentences?.join("; ") ?? item.answers[0],
           savedOutcome: current.outcome,
         }),
       },

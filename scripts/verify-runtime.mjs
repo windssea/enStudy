@@ -54,6 +54,7 @@ try {
   await run("smoke-training.mjs");
   await run("smoke-patterns.mjs");
   await run("smoke-vocabulary.mjs");
+  await run("smoke-workshops.mjs");
   await run("smoke-ai.mjs");
   await run("smoke-voice.mjs");
 } catch (error) {

@@ -8,8 +8,23 @@ export const sentenceKey = (sentence: string) =>
     .replace(/[.!?]+$/g, "")
     .toLocaleLowerCase("en-US")}`;
 export function answerExposureKeys(
-  item: Pick<PrivateExercise, "type" | "answers" | "prompt" | "family" | "id">,
+  item: Pick<
+    PrivateExercise,
+    | "type"
+    | "answers"
+    | "prompt"
+    | "family"
+    | "id"
+    | "solutionSentences"
+    | "evidenceTargets"
+  >,
 ) {
+  if (item.solutionSentences)
+    return [
+      `family:${item.family ?? item.id}`,
+      ...item.solutionSentences.map(sentenceKey),
+      ...(item.evidenceTargets ?? []),
+    ];
   const sentence =
     item.type === "order"
       ? item.answers[0]

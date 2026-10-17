@@ -38,6 +38,9 @@ const page = await fetch("http://127.0.0.1:5173", {
 checked("vite-app-http-200", () => assert.equal(page.status, 200));
 for (const path of [
   "/content/exercises.json",
+  "/content/workshop-release.v1.json",
+  "/content/workshop-release.latest.json",
+  "/content/workshops-v1.mjs",
   "/packages/server/app.ts",
   "/.dev.vars",
   "/migrations/0003_pilot_content.sql",
