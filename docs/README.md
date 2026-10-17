@@ -47,6 +47,7 @@
 | 41 | [v0.20时态与词形实验台](39-time-and-word-form-labs.md) | 16专题48示范、时间线与词块3D、2D替代和跨题型示范记录 |
 | 42 | [v0.21第四单元与儿童引导](40-fourth-unit-and-clearer-navigation.md) | 96课、216混合任务、版本保留、鲜明主题色与单词快速开始 |
 | 43 | [v0.22家长学习报告](41-guardian-learning-reports.md) | 7/30自然日、跨入口与题型统计、辅助证据、复习提醒及家庭隔离 |
+| 44 | [v0.23本机离线练习](42-offline-practice-and-confirmation.md) | 公共页面缓存、七题型加密队列、逐题确认、显式重新授权与非独立证据 |
 
 配套资料：
 

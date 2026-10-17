@@ -44,7 +44,7 @@ export function schedule(card, { day, outcome, eligible = true }) {
   } else if (outcome === 'hinted') {
     next.dueDay = next.dueDay < tomorrow ? next.dueDay : tomorrow;
   } else if (!existing || (next.dueDay <= day && next.lastSuccessDay !== day)) {
-    if (existing) next.stage = Math.min(5, next.stage + 1);
+    if (existing && next.independentSuccesses > 0) next.stage = Math.min(5, next.stage + 1);
     next.independentSuccesses += 1;
     next.lastSuccessDay = day;
     next.dueDay = addCalendarDays(day, INTERVAL_DAYS[next.stage]);

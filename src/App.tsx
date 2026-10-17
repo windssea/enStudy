@@ -38,6 +38,7 @@ import SceneStage, { MotionShell } from "./SceneStage";
 import FlatMap from "./FlatMap";
 import SessionAccess from "./SessionAccess";
 import { reconcileDraft } from "./sessionDraft";
+import { setOfflineIdentity, lockOffline } from "./offlineAccess";
 import {
   emptyAnswer,
   structuredCanonical,
@@ -55,6 +56,7 @@ const Workshops = lazy(() => import("./Workshops"));
 const StructuredAnswer = lazy(() => import("./StructuredAnswer"));
 const ListeningPrompt = lazy(() => import("./ListeningPrompt"));
 const EvidenceAnswer = lazy(() => import("./EvidenceAnswer"));
+const OfflinePractice = lazy(() => import("./OfflinePractice"));
 const journeys = ["萌芽", "探索", "成长", "远航", "发现", "创造"];
 const readRoute = () => parseRoute(window.location.hash);
 const emptyLearning: LearningSummary = {
@@ -330,6 +332,7 @@ export default function App() {
         if (cancelled || epoch.current !== initialEpoch) return;
         setLearningChild(me.child?.id ?? null);
         setIdentity(me);
+        setOfflineIdentity(me);
         if (me.child) setGrade(me.child.grade);
         if (me.authenticated) {
           await refreshProgress();
@@ -352,6 +355,7 @@ export default function App() {
     if (epoch.current !== current) return;
     setLearningChild(me.child?.id ?? null);
     setIdentity(me);
+    setOfflineIdentity(me);
     setSession(null);
     setReceipt(null);
     setHint("");
@@ -377,8 +381,10 @@ export default function App() {
     const channel = new BroadcastChannel("eq-family-identity");
     identityChannel.current = channel;
     channel.onmessage = (event) => {
-      if (event.data === "identity-changed")
+      if (event.data === "identity-changed") {
+        lockOffline();
         void refreshIdentity(false).catch((error) => setError(message(error)));
+      }
     };
     return () => {
       identityChannel.current = null;
@@ -862,12 +868,14 @@ export default function App() {
           <div>
             <small>你在这里</small>
             <strong>
-              {view === "workshops"
-                ? "英语互动工坊"
-                : view === "talk"
-                  ? "英语小剧场"
-                  : (nav.find((n) => n[0] === activeNav)?.[1] ??
-                    "今天的小练习")}
+              {view === "offline"
+                ? "本机离线练习"
+                : view === "workshops"
+                  ? "英语互动工坊"
+                  : view === "talk"
+                    ? "英语小剧场"
+                    : (nav.find((n) => n[0] === activeNav)?.[1] ??
+                      "今天的小练习")}
               {view === "exercise" && " · 练习中"}
             </strong>
           </div>
@@ -917,7 +925,7 @@ export default function App() {
           key={view}
           data-scene-page={view}
         >
-          {error && (
+          {error && view !== "offline" && (
             <div className="notice error" role="alert">
               {error}
               <button
@@ -1380,6 +1388,24 @@ export default function App() {
                   开始今日复习
                 </button>
               </div>
+              <p>
+                <a
+                  className="offline-link"
+                  href={
+                    import.meta.env.DEV
+                      ? "http://127.0.0.1:8788/#offline"
+                      : "#offline"
+                  }
+                  onClick={(event) => {
+                    if (!import.meta.env.DEV) {
+                      event.preventDefault();
+                      move("offline");
+                    }
+                  }}
+                >
+                  看看本机暂存的离线练习 →
+                </a>
+              </p>
               <div className="stats">
                 <div className="card">
                   <strong>{progress.answered}</strong>
@@ -1516,6 +1542,21 @@ export default function App() {
               lessons={lessons}
             />
           )}
+          {view === "offline" && (
+            <Suspense fallback={<p role="status">正在打开本机练习…</p>}>
+              <OfflinePractice
+                session={session}
+                identity={identity}
+                onReturn={() => {
+                  move("exercise");
+                  void refreshSession();
+                }}
+                onProfile={() => move("parent")}
+                onChoose={() => move("map")}
+                onSynced={() => refreshIdentity()}
+              />
+            </Suspense>
+          )}
           {view === "exercise" && session && (
             <div className="exercise-wrap">
               <SessionAccess
@@ -1533,7 +1574,28 @@ export default function App() {
                   {sessionNotice}
                 </p>
               )}
+              {session.offlinePrepared && (
+                <p className="notice">
+                  这轮题目已准备为本机练习；联网提交也另记离线练习证据，不增加独立掌握计数或星星。
+                </p>
+              )}
               <div className="exercise-top">
+                <a
+                  className="offline-link"
+                  href={
+                    import.meta.env.DEV
+                      ? "http://127.0.0.1:8788/#offline"
+                      : "#offline"
+                  }
+                  onClick={(event) => {
+                    if (!import.meta.env.DEV) {
+                      event.preventDefault();
+                      move("offline");
+                    }
+                  }}
+                >
+                  本机离线练习
+                </a>
                 <button
                   className="secondary"
                   onClick={() =>
@@ -1775,11 +1837,13 @@ export default function App() {
                         {receipt.outcome === "correct"
                           ? "这一步，想对了！"
                           : receipt.outcome === "hinted"
-                            ? receipt.support === "transcript"
-                              ? "借助文字，完成了这一步。"
-                              : receipt.support === "example"
-                                ? "跟着示范，完成了这一步。"
-                                : "跟着提示，完成了这一步。"
+                            ? receipt.support === "offline"
+                              ? "离线练习已核对，另记练习证据。"
+                              : receipt.support === "transcript"
+                                ? "借助文字，完成了这一步。"
+                                : receipt.support === "example"
+                                  ? "跟着示范，完成了这一步。"
+                                  : "跟着提示，完成了这一步。"
                             : "先看看这个规律，再用新题练习。"}
                       </strong>
                       <p>{receipt.feedback}</p>

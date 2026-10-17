@@ -32,6 +32,7 @@ export interface Exercise {
   editing?: { parts: { id: string; text: string }[] };
 }
 export interface LearningSession {
+  offlinePrepared?: boolean;
   id: string;
   leaseId: string | null;
   leaseVersion: number;
@@ -196,7 +197,7 @@ export interface Receipt {
     correct: boolean;
   }[];
   correctedSentence?: string;
-  support?: "hint" | "example" | "transcript";
+  support?: "hint" | "example" | "transcript" | "offline";
   eventId: string;
   outcome: "correct" | "incorrect" | "hinted";
   independentEvidence: boolean;
@@ -205,7 +206,27 @@ export interface Receipt {
   rewardDelta: number;
   serverSequence: number;
 }
+export interface OfflinePack {
+  schema: 1;
+  id: string;
+  householdId: string;
+  childId: string;
+  nickname: string;
+  preparedAt: number;
+  expiresAt: number;
+  sessionId: string;
+  leaseId: string;
+  leaseVersion: number;
+  source: LearningSession["source"];
+  items: {
+    assignmentId: string;
+    position: number;
+    exercise: Exercise;
+    listening?: LearningSession["listening"];
+  }[];
+}
 export interface Identity {
+  offlineProtocol?: number;
   authenticated: boolean;
   developmentIdentityAvailable: boolean;
   registrationOpen?: boolean;

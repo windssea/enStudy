@@ -1,0 +1,187 @@
+import { describe, it, expect } from "vitest";
+import { runInNewContext } from "node:vm";
+import { readFileSync } from "node:fs";
+const source = readFileSync(
+  new URL("../public/offline-sw.js", import.meta.url),
+  "utf8",
+);
+function runtime() {
+  const stores = new Map<string, Map<string, Response>>(),
+    handlers = new Map<string, (event: any) => void>(),
+    requests: { url: string; options: any }[] = [];
+  let offline = false,
+    badAsset = false,
+    malicious = false;
+  const caches = {
+    async keys() {
+      return [...stores.keys()];
+    },
+    async delete(key: string) {
+      return stores.delete(key);
+    },
+    async open(key: string) {
+      if (!stores.has(key)) stores.set(key, new Map());
+      const store = stores.get(key)!;
+      return {
+        async put(path: string, response: Response) {
+          store.set(path, response.clone());
+        },
+        async match(path: string) {
+          return store.get(path)?.clone();
+        },
+      };
+    },
+  };
+  const fetch = async (path: string | Request, options?: any) => {
+    const url = typeof path === "string" ? path : path.url;
+    requests.push({ url, options });
+    if (offline) throw Error("offline");
+    if (url === "/offline-shell.json")
+      return Response.json({
+        schema: 1,
+        cacheKey: "eq-shell-v1-1234567890abcdef",
+        assets: malicious
+          ? ["/index.html", "/api/v1/me"]
+          : ["/index.html", "/assets/main-1.js", "/assets/main-1.css"],
+      });
+    if (badAsset && url.endsWith(".css"))
+      return new Response("broken", { status: 503 });
+    return new Response(
+      url.endsWith(".js")
+        ? "console.log(1)"
+        : url.endsWith(".css")
+          ? "body{}"
+          : "<html>offline shell</html>",
+      {
+        headers: {
+          "Content-Type": url.endsWith(".js")
+            ? "application/javascript"
+            : url.endsWith(".css")
+              ? "text/css"
+              : "text/html",
+        },
+      },
+    );
+  };
+  runInNewContext(source, {
+    self: {
+      location: { origin: "https://study.example" },
+      clients: { claim: async () => {} },
+      skipWaiting: async () => {},
+      addEventListener: (name: string, callback: any) =>
+        handlers.set(name, callback),
+    },
+    caches,
+    fetch,
+    URL,
+    Response,
+    Promise,
+    AbortController,
+    setTimeout,
+    clearTimeout,
+  });
+  async function prepare(origin = "https://study.example") {
+    let work: Promise<unknown> | undefined, message: any;
+    handlers.get("message")!({
+      data: { type: "PREPARE_OFFLINE" },
+      source: { url: `${origin}/#offline` },
+      ports: [{ postMessage: (value: any) => (message = value) }],
+      waitUntil: (promise: Promise<unknown>) => (work = promise),
+    });
+    await work;
+    return message;
+  }
+  async function request(path: string, mode = "same-origin", method = "GET") {
+    let response: Promise<Response> | undefined;
+    handlers.get("fetch")!({
+      request: { url: `https://study.example${path}`, mode, method },
+      respondWith: (value: Promise<Response>) => (response = value),
+    });
+    return response ? await response : undefined;
+  }
+  return {
+    stores,
+    requests,
+    prepare,
+    request,
+    offline: () => (offline = true),
+    bad: () => (badAsset = true),
+    malicious: () => (malicious = true),
+  };
+}
+describe("offline public shell policy", () => {
+  it("caches only an explicit public shell with credentials omitted", async () => {
+    const r = runtime();
+    expect((await r.prepare()).prepared).toBe(true);
+    const cache = [...r.stores.values()][0];
+    expect([...cache.keys()]).toEqual([
+      "/index.html",
+      "/assets/main-1.js",
+      "/assets/main-1.css",
+      "/offline-ready",
+    ]);
+    expect(r.requests.every((q) => q.options.credentials === "omit")).toBe(
+      true,
+    );
+    expect(r.requests.every((q) => !q.url.startsWith("/api"))).toBe(true);
+  });
+  it("serves a cached document and hashed modules after the network goes away", async () => {
+    const r = runtime();
+    await r.prepare();
+    r.offline();
+    expect(await (await r.request("/", "navigate"))!.text()).toContain(
+      "offline shell",
+    );
+    expect(await (await r.request("/assets/main-1.js"))!.text()).toContain(
+      "console.log",
+    );
+  });
+  it("never intercepts private APIs or mutation requests", async () => {
+    const r = runtime();
+    await r.prepare();
+    r.offline();
+    expect(await r.request("/api/v1/me")).toBeUndefined();
+    expect(
+      await r.request("/api/v1/attempts", "same-origin", "POST"),
+    ).toBeUndefined();
+    expect(await r.request("/family/export", "navigate")).toBeUndefined();
+  });
+  it("does not advertise an incomplete shell or remove the previous ready shell", async () => {
+    const r = runtime();
+    r.stores.set(
+      "eq-shell-v1-old",
+      new Map([
+        ["/offline-ready", new Response("1")],
+        ["/index.html", new Response("old working shell")],
+      ]),
+    );
+    r.bad();
+    expect((await r.prepare()).prepared).toBe(false);
+    expect(
+      r.stores.get("eq-shell-v1-1234567890abcdef")!.has("/offline-ready"),
+    ).toBe(false);
+    r.offline();
+    expect(await (await r.request("/", "navigate"))!.text()).toBe(
+      "old working shell",
+    );
+  });
+  it("rejects a manifest attempting to add private identity responses", async () => {
+    const r = runtime();
+    r.malicious();
+    expect((await r.prepare()).prepared).toBe(false);
+    expect(r.stores.size).toBe(0);
+    expect(r.requests).toHaveLength(1);
+  });
+  it("rejects preparation messages from another origin", async () => {
+    const r = runtime();
+    expect((await r.prepare("https://foreign.example")).prepared).toBe(false);
+    expect(r.requests).toHaveLength(0);
+  });
+  it("falls back to a clear offline message when nothing has been prepared", async () => {
+    const r = runtime();
+    r.offline();
+    const response = await r.request("/", "navigate");
+    expect(response!.status).toBe(503);
+    expect(await response!.text()).toContain("先联网准备");
+  });
+});

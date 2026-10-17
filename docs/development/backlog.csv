@@ -21,7 +21,7 @@ M2-03,M2,完整互动题型与可访问替代,听读分类纠错与引导表达�
 M3-01,M3,60专题诊断与迁移,分层与题目家族隔离通过,partial-local-training-journeys,docs/33-topic-training-journeys.md与38-guided-training-centres.md及60专题分步和8类入口而全面错因诊断专用内容开放场景及教研审核待做
 M3-02,M3,72句式和词形规则,槽位与合法变体及错误归因通过,partial-72-frame-banks,docs/38-guided-training-centres.md与39-time-and-word-form-labs.md及句式题库与词形演示而完整归因迁移教研审核待做
 M3-03,M3,复习选题与延迟测验,积压保护与同日跨入口不重复晋级,partial-local-delayed-checkpoints,docs/33-topic-training-journeys.md及1/3/7日共用卡片和逾期合并通过而专用评估池与跨入口任务合并待做
-M3-04,M3,离线队列与报告,断网恢复且未确认进度不虚报,partial-local-guardian-reports,docs/41-guardian-learning-reports.md及7和30日跨入口报告与独立辅助未计分分列和复习提醒而离线队列导出完整错因诊断及真机云端验收待做
+M3-04,M3,离线队列与报告,断网恢复且未确认进度不虚报,partial-local-offline-confirmation,docs/42-offline-practice-and-confirmation.md及当前轮加密七题型队列和两种丢响应恢复及显式重新授权加7和30日报告而真实缓存磁盘飞行模式多标签导出完整错因及云端验收待做
 M3-05,M3,独立单词特训,分级词库多模式随机与复习进度通过,partial-local-word-listening,docs/37-listening-and-evidence-reading.md及360词条18主题1440任务含听辨与本机记录而真实设备与教研审核及云端免费发布待验
 M4-01,M4,BYOK与预算,加密限流出站控制及故障回退通过,partial-local-text-and-voice,docs/35-ai-dialogue-and-voice.md及文字音频独立配置预算加密与本地59项语音检查通过而真实供应商出题审核运营治理和生产主密钥待做
 M4-02,M4,轮流语音,真实iPad格式权限和取消验证,partial-local-turn-based-voice,docs/35-ai-dialogue-and-voice.md及六场景WAV识别确认短对话和MP3合成本地实现而真实供应商与PC平板权限播放和实时语音待验

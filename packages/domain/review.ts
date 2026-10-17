@@ -75,7 +75,8 @@ export function schedule(
   } else if (outcome === "hinted") {
     next.dueDay = next.dueDay < tomorrow ? next.dueDay : tomorrow;
   } else if (!card || (next.dueDay <= day && next.lastSuccessDay !== day)) {
-    if (card) next.stage = Math.min(5, next.stage + 1);
+    if (card && card.independentSuccesses > 0)
+      next.stage = Math.min(5, next.stage + 1);
     next.independentSuccesses++;
     next.lastSuccessDay = day;
     next.dueDay = addDays(day, intervals[next.stage]);

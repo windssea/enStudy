@@ -1,7 +1,35 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { createHash } from "node:crypto";
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: "english-quest-offline-shell",
+      enforce: "post",
+      generateBundle(_, bundle) {
+        const assets = [
+          "/index.html",
+          ...Object.keys(bundle)
+            .filter((name) => /\.(js|css)$/.test(name))
+            .map((name) => `/${name}`),
+        ].sort();
+        const hash = createHash("sha256")
+          .update(JSON.stringify(assets))
+          .digest("hex")
+          .slice(0, 16);
+        this.emitFile({
+          type: "asset",
+          fileName: "offline-shell.json",
+          source: JSON.stringify({
+            schema: 1,
+            cacheKey: `eq-shell-v1-${hash}`,
+            assets,
+          }),
+        });
+      },
+    },
+  ],
   server: {
     proxy: { "/api": "http://127.0.0.1:8788" },
     fs: {

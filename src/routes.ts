@@ -8,7 +8,8 @@ export type View =
   | "talk"
   | "workshops"
   | "exercise"
-  | "lesson";
+  | "lesson"
+  | "offline";
 export type Route = {
   view: View;
   lessonId: string | null;
@@ -41,6 +42,7 @@ export function parseRoute(fragment: string): Route {
     "talk",
     "workshops",
     "exercise",
+    "offline",
   ];
   return {
     view: views.includes(hash as View) ? (hash as View) : "map",

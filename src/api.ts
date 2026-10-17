@@ -1,3 +1,5 @@
+import { lockOffline, setOfflineIdentity } from "./offlineAccess";
+import type { Identity } from "../packages/contracts/index";
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -16,6 +18,14 @@ export async function api<T>(
   body?: unknown,
   options: { signal?: AbortSignal; timeoutMs?: number } = {},
 ): Promise<T> {
+  if (
+    body !== undefined &&
+    (["/auth/login", "/logout", "/auth/password", "/dev/session"].includes(
+      path,
+    ) ||
+      /^\/children\/[^/]+\/(select|remove)$/.test(path))
+  )
+    lockOffline();
   const controller = new AbortController();
   const abort = () => controller.abort();
   options.signal?.addEventListener("abort", abort, { once: true });
@@ -43,12 +53,16 @@ export async function api<T>(
         response.status,
       );
     }
-    if (!response.ok)
+    if (!response.ok) {
+      if (response.status === 401 || result.error?.code === "IDENTITY_CHANGED")
+        lockOffline();
       throw new ApiError(
         result.error?.message ?? "请求失败，请重试。",
         result.error?.code ?? "REQUEST_FAILED",
         response.status,
       );
+    }
+    if (path === "/me") setOfflineIdentity(result as Identity);
     return result as T;
   } finally {
     clearTimeout(timer);

@@ -138,3 +138,7 @@ v0.20新增实际端点`POST /learning/concepts/:id/view`，body为`{caseId}`。
 ## v0.22已实现的家长学习报告
 
 `GET /api/v1/family/children/:id/report?days=7`：成人会话与家庭范围验证，临时密码须先修改；默认7天，可选30天，其他或重复参数422，未知/外家庭档案404。返回`LearningReport`中的窗口、总计、逐日、入口、题型、最多8组需再练记录和即时复习数量。使用孩子时区与服务端保存时间，只读、不推进学习；未确认与辅助证据分列，不返回答案、原始回执或权限。具体口径与本地验证见[家长报告](41-guardian-learning-reports.md)。此实现不代表上文规划的离线同步、通用报表或导出已完成。
+
+## v0.23已实现的当前轮离线同步
+
+`GET /me`返回`offlineProtocol=1`；旧服务缺少该能力时客户端保留队列并停止提交。`POST /sessions/:id/offline-pack`用当前`assignmentId, leaseId`准备最多20个公开任务，要求owner和有效grant，排除分步测验，不返回答案。服务端同时标记准备状态。`POST /attempts`可传`evidenceSource=offline_unverified, clientOccurredAt`，准备过的任务省略标记也不会变成独立证据。回执`support=offline`、零独立/零星星，客户端保存回执后才幂等推进下一步；冲突保留队列，重新授权必须显式操作。完整口径、0025迁移与设备待验项见[离线练习](42-offline-practice-and-confirmation.md)。

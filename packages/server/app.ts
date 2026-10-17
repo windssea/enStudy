@@ -179,6 +179,7 @@ app.get("/api/v1/health", (c) =>
     aiEnabled: false,
     registrationOpen: false,
     accountLoginAvailable: true,
+    offlineProtocol: 1,
     databaseBinding: Boolean(c.env.DB),
   }),
 );
@@ -238,6 +239,7 @@ app.get("/api/v1/me", async (c) => {
   const actor = await actorFrom(c);
   const adult = await readAdult(c);
   return c.json({
+    offlineProtocol: 1,
     authenticated: Boolean(actor),
     developmentIdentityAvailable: devAllowed(c.env, c.req.url),
     registrationOpen: false,
@@ -364,6 +366,7 @@ for (const path of [
 app.route("/api/v1", createAiRoutes(actorFrom));
 app.route("/api/v1", trainingRoutes);
 interface Assignment {
+  offline_prepared_at: number | null;
   id: string;
   lease_id: string;
   lease_grant_id: string | null;
@@ -400,7 +403,7 @@ async function loadSession(
 ): Promise<Assignment | null> {
   return db
     .prepare(
-      `SELECT s.id,s.lease_id,s.lease_grant_id,s.lease_version,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.item_version,si.hint_level,si.presentation_json,li.heard_at,li.transcript_at,tr.cycle_id,tr.phase AS training_phase,tr.checkpoint,tc.topic_id AS training_topic_id,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor LEFT JOIN listening_inputs li ON li.assignment_id=si.id LEFT JOIN training_phase_runs tr ON tr.session_id=s.id LEFT JOIN training_cycles tc ON tc.id=tr.cycle_id WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
+      `SELECT s.id,s.lease_id,s.lease_grant_id,s.lease_version,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.item_version,si.hint_level,si.presentation_json,si.offline_prepared_at,li.heard_at,li.transcript_at,tr.cycle_id,tr.phase AS training_phase,tr.checkpoint,tc.topic_id AS training_topic_id,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor LEFT JOIN listening_inputs li ON li.assignment_id=si.id LEFT JOIN training_phase_runs tr ON tr.session_id=s.id LEFT JOIN training_cycles tc ON tc.id=tr.cycle_id WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
     )
     .bind(id, actor.householdId, actor.childId)
     .first<Assignment>();
@@ -415,6 +418,7 @@ function sessionPayload(
     throw new PlayerUpdateRequired();
   return {
     id: row.id,
+    ...(row.offline_prepared_at !== null ? { offlinePrepared: true } : {}),
     leaseId: row.lease_grant_id === actor.grantId ? row.lease_id : null,
     leaseVersion: row.lease_version,
     access:
@@ -456,6 +460,126 @@ function sessionPayload(
 }
 const grantAuthorization =
   "EXISTS(SELECT 1 FROM child_grants g WHERE g.id=? AND g.revoked_at IS NULL AND g.expires_at>? AND (g.parent_session_id IS NULL OR EXISTS(SELECT 1 FROM account_sessions p WHERE p.id=g.parent_session_id AND p.revoked_at IS NULL AND p.expires_at>?)))";
+app.post("/api/v1/sessions/:id/offline-pack", async (c) => {
+  const actor = c.get("actor"),
+    body = await c.req.json();
+  if (
+    !body ||
+    ![body.assignmentId, body.leaseId].every(
+      (v) => typeof v === "string" && UUID.test(v),
+    )
+  )
+    return c.json(
+      fault("INVALID_OFFLINE_PACK", "请先打开一轮学习，再准备离线练习。"),
+      422,
+    );
+  const row = await loadSession(c.env.DB, actor, c.req.param("id"));
+  if (!row) return c.json(fault("NOT_FOUND", "找不到这轮学习。"), 404);
+  if (
+    row.state !== "active" ||
+    row.lease_grant_id !== actor.grantId ||
+    row.lease_id !== body.leaseId ||
+    row.assignment_id !== body.assignmentId
+  )
+    return c.json(
+      fault("LEASE_REPLACED", "设备或当前题目已变化，请先读取最新进度。"),
+      409,
+    );
+  if (row.cycle_id)
+    return c.json(
+      fault(
+        "TRAINING_REQUIRES_ONLINE",
+        "专题分步测验需要在线完成；可把普通课程或随机特训带去离线练习。",
+      ),
+      409,
+    );
+  const pending = await c.env.DB.prepare(
+    "SELECT si.id,si.position,si.item_id,si.item_version,si.presentation_json,li.heard_at,li.transcript_at FROM session_items si LEFT JOIN attempts a ON a.assignment_id=si.id LEFT JOIN listening_inputs li ON li.assignment_id=si.id WHERE si.session_id=? AND si.household_id=? AND si.child_id=? AND si.position>=? AND a.event_id IS NULL ORDER BY si.position LIMIT 20",
+  )
+    .bind(row.id, actor.householdId, actor.childId, row.cursor)
+    .all<{
+      id: string;
+      position: number;
+      item_id: string;
+      item_version: number;
+      presentation_json: string | null;
+      heard_at: number | null;
+      transcript_at: number | null;
+    }>();
+  if (!pending.results.length || pending.results[0].id !== row.assignment_id)
+    return c.json(
+      fault(
+        "ANSWER_ALREADY_SAVED",
+        "这一题已保存，请先进入下一题再准备离线练习。",
+      ),
+      409,
+    );
+  const items = pending.results.map((item) => {
+    const version = exerciseVersion(item.item_id, item.item_version)!;
+    if (!supportsExercise(version.type, c.req.header("X-EQ-Player-Version")))
+      throw new PlayerUpdateRequired();
+    return {
+      assignmentId: item.id,
+      position: item.position + 1,
+      exercise: {
+        ...publicExercise(version),
+        ...(item.presentation_json ? JSON.parse(item.presentation_json) : {}),
+      },
+      ...(version.type === "listen"
+        ? {
+            listening: {
+              heard: !!item.heard_at,
+              textSupport: !!item.transcript_at,
+            },
+          }
+        : {}),
+    };
+  });
+  const now = Date.now(),
+    packId = crypto.randomUUID();
+  const marked = await c.env.DB.prepare(
+    `UPDATE session_items SET offline_prepared_at=COALESCE(offline_prepared_at,?),offline_pack_id=? WHERE session_id=? AND household_id=? AND child_id=? AND position>=? AND NOT EXISTS(SELECT 1 FROM attempts a WHERE a.assignment_id=session_items.id) AND EXISTS(SELECT 1 FROM learning_sessions s WHERE s.id=? AND s.state='active' AND s.cursor=? AND s.lease_id=? AND s.lease_grant_id=? AND NOT EXISTS(SELECT 1 FROM attempts a WHERE a.assignment_id=?)) AND ${grantAuthorization}`,
+  )
+    .bind(
+      now,
+      packId,
+      row.id,
+      actor.householdId,
+      actor.childId,
+      row.cursor,
+      row.id,
+      row.cursor,
+      row.lease_id,
+      actor.grantId,
+      row.assignment_id,
+      actor.grantId,
+      now,
+      now,
+    )
+    .run();
+  if (marked.meta.changes !== items.length)
+    return c.json(
+      fault(
+        "LEASE_REPLACED",
+        "题目或设备已变化，离线包未准备好。请重新读取进度。",
+      ),
+      409,
+    );
+  return c.json({
+    schema: 1,
+    id: packId,
+    householdId: actor.householdId,
+    childId: actor.childId,
+    nickname: actor.nickname,
+    preparedAt: now,
+    expiresAt: now + 7 * 86400000,
+    sessionId: row.id,
+    leaseId: row.lease_id,
+    leaseVersion: row.lease_version,
+    source: row.source,
+    items,
+  });
+});
 app.post("/api/v1/sessions/:id/listening", async (c) => {
   const actor = c.get("actor"),
     body = await c.req.json();
@@ -1397,11 +1521,14 @@ app.post("/api/v1/sessions/:id/hint", async (c) => {
   });
 });
 interface StoredAttempt {
+  offline_prepared_at: number | null;
   event_id: string;
   answer_json: string;
   receipt_json: string;
   item_id: string;
   item_version: number;
+  evidence_source: string;
+  client_occurred_at: number | null;
 }
 interface StoredCard {
   stage: number;
@@ -1419,10 +1546,18 @@ app.post("/api/v1/attempts", async (c) => {
     leaseId: string;
     assignmentId: string;
     answer: Answer;
+    evidenceSource?: "offline_unverified";
+    clientOccurredAt?: number;
   }>();
   if (!body || typeof body !== "object" || Array.isArray(body))
     return c.json(fault("INVALID_ATTEMPT", "答案或请求格式不正确。"), 422);
   if (
+    (body.evidenceSource !== undefined &&
+      body.evidenceSource !== "offline_unverified") ||
+    (body.evidenceSource === "offline_unverified" &&
+      (!Number.isSafeInteger(body.clientOccurredAt) ||
+        body.clientOccurredAt! < 0 ||
+        body.clientOccurredAt! > Date.now() + 300000)) ||
     ![body.eventId, body.sessionId, body.leaseId, body.assignmentId].every(
       (id) => typeof id === "string" && UUID.test(id),
     ) ||
@@ -1438,7 +1573,7 @@ app.post("/api/v1/attempts", async (c) => {
     return c.json(fault("INVALID_ATTEMPT", "答案或请求格式不正确。"), 422);
   const prior = () =>
     c.env.DB.prepare(
-      "SELECT a.event_id,a.answer_json,a.receipt_json,si.item_id,si.item_version FROM attempts a JOIN session_items si ON si.id=a.assignment_id WHERE a.household_id=? AND a.child_id=? AND (a.event_id=? OR a.assignment_id=?)",
+      "SELECT a.event_id,a.answer_json,a.receipt_json,a.evidence_source,a.client_occurred_at,si.item_id,si.item_version,si.offline_prepared_at FROM attempts a JOIN session_items si ON si.id=a.assignment_id WHERE a.household_id=? AND a.child_id=? AND (a.event_id=? OR a.assignment_id=?)",
     )
       .bind(actor.householdId, actor.childId, body.eventId, body.assignmentId)
       .first<StoredAttempt>();
@@ -1447,7 +1582,18 @@ app.post("/api/v1/attempts", async (c) => {
       exerciseVersion(stored.item_id, stored.item_version)!,
       body.answer,
     );
-    if (canonical !== null && stored.answer_json === canonical) {
+    if (
+      canonical !== null &&
+      stored.answer_json === canonical &&
+      stored.evidence_source ===
+        (body.evidenceSource ??
+          (stored.offline_prepared_at !== null
+            ? "offline_unverified"
+            : "online")) &&
+      (stored.client_occurred_at !== null) === !!body.evidenceSource &&
+      (!body.evidenceSource ||
+        stored.client_occurred_at === body.clientOccurredAt)
+    ) {
       await recordExposure(
         c.env.DB,
         actor,
@@ -1467,6 +1613,14 @@ app.post("/api/v1/attempts", async (c) => {
     if (stored) return respondPrior(stored);
     const row = await loadSession(c.env.DB, actor, body.sessionId);
     if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
+    if (body.evidenceSource && row.cycle_id)
+      return c.json(
+        fault(
+          "TRAINING_REQUIRES_ONLINE",
+          "专题分步测验需要在线完成；离线草稿仍可保留。",
+        ),
+        409,
+      );
     if (
       row.assignment_id !== body.assignmentId ||
       row.lease_id !== body.leaseId ||
@@ -1496,8 +1650,10 @@ app.post("/api/v1/attempts", async (c) => {
         422,
       );
     const evidenceKeys = await hashedExposureKeys(answerExposureKeys(exercise));
-    const support =
-      exercise.type === "listen" && row.transcript_at
+    const offline = !!body.evidenceSource || row.offline_prepared_at !== null;
+    const support = offline
+      ? "offline"
+      : exercise.type === "listen" && row.transcript_at
         ? "transcript"
         : row.hint_level
           ? "hint"
@@ -1528,7 +1684,7 @@ app.post("/api/v1/attempts", async (c) => {
           version: old.version,
         }
       : null;
-    const next = schedule(card, day, outcome),
+    const next = schedule(card, day, offline ? "hinted" : outcome),
       sequence = child!.stream_version + 1;
     const receipt: Receipt = {
       ...structuredFeedback(exercise, body.answer),
@@ -1538,13 +1694,13 @@ app.post("/api/v1/attempts", async (c) => {
       independentEvidence: outcome === "correct",
       feedback: exercise.explanation,
       nextReviewDay: next.dueDay,
-      rewardDelta: 1,
+      rewardDelta: offline ? 0 : 1,
       serverSequence: sequence,
     };
     try {
       await c.env.DB.batch([
         c.env.DB.prepare(
-          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND ${grantAuthorization} AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.lease_grant_id=? AND s.state='active' AND si.id=? AND si.hint_level=?) ${outcome === "correct" ? `AND ${exposurePredicate(answerExposureKeys(exercise).length)}` : ""}`,
+          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND ${grantAuthorization} AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.lease_grant_id=? AND s.state='active' AND si.id=? AND si.hint_level=? AND COALESCE(si.offline_prepared_at,0)=?) ${outcome === "correct" ? `AND ${exposurePredicate(answerExposureKeys(exercise).length)}` : ""}`,
         ).bind(
           actor.childId,
           actor.householdId,
@@ -1557,6 +1713,7 @@ app.post("/api/v1/attempts", async (c) => {
           actor.grantId,
           body.assignmentId,
           row.hint_level,
+          row.offline_prepared_at ?? 0,
           ...(outcome === "correct"
             ? [actor.householdId, actor.childId, day, ...evidenceKeys]
             : []),
@@ -1565,7 +1722,7 @@ app.post("/api/v1/attempts", async (c) => {
           "INSERT INTO commit_assertions(event_id,household_id,child_id,ok) VALUES(?,?,?,changes())",
         ).bind(body.eventId, actor.householdId, actor.childId),
         c.env.DB.prepare(
-          `INSERT INTO attempts(event_id,household_id,child_id,assignment_id,server_sequence,answer_json,outcome,independent_evidence,evidence_source,received_at,algorithm_version,receipt_json) VALUES(?,?,?,?,?,?,?,?,'online',?,'rules-v2-exposure',?)`,
+          `INSERT INTO attempts(event_id,household_id,child_id,assignment_id,server_sequence,answer_json,outcome,independent_evidence,evidence_source,received_at,client_occurred_at,algorithm_version,receipt_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,'rules-v3-offline',?)`,
         ).bind(
           body.eventId,
           actor.householdId,
@@ -1575,7 +1732,9 @@ app.post("/api/v1/attempts", async (c) => {
           canonical,
           outcome,
           Number(outcome === "correct"),
+          offline ? "offline_unverified" : "online",
           now,
+          body.evidenceSource ? body.clientOccurredAt! : null,
           JSON.stringify(receipt),
         ),
         ...(await exposureStatements(
@@ -1585,7 +1744,7 @@ app.post("/api/v1/attempts", async (c) => {
           now,
         )),
         c.env.DB.prepare(
-          `INSERT INTO review_cards(household_id,child_id,skill_id,modality,stage,due_at,lapses,independent_successes,last_success_day,version) VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(child_id,skill_id,modality) DO UPDATE SET stage=excluded.stage,due_at=excluded.due_at,lapses=excluded.lapses,independent_successes=excluded.independent_successes,last_success_day=excluded.last_success_day,version=excluded.version`,
+          `INSERT INTO review_cards(household_id,child_id,skill_id,modality,stage,due_at,lapses,independent_successes,last_success_day,version,algorithm_version) VALUES(?,?,?,?,?,?,?,?,?,?,'rules-v3-offline') ON CONFLICT(child_id,skill_id,modality) DO UPDATE SET stage=excluded.stage,due_at=excluded.due_at,lapses=excluded.lapses,independent_successes=excluded.independent_successes,last_success_day=excluded.last_success_day,version=excluded.version,algorithm_version=excluded.algorithm_version`,
         ).bind(
           actor.householdId,
           actor.childId,
@@ -1599,12 +1758,14 @@ app.post("/api/v1/attempts", async (c) => {
           next.version,
         ),
         c.env.DB.prepare(
-          "INSERT INTO reward_ledger(id,household_id,child_id,source_attempt_id,delta,reason) VALUES(?,?,?,?,1,'participation')",
+          "INSERT INTO reward_ledger(id,household_id,child_id,source_attempt_id,delta,reason) VALUES(?,?,?,?,?,?)",
         ).bind(
           crypto.randomUUID(),
           actor.householdId,
           actor.childId,
           body.eventId,
+          offline ? 0 : 1,
+          offline ? "offline_practice" : "participation",
         ),
       ]);
       return c.json(receipt, 201);

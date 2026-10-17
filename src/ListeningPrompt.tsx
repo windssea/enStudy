@@ -8,11 +8,13 @@ export default function ListeningPrompt({
   disabled,
   answered,
   onState,
+  local = false,
 }: {
   session: LearningSession;
   disabled: boolean;
   answered: boolean;
   onState: (state: InputState) => void;
+  local?: boolean;
 }) {
   const [phase, setPhase] = useState<"idle" | "playing" | "ended">("idle"),
     [error, setError] = useState(""),
@@ -74,6 +76,13 @@ export default function ListeningPrompt({
       generation.current++;
       speech.current?.stop();
       setPhase("idle");
+    }
+    if (local) {
+      onState({
+        heard: mode === "heard" || !!session.listening?.heard,
+        textSupport: mode === "text" || !!session.listening?.textSupport,
+      });
+      return;
     }
     const controller = new AbortController(),
       current = generation.current;
@@ -178,7 +187,9 @@ export default function ListeningPrompt({
         </button>
       )}
       <p className="footnote">
-        没听清也没关系，可以重播或看文字。文字辅助会单独记录。
+        {local
+          ? "本机听音状态随答案暂存，联网同步后才会确认。离线声音是否可用取决于设备；听不到可用文字辅助。"
+          : "没听清也没关系，可以重播或看文字。文字辅助会单独记录。"}
       </p>
     </section>
   );
