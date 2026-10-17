@@ -198,9 +198,9 @@ try {
   );
   const meta = (await request("/lessons")).data;
   check(
-    meta.lessons.length === 96 &&
-      new Set(meta.lessons.map((l) => l.unitId)).size === 24,
-    "authoritative catalog contains four units for every grade and ninety-six lessons",
+    meta.lessons.length === 120 &&
+      new Set(meta.lessons.map((l) => l.unitId)).size === 30,
+    "authoritative catalog contains five units for every grade and 120 lessons",
   );
   const old = (await open({ exerciseId: "sample.be.1" })).data;
   player = "2";

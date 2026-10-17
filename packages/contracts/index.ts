@@ -104,6 +104,7 @@ export interface CourseLesson {
   vocabulary: { word: string; meaning: string }[];
   task: string;
   topicIds: string[];
+  conceptLabIds?: string[];
   itemCount: number;
 }
 export interface TopicStats {

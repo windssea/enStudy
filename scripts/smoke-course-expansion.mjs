@@ -121,8 +121,8 @@ try {
   await request(`/children/${child}/select`, {});
   const catalog = (await request("/lessons")).data.lessons;
   check(
-    catalog.length === 96 && new Set(catalog.map((l) => l.unitId)).size === 24,
-    "public catalog includes four units for all six grades",
+    catalog.length === 120 && new Set(catalog.map((l) => l.unitId)).size === 30,
+    "public catalog includes five units for all six grades",
   );
   check(
     (await request("/learning/lessons/unknown/view", {})).status === 404,

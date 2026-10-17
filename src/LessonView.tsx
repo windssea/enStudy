@@ -3,6 +3,7 @@ import SpeechButton from "./SpeechButton";
 import SceneStage from "./SceneStage";
 import { useEffect } from "react";
 import { api } from "./api";
+import LessonConcepts from "./LessonConcepts";
 
 export default function LessonView({
   lesson,
@@ -69,6 +70,13 @@ export default function LessonView({
           </article>
         ))}
       </div>
+      {Boolean(lesson.conceptLabIds?.length) && (
+        <LessonConcepts
+          key={`${lesson.id}:${childId ?? "guest"}`}
+          ids={lesson.conceptLabIds!}
+          childId={childId}
+        />
+      )}
       <section className="card word-shelf">
         <h2>装进今天的小词袋</h2>
         <p>轻点单词旁的按钮，听设备中的英语声音。</p>

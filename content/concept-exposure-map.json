@@ -239,25 +239,39 @@
       "workshop-target:morphology.verb.irregular-past:c14ebe56a5008"
     ],
     "forms.comparison/wide": [
+      "family:fact-2b2d9829193bee4d",
+      "family:fact-65074df635a3bdb1",
       "family:pattern-sentence-18ff19500d87a8bfd5bf",
+      "sentence:the left path is wider than the right path",
       "sentence:this bag is wider than that one",
-      "sentence:this is the widest path in the garden"
+      "sentence:this is the widest path in the garden",
+      "sentence:this section is the widest of the three",
+      "workshop-target:morphology.adjective.comparison:c0abaa40b1043"
     ],
     "forms.comparison/thin": [
+      "family:fact-1db0411cd625bde6",
       "family:pattern-sentence-090c54e66452333381b2",
       "family:topic-fact-08e20aa8b50b030bc673",
       "family:topic-fact-cb0c04ecaf79e6b10f81",
+      "sentence:the white paper is thinner than the black card",
       "sentence:this bag is thinner than that one",
       "sentence:this is the thinnest notebook of the three",
       "sentence:比较三者或更多:写出thin的最高级。",
-      "sentence:比较两者:写出thin的比较级。"
+      "sentence:比较两者:写出thin的比较级。",
+      "workshop-target:morphology.adjective.comparison:c1a0dc227b5aa"
     ],
     "forms.comparison/good": [
+      "family:fact-5f145fcb49aac90c",
+      "family:fact-d02aee86a8da02f6",
       "family:topic-fact-645b0fe4920d61fc2cd0",
       "family:topic-fact-737f3ac35e3282069404",
+      "sentence:plan b is the best of the three for wheelchair access",
+      "sentence:the new knee pads are better than the old ones",
       "sentence:this is the best route to the harbour",
       "sentence:比较三者或更多:写出good的最高级。",
-      "sentence:比较两者:写出good的比较级。"
+      "sentence:比较两者:写出good的比较级。",
+      "workshop-target:morphology.adjective.comparison:c8f4375ec65c2",
+      "workshop-target:morphology.adjective.comparison:cd7d5dcc36942"
     ],
     "forms.derivation/kind": [
       "family:topic-fact-b0ab4e5528c3d96e96b0",

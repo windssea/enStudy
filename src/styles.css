@@ -2012,6 +2012,34 @@ button.unit-node:not(:disabled) {
   margin: 10px 0 20px;
   color: var(--muted);
 }
+.lesson-concepts {
+  margin: 24px 0;
+  border: 2px solid var(--grape-ink);
+  border-radius: 24px;
+  background: white;
+}
+.lesson-concepts > summary {
+  cursor: pointer;
+  min-height: 64px;
+  padding: 18px 24px;
+  border-radius: 22px;
+  background: var(--grape-soft);
+}
+.lesson-concepts > summary strong {
+  margin: 0 12px 0 4px;
+}
+.lesson-concepts > summary span {
+  display: inline-block;
+  font-size: 14px;
+}
+.lesson-concepts > summary:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+}
+.lesson-concept-content {
+  padding: 20px;
+  min-width: 0;
+}
 .word-chips {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));

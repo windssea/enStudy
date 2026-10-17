@@ -60,6 +60,8 @@ export default defineConfig({
         "**/content/concept-exposure-map.json",
         "**/content/action-courses*.json",
         "**/content/action-course-release*.json",
+        "**/content/discovery-courses*.mjs",
+        "**/content/discovery-course-release*.json",
         "**/.wrangler/**",
         "**/.cloudflare/**",
         "**/.git/**",

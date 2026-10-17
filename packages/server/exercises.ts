@@ -11,6 +11,7 @@ import story from "../../content/story-course-release.v1.json";
 import wordListening from "../../content/word-listening-release.v1.json";
 import action from "../../content/action-course-release.v1.json";
 import actionLatest from "../../content/action-course-release.latest.json";
+import discovery from "../../content/discovery-course-release.v1.json";
 import { structuredCanonical, sortPlacements } from "../domain/structured";
 import type {
   Answer,
@@ -57,18 +58,20 @@ export const courseExpansion = expansionLatest as unknown as {
   items: PrivateExercise[];
 };
 export const courseCatalog = {
-  id: "course-catalog-v4",
+  id: "course-catalog-v5",
   lessons: [
     ...courseRelease.lessons,
     ...courseExpansion.lessons,
     ...story.lessons,
     ...actionLatest.lessons,
+    ...discovery.lessons,
   ] as CourseLesson[],
   items: [
     ...courseRelease.items,
     ...courseExpansion.items,
     ...story.items,
     ...actionLatest.items,
+    ...discovery.items,
   ] as PrivateExercise[],
 };
 export const storyRelease = story as unknown as {
@@ -81,6 +84,12 @@ export const actionRelease = actionLatest as unknown as {
   id: string;
   manifestHash: string;
   releases: string[];
+  lessons: CourseLesson[];
+  items: PrivateExercise[];
+};
+export const discoveryRelease = discovery as unknown as {
+  id: string;
+  manifestHash: string;
   lessons: CourseLesson[];
   items: PrivateExercise[];
 };
@@ -119,6 +128,7 @@ export const exercises = [
   ...story.items,
   ...wordListening.items,
   ...actionLatest.items,
+  ...discovery.items,
 ] as PrivateExercise[];
 export const workshopRelease = workshopLatest as unknown as {
   id: string;

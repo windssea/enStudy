@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.23.1",
+  "version": "0.24.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -25,6 +25,7 @@
     "verify:listening-reading": "node scripts/smoke-listening-reading.mjs",
     "verify:concepts": "node scripts/smoke-concepts.mjs",
     "verify:action-courses": "node scripts/smoke-action-courses.mjs",
+    "verify:discovery-courses": "node scripts/smoke-discovery-courses.mjs",
     "verify:reports": "node scripts/smoke-reports.mjs",
     "verify:offline": "node scripts/smoke-offline.mjs",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
