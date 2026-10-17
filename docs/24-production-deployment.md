@@ -12,7 +12,7 @@
 
 ## 自动发布流程
 
-推送main后，`.github/workflows/cloudflare.yml`依次执行检查、构建、预览迁移/发布/9项公开检查，然后生产迁移/发布/9项公开检查。两个环境使用同一任务构建的dist和同一提交的Functions源码，生产步骤不重新运行构建。预览失败则不继续生产。
+推送main后，`.github/workflows/cloudflare.yml`依次执行检查、构建、预览迁移/发布/10项公开检查，然后生产迁移/发布/10项公开检查（v0.6起新增真实课程元数据检查）。两个环境使用同一任务构建的dist和同一提交的Functions源码，生产步骤不重新运行构建。预览失败则不继续生产。
 
 仓库Variable `CLOUDFLARE_DEPLOY_ENABLED=true`启用发布任务，`CLOUDFLARE_PRODUCTION_DEPLOY_ENABLED=true`启用生产步骤。现有账号级Pages与D1 Token可同时操作两个库，不增加付费服务或权限类型。关闭生产开关只停止后续生产发布，不删除现有站点或数据库。
 
@@ -40,5 +40,7 @@ CLI使用指定Account ID。生产迁移带`--env production`；Pages发布带`-
 正式域名`enstudy.nanokid.win`另外通过9项公开检查和23项真实账号检查，确认生产APP_STAGE、admin登录、Cookie保护、儿童档案CRUD、进度保存、刷新恢复与退出撤销。6项环境隔离检查全部通过；所有本轮临时测试档案及其学习数据均已移除。没有复制或删除既有儿童档案与答题数据。
 
 Production指Cloudflare发布环境，完整课程、专题、复习、BYOK、语音与实机验收继续按总体目标推进；不能把Production部署成功解释为全部学习功能已完成。
+
+v0.6课程更新也已同步发布，Actions39011293988与额外线上课程、隔离检查全部通过，详见[课程发布记录](25-learning-course-progress.md)。后续阶段继续沿用此同步发布流程。
 
 依据：[Pages环境配置与分支选择](https://developers.cloudflare.com/pages/functions/wrangler-configuration/)、[Pages绑定](https://developers.cloudflare.com/pages/functions/bindings/)。
