@@ -1,0 +1,23 @@
+id,milestone,task,acceptance,status,evidence
+M0-01,M0,React TypeScript Vite工程与依赖锁定,类型检查与生产构建通过,done,package-lock.json与npm run build
+M0-02,M0,真实Three.js地图模块与DOM降级,懒加载和2D切换实现且实机另验,implemented-unverified-visual,src/World.tsx
+M0-03,M0,课程专题句式目录,72单元60专题72句式可读且标明草稿,done,public/content/catalog.json与HTTP检查
+M0-04,M0,本地D1迁移和样课闭环,服务端判题保存调度与提示证据通过,done,npm run verify:local
+M0-05,M0,跨家庭与幂等保护,越权拒绝且并发重试只计一次,done,本地workerd HTTP验证
+M0-06,M0,CLI免费优先资源计划和脚本,计划输出且账号检查和默认关闭开发身份,done,scripts/cloudflare.mjs
+M0-07,M0,本人账号创建开发Pages与D1,实际ID与绑定通过远程核验,done,2026-10-17本人OAuth与CLI创建成功
+M0-08,M0,预览发布与远程冒烟,实际URL与403开发身份保护和D1绑定验证,done,npm run verify:remote共8项通过
+M0-09,M0,GitHub Actions自动部署,main检查与受限Token部署实际通过,needs-ci-token,.github/workflows/cloudflare.yml已编写
+M1-01,M1,正式成人身份与恢复,认证D1兼容测试与撤销通过,todo,
+M1-02,M1,家庭成员与儿童设备grant,跨家庭及成人入口权限验收,todo,
+M1-03,M1,会话重载与设备接管,重载恢复且旧lease不能重复写入,todo,
+M2-01,M2,不可变内容release和审核流水线,发布审核撤题与版本兼容通过,todo,
+M2-02,M2,全年级课程与媒体,288微课与各年级综合能力覆盖审核,todo,
+M2-03,M2,完整互动题型与可访问替代,听读分类纠错与引导表达可用,todo,
+M3-01,M3,60专题诊断与迁移,分层与题目家族隔离通过,todo,
+M3-02,M3,72句式和词形规则,槽位与合法变体及错误归因通过,todo,
+M3-03,M3,复习选题与延迟测验,积压保护与同日跨入口不重复晋级,todo,
+M3-04,M3,离线队列与报告,断网恢复且未确认进度不虚报,todo,
+M4-01,M4,BYOK与预算,加密限流出站控制及故障回退通过,todo,
+M4-02,M4,轮流语音,真实iPad格式权限和取消验证,todo,
+M5-01,M5,真机性能隐私和运营,发布门槛全部通过且可恢复删除,todo,

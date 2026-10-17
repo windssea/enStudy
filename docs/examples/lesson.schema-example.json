@@ -1,0 +1,62 @@
+{
+  "id": "eq.foundation.picnic-be",
+  "version": 1,
+  "status": "draft",
+  "title": "野餐伙伴",
+  "gradeRecommendation": [1, 2],
+  "estimatedMinutes": 12,
+  "primarySkill": "grammar.be.present",
+  "prerequisites": ["grammar.pronouns.subject"],
+  "knownWords": ["I", "she", "they", "happy", "hungry", "ready"],
+  "targetForms": ["am", "is", "are"],
+  "objective": "为不同的主语选择 am/is/are，并描述人物状态。",
+  "instruction": {"zh": "看看野餐伙伴，用合适的词搭出一句话。", "en": "Build a sentence about the picnic friends."},
+  "teaching": [
+    {"text": "I am happy.", "noteZh": "I 和 am 一起用。"},
+    {"text": "She is hungry.", "noteZh": "She 和 is 一起用。"},
+    {"text": "They are ready.", "noteZh": "They 和 are 一起用。"}
+  ],
+  "items": [
+    {
+      "id": "picnic-01", "version": 1, "type": "single-choice",
+      "primarySkill": "grammar.be.present", "modality": "recognition",
+      "prompt": "I ___ happy.",
+      "options": [{"id":"am","text":"am"},{"id":"is","text":"is"},{"id":"are","text":"are"}],
+      "privateAnswer": {"optionId":"am"},
+      "hints": ["看看主语，它是 I。", "I 的伙伴是 am。"],
+      "explanationZh": "说自己时用 I am。", "independentEligible": true
+    },
+    {
+      "id": "picnic-02", "version": 1, "type": "token-order",
+      "primarySkill": "grammar.be.present", "modality": "controlled-production",
+      "prompt": "他们准备好了。",
+      "tokens": [{"id":"they","text":"They"},{"id":"are","text":"are"},{"id":"ready","text":"ready."},{"id":"is","text":"is"}],
+      "privateAnswer": {"acceptedSequences":[["they","are","ready"]]},
+      "hints": ["先放表示‘他们’的词。", "They 的伙伴是 are。"],
+      "explanationZh": "They are ready. 表示他们准备好了。", "independentEligible": true
+    },
+    {
+      "id": "picnic-03", "version": 1, "type": "single-choice",
+      "primarySkill": "grammar.be.present", "modality": "transfer",
+      "prompt": "She ___ ready.",
+      "options": [{"id":"am","text":"am"},{"id":"is","text":"is"},{"id":"are","text":"are"}],
+      "privateAnswer": {"optionId":"is"},
+      "hints": ["现在说的是 She。"],
+      "explanationZh": "She 后面用 is。", "independentEligible": true
+    },
+    {
+      "id": "picnic-04", "version": 1, "type": "guided-speaking",
+      "primarySkill": "grammar.be.present", "modality": "speaking",
+      "prompt": "用 I am... 说说你现在的状态。也可以打字。",
+      "rubric": ["表达自己的状态", "尝试使用 I am", "词义可理解"],
+      "privateAnswer": {"scoring":"formative-only"},
+      "independentEligible": false,
+      "audioOptional": true
+    }
+  ],
+  "serverOnlyFields": ["privateAnswer"],
+  "review": {"strategy":"rules-v1","firstReview":"next-local-day","useUnseenVariants":true},
+  "rights": {"origin":"original-design-example","licensedMedia":[]},
+  "editorial": {"languageReviewed":false,"reviewer":null},
+  "notes": "设计示例，尚未经教学审核；public DTO必须移除privateAnswer。"
+}

@@ -1,0 +1,8 @@
+{
+  "projectName": "english-quest-dev",
+  "databaseName": "english-quest-dev-db",
+  "productionBranch": "main",
+  "previewBranch": "development",
+  "services": ["pages", "functions", "d1"],
+  "paidServicesAllowed": false
+}

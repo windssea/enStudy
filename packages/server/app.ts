@@ -1,0 +1,545 @@
+import { Hono, type Context } from "hono";
+import { getCookie, setCookie, deleteCookie } from "hono/cookie";
+import { bodyLimit } from "hono/body-limit";
+import {
+  addDays,
+  localDay,
+  midnight,
+  schedule,
+  type Card,
+} from "../domain/review";
+import {
+  exercises,
+  publicExercise,
+  sampleList,
+  gradeAnswer,
+  normalise,
+} from "./exercises";
+import type { Answer, LearningSession, Receipt } from "../contracts/index";
+
+export interface Env {
+  DB: D1Database;
+  APP_STAGE?: string;
+  ALLOW_DEV_AUTH?: string;
+}
+interface Actor {
+  childId: string;
+  householdId: string;
+  grantId: string;
+  nickname: string;
+  grade: number;
+  timezone: string;
+}
+type Bindings = {
+  Bindings: Env;
+  Variables: { actor: Actor; requestId: string };
+};
+export const app = new Hono<Bindings>();
+const UUID =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const loopback = (host: string) =>
+  ["localhost", "127.0.0.1", "[::1]"].includes(host);
+export const devAllowed = (
+  env: Pick<Env, "APP_STAGE" | "ALLOW_DEV_AUTH">,
+  url: string,
+) =>
+  env.APP_STAGE === "local" &&
+  env.ALLOW_DEV_AUTH === "true" &&
+  loopback(new URL(url).hostname);
+const hash = async (token: string) =>
+  Array.from(
+    new Uint8Array(
+      await crypto.subtle.digest("SHA-256", new TextEncoder().encode(token)),
+    ),
+    (b) => b.toString(16).padStart(2, "0"),
+  ).join("");
+const fault = (code: string, message: string) => ({ error: { code, message } });
+
+app.use("*", async (c, next) => {
+  c.set("requestId", crypto.randomUUID());
+  c.header("Cache-Control", "private, no-store");
+  c.header("X-Content-Type-Options", "nosniff");
+  c.header("X-Request-Id", c.get("requestId"));
+  if (!["GET", "HEAD"].includes(c.req.method)) {
+    const origin = c.req.header("Origin");
+    const url = new URL(c.req.url);
+    if (origin) {
+      let accepted = false;
+      try {
+        const source = new URL(origin);
+        accepted =
+          source.origin === url.origin ||
+          (devAllowed(c.env, c.req.url) && loopback(source.hostname));
+      } catch {
+        /* rejected */
+      }
+      if (!accepted)
+        return c.json(fault("ORIGIN_REJECTED", "请求来源不匹配。"), 403);
+    }
+    if (!c.req.header("Content-Type")?.startsWith("application/json"))
+      return c.json(fault("JSON_REQUIRED", "请使用JSON请求。"), 415);
+  }
+  await next();
+});
+app.use(
+  "*",
+  bodyLimit({
+    maxSize: 16 * 1024,
+    onError: (c) => c.json(fault("BODY_TOO_LARGE", "请求内容过大。"), 413),
+  }),
+);
+app.onError((error, c) => {
+  if (error instanceof SyntaxError)
+    return c.json(fault("INVALID_JSON", "JSON格式不正确。"), 400);
+  console.error(
+    JSON.stringify({ requestId: c.get("requestId"), errorType: error.name }),
+  );
+  return c.json(
+    {
+      ...fault("SERVICE_ERROR", "暂时无法保存，请稍后重试。"),
+      requestId: c.get("requestId"),
+    },
+    500,
+  );
+});
+app.get("/api/v1/health", (c) =>
+  c.json({
+    status: "ok",
+    stage: c.env.APP_STAGE ?? "preview",
+    developmentIdentityAvailable: devAllowed(c.env, c.req.url),
+    aiEnabled: false,
+    databaseBinding: Boolean(c.env.DB),
+  }),
+);
+app.get("/api/v1/exercises", (c) =>
+  c.json({ items: sampleList(), contentState: "development-samples" }),
+);
+
+async function actorFrom(c: Context<Bindings>): Promise<Actor | null> {
+  const token = getCookie(c, "eq_dev_session");
+  if (!token || !devAllowed(c.env, c.req.url)) return null;
+  return c.env.DB.prepare(
+    `SELECT g.id AS grantId, g.child_id AS childId, g.household_id AS householdId, ch.nickname, ch.grade, ch.timezone FROM child_grants g JOIN children ch ON ch.id=g.child_id AND ch.household_id=g.household_id WHERE g.token_hash=? AND g.revoked_at IS NULL AND g.expires_at>?`,
+  )
+    .bind(await hash(token), Date.now())
+    .first<Actor>();
+}
+app.get("/api/v1/me", async (c) => {
+  const actor = await actorFrom(c);
+  return c.json({
+    authenticated: Boolean(actor),
+    developmentIdentityAvailable: devAllowed(c.env, c.req.url),
+    ...(actor
+      ? {
+          child: {
+            id: actor.childId,
+            householdId: actor.householdId,
+            nickname: actor.nickname,
+            grade: actor.grade,
+          },
+        }
+      : {}),
+  });
+});
+app.post("/api/v1/dev/session", async (c) => {
+  if (!devAllowed(c.env, c.req.url))
+    return c.json(
+      fault("DEV_IDENTITY_DISABLED", "此环境没有启用开发身份。"),
+      403,
+    );
+  const body = await c.req.json<{ family?: string; child?: number }>();
+  if (!body || typeof body !== "object" || Array.isArray(body))
+    return c.json(fault("INVALID_PROFILE", "请选择有效开发档案。"), 422);
+  if (
+    !["a", "b"].includes(body.family ?? "") ||
+    ![1, 2].includes(body.child ?? 0)
+  )
+    return c.json(fault("INVALID_PROFILE", "请选择有效开发档案。"), 422);
+  const householdId = `dev-family-${body.family}`;
+  const childId = `dev-child-${body.family}${body.child}`;
+  if (
+    !(await c.env.DB.prepare(
+      "SELECT id FROM children WHERE id=? AND household_id=?",
+    )
+      .bind(childId, householdId)
+      .first())
+  )
+    return c.json(
+      fault("LOCAL_SEED_REQUIRED", "请先运行npm run setup:local。"),
+      503,
+    );
+  const old = getCookie(c, "eq_dev_session");
+  if (old)
+    await c.env.DB.prepare(
+      "UPDATE child_grants SET revoked_at=? WHERE token_hash=?",
+    )
+      .bind(Date.now(), await hash(old))
+      .run();
+  const token = crypto.randomUUID() + crypto.randomUUID();
+  await c.env.DB.prepare(
+    "INSERT INTO child_grants(id,household_id,child_id,token_hash,created_by,expires_at) VALUES(?,?,?,?,?,?)",
+  )
+    .bind(
+      crypto.randomUUID(),
+      householdId,
+      childId,
+      await hash(token),
+      "dev-adult",
+      Date.now() + 8 * 3600_000,
+    )
+    .run();
+  setCookie(c, "eq_dev_session", token, {
+    httpOnly: true,
+    sameSite: "Strict",
+    secure: new URL(c.req.url).protocol === "https:",
+    path: "/",
+    maxAge: 8 * 3600,
+  });
+  return c.json({ saved: true });
+});
+app.post("/api/v1/logout", async (c) => {
+  const token = getCookie(c, "eq_dev_session");
+  if (token && devAllowed(c.env, c.req.url))
+    await c.env.DB.prepare(
+      "UPDATE child_grants SET revoked_at=? WHERE token_hash=?",
+    )
+      .bind(Date.now(), await hash(token))
+      .run();
+  deleteCookie(c, "eq_dev_session", { path: "/" });
+  return c.json({ saved: true });
+});
+
+app.use("/api/v1/sessions/*", async (c, next) => {
+  const actor = await actorFrom(c);
+  if (!actor)
+    return c.json(fault("AUTH_REQUIRED", "请先选择本地开发档案。"), 401);
+  c.set("actor", actor);
+  await next();
+});
+app.use("/api/v1/sessions", async (c, next) => {
+  const actor = await actorFrom(c);
+  if (!actor)
+    return c.json(fault("AUTH_REQUIRED", "请先选择本地开发档案。"), 401);
+  c.set("actor", actor);
+  await next();
+});
+app.use("/api/v1/attempts", async (c, next) => {
+  const actor = await actorFrom(c);
+  if (!actor)
+    return c.json(fault("AUTH_REQUIRED", "请先选择本地开发档案。"), 401);
+  c.set("actor", actor);
+  await next();
+});
+app.use("/api/v1/progress", async (c, next) => {
+  const actor = await actorFrom(c);
+  if (!actor)
+    return c.json(fault("AUTH_REQUIRED", "请先选择本地开发档案。"), 401);
+  c.set("actor", actor);
+  await next();
+});
+
+interface Assignment {
+  id: string;
+  lease_id: string;
+  assignment_id: string;
+  item_id: string;
+  hint_level: number;
+  state: string;
+}
+async function loadSession(
+  db: D1Database,
+  actor: Actor,
+  id: string,
+): Promise<Assignment | null> {
+  return db
+    .prepare(
+      `SELECT s.id,s.lease_id,s.state,si.id AS assignment_id,si.item_id,si.hint_level FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
+    )
+    .bind(id, actor.householdId, actor.childId)
+    .first<Assignment>();
+}
+function sessionPayload(row: Assignment): LearningSession {
+  return {
+    id: row.id,
+    leaseId: row.lease_id,
+    assignmentId: row.assignment_id,
+    hintLevel: row.hint_level,
+    exercise: publicExercise(exercises.find((e) => e.id === row.item_id)!),
+  };
+}
+app.post("/api/v1/sessions", async (c) => {
+  const actor = c.get("actor");
+  const body = await c.req.json<{
+    exerciseId: string;
+    clientRequestId: string;
+  }>();
+  if (!body || typeof body !== "object" || Array.isArray(body))
+    return c.json(fault("INVALID_SESSION", "练习或请求编号无效。"), 422);
+  const exercise = exercises.find((e) => e.id === body.exerciseId);
+  if (!exercise || !UUID.test(body.clientRequestId ?? ""))
+    return c.json(fault("INVALID_SESSION", "练习或请求编号无效。"), 422);
+  const existing = await loadSession(c.env.DB, actor, body.clientRequestId);
+  if (existing) return c.json(sessionPayload(existing));
+  const lease = crypto.randomUUID(),
+    assignment = crypto.randomUUID(),
+    now = Date.now();
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      "UPDATE learning_sessions SET state='paused' WHERE household_id=? AND child_id=? AND state='active'",
+    ).bind(actor.householdId, actor.childId),
+    c.env.DB.prepare(
+      "INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at) VALUES(?,?,?,'dev-samples-v1',?,'active',?)",
+    ).bind(body.clientRequestId, actor.householdId, actor.childId, lease, now),
+    c.env.DB.prepare(
+      "INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version) VALUES(?,?,?,?,0,?,1)",
+    ).bind(
+      assignment,
+      actor.householdId,
+      actor.childId,
+      body.clientRequestId,
+      exercise.id,
+    ),
+  ]);
+  return c.json(
+    {
+      id: body.clientRequestId,
+      leaseId: lease,
+      assignmentId: assignment,
+      hintLevel: 0,
+      exercise: publicExercise(exercise),
+    },
+    201,
+  );
+});
+app.get("/api/v1/sessions/:id", async (c) => {
+  const row = await loadSession(c.env.DB, c.get("actor"), c.req.param("id"));
+  if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
+  return c.json(sessionPayload(row));
+});
+app.post("/api/v1/sessions/:id/hint", async (c) => {
+  const actor = c.get("actor"),
+    row = await loadSession(c.env.DB, actor, c.req.param("id"));
+  if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
+  const result = await c.env.DB.prepare(
+    `UPDATE session_items SET hint_level=1 WHERE id=? AND household_id=? AND child_id=? AND NOT EXISTS(SELECT 1 FROM attempts WHERE assignment_id=session_items.id) AND EXISTS(SELECT 1 FROM learning_sessions WHERE id=session_items.session_id AND state='active')`,
+  )
+    .bind(row.assignment_id, actor.householdId, actor.childId)
+    .run();
+  if (!result.meta.changes)
+    return c.json(fault("SESSION_CHANGED", "这次作答已完成或已切换。"), 409);
+  return c.json({
+    hint: exercises.find((e) => e.id === row.item_id)!.hint,
+    independentEvidence: false,
+  });
+});
+interface StoredAttempt {
+  event_id: string;
+  answer_json: string;
+  receipt_json: string;
+}
+interface StoredCard {
+  stage: number;
+  due_at: number;
+  lapses: number;
+  independent_successes: number;
+  last_success_day: string | null;
+  version: number;
+}
+app.post("/api/v1/attempts", async (c) => {
+  const actor = c.get("actor");
+  const body = await c.req.json<{
+    eventId: string;
+    sessionId: string;
+    leaseId: string;
+    assignmentId: string;
+    answer: Answer;
+  }>();
+  if (!body || typeof body !== "object" || Array.isArray(body))
+    return c.json(fault("INVALID_ATTEMPT", "答案或请求格式不正确。"), 422);
+  if (
+    ![body.eventId, body.sessionId, body.leaseId, body.assignmentId].every(
+      (id) => typeof id === "string" && UUID.test(id),
+    ) ||
+    !(
+      typeof body.answer === "string" ||
+      (Array.isArray(body.answer) &&
+        body.answer.length <= 16 &&
+        body.answer.every((t) => typeof t === "string" && t.length <= 100))
+    ) ||
+    !normalise(body.answer) ||
+    normalise(body.answer).length > 500
+  )
+    return c.json(fault("INVALID_ATTEMPT", "答案或请求格式不正确。"), 422);
+  const canonical = JSON.stringify(normalise(body.answer));
+  const prior = () =>
+    c.env.DB.prepare(
+      "SELECT event_id,answer_json,receipt_json FROM attempts WHERE household_id=? AND child_id=? AND (event_id=? OR assignment_id=?)",
+    )
+      .bind(actor.householdId, actor.childId, body.eventId, body.assignmentId)
+      .first<StoredAttempt>();
+  const respondPrior = (stored: StoredAttempt) =>
+    stored.answer_json === canonical
+      ? c.json(JSON.parse(stored.receipt_json) as Receipt)
+      : c.json(
+          fault("IDEMPOTENCY_MISMATCH", "此编号已经提交过另一个答案。"),
+          409,
+        );
+  for (let retry = 0; retry < 3; retry++) {
+    const stored = await prior();
+    if (stored) return respondPrior(stored);
+    const row = await loadSession(c.env.DB, actor, body.sessionId);
+    if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
+    if (
+      row.assignment_id !== body.assignmentId ||
+      row.lease_id !== body.leaseId ||
+      row.state !== "active"
+    )
+      return c.json(
+        fault("LEASE_REPLACED", "学习会话已切换，请重新打开练习。"),
+        409,
+      );
+    const exercise = exercises.find((e) => e.id === row.item_id)!;
+    const correct = gradeAnswer(exercise, body.answer);
+    const outcome = !correct
+      ? "incorrect"
+      : row.hint_level
+        ? "hinted"
+        : "correct";
+    const now = Date.now(),
+      day = localDay(now, actor.timezone);
+    const child = await c.env.DB.prepare(
+      "SELECT stream_version FROM children WHERE household_id=? AND id=?",
+    )
+      .bind(actor.householdId, actor.childId)
+      .first<{ stream_version: number }>();
+    const old = await c.env.DB.prepare(
+      "SELECT * FROM review_cards WHERE household_id=? AND child_id=? AND skill_id=? AND modality=?",
+    )
+      .bind(actor.householdId, actor.childId, exercise.skill, exercise.modality)
+      .first<StoredCard>();
+    const card: Card | null = old
+      ? {
+          stage: old.stage,
+          dueDay: localDay(old.due_at, actor.timezone),
+          lapses: old.lapses,
+          independentSuccesses: old.independent_successes,
+          lastSuccessDay: old.last_success_day,
+          version: old.version,
+        }
+      : null;
+    const next = schedule(card, day, outcome),
+      sequence = child!.stream_version + 1;
+    const receipt: Receipt = {
+      eventId: body.eventId,
+      outcome,
+      independentEvidence: outcome === "correct",
+      feedback: exercise.explanation,
+      nextReviewDay: next.dueDay,
+      rewardDelta: 1,
+      serverSequence: sequence,
+    };
+    try {
+      await c.env.DB.batch([
+        c.env.DB.prepare(
+          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND EXISTS(SELECT 1 FROM child_grants WHERE id=? AND revoked_at IS NULL AND expires_at>?) AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.state='active' AND si.id=? AND si.hint_level=?)`,
+        ).bind(
+          actor.childId,
+          actor.householdId,
+          child!.stream_version,
+          actor.grantId,
+          now,
+          body.sessionId,
+          body.leaseId,
+          body.assignmentId,
+          row.hint_level,
+        ),
+        c.env.DB.prepare(
+          "INSERT INTO commit_assertions(event_id,household_id,child_id,ok) VALUES(?,?,?,changes())",
+        ).bind(body.eventId, actor.householdId, actor.childId),
+        c.env.DB.prepare(
+          `INSERT INTO attempts(event_id,household_id,child_id,assignment_id,server_sequence,answer_json,outcome,independent_evidence,evidence_source,received_at,algorithm_version,receipt_json) VALUES(?,?,?,?,?,?,?,?,'online',?,'rules-v1',?)`,
+        ).bind(
+          body.eventId,
+          actor.householdId,
+          actor.childId,
+          body.assignmentId,
+          sequence,
+          canonical,
+          outcome,
+          Number(outcome === "correct"),
+          now,
+          JSON.stringify(receipt),
+        ),
+        c.env.DB.prepare(
+          `INSERT INTO review_cards(household_id,child_id,skill_id,modality,stage,due_at,lapses,independent_successes,last_success_day,version) VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(child_id,skill_id,modality) DO UPDATE SET stage=excluded.stage,due_at=excluded.due_at,lapses=excluded.lapses,independent_successes=excluded.independent_successes,last_success_day=excluded.last_success_day,version=excluded.version`,
+        ).bind(
+          actor.householdId,
+          actor.childId,
+          exercise.skill,
+          exercise.modality,
+          next.stage,
+          midnight(next.dueDay, actor.timezone),
+          next.lapses,
+          next.independentSuccesses,
+          next.lastSuccessDay,
+          next.version,
+        ),
+        c.env.DB.prepare(
+          "INSERT INTO reward_ledger(id,household_id,child_id,source_attempt_id,delta,reason) VALUES(?,?,?,?,1,'participation')",
+        ).bind(
+          crypto.randomUUID(),
+          actor.householdId,
+          actor.childId,
+          body.eventId,
+        ),
+      ]);
+      return c.json(receipt, 201);
+    } catch (error) {
+      const completed = await prior();
+      if (completed) return respondPrior(completed);
+      if (retry === 2) {
+        console.error(
+          JSON.stringify({
+            requestId: c.get("requestId"),
+            errorType: error instanceof Error ? error.name : "Unknown",
+          }),
+        );
+        return c.json(
+          fault("VERSION_CONFLICT", "保存遇到冲突，请用同一答案重试。"),
+          409,
+        );
+      }
+    }
+  }
+  return c.json(fault("VERSION_CONFLICT", "请重试保存。"), 409);
+});
+app.get("/api/v1/progress", async (c) => {
+  const { householdId, childId } = c.get("actor");
+  const summary = await c.env.DB.prepare(
+    "SELECT COUNT(*) AS answered,COALESCE(SUM(CASE WHEN outcome IN ('correct','hinted') THEN 1 ELSE 0 END),0) AS correct FROM attempts WHERE household_id=? AND child_id=?",
+  )
+    .bind(householdId, childId)
+    .first();
+  const reward = await c.env.DB.prepare(
+    "SELECT COALESCE(SUM(delta),0) AS stars FROM reward_ledger WHERE household_id=? AND child_id=?",
+  )
+    .bind(householdId, childId)
+    .first();
+  const cards = await c.env.DB.prepare(
+    "SELECT r.skill_id AS skillId,s.label, r.stage,r.due_at AS dueAt,r.lapses FROM review_cards r JOIN skills s ON s.id=r.skill_id WHERE r.household_id=? AND r.child_id=? ORDER BY r.due_at LIMIT 30",
+  )
+    .bind(householdId, childId)
+    .all();
+  const recent = await c.env.DB.prepare(
+    "SELECT outcome,received_at AS receivedAt FROM attempts WHERE household_id=? AND child_id=? ORDER BY received_at DESC LIMIT 10",
+  )
+    .bind(householdId, childId)
+    .all();
+  return c.json({
+    ...summary,
+    ...reward,
+    cards: cards.results,
+    recent: recent.results,
+  });
+});
+app.notFound((c) => c.json(fault("NOT_FOUND", "找不到这个API。"), 404));

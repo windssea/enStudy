@@ -1,0 +1,3 @@
+# Local only. Remote deployments must never enable development identity.
+APP_STAGE=local
+ALLOW_DEV_AUTH=true

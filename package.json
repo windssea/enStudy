@@ -1,0 +1,55 @@
+{
+  "name": "english-quest",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:web": "vite --host 127.0.0.1 --port 5173 --strictPort",
+    "dev:api": "wrangler pages dev dist --ip 127.0.0.1 --port 8788",
+    "content:build": "node scripts/build-content.mjs",
+    "build": "npm run content:build && tsc --noEmit && vite build",
+    "check": "tsc --noEmit && vitest run",
+    "check:functions": "wrangler pages functions build --outdir .wrangler/functions-build",
+    "format": "prettier --write src packages functions scripts tests package.json tsconfig.json vite.config.ts wrangler.jsonc cloudflare.project.json",
+    "format:check": "prettier --check src packages functions scripts tests package.json tsconfig.json vite.config.ts wrangler.jsonc cloudflare.project.json",
+    "test": "vitest run",
+    "setup:local": "node scripts/setup-local.mjs",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "cf:whoami": "wrangler whoami",
+    "cf:plan": "node scripts/cloudflare.mjs plan",
+    "cf:provision": "node scripts/cloudflare.mjs provision",
+    "cf:deploy:preview": "node scripts/cloudflare.mjs deploy",
+    "verify:local": "node scripts/smoke-local.mjs",
+    "verify:remote": "node scripts/smoke-remote.mjs"
+  },
+  "dependencies": {
+    "@react-three/fiber": "9.8.2",
+    "hono": "4.13.13",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261016.1",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.186.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "csv-parse": "^6.0.0",
+    "jsonc-parser": "3.3.1",
+    "prettier": "3.9.10",
+    "typescript": "7.0.2",
+    "vite": "8.3.4",
+    "vitest": "5.0.5",
+    "wrangler": "4.151.1"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20261012.1": true
+  }
+}

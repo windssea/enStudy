@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+*.local.json
+.cloudflare/
+coverage/
+artifacts/
+*.tsbuildinfo
+*.log
+__pycache__/
+EnglishQuest-Design-v*.zip
