@@ -45,4 +45,4 @@ Tabbit stable launcher 的 diagnose 本轮仍退出码 1 且无输出，未取�
 gh workflow run cloudflare.yml --ref main --repo windssea/enStudy
 ```
 
-阻塞证据与免费额度恢复时间见 [单词特训发布状态](28-vocabulary-training.md#发布受免费写入额度阻挡)。未安排自动重试。
+阻塞证据与免费额度恢复时间见 [单词特训发布状态](28-vocabulary-training.md#发布受免费写入额度阻挡)。用户随后确认保持免费，现已安排北京时间2026-10-18 08:05在本聊天跟进一次，部署最新main；本地开发继续。最新阶段见 [家庭账号管理](30-managed-family-accounts.md)。

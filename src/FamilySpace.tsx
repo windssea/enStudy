@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { lazy, Suspense, useEffect, useState, type FormEvent } from "react";
 import type {
   ChildProfile,
   Identity,
@@ -6,6 +6,8 @@ import type {
   CourseLesson,
 } from "../packages/contracts/index";
 import { api } from "./api";
+import AccountSecurity from "./AccountSecurity";
+const ManagedAccounts = lazy(() => import("./ManagedAccounts"));
 
 export default function FamilySpace({
   identity,
@@ -32,7 +34,7 @@ export default function FamilySpace({
     setChildren((await api<{ items: ChildProfile[] }>("/children")).items);
   useEffect(() => {
     let live = true;
-    if (identity.adult)
+    if (identity.adult && !identity.adult.mustChangePassword)
       api<{ items: ChildProfile[] }>("/children")
         .then((data) => {
           if (live) setChildren(data.items);
@@ -44,7 +46,7 @@ export default function FamilySpace({
     return () => {
       live = false;
     };
-  }, [identity.adult?.username]);
+  }, [identity.adult?.username, identity.adult?.mustChangePassword]);
   async function action(fn: () => Promise<void>) {
     setBusy(true);
     setError("");
@@ -147,6 +149,30 @@ export default function FamilySpace({
               </button>
             </form>
             <p className="footnote">暂不开放注册，请使用管理员提供的账号。</p>
+          </section>
+        ) : identity.adult.mustChangePassword ? (
+          <section className="card">
+            <span className="badge">临时密码 · 首次登录</span>
+            <AccountSecurity
+              username={identity.adult.username}
+              required
+              onChanged={async () => {
+                await refresh();
+                setNotice("密码已更新，请使用新密码重新登录。");
+              }}
+            />
+            <button
+              className="secondary"
+              disabled={busy}
+              onClick={() =>
+                void action(async () => {
+                  await api("/logout", {});
+                  await refresh();
+                })
+              }
+            >
+              退出账号
+            </button>
           </section>
         ) : (
           <section className="card family-card">
@@ -325,6 +351,23 @@ export default function FamilySpace({
           </div>
         </aside>
       </div>
+      {identity.adult && !identity.adult.mustChangePassword && (
+        <details className="card account-security">
+          <summary>账号与密码 · {identity.adult.username}</summary>
+          <AccountSecurity
+            username={identity.adult.username}
+            onChanged={async () => {
+              await refresh();
+              setNotice("密码已更新，所有设备已退出。请使用新密码重新登录。");
+            }}
+          />
+        </details>
+      )}
+      {identity.adult?.isAdmin && !identity.adult.mustChangePassword && (
+        <Suspense fallback={<p role="status">正在准备家庭账号管理…</p>}>
+          <ManagedAccounts />
+        </Suspense>
+      )}
       {identity.adult && identity.child && (
         <section
           className="card learning-report"

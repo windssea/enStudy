@@ -1757,6 +1757,102 @@ button.unit-node:not(:disabled) {
     padding-top: 12px;
   }
 }
+.account-security,
+.managed-accounts {
+  margin-top: 28px;
+}
+.account-security > summary {
+  min-height: 48px;
+  padding: 10px 0;
+  cursor: pointer;
+  font-weight: 750;
+}
+.account-security > summary:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.account-password-form {
+  margin: 20px 0;
+  max-width: 760px;
+}
+.account-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.account-fields .field {
+  min-width: 0;
+}
+.managed-account-list {
+  list-style: none;
+  margin: 24px 0;
+  padding: 0;
+}
+.managed-account-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+.managed-account-list strong {
+  overflow-wrap: anywhere;
+}
+.managed-account-list p,
+.account-admin-form > p,
+.account-password-form > p,
+.managed-accounts .family-heading p {
+  color: var(--muted);
+  margin-top: 8px;
+}
+.account-state {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #e8efff;
+  color: var(--blue);
+  font-size: 14px;
+  margin-top: 8px;
+}
+.account-row-actions,
+.account-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.account-pagination {
+  justify-content: flex-end;
+  color: var(--muted);
+  font-size: 14px;
+}
+.account-admin-form {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 2px solid var(--border);
+}
+.account-admin-form .field {
+  max-width: 760px;
+}
+@media (max-width: 700px) {
+  .account-fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .managed-account-list li {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .account-row-actions > button {
+    flex: 1;
+  }
+  .managed-accounts .family-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
 /* Playful scenes share one renderer per page; teaching text stays in the DOM. */
 .page-motion {
   animation: page-arrive 320ms cubic-bezier(0.22, 1, 0.36, 1) both;

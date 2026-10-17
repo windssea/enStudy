@@ -1,7 +1,7 @@
 import { Hono, type Context } from "hono";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 
-interface AuthEnv {
+export interface AuthEnv {
   DB: D1Database;
 }
 type AuthContext = Context<{ Bindings: AuthEnv }>;
@@ -52,17 +52,27 @@ export interface AdultSession {
   adultId: string;
   username: string;
   householdId: string;
+  isAdmin: boolean;
+  mustChangePassword: boolean;
+  credentialVersion: number;
 }
 export async function readAdult<E extends { Bindings: AuthEnv }>(
   c: Context<E>,
 ): Promise<AdultSession | null> {
   const token = getCookie(c, "eq_account");
   if (!token || token.length > 160) return null;
-  return c.env.DB.prepare(
-    `SELECT s.id,s.adult_id AS adultId,a.username,m.household_id AS householdId FROM account_sessions s JOIN account_credentials a ON a.adult_id=s.adult_id JOIN household_members m ON m.adult_id=s.adult_id WHERE s.token_hash=? AND s.revoked_at IS NULL AND s.expires_at>? ORDER BY m.household_id LIMIT 1`,
+  const row = await c.env.DB.prepare(
+    `SELECT s.id,s.adult_id AS adultId,a.username,m.household_id AS householdId,a.must_change_password AS mustChangePassword,a.credential_version AS credentialVersion,EXISTS(SELECT 1 FROM site_admins sa WHERE sa.adult_id=a.adult_id) AS isAdmin FROM account_sessions s JOIN account_credentials a ON a.adult_id=s.adult_id JOIN household_members m ON m.adult_id=s.adult_id WHERE s.token_hash=? AND s.revoked_at IS NULL AND s.expires_at>? AND a.disabled_at IS NULL ORDER BY m.household_id LIMIT 1`,
   )
     .bind(await tokenHash(token), Date.now())
     .first<AdultSession>();
+  return row
+    ? {
+        ...row,
+        isAdmin: Boolean(row.isAdmin),
+        mustChangePassword: Boolean(row.mustChangePassword),
+      }
+    : null;
 }
 export async function readAccountActor<E extends { Bindings: AuthEnv }>(
   c: Context<E>,
@@ -70,7 +80,7 @@ export async function readAccountActor<E extends { Bindings: AuthEnv }>(
   const token = getCookie(c, "eq_child");
   if (!token || token.length > 160) return null;
   return c.env.DB.prepare(
-    `SELECT g.id AS grantId,g.child_id AS childId,g.household_id AS householdId,ch.nickname,ch.grade,ch.timezone FROM child_grants g JOIN children ch ON ch.id=g.child_id AND ch.household_id=g.household_id JOIN account_sessions s ON s.id=g.parent_session_id JOIN household_members m ON m.adult_id=s.adult_id AND m.household_id=g.household_id WHERE g.token_hash=? AND g.revoked_at IS NULL AND g.expires_at>? AND s.revoked_at IS NULL AND s.expires_at>?`,
+    `SELECT g.id AS grantId,g.child_id AS childId,g.household_id AS householdId,ch.nickname,ch.grade,ch.timezone FROM child_grants g JOIN children ch ON ch.id=g.child_id AND ch.household_id=g.household_id JOIN account_sessions s ON s.id=g.parent_session_id JOIN account_credentials a ON a.adult_id=s.adult_id JOIN household_members m ON m.adult_id=s.adult_id AND m.household_id=g.household_id WHERE g.token_hash=? AND g.revoked_at IS NULL AND g.expires_at>? AND s.revoked_at IS NULL AND s.expires_at>? AND a.disabled_at IS NULL AND a.must_change_password=0`,
   )
     .bind(await tokenHash(token), Date.now(), Date.now())
     .first<{
@@ -90,9 +100,11 @@ const cookie = (c: AuthContext, name: string, token: string) =>
     path: "/",
     maxAge: hours,
   });
+const adultWriteGuard =
+  "EXISTS(SELECT 1 FROM account_sessions s JOIN account_credentials a ON a.adult_id=s.adult_id JOIN household_members m ON m.adult_id=s.adult_id WHERE s.id=? AND m.household_id=? AND s.revoked_at IS NULL AND s.expires_at>? AND a.disabled_at IS NULL AND a.must_change_password=0)";
 async function selectChild(
   c: AuthContext,
-  adult: AdultSession,
+  adult: Pick<AdultSession, "id" | "adultId" | "householdId">,
   childId: string,
 ) {
   const child = await c.env.DB.prepare(
@@ -102,12 +114,12 @@ async function selectChild(
     .first();
   if (!child) return false;
   const token = crypto.randomUUID() + crypto.randomUUID();
-  await c.env.DB.batch([
+  const result = await c.env.DB.batch([
     c.env.DB.prepare(
-      "UPDATE child_grants SET revoked_at=? WHERE parent_session_id=? AND revoked_at IS NULL",
-    ).bind(Date.now(), adult.id),
+      `UPDATE child_grants SET revoked_at=? WHERE parent_session_id=? AND revoked_at IS NULL AND ${adultWriteGuard}`,
+    ).bind(Date.now(), adult.id, adult.id, adult.householdId, Date.now()),
     c.env.DB.prepare(
-      "INSERT INTO child_grants(id,household_id,child_id,token_hash,created_by,expires_at,parent_session_id) VALUES(?,?,?,?,?,?,?)",
+      `INSERT INTO child_grants(id,household_id,child_id,token_hash,created_by,expires_at,parent_session_id) SELECT ?,?,?,?,?,?,? WHERE ${adultWriteGuard}`,
     ).bind(
       crypto.randomUUID(),
       adult.householdId,
@@ -116,8 +128,12 @@ async function selectChild(
       adult.adultId,
       Date.now() + hours * 1000,
       adult.id,
+      adult.id,
+      adult.householdId,
+      Date.now(),
     ),
   ]);
+  if (!result[1].meta.changes) return false;
   cookie(c, "eq_child", token);
   return true;
 }
@@ -170,7 +186,7 @@ authRoutes.post("/auth/login", async (c) => {
     return c.json(fault("LOGIN_LIMIT", "尝试次数有些多，请稍后再试。"), 429);
   }
   const credentials = await c.env.DB.prepare(
-    "SELECT adult_id,salt,password_hash,iterations FROM account_credentials WHERE username=?",
+    "SELECT adult_id,salt,password_hash,iterations,must_change_password,disabled_at,credential_version FROM account_credentials WHERE username=?",
   )
     .bind(username)
     .first<{
@@ -178,22 +194,30 @@ authRoutes.post("/auth/login", async (c) => {
       salt: string;
       password_hash: string;
       iterations: number;
+      must_change_password: number;
+      disabled_at: number | null;
+      credential_version: number;
     }>();
   const calculated = await passwordHash(
     body.password,
     credentials?.salt ?? "unrecognised-account-padding",
     credentials?.iterations ?? 100000,
   );
-  if (!credentials || !equalHash(calculated, credentials.password_hash))
+  if (
+    !credentials ||
+    credentials.disabled_at !== null ||
+    !equalHash(calculated, credentials.password_hash)
+  )
     return c.json(
       fault("LOGIN_FAILED", "账号或密码不正确，再检查一下吧。"),
       401,
     );
   await logoutAccount(c);
+  deleteCookie(c, "eq_dev_session", { path: "/" });
   const token = crypto.randomUUID() + crypto.randomUUID(),
     id = crypto.randomUUID();
-  await c.env.DB.prepare(
-    "INSERT INTO account_sessions(id,adult_id,token_hash,created_at,expires_at) VALUES(?,?,?,?,?)",
+  const created = await c.env.DB.prepare(
+    "INSERT INTO account_sessions(id,adult_id,token_hash,created_at,expires_at) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM account_credentials WHERE adult_id=? AND password_hash=? AND credential_version=? AND disabled_at IS NULL)",
   )
     .bind(
       id,
@@ -201,8 +225,16 @@ authRoutes.post("/auth/login", async (c) => {
       await tokenHash(token),
       now,
       now + hours * 1000,
+      credentials.adult_id,
+      credentials.password_hash,
+      credentials.credential_version,
     )
     .run();
+  if (!created.meta.changes)
+    return c.json(
+      fault("LOGIN_FAILED", "账号或密码不正确，再检查一下吧。"),
+      401,
+    );
   cookie(c, "eq_account", token);
   // Read the membership from the verified adult instead of trusting a household ID from the client.
   const membership = await c.env.DB.prepare(
@@ -210,7 +242,7 @@ authRoutes.post("/auth/login", async (c) => {
   )
     .bind(credentials.adult_id)
     .first<{ household_id: string }>();
-  if (membership) {
+  if (membership && !credentials.must_change_password) {
     const child = await c.env.DB.prepare(
       "SELECT id FROM children WHERE household_id=? ORDER BY created_at,id LIMIT 1",
     )
@@ -223,7 +255,6 @@ authRoutes.post("/auth/login", async (c) => {
           id,
           adultId: credentials.adult_id,
           householdId: membership.household_id,
-          username,
         },
         child.id,
       );
@@ -234,13 +265,23 @@ authRoutes.post("/auth/login", async (c) => {
   return c.json({ saved: true });
 });
 authRoutes.use("/children", async (c, next) => {
-  if (!(await readAdult(c)))
-    return c.json(fault("ADULT_REQUIRED", "请先登录家长账号。"), 401);
+  const adult = await readAdult(c);
+  if (!adult) return c.json(fault("ADULT_REQUIRED", "请先登录家长账号。"), 401);
+  if (adult.mustChangePassword)
+    return c.json(
+      fault("PASSWORD_CHANGE_REQUIRED", "请先修改临时密码，再进入家庭档案。"),
+      403,
+    );
   await next();
 });
 authRoutes.use("/children/*", async (c, next) => {
-  if (!(await readAdult(c)))
-    return c.json(fault("ADULT_REQUIRED", "请先登录家长账号。"), 401);
+  const adult = await readAdult(c);
+  if (!adult) return c.json(fault("ADULT_REQUIRED", "请先登录家长账号。"), 401);
+  if (adult.mustChangePassword)
+    return c.json(
+      fault("PASSWORD_CHANGE_REQUIRED", "请先修改临时密码，再进入家庭档案。"),
+      403,
+    );
   await next();
 });
 authRoutes.get("/children", async (c) => {
@@ -277,7 +318,7 @@ authRoutes.post("/children", async (c) => {
       422,
     );
   const child = await c.env.DB.prepare(
-    `INSERT INTO children(id,household_id,nickname,grade,created_at) SELECT ?,?,?,?,? WHERE (SELECT count(*) FROM children WHERE household_id=?)<12 RETURNING id,nickname,grade`,
+    `INSERT INTO children(id,household_id,nickname,grade,created_at) SELECT ?,?,?,?,? WHERE (SELECT count(*) FROM children WHERE household_id=?)<12 AND ${adultWriteGuard} RETURNING id,nickname,grade`,
   )
     .bind(
       crypto.randomUUID(),
@@ -286,6 +327,9 @@ authRoutes.post("/children", async (c) => {
       body.grade,
       Date.now(),
       adult.householdId,
+      adult.id,
+      adult.householdId,
+      Date.now(),
     )
     .first();
   return child
@@ -298,13 +342,16 @@ authRoutes.post("/children/:id", async (c) => {
   if (!validProfile(body))
     return c.json(fault("INVALID_CHILD", "请填写有效昵称与年级。"), 422);
   const row = await c.env.DB.prepare(
-    "UPDATE children SET nickname=?,grade=? WHERE id=? AND household_id=? RETURNING id,nickname,grade",
+    `UPDATE children SET nickname=?,grade=? WHERE id=? AND household_id=? AND ${adultWriteGuard} RETURNING id,nickname,grade`,
   )
     .bind(
       body.nickname.trim(),
       body.grade,
       c.req.param("id"),
       adult.householdId,
+      adult.id,
+      adult.householdId,
+      Date.now(),
     )
     .first();
   return row
@@ -320,9 +367,16 @@ authRoutes.post("/children/:id/select", async (c) => {
 authRoutes.post("/children/:id/remove", async (c) => {
   const adult = (await readAdult(c))!;
   const result = await c.env.DB.prepare(
-    "DELETE FROM children WHERE id=? AND household_id=? AND (SELECT count(*) FROM children WHERE household_id=?)>1 RETURNING id",
+    `DELETE FROM children WHERE id=? AND household_id=? AND (SELECT count(*) FROM children WHERE household_id=?)>1 AND ${adultWriteGuard} RETURNING id`,
   )
-    .bind(c.req.param("id"), adult.householdId, adult.householdId)
+    .bind(
+      c.req.param("id"),
+      adult.householdId,
+      adult.householdId,
+      adult.id,
+      adult.householdId,
+      Date.now(),
+    )
     .first();
   return result
     ? c.json({ saved: true })

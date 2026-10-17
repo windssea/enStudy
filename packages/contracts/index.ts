@@ -108,8 +108,24 @@ export interface Identity {
   authenticated: boolean;
   developmentIdentityAvailable: boolean;
   registrationOpen?: boolean;
-  adult?: { username: string; householdId: string };
+  adult?: {
+    username: string;
+    householdId: string;
+    isAdmin: boolean;
+    mustChangePassword: boolean;
+  };
   child?: { id: string; nickname: string; grade: number; householdId: string };
+}
+export interface ManagedAccount {
+  id: string;
+  username: string;
+  householdName: string;
+  childCount: number;
+  disabled: boolean;
+  mustChangePassword: boolean;
+  isAdmin: boolean;
+  version: number;
+  createdAt: number;
 }
 export interface ChildProfile {
   id: string;

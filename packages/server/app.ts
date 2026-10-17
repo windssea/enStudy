@@ -29,6 +29,7 @@ import {
 } from "../domain/selection";
 import type { Answer, LearningSession, Receipt } from "../contracts/index";
 import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
+import { managedAccountRoutes } from "./managedAccounts";
 
 export interface Env {
   DB: D1Database;
@@ -166,6 +167,7 @@ app.get("/api/v1/vocabulary/:themeId", (c) => {
 async function actorFrom(c: Context<Bindings>): Promise<Actor | null> {
   const accountActor = await readAccountActor(c);
   if (accountActor) return accountActor;
+  if (getCookie(c, "eq_account")) return null;
   const token = getCookie(c, "eq_dev_session");
   if (!token || !devAllowed(c.env, c.req.url)) return null;
   return c.env.DB.prepare(
@@ -182,7 +184,14 @@ app.get("/api/v1/me", async (c) => {
     developmentIdentityAvailable: devAllowed(c.env, c.req.url),
     registrationOpen: false,
     ...(adult
-      ? { adult: { username: adult.username, householdId: adult.householdId } }
+      ? {
+          adult: {
+            username: adult.username,
+            householdId: adult.householdId,
+            isAdmin: adult.isAdmin,
+            mustChangePassword: adult.mustChangePassword,
+          },
+        }
       : {}),
     ...(actor
       ? {
@@ -197,6 +206,7 @@ app.get("/api/v1/me", async (c) => {
   });
 });
 app.route("/api/v1", authRoutes);
+app.route("/api/v1", managedAccountRoutes);
 app.post("/api/v1/dev/session", async (c) => {
   if (!devAllowed(c.env, c.req.url))
     return c.json(

@@ -40,7 +40,7 @@ PC保留侧导航。平板和窄屏底部为地图、单词、专题、句式、
 
 ```powershell
 # 额度重置或账户方案由用户明确调整后再运行
-gh run rerun 39014586732 --failed --repo windssea/enStudy
+gh workflow run cloudflare.yml --ref main --repo windssea/enStudy
 # 发布成功后依次验证；均会清理专用临时档案
 node scripts/smoke-vocabulary.mjs https://development.english-quest-dev.pages.dev
 node scripts/smoke-vocabulary.mjs https://enstudy.nanokid.win
@@ -48,3 +48,5 @@ npm run verify:isolation
 ```
 
 依据：[D1免费每日额度执行与重置](https://developers.cloudflare.com/changelog/post/2026-09-01-d1-free-tier-limit-enforcement/)、[D1定价与索引写入计数](https://developers.cloudflare.com/d1/platform/pricing/)、[Wrangler迁移失败回滚](https://developers.cloudflare.com/d1/wrangler-commands/)。
+
+后续更新：用户已选择继续免费，并安排北京时间2026-10-18 08:05在本聊天重试最新main；本地继续开发。不要重跑旧v0.9提交覆盖之后的3D和账号管理代码。最新计划见 [v0.11](30-managed-family-accounts.md)。

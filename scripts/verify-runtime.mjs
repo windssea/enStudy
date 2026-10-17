@@ -46,6 +46,7 @@ try {
   if (!ready) throw new Error("Local runtime readiness timed out.");
   await run("smoke-local.mjs");
   await run("smoke-account.mjs");
+  await run("smoke-managed-accounts.mjs");
   await run("smoke-course.mjs");
   await run("smoke-topics.mjs");
   await run("smoke-patterns.mjs");

@@ -1,8 +1,38 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { passwordHash, equalHash, tokenHash } from "../packages/server/auth";
+import {
+  validPassword,
+  validUsername,
+} from "../packages/server/managedAccounts";
 
 describe("account password and opaque sessions", () => {
+  it("accepts long passphrases while bounding credential input", () => {
+    expect(validPassword("a long family passphrase")).toBe(true);
+    for (const value of [
+      null,
+      {},
+      "short",
+      " ".repeat(12),
+      "a".repeat(129),
+      "secret\npassword",
+    ])
+      expect(validPassword(value)).toBe(false);
+  });
+  it("limits managed usernames to unambiguous lowercase account identifiers", () => {
+    expect(validUsername("family.lin-2")).toBe(true);
+    for (const value of [
+      null,
+      "ab",
+      "2family",
+      "Family",
+      "a b",
+      "<script>",
+      "家长账号",
+      "a".repeat(41),
+    ])
+      expect(validUsername(value)).toBe(false);
+  });
   it("matches the salted bootstrap credential and rejects a wrong password", async () => {
     const sql = readFileSync("migrations/0002_accounts.sql", "utf8");
     const credential = sql.match(
