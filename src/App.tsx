@@ -818,6 +818,31 @@ export default function App() {
     ["review", "复习花园", "leaf"],
     ["parent", "家长空间", "person"],
   ];
+  const navHints: Record<string, string> = {
+    map: "跟着课程一步步学",
+    words: "认词 · 听词 · 拼写",
+    topics: "语法 · 时态 · 词形",
+    patterns: "把常用表达练熟",
+    review: "再想一想学过的",
+    parent: "档案与学习记录",
+  };
+  const sessionHome: View =
+    (
+      {
+        vocabulary: "words",
+        topic: "topics",
+        pattern: "patterns",
+        workshop: "workshops",
+        review: "review",
+      } as Record<string, View>
+    )[session?.source ?? ""] ?? "map";
+  const currentSection =
+    view === "exercise"
+      ? sessionHome
+      : view === "lesson" || view === "talk"
+        ? "map"
+        : view;
+  const activeNav = currentSection === "workshops" ? "topics" : currentSection;
   return (
     <MotionShell quiet={quiet || reduced} flat={twoD}>
       <a className="skip" href="#main">
@@ -837,20 +862,19 @@ export default function App() {
             <button
               key={id}
               data-nav={id}
-              aria-current={
-                view === id ||
-                (view === "talk" && id === "map") ||
-                (view === "workshops" && id === "topics")
-                  ? "page"
-                  : undefined
-              }
+              aria-current={activeNav === id ? "page" : undefined}
               onClick={() => {
                 setSearch("");
                 move(id);
               }}
             >
-              <Icon kind={icon} />
-              <span>{label}</span>
+              <span className="nav-symbol">
+                <Icon kind={icon} />
+              </span>
+              <span className="nav-copy">
+                {label}
+                <small>{navHints[id]}</small>
+              </span>
             </button>
           ))}
         </nav>
@@ -869,7 +893,9 @@ export default function App() {
                 ? "英语互动工坊"
                 : view === "talk"
                   ? "英语小剧场"
-                  : (nav.find((n) => n[0] === view)?.[1] ?? "今天的小练习")}
+                  : (nav.find((n) => n[0] === activeNav)?.[1] ??
+                    "今天的小练习")}
+              {view === "exercise" && " · 练习中"}
             </strong>
           </div>
           <div className="toolbar">
@@ -1693,7 +1719,7 @@ export default function App() {
                 backup={draftBackup}
                 onRefresh={() => void refreshSession()}
                 onTakeover={() => void takeOver()}
-                onLeave={() => move("map")}
+                onLeave={() => move(sessionHome)}
               />
               {sessionNotice && (
                 <p className="notice" role="status">
@@ -1706,17 +1732,7 @@ export default function App() {
                   onClick={() =>
                     session.training
                       ? openTraining(session.training.topicId)
-                      : move(
-                          session.source === "workshop"
-                            ? "workshops"
-                            : session.source === "vocabulary"
-                              ? "words"
-                              : session.source === "pattern"
-                                ? "patterns"
-                                : session.source === "topic"
-                                  ? "topics"
-                                  : "map",
-                        )
+                      : move(sessionHome)
                   }
                 >
                   返回
@@ -1728,7 +1744,9 @@ export default function App() {
                         ? "固定句式"
                         : session.source === "topic"
                           ? "专题特训"
-                          : "学习地图"}
+                          : session.source === "review"
+                            ? "复习花园"
+                            : "学习地图"}
                 </button>
                 <span className="badge">
                   第{session.position ?? 1}步 / 共{session.total ?? 1}步
@@ -1744,7 +1762,11 @@ export default function App() {
                 className="card exercise-card"
                 data-saved={Boolean(receipt)}
               >
-                <p className="eyebrow">ONE STEP AT A TIME</p>
+                <p className="eyebrow">
+                  {session.source === "vocabulary"
+                    ? "第3步 · 做一轮单词小练习"
+                    : "ONE STEP AT A TIME"}
+                </p>
                 {session.training && (
                   <p className="badge">
                     {session.training.phase === "diagnostic"
