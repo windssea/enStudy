@@ -2987,6 +2987,336 @@ button.unit-node:not(:disabled) {
     flex-direction: column;
   }
 }
+/* Browse one category before choosing a practice task. Hidden libraries retain filters. */
+.practice-library[hidden] {
+  display: none;
+}
+.library-location {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.library-location > p {
+  color: var(--muted);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.library-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0 12px;
+}
+.library-heading h1,
+.library-heading h2 {
+  margin: 0;
+  text-wrap: balance;
+}
+.library-heading p {
+  color: var(--muted);
+}
+.library-heading .eyebrow {
+  margin-bottom: 8px;
+  color: var(--blue);
+}
+.library-filters {
+  margin: 20px 0 28px;
+}
+.library-filters input,
+.library-filters select {
+  min-height: 52px;
+}
+.library-filters label:first-child {
+  flex: 1 1 260px;
+  max-width: 520px;
+}
+.library-group-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+.library-item-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+.library-group,
+.library-item {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 10px;
+  text-align: left;
+  padding: 24px;
+  border: 2px solid var(--word-edge);
+  background: var(--word-soft);
+  color: var(--ink);
+  border-radius: 26px;
+  box-shadow: 0 5px 0 var(--word-edge);
+  overflow-wrap: anywhere;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease;
+}
+.library-group strong {
+  font-size: 21px;
+  line-height: 1.5;
+}
+.library-item strong {
+  font-size: 23px;
+  line-height: 1.5;
+}
+.library-group > span:not(.library-symbol),
+.library-item > span {
+  font-size: 15px;
+}
+.library-group > span:nth-last-child(2),
+.library-item > span:nth-last-child(2) {
+  color: var(--muted);
+}
+.library-symbol {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 8px;
+  border-radius: 20px;
+  background: var(--word-pop);
+  color: var(--ink);
+}
+.library-symbol svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.library-card-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  margin-top: auto;
+  font-weight: 750;
+}
+.library-item-meta {
+  color: var(--muted);
+}
+.library-item .library-card-action {
+  color: var(--ink);
+}
+.library-group:active:not(:disabled),
+.library-item:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 var(--word-edge);
+}
+.library-workshop-link {
+  margin-top: 32px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: space-between;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+}
+.library-workshop-link strong {
+  font-size: 20px;
+}
+.library-workshop-link p {
+  color: var(--muted);
+}
+.library-disclosure {
+  margin: 16px 0;
+}
+.library-disclosure > summary {
+  min-height: 56px;
+  padding: 14px 0;
+  cursor: pointer;
+  font-weight: 750;
+}
+.library-disclosure > summary:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.library-disclosure[open] > summary {
+  margin-bottom: 14px;
+}
+.library-disclosure .field {
+  max-width: 300px;
+}
+.library-disclosure select {
+  min-height: 52px;
+}
+.pattern-preparation {
+  max-width: 1060px;
+  margin: 0 auto;
+}
+.pattern-ready-hero {
+  background: var(--grape-soft);
+}
+.pattern-mission {
+  border: 2px solid var(--grape-ink);
+}
+.pattern-mission > h2 {
+  font-family: Arial, sans-serif;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.frame-slot {
+  display: inline;
+  border: 1.5px dashed var(--grape-ink);
+  border-radius: 9px;
+  background: white;
+  padding: 2px 7px;
+  margin: 0 3px;
+  font:
+    600 0.76em/2.2 "Segoe UI",
+    "Microsoft YaHei",
+    sans-serif;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.pattern-mission .frame-help {
+  color: var(--grape-ink);
+  font-size: 15px;
+}
+.pattern-mission > p {
+  color: var(--muted);
+  margin-top: 10px;
+}
+.pattern-example {
+  background: var(--grape-soft);
+  border-radius: 18px;
+  padding: 18px;
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.pattern-task-preview {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--grape-soft);
+  border-radius: 22px;
+  padding: 22px;
+  margin: 20px 0;
+}
+.pattern-task-preview > span {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  background: #c7a6f5;
+  border-radius: 20px;
+  font-size: 36px;
+  font-weight: 800;
+}
+.pattern-task-preview h3 {
+  font-size: 22px;
+  margin: 0 0 4px;
+}
+.pattern-task-preview p {
+  color: var(--muted);
+}
+.pattern-start {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 20px 0;
+}
+.pattern-start .primary,
+.training-journey > .primary {
+  min-height: 60px;
+  font-size: 20px;
+}
+.pattern-start p {
+  color: var(--muted);
+}
+.training-journey > h2 {
+  margin-bottom: 12px;
+}
+.training-journey > .primary {
+  margin: 22px 0 12px;
+}
+.training-journey .training-path-details {
+  border-top: 1px solid var(--border);
+  margin-top: 24px;
+}
+.training-journey .training-practice {
+  display: block;
+  margin: 16px 0 0;
+  padding: 0;
+}
+.training-practice .field {
+  margin: 16px 0;
+}
+.training-hero {
+  margin-top: 18px;
+}
+.training-hero .scene-stage--compact {
+  flex: 0 0 220px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .app-shell:not([data-quiet="true"]) .library-group:hover:not(:disabled),
+  .app-shell:not([data-quiet="true"]) .library-item:hover:not(:disabled) {
+    transform: translateY(-3px);
+  }
+}
+@media (max-width: 1320px) {
+  .library-group-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1100px) {
+  .library-group-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 620px) {
+  .library-group-grid,
+  .library-item-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .library-group,
+  .library-item {
+    padding: 22px 20px;
+  }
+  .library-filters label {
+    flex: 1 1 100%;
+  }
+  .pattern-task-preview {
+    padding: 18px;
+    gap: 14px;
+    align-items: start;
+  }
+  .pattern-task-preview > span {
+    width: 48px;
+    height: 56px;
+    font-size: 28px;
+  }
+  .pattern-start .primary {
+    width: 100%;
+  }
+  .training-hero .scene-stage--compact {
+    flex: 0 0 auto;
+  }
+}
 /* Playful scenes share one renderer per page; teaching text stays in the DOM. */
 .page-motion {
   animation: page-arrive 320ms cubic-bezier(0.22, 1, 0.36, 1) both;

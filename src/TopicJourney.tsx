@@ -15,61 +15,101 @@ export default function TopicJourney({
   onStart,
   onResume,
   onPractice,
+  onProfile,
 }: {
   topicId: string;
   title: string;
   childId?: string;
   busy: boolean;
   onBack: () => void;
-  onStart: (cycle: TrainingCycle) => void;
+  onStart: (cycle: TrainingCycle) => void | Promise<void>;
   onResume: (id: string) => void;
-  onPractice: () => void;
+  onPractice: (size: number) => void;
+  onProfile: () => void;
 }) {
   const [cycle, setCycle] = useState<TrainingCycle | null>(null),
-    [loading, setLoading] = useState(true),
+    [loading, setLoading] = useState(Boolean(childId)),
     [saving, setSaving] = useState(false),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [loadFailed, setLoadFailed] = useState(false),
+    [roundSize, setRoundSize] = useState(5);
   const createId = useRef(crypto.randomUUID());
+  const generation = useRef(0);
+  const creating = useRef(false);
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    heading.current?.focus({ preventScroll: true });
+  }, [topicId]);
   const load = async () => {
-    const data = await api<{ items: TrainingCycle[] }>("/training/cycles");
-    setCycle(data.items.find((r) => r.topicId === topicId) ?? null);
+    const current = generation.current;
+    setLoading(true);
+    setError("");
+    try {
+      const data = await api<{ items: TrainingCycle[] }>("/training/cycles");
+      if (generation.current !== current) return;
+      setCycle(data.items.find((r) => r.topicId === topicId) ?? null);
+      setLoadFailed(false);
+    } catch (error) {
+      if (generation.current !== current) return;
+      setLoadFailed(true);
+      setError(error instanceof Error ? error.message : "记录暂时没读到。");
+    } finally {
+      if (generation.current === current) setLoading(false);
+    }
   };
   useEffect(() => {
-    let live = true;
+    const current = ++generation.current;
+    const controller = new AbortController();
     setCycle(null);
     setError("");
+    setLoadFailed(false);
     setLoading(Boolean(childId));
     createId.current = crypto.randomUUID();
     if (childId)
-      api<{ items: TrainingCycle[] }>("/training/cycles")
+      api<{ items: TrainingCycle[] }>("/training/cycles", undefined, {
+        signal: controller.signal,
+      })
         .then((data) => {
-          if (live)
+          if (generation.current === current)
             setCycle(data.items.find((r) => r.topicId === topicId) ?? null);
         })
         .catch((e) => {
-          if (live) setError(e.message);
+          if (generation.current === current) {
+            setLoadFailed(true);
+            setError(e.message);
+          }
         })
         .finally(() => {
-          if (live) setLoading(false);
+          if (generation.current === current) setLoading(false);
         });
     return () => {
-      live = false;
+      generation.current++;
+      controller.abort();
     };
   }, [topicId, childId]);
   async function create() {
+    if (creating.current || !childId || loading || loadFailed) return;
+    creating.current = true;
+    const current = generation.current;
     setSaving(true);
     setError("");
     try {
-      setCycle(
-        await api<TrainingCycle>("/training/cycles", {
-          topicId,
-          clientRequestId: createId.current,
-        }),
-      );
+      const created = await api<TrainingCycle>("/training/cycles", {
+        topicId,
+        clientRequestId: createId.current,
+      });
+      if (generation.current !== current) return;
+      setCycle(created);
+      if (!created.finished && created.next.readyAt <= Date.now()) {
+        if (created.next.sessionId) onResume(created.next.sessionId);
+        else await onStart(created);
+      }
     } catch (e) {
+      if (generation.current !== current) return;
       setError(e instanceof Error ? e.message : "计划暂时没保存，请重试。");
     } finally {
-      setSaving(false);
+      creating.current = false;
+      if (generation.current === current) setSaving(false);
     }
   }
   const waiting = cycle && !cycle.finished && cycle.next.readyAt > Date.now(),
@@ -79,15 +119,17 @@ export default function TopicJourney({
       <button className="secondary" onClick={onBack}>
         返回专题列表
       </button>
-      <div className="discovery-hero">
+      <div className="discovery-hero training-hero">
         <div>
-          <p className="eyebrow">SMALL STEPS, LASTING LEARNING</p>
-          <h1>{title}</h1>
+          <p className="eyebrow">专题小计划 · 一次一小步</p>
+          <h1 ref={heading} tabIndex={-1}>
+            {title}
+          </h1>
           <p className="lead">
             先看看会什么，再看规律、换材料。隔几天回来试一次，给记忆一点生长的时间。
           </p>
         </div>
-        <SceneStage kind="workshop" />
+        <SceneStage kind="workshop" compact />
       </div>
       {error && (
         <p className="notice error" role="alert">
@@ -99,59 +141,44 @@ export default function TopicJourney({
         aria-busy={loading || saving}
         aria-label="专题分步计划"
       >
-        <ol className="training-steps">
-          {(
-            ["diagnostic", "practice", "transfer", "retest"] as TrainingPhase[]
-          ).map((phase, i) => {
-            const done =
-              phase === "retest"
-                ? cycle?.finished
-                : cycle?.results.some(
-                    (r) => r.phase === phase && r.completedAt,
-                  );
-            const current =
-              cycle && !cycle.finished && cycle.next.phase === phase;
-            return (
-              <li
-                key={phase}
-                data-complete={Boolean(done)}
-                aria-current={current ? "step" : undefined}
-              >
-                <span className="training-step-number" aria-hidden="true">
-                  {done ? "✓" : i + 1}
-                </span>
-                <strong>{trainingLabels[phase]}</strong>
-                <small>
-                  {phase === "diagnostic"
-                    ? "5题，先自己尝试"
-                    : phase === "practice"
-                      ? "10题，优先巩固有困难的题组"
-                      : phase === "transfer"
-                        ? "5题，使用另一组材料"
-                        : "第1、3、7天各5题，逾期合并"}
-                </small>
-              </li>
-            );
-          })}
-        </ol>
         {loading ? (
           <p role="status">正在读取这个专题的足迹…</p>
+        ) : loadFailed ? (
+          <div className="training-next">
+            <div>
+              <h2>先把学习记录接回来</h2>
+              <p>暂时没读到旧计划，重试后再开始，避免打乱原来的进度。</p>
+            </div>
+            <button
+              className="primary"
+              disabled={disabled}
+              onClick={() => void load()}
+            >
+              重新读取记录
+            </button>
+          </div>
         ) : !childId ? (
-          <p className="notice">
-            请先让家长登录并选择探险档案，再建立自己的小计划。
-          </p>
+          <div className="training-next">
+            <div>
+              <h2>先选你的探险档案</h2>
+              <p>请家长登录并选好档案，就能保存自己的小计划。</p>
+            </div>
+            <button className="primary" onClick={onProfile}>
+              选择档案，再开始
+            </button>
+          </div>
         ) : !cycle ? (
           <>
-            <h2>从一次小尝试开始</h2>
+            <h2>先做5题，看看会哪些</h2>
             <p>
-              不是考试，不计速度。小尝试只抽本计划的部分基础材料，不覆盖全部错因。答对、用过提示、还需练习都会分别留下记录。
+              不是考试，没有倒计时。不会的可以看提示，做到哪儿都会保存。先试一试，再慢慢找规律。
             </p>
             <button
               className="primary"
               disabled={disabled}
               onClick={() => void create()}
             >
-              建立分步小计划
+              {saving || busy ? "正在准备…" : "开始5题小尝试"}
             </button>
           </>
         ) : (
@@ -197,12 +224,15 @@ export default function TopicJourney({
                 </button>
               )}
             </div>
-            <p className="footnote">
-              {cycle.scope === "new-frame"
-                ? "应用与复测使用另留的题框，避开本计划练过的框架。这仍是受控文字练习，不代表真实口语或自由表达能力。"
-                : "本专题目前检验换词后的提取；不等于已经验证新句型或自由表达。"}
-              评估会检查全部已分配材料；新题不足时先做普通巩固，不把旧题算作新测验。
-            </p>
+            <details className="library-disclosure training-evidence-note">
+              <summary>这一步的学习记录说明</summary>
+              <p className="footnote">
+                {cycle.scope === "new-frame"
+                  ? "应用与复测使用另留的题框，避开本计划练过的框架。这仍是受控文字练习，不代表真实口语或自由表达能力。"
+                  : "本专题目前检验换词后的提取；不等于已经验证新句型或自由表达。"}
+                评估会检查全部已分配材料；新题不足时先做普通巩固，不把旧题算作新测验。
+              </p>
+            </details>
             {cycle.coaching.length > 0 && (
               <section className="training-coaching">
                 <h3>这几组题，可以再看一眼</h3>
@@ -246,29 +276,86 @@ export default function TopicJourney({
             <button
               className="text-button"
               disabled={disabled}
-              onClick={() => {
-                setLoading(true);
-                void load()
-                  .catch((e) => setError(e.message))
-                  .finally(() => setLoading(false));
-              }}
+              onClick={() => void load()}
             >
               刷新计划与日期
             </button>
           </>
         )}
-        <div className="training-practice">
+        <details className="library-disclosure training-path-details">
+          <summary>看看后面怎么学</summary>
+          <ol className="training-steps">
+            {(
+              [
+                "diagnostic",
+                "practice",
+                "transfer",
+                "retest",
+              ] as TrainingPhase[]
+            ).map((phase, i) => {
+              const done =
+                phase === "retest"
+                  ? cycle?.finished
+                  : cycle?.results.some(
+                      (r) => r.phase === phase && r.completedAt,
+                    );
+              const current = cycle
+                ? !cycle.finished && cycle.next.phase === phase
+                : phase === "diagnostic";
+              return (
+                <li
+                  key={phase}
+                  data-complete={Boolean(done)}
+                  aria-current={current ? "step" : undefined}
+                >
+                  <span className="training-step-number" aria-hidden="true">
+                    {done ? "✓" : i + 1}
+                  </span>
+                  <strong>{trainingLabels[phase]}</strong>
+                  <small>
+                    {phase === "diagnostic"
+                      ? "5题，先自己尝试"
+                      : phase === "practice"
+                        ? "10题，优先巩固有困难的题组"
+                        : phase === "transfer"
+                          ? "5题，使用另一组材料"
+                          : "第1、3、7天各5题，逾期合并"}
+                  </small>
+                </li>
+              );
+            })}
+          </ol>
+          <p className="footnote">
+            小尝试只覆盖本计划的一部分基础材料，不是完整能力测验。提示、独立答对与需要巩固会分别记录。
+          </p>
+        </details>
+        <details className="training-practice library-disclosure">
+          <summary>只想练一小轮？</summary>
           <p>
             也可以先做普通随机巩固。它与课程、复习共享记录，练完一轮不等于掌握这个专题。
           </p>
+          <label className="field">
+            每轮题量
+            <select
+              value={roundSize}
+              disabled={disabled}
+              onChange={(e) => setRoundSize(Number(e.target.value))}
+            >
+              {[5, 10, 20].map((n) => (
+                <option key={n} value={n}>
+                  {n}题
+                </option>
+              ))}
+            </select>
+          </label>
           <button
             className="secondary"
-            disabled={disabled}
-            onClick={onPractice}
+            disabled={disabled || loadFailed}
+            onClick={() => onPractice(roundSize)}
           >
-            普通随机巩固 · 10题
+            普通随机巩固 · {roundSize}题
           </button>
-        </div>
+        </details>
       </section>
     </>
   );

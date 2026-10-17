@@ -24,6 +24,14 @@ import type {
   TrainingCycle,
 } from "../packages/contracts/index";
 import { api, ApiError, setLearningChild } from "./api";
+import { parseRoute, type View } from "./routes";
+import {
+  topicGroups,
+  topicItems,
+  patternGroups,
+  patternItems,
+  type LibraryBrowse,
+} from "./practiceCatalog";
 import FamilySpace from "./FamilySpace";
 import LessonView from "./LessonView";
 import SceneStage, { MotionShell } from "./SceneStage";
@@ -37,6 +45,8 @@ import {
 } from "../packages/domain/structured";
 const World = lazy(() => import("./World"));
 const WordTraining = lazy(() => import("./WordTraining"));
+const PracticeLibrary = lazy(() => import("./PracticeLibrary"));
+const PatternPractice = lazy(() => import("./PatternPractice"));
 const AiExplanation = lazy(() => import("./AiExplanation"));
 const TopicJourney = lazy(() => import("./TopicJourney"));
 const TrainingFollowUps = lazy(() => import("./TrainingFollowUps"));
@@ -45,68 +55,8 @@ const Workshops = lazy(() => import("./Workshops"));
 const StructuredAnswer = lazy(() => import("./StructuredAnswer"));
 const ListeningPrompt = lazy(() => import("./ListeningPrompt"));
 const EvidenceAnswer = lazy(() => import("./EvidenceAnswer"));
-const labels: Record<string, string> = {
-  grammar: "语法",
-  tense: "时态",
-  forms: "单词变形",
-  sentence: "句型",
-  vocabulary: "词汇",
-  phonics: "拼读",
-  reading: "阅读",
-  expression: "表达",
-};
 const journeys = ["萌芽", "探索", "成长", "远航", "发现", "创造"];
-type View =
-  | "map"
-  | "topics"
-  | "patterns"
-  | "words"
-  | "review"
-  | "parent"
-  | "talk"
-  | "workshops"
-  | "exercise"
-  | "lesson";
-const readRoute = (): {
-  view: View;
-  lessonId: string | null;
-  trainingTopic?: string;
-} => {
-  const hash = window.location.hash.slice(1);
-  if (hash.startsWith("training=")) {
-    try {
-      return {
-        view: "topics",
-        lessonId: null,
-        trainingTopic: decodeURIComponent(hash.slice(9)),
-      };
-    } catch {
-      return { view: "topics", lessonId: null };
-    }
-  }
-  if (hash.startsWith("lesson=")) {
-    try {
-      return { view: "lesson", lessonId: decodeURIComponent(hash.slice(7)) };
-    } catch {
-      return { view: "map", lessonId: null };
-    }
-  }
-  return {
-    view: ([
-      "topics",
-      "patterns",
-      "words",
-      "review",
-      "parent",
-      "talk",
-      "workshops",
-      "exercise",
-    ].includes(hash)
-      ? hash
-      : "map") as View,
-    lessonId: null,
-  };
-};
+const readRoute = () => parseRoute(window.location.hash);
 const emptyLearning: LearningSummary = {
   completedLessons: [],
   dueCount: 0,
@@ -209,8 +159,19 @@ export default function App() {
   const [patternStats, setPatternStats] = useState<
     Record<string, PatternStats>
   >({});
-  const [patternRoundSize, setPatternRoundSize] = useState(10);
-  const [topicRoundSize, setTopicRoundSize] = useState(10);
+  const [patternId, setPatternId] = useState<string | null>(
+    () => readRoute().patternId ?? null,
+  );
+  const [topicBrowse, setTopicBrowse] = useState<LibraryBrowse>({
+    group: null,
+    query: "",
+    year: 0,
+  });
+  const [patternBrowse, setPatternBrowse] = useState<LibraryBrowse>({
+    group: null,
+    query: "",
+    year: 0,
+  });
   const [learning, setLearning] = useState<LearningSummary>(emptyLearning);
   const [lastResult, setLastResult] = useState<SessionResult | null>(null);
   const [wordThemes, setWordThemes] = useState<WordTheme[]>([]);
@@ -222,6 +183,7 @@ export default function App() {
       setView(route.view);
       if (route.lessonId) setLessonId(route.lessonId);
       setTrainingTopic(route.trainingTopic ?? null);
+      setPatternId(route.patternId ?? null);
     };
     window.addEventListener("popstate", pop);
     window.addEventListener("hashchange", pop);
@@ -238,9 +200,6 @@ export default function App() {
   const [progress, setProgress] = useState<Progress>(emptyProgress);
   const [grade, setGrade] = useState(3),
     [term, setTerm] = useState("A");
-  const [category, setCategory] = useState("all"),
-    [patternCluster, setPatternCluster] = useState("all");
-  const [search, setSearch] = useState("");
   const [quiet, setQuiet] = useState(() => storedFlag("eq-quiet"));
   const [reduced, setReduced] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -300,8 +259,15 @@ export default function App() {
   const eventId = useRef(crypto.randomUUID());
   const epoch = useRef(0);
   const mainRef = useRef<HTMLElement>(null);
-  const move = (next: View, targetLessonId?: string) => {
-    if (next !== "exercise") setTrainingTopic(null);
+  const move = (
+    next: View,
+    targetLessonId?: string,
+    restoreLibrary = false,
+  ) => {
+    if (next !== "exercise") {
+      setTrainingTopic(null);
+      setPatternId(null);
+    }
     const hash =
       next === "lesson"
         ? `#lesson=${encodeURIComponent(targetLessonId ?? lessonId ?? "")}`
@@ -309,10 +275,12 @@ export default function App() {
     if (window.location.hash !== hash) window.history.pushState(null, "", hash);
     setView(next);
     setError("");
-    window.scrollTo({ top: 0 });
-    requestAnimationFrame(() =>
-      mainRef.current?.focus({ preventScroll: true }),
-    );
+    if (!restoreLibrary) {
+      window.scrollTo({ top: 0 });
+      requestAnimationFrame(() =>
+        mainRef.current?.focus({ preventScroll: true }),
+      );
+    }
   };
   const refreshProgress = async (currentEpoch = epoch.current) => {
     const [result, summary] = await Promise.all([
@@ -750,16 +718,24 @@ export default function App() {
   }
   function openTraining(id: string) {
     setTrainingTopic(id);
+    setPatternId(null);
     setView("topics");
     window.history.pushState(null, "", `#training=${encodeURIComponent(id)}`);
     window.scrollTo({ top: 0 });
-    requestAnimationFrame(() => mainRef.current?.focus());
   }
   const pendingTrainingResume = useRef<{
     id: string;
     version: number;
     nonce: string;
   } | null>(null);
+  function openPattern(id: string) {
+    setPatternId(id);
+    setTrainingTopic(null);
+    setView("patterns");
+    const hash = `#pattern=${encodeURIComponent(id)}`;
+    if (window.location.hash !== hash) window.history.pushState(null, "", hash);
+    window.scrollTo({ top: 0 });
+  }
   async function resumeTraining(id: string) {
     setBusy(true);
     setError("");
@@ -796,19 +772,6 @@ export default function App() {
   }
   const units = (catalog?.units ?? []).filter(
     (u) => u.grade === String(grade) && u.term === term,
-  );
-  const topics = (catalog?.topics ?? []).filter(
-    (t) =>
-      (category === "all" || t.category === category) &&
-      (!search || t.title.includes(search)),
-  );
-  const patterns = (catalog?.patterns ?? []).filter(
-    (p) =>
-      (patternCluster === "all" || p.cluster === patternCluster) &&
-      (!search ||
-        `${p.frame} ${p.cluster} ${p.example}`
-          .toLowerCase()
-          .includes(search.toLowerCase())),
   );
   const nav: [View, string, string][] = [
     ["map", "探险地图", "map"],
@@ -864,7 +827,6 @@ export default function App() {
               data-nav={id}
               aria-current={activeNav === id ? "page" : undefined}
               onClick={() => {
-                setSearch("");
                 move(id);
               }}
             >
@@ -1268,9 +1230,20 @@ export default function App() {
               </Suspense>
             </>
           )}
-          {view === "topics" &&
-            (trainingTopic ? (
-              <Suspense fallback={<p role="status">正在准备分步小计划…</p>}>
+          {view === "topics" && (
+            <Suspense fallback={<p role="status">正在打开专题入口…</p>}>
+              <PracticeLibrary
+                kind="topic"
+                groups={topicGroups}
+                items={topicItems(catalog?.topics ?? [], topicAvailability)}
+                hidden={Boolean(trainingTopic)}
+                busy={busy}
+                onOpen={openTraining}
+                browse={topicBrowse}
+                onBrowseChange={setTopicBrowse}
+                onWorkshop={() => move("workshops")}
+              />
+              {trainingTopic && (
                 <TopicJourney
                   key={`${identity.child?.id ?? "guest"}:${trainingTopic}`}
                   topicId={trainingTopic}
@@ -1280,247 +1253,63 @@ export default function App() {
                   }
                   childId={identity.child?.id}
                   busy={busy}
-                  onBack={() => move("topics")}
+                  onBack={() => move("topics", undefined, true)}
+                  onProfile={() => move("parent")}
                   onStart={(cycle: TrainingCycle) =>
-                    void start("", {
+                    start("", {
                       topicId: cycle.topicId,
                       trainingCycleId: cycle.id,
                       trainingVersion: cycle.version,
                     })
                   }
                   onResume={(id) => void resumeTraining(id)}
-                  onPractice={() =>
-                    void start("", { topicId: trainingTopic, roundSize: 10 })
+                  onPractice={(size) =>
+                    void start("", { topicId: trainingTopic, roundSize: size })
                   }
                 />
-              </Suspense>
-            ) : (
-              <>
-                <div className="discovery-hero">
-                  <div>
-                    <p className="eyebrow">FOCUS ON ONE LITTLE CHALLENGE</p>
-                    <h1>选一个专题，把它练明白。</h1>
-                    <p className="lead">
-                      每次抽一组新挑战，慢慢把规律练熟。最近练过的题组会尽量避开。
-                    </p>
-                  </div>
-                  <SceneStage kind="workshop" />
-                </div>
-                <div className="filter-row">
-                  <label>
-                    专题分类
-                    <select
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                    >
-                      <option value="all">全部8类</option>
-                      {Object.entries(labels).map(([k, v]) => (
-                        <option key={k} value={k}>
-                          {v}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    找专题
-                    <input
-                      type="search"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="例如：过去、介词、邀请"
-                    />
-                  </label>
-                  <label>
-                    每轮题量
-                    <select
-                      value={topicRoundSize}
-                      onChange={(e) =>
-                        setTopicRoundSize(Number(e.target.value))
-                      }
-                      disabled={busy}
-                    >
-                      <option value={5}>5题 · 轻松热身</option>
-                      <option value={10}>10题 · 标准练习</option>
-                      <option value={20}>20题 · 加强挑战</option>
-                    </select>
-                  </label>
-                  <span className="badge">
-                    {topics.length}个专题 ·{" "}
-                    {Object.values(topicAvailability).filter(Boolean).length}
-                    个专题可练
-                  </span>
-                </div>
-                <section className="card workshop-entry">
-                  <div>
-                    <span className="eyebrow">换一种练法</span>
-                    <h2>分类工坊与句子修理站</h2>
-                    <p>一次分好一组词，再找出句中一处需要修改的词块。</p>
-                  </div>
-                  <button
-                    className="secondary"
-                    onClick={() => move("workshops")}
-                  >
-                    进入互动工坊
-                  </button>
-                </section>
-                <div className="topic-grid">
-                  {topics.map((t) => (
-                    <article className="card topic-card" key={t.topic_id}>
-                      <span className="badge">
-                        {labels[t.category]} · P{t.grade_min}–P{t.grade_max}
-                      </span>
-                      <h2>{t.title}</h2>
-                      <p>
-                        {t.category === "phonics"
-                          ? "文字音形准备 · 听辨另练"
-                          : t.category === "expression"
-                            ? "句框文字练习 · 口语与自由写作另练"
-                            : "选择与填写 · 随机练习"}
-                      </p>
-                      {topicStats[t.topic_id] && (
-                        <p className="topic-bank-count">
-                          <strong>{topicStats[t.topic_id].items}道题</strong>
-                          <span>
-                            {topicStats[t.topic_id].families}组题干 · 每轮随机
-                            {topicRoundSize}题
-                          </span>
-                        </p>
-                      )}
-                      <button
-                        className="primary"
-                        disabled={!topicAvailability[t.topic_id] || busy}
-                        onClick={() => openTraining(t.topic_id)}
-                      >
-                        分步特训 · 诊断到复测
-                      </button>
-                      <button
-                        className={"secondary"}
-                        disabled={!topicAvailability[t.topic_id] || busy}
-                        onClick={() =>
-                          start("", {
-                            topicId: t.topic_id,
-                            roundSize: topicRoundSize,
-                          })
-                        }
-                      >
-                        {topicAvailability[t.topic_id]
-                          ? `随机抽${topicRoundSize}题`
-                          : "内容已规划，待制作"}
-                      </button>
-                    </article>
-                  ))}
-                </div>
-                {!topics.length && (
-                  <p className="empty-state">
-                    没有找到这个专题，换个关键词试试。
-                  </p>
-                )}
-              </>
-            ))}
-          {view === "patterns" && (
-            <>
-              <div className="discovery-hero">
-                <div>
-                  <p className="eyebrow">THE PATTERN WORKSHOP</p>
-                  <h1>一个句框，装下好多想法。</h1>
-                  <p className="lead">
-                    先读懂情景，再选词、填词、搭句子。每轮随机抽题，最近练过的句子会尽量避开。
-                  </p>
-                </div>
-                <SceneStage kind="workshop" />
-              </div>
-              <div className="filter-row">
-                <label>
-                  句式主题
-                  <select
-                    value={patternCluster}
-                    onChange={(e) => setPatternCluster(e.target.value)}
-                  >
-                    <option value="all">全部12个主题</option>
-                    {[...new Set(catalog?.patterns.map((p) => p.cluster))].map(
-                      (c) => (
-                        <option key={c}>{c}</option>
-                      ),
-                    )}
-                  </select>
-                </label>
-                <label>
-                  查找句式
-                  <input
-                    type="search"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="例如：would like、邀请"
-                  />
-                </label>
-                <span className="badge">
-                  {patterns.length}条句式 · {Object.keys(patternStats).length}
-                  条可练
-                </span>
-              </div>
-              <div className="filter-row">
-                <label>
-                  每轮题量
-                  <select
-                    value={patternRoundSize}
-                    onChange={(e) =>
-                      setPatternRoundSize(Number(e.target.value))
-                    }
-                    disabled={busy}
-                  >
-                    <option value={5}>5题 · 轻松热身</option>
-                    <option value={10}>10题 · 标准练习</option>
-                    <option value={20}>20题 · 加强挑战</option>
-                  </select>
-                </label>
-                <p className="footnote">
-                  选择、填写、词块组句交替练习；题库仍会持续做教研复核。
-                </p>
-              </div>
-              <div className="pattern-grid">
-                {patterns.map((p) => (
-                  <article className="card pattern-card" key={p.pattern_id}>
-                    <span className="badge">
-                      {p.cluster} · P{p.grade_min}起
-                    </span>
-                    <h2 lang="en">{p.frame}</h2>
-                    <p className="example" lang="en">
-                      {p.example}
-                    </p>
-                    <p>{p.slot_rule}</p>
-                    {patternStats[p.pattern_id] && (
-                      <p className="topic-bank-count">
-                        <strong>
-                          {patternStats[p.pattern_id].items}个练习变体
-                        </strong>
-                        <span>
-                          {patternStats[p.pattern_id].contexts}组情境 · 3种练法
-                        </span>
-                      </p>
-                    )}
-                    <button
-                      className="primary"
-                      disabled={busy || !patternStats[p.pattern_id]}
-                      onClick={() =>
-                        start("", {
-                          patternId: p.pattern_id,
-                          roundSize: patternRoundSize,
-                        })
-                      }
-                    >
-                      {patternStats[p.pattern_id]
-                        ? `随机练${patternRoundSize}题`
-                        : "题库正在准备"}
-                    </button>
-                  </article>
-                ))}
-              </div>
-              {!patterns.length && (
-                <p className="empty-state">
-                  没有找到这条表达，试试换个关键词。
-                </p>
               )}
-            </>
+            </Suspense>
+          )}
+          {view === "patterns" && (
+            <Suspense fallback={<p role="status">正在打开句式小剧场…</p>}>
+              <PracticeLibrary
+                kind="pattern"
+                groups={patternGroups(catalog?.patterns ?? [])}
+                items={patternItems(catalog?.patterns ?? [], patternStats)}
+                hidden={Boolean(patternId)}
+                busy={busy}
+                onOpen={openPattern}
+                browse={patternBrowse}
+                onBrowseChange={setPatternBrowse}
+              />
+              {patternId &&
+                (catalog?.patterns.find((p) => p.pattern_id === patternId) ? (
+                  <PatternPractice
+                    key={`${identity.child?.id ?? "guest"}:${patternId}`}
+                    pattern={catalog.patterns.find(
+                      (p) => p.pattern_id === patternId,
+                    )!}
+                    stats={patternStats[patternId]}
+                    childId={identity.child?.id}
+                    busy={busy}
+                    onBack={() => move("patterns", undefined, true)}
+                    onStart={(size) =>
+                      void start("", { patternId, roundSize: size })
+                    }
+                  />
+                ) : (
+                  <section className="card empty-state">
+                    <h1>{catalog ? "暂时找不到这个句式" : "正在读取句式…"}</h1>
+                    <p>可以回到场景入口，重新挑一个来练。</p>
+                    <button
+                      className="secondary"
+                      onClick={() => move("patterns")}
+                    >
+                      返回句式入口
+                    </button>
+                  </section>
+                ))}
+            </Suspense>
           )}
           {view === "review" && (
             <>
@@ -1719,6 +1508,7 @@ export default function App() {
                 backup={draftBackup}
                 onRefresh={() => void refreshSession()}
                 onTakeover={() => void takeOver()}
+                leaveLabel={`返回${sessionHome === "workshops" ? "互动工坊" : (nav.find((n) => n[0] === sessionHome)?.[1] ?? "学习地图")}`}
                 onLeave={() => move(sessionHome)}
               />
               {sessionNotice && (
@@ -1732,7 +1522,9 @@ export default function App() {
                   onClick={() =>
                     session.training
                       ? openTraining(session.training.topicId)
-                      : move(sessionHome)
+                      : session.source === "pattern" && patternId
+                        ? openPattern(patternId)
+                        : move(sessionHome)
                   }
                 >
                   返回

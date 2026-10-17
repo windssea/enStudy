@@ -46,6 +46,8 @@ import {
   exampleShownToday,
   exposurePredicate,
   hashedExposureKeys,
+  patternPreview,
+  patternExampleKeys,
 } from "./exposure";
 
 export interface Env extends AiConfig {
@@ -1245,6 +1247,35 @@ app.post("/api/v1/learning/lessons/:id/view", async (c) => {
     return c.json(fault("NOT_FOUND", "这节课还在准备中。"), 404);
   await recordExposure(c.env.DB, c.get("actor"), keys);
   return c.json({ saved: true });
+});
+app.post("/api/v1/learning/patterns/:id/view", async (c) => {
+  const id = c.req.param("id"),
+    preview = patternPreview(id);
+  if (!preview) return c.json(fault("NOT_FOUND", "这个句式还在准备中。"), 404);
+  const actor = c.get("actor"),
+    keys = patternExampleKeys(id);
+  await recordExposure(c.env.DB, actor, keys);
+  const [key] = await hashedExposureKeys(keys);
+  const now = Date.now();
+  const saved = await c.env.DB.prepare(
+    `SELECT 1 FROM teaching_exposures WHERE household_id=? AND child_id=? AND evidence_key=? AND shown_day=? AND ${grantAuthorization}`,
+  )
+    .bind(
+      actor.householdId,
+      actor.childId,
+      key,
+      localDay(now, actor.timezone),
+      actor.grantId,
+      now,
+      now,
+    )
+    .first();
+  if (!saved)
+    return c.json(
+      fault("AUTH_CHANGED", "档案权限有变化，请刷新后再打开例句。"),
+      409,
+    );
+  return c.json({ saved: true, example: preview.example });
 });
 app.get("/api/v1/sessions/:id/snapshot", async (c) => {
   const actor = c.get("actor"),

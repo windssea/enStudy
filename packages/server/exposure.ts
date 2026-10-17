@@ -1,7 +1,45 @@
 import type { Actor } from "./app";
 import { localDay } from "../domain/review";
 import { sentenceKey, answerExposureKeys } from "../domain/exposure";
-import { courseCatalog, type PrivateExercise } from "./exercises";
+import {
+  courseCatalog,
+  patternRelease,
+  type PrivateExercise,
+} from "./exercises";
+import catalog from "../../public/content/catalog.json";
+const patternPreviewKeys = new Map<string, string[]>();
+export const patternPreview = (id: string) =>
+  catalog.patterns.find((row) => row.pattern_id === id);
+export function patternExampleKeys(id: string) {
+  const cached = patternPreviewKeys.get(id);
+  if (cached) return cached;
+  const row = patternPreview(id);
+  if (!row) return [];
+  // A dialogue separator in teaching copy does not make its answers unseen.
+  const sentenceKeys = [
+    ...new Set(
+      [row.example, row.example.replace(/\s+[—–]\s+/g, " ")].map(sentenceKey),
+    ),
+  ];
+  const keys = [
+    ...new Set([
+      ...sentenceKeys,
+      ...patternRelease.items.flatMap((item) => {
+        if (item.patternId !== id) return [];
+        const primary = answerExposureKeys(item);
+        const matches =
+          sentenceKeys.some((key) => primary.includes(key)) ||
+          (item.type === "order" &&
+            item.answers.some((answer) =>
+              sentenceKeys.includes(sentenceKey(answer)),
+            ));
+        return matches ? primary : [];
+      }),
+    ]),
+  ];
+  patternPreviewKeys.set(id, keys);
+  return keys;
+}
 const authorized =
   "EXISTS(SELECT 1 FROM child_grants g LEFT JOIN account_sessions p ON p.id=g.parent_session_id WHERE g.id=? AND g.revoked_at IS NULL AND g.expires_at>? AND(g.parent_session_id IS NULL OR(p.revoked_at IS NULL AND p.expires_at>?)))";
 const cache = new Map<string, Promise<string>>();

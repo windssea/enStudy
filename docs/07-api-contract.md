@@ -8,7 +8,9 @@ v0.17的`POST /sessions`新增互斥选择器workshopId，题目新增sort/repai
 
 v0.18网页升级到`X-EQ-Player-Version: 3`，新增listen/evidence；v2仍能继续分类和修正。听音状态使用`POST /sessions/:id/listening`，body为assignmentId、leaseId与mode=heard/text；已保存文字辅助不能撤回。wordMode新增listening，阅读作答使用`[sentenceId,answer]`。完整规则见[听读接口与证据](37-listening-and-evidence-reading.md#api状态与证据)。
 
-统一前缀 `/api/v1`，JSON UTF-8，Cookie 同源会话，所有修改操作验证 Origin/CSRF。成人认证相关端点交由已选认证库，业务接口禁止接受客户端声称的 adult_id 作为权限依据。这里定义核心开发契约，不是已实现 API。
+v0.19新增实际端点`POST /learning/patterns/:id/view`，空对象请求。服务端从公开目录定位示例，将句子/对应家族的示范证据写入现有表并核对当天记录与有效授权后，才返回`{saved:true,example}`；未确认时前端不揭示例句。未知ID为404，无授权401，授权中途变化409/AUTH_CHANGED。同日重遇同句沿用support=example，不回写旧回执；见[实现与验证](38-guided-training-centres.md)。没有新增数据库迁移。
+
+统一前缀 `/api/v1`，JSON UTF-8，Cookie 同源会话，所有修改操作验证 Origin/CSRF。成人认证相关端点交由已选认证库，业务接口禁止接受客户端声称的 adult_id 作为权限依据。这里定义核心开发契约，除顶部明确标注的实际接口外，其余仍含目标草案。
 
 ## 端点
 

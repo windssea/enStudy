@@ -8,6 +8,7 @@ export default function SessionAccess({
   onRefresh,
   onTakeover,
   onLeave,
+  leaveLabel = "回到地图",
 }: {
   session: LearningSession;
   stopped: boolean;
@@ -16,6 +17,7 @@ export default function SessionAccess({
   onRefresh: () => void;
   onTakeover: () => void;
   onLeave: () => void;
+  leaveLabel?: string;
 }) {
   const waiting = session.access === "takeover-required";
   const ended = stopped || session.access === "ended";
@@ -49,7 +51,7 @@ export default function SessionAccess({
               刷新进度
             </button>
             <button className="text-button" disabled={busy} onClick={onLeave}>
-              回到地图
+              {leaveLabel}
             </button>
           </div>
         </section>
