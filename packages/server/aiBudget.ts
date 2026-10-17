@@ -47,6 +47,9 @@ export async function reserveAi(
     units: number;
     authorization: string;
     params: (string | number)[];
+    countChild?: boolean;
+    extraStatements?: D1PreparedStatement[];
+    ttlMs?: number;
   },
 ) {
   const previous = await findAiRequest(
@@ -86,7 +89,7 @@ export async function reserveAi(
       )
       .bind(input.id, input.household),
   ];
-  if (input.child)
+  if (input.child && input.countChild !== false)
     statements.push(
       db
         .prepare(
@@ -104,6 +107,7 @@ export async function reserveAi(
         )
         .bind(input.id, input.household),
     );
+  statements.push(...(input.extraStatements ?? []));
   statements.push(
     db
       .prepare(
@@ -118,7 +122,7 @@ export async function reserveAi(
         input.fingerprint,
         input.units,
         now,
-        now + 600000,
+        now + (input.ttlMs ?? 600000),
       ),
   );
   try {

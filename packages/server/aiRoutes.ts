@@ -25,11 +25,12 @@ import { exerciseVersion } from "./exercises";
 import type { Actor, Env } from "./app";
 import { recordExposure } from "./exposure";
 import { sentenceKey } from "../domain/exposure";
+import { createVoiceRoutes } from "./aiVoiceRoutes";
 
 export interface AiEnv extends Env, AiConfig {}
-type B = { Bindings: AiEnv; Variables: { adult: AdultSession } };
-type Ctx = Context<B>;
-interface Connection extends TextConnection {
+export type B = { Bindings: AiEnv; Variables: { adult: AdultSession } };
+export type Ctx = Context<B>;
+export interface Connection extends TextConnection {
   label: string;
   state: string;
   tested_version: number | null;
@@ -101,7 +102,7 @@ function inputConfig(body: Record<string, unknown>, env: AiConfig) {
     !body.label.trim() ||
     body.label.length > 40 ||
     /[<>\u0000-\u001f]/.test(body.label) ||
-    !validModel(body.model) ||
+    !(body.model === "" || validModel(body.model)) ||
     !validPolicy(body.policyUrl) ||
     typeof body.tokenParameter !== "string" ||
     !["max_tokens", "max_completion_tokens"].includes(body.tokenParameter) ||
@@ -455,6 +456,14 @@ export function createAiRoutes(
       conn = await connection(c, c.req.param("id"), adult.householdId),
       body: unknown = await c.req.json();
     if (!conn) return c.json(fault("NOT_FOUND", "找不到这个连接。"), 404);
+    if (!conn.model)
+      return c.json(
+        fault(
+          "INVALID_AI_MODEL",
+          "请先填写文本模型名称；语音模型在语音设置中分别配置。",
+        ),
+        422,
+      );
     if (
       !object(body) ||
       typeof body.clientRequestId !== "string" ||
@@ -760,5 +769,15 @@ export function createAiRoutes(
       ]);
     return c.json(result);
   });
+  routes.route(
+    "/",
+    createVoiceRoutes(resolveActor, {
+      owner,
+      connection,
+      ownerSql,
+      ownerParams,
+      audit,
+    }),
+  );
   return routes;
 }

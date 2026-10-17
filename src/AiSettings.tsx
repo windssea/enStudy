@@ -5,6 +5,8 @@ import type {
 } from "../packages/contracts/index";
 import { api } from "./api";
 import { SecretField } from "./AccountSecurity";
+import AiVoiceSettings from "./AiVoiceSettings";
+import { announceAiSettings } from "./aiSettingsSignal";
 const blank = {
   label: "",
   baseUrl: "",
@@ -72,6 +74,7 @@ export default function AiSettings() {
     setNotice("");
     try {
       await fn();
+      announceAiSettings();
       await load();
     } catch (error) {
       setError(error instanceof Error ? error.message : "暂时未保存成功。");
@@ -187,7 +190,7 @@ export default function AiSettings() {
               题目片段、年级、标准讲解和已保存的作答结果类型会发送给你选择的服务；不发送孩子昵称、账号、原始输入或完整学习历史。服务商的数据保留与处理地区以其政策为准。
             </p>
             <p>
-              网站服务端需要临时解密Key才能调用服务。短解释仅在10分钟内可重试读取，过期后不再返回，后续访问设置时清理缓存。不保存完整对话。未知或取消请求不假定未收费。
+              网站服务端需要临时解密Key才能调用服务。短解释仅在10分钟内可重试读取，过期后不再返回，后续访问设置时清理缓存。角色对话的保留说明见下方语音设置。未知或取消请求不假定未收费。
             </p>
           </div>
           <h3>1. 保存连接</h3>
@@ -212,9 +215,8 @@ export default function AiSettings() {
                   />
                 </label>
                 <label className="field">
-                  模型名称
+                  文本模型名称（仅语音连接可留空）
                   <input
-                    required
                     maxLength={120}
                     value={form.model}
                     onChange={(e) => update("model", e.target.value)}
@@ -354,7 +356,7 @@ export default function AiSettings() {
                       : item.tested
                         ? "文本协议已验证"
                         : "需要测试"}{" "}
-                    · 语音识别、语音合成与实时对话尚未接入
+                    · 音频能力请在下方分别配置与测试
                   </p>
                 </div>
                 <div className="account-row-actions">
@@ -549,6 +551,13 @@ export default function AiSettings() {
               </button>
             </fieldset>
           </form>
+          <AiVoiceSettings
+            key={data.items
+              .map((item) => `${item.id}:${item.version}:${item.tested}`)
+              .join("|")}
+            connections={data.items}
+            available={data.available}
+          />
         </>
       )}
     </section>

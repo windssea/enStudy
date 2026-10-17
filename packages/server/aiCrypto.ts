@@ -1,7 +1,12 @@
 import { AiFault, type AiConfig } from "./aiPolicy";
 const bytes = (value: string) =>
   Uint8Array.from(atob(value), (c) => c.charCodeAt(0));
-const base64 = (value: Uint8Array) => btoa(String.fromCharCode(...value));
+const base64 = (value: Uint8Array) => {
+  let text = "";
+  for (let i = 0; i < value.length; i += 8192)
+    text += String.fromCharCode(...value.subarray(i, i + 8192));
+  return btoa(text);
+};
 export function keyStoreReady(env: AiConfig) {
   try {
     const ring = JSON.parse(env.AI_KEYRING ?? "{}");

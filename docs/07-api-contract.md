@@ -1,5 +1,7 @@
 # API 契约与错误处理
 
+v0.16角色对话/语音的已实现路径见[实际接口表](35-ai-dialogue-and-voice.md#接口与协议)，使用`/learning/conversations`和`/ai/voice`；下表中的`/voice/turns`与实时会话是目标草案，未对外提供。
+
 统一前缀 `/api/v1`，JSON UTF-8，Cookie 同源会话，所有修改操作验证 Origin/CSRF。成人认证相关端点交由已选认证库，业务接口禁止接受客户端声称的 adult_id 作为权限依据。这里定义核心开发契约，不是已实现 API。
 
 ## 端点

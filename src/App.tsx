@@ -35,6 +35,7 @@ const WordTraining = lazy(() => import("./WordTraining"));
 const AiExplanation = lazy(() => import("./AiExplanation"));
 const TopicJourney = lazy(() => import("./TopicJourney"));
 const TrainingFollowUps = lazy(() => import("./TrainingFollowUps"));
+const ConversationPlayground = lazy(() => import("./ConversationPlayground"));
 const labels: Record<string, string> = {
   grammar: "语法",
   tense: "时态",
@@ -53,6 +54,7 @@ type View =
   | "words"
   | "review"
   | "parent"
+  | "talk"
   | "exercise"
   | "lesson";
 const readRoute = (): {
@@ -86,6 +88,7 @@ const readRoute = (): {
       "words",
       "review",
       "parent",
+      "talk",
       "exercise",
     ].includes(hash)
       ? hash
@@ -806,7 +809,11 @@ export default function App() {
             <button
               key={id}
               data-nav={id}
-              aria-current={view === id ? "page" : undefined}
+              aria-current={
+                view === id || (view === "talk" && id === "map")
+                  ? "page"
+                  : undefined
+              }
               onClick={() => {
                 setSearch("");
                 move(id);
@@ -828,7 +835,9 @@ export default function App() {
           <div>
             <small>原创英语探索 · 每天进步一点点</small>
             <strong>
-              {nav.find((n) => n[0] === view)?.[1] ?? "今天的小练习"}
+              {view === "talk"
+                ? "英语小剧场"
+                : (nav.find((n) => n[0] === view)?.[1] ?? "今天的小练习")}
             </strong>
           </div>
           <div className="toolbar">
@@ -1043,6 +1052,14 @@ export default function App() {
                   </div>
                 </section>
                 <aside className="right-rail">
+                  <section className="card mint talk-entry">
+                    <span className="eyebrow">SAY A LITTLE</span>
+                    <h2>英语小剧场</h2>
+                    <p>当一回森林朋友，把学过的句子说出来。</p>
+                    <button className="secondary" onClick={() => move("talk")}>
+                      去角色练习
+                    </button>
+                  </section>
                   <section className="card sunny">
                     <p className="eyebrow">TODAY’S LITTLE ADVENTURE</p>
                     <h2>今天练一点什么？</h2>
@@ -1555,6 +1572,15 @@ export default function App() {
                 </div>
               )}
             </>
+          )}
+          {view === "talk" && (
+            <Suspense fallback={<p role="status">正在准备英语小剧场…</p>}>
+              <ConversationPlayground
+                key={identity.child?.id ?? "visitor"}
+                onBack={() => move("map")}
+                onParent={() => move("parent")}
+              />
+            </Suspense>
           )}
           {view === "lesson" && selectedLesson && (
             <LessonView

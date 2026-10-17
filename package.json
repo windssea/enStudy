@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -20,6 +20,7 @@
     "setup:local": "node scripts/setup-local.mjs",
     "setup:ai:local": "node scripts/prepare-local-ai.mjs",
     "verify:ai": "node scripts/smoke-ai.mjs",
+    "verify:voice": "node scripts/smoke-voice.mjs",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "cf:whoami": "wrangler whoami",
     "cf:plan": "node scripts/cloudflare.mjs plan",

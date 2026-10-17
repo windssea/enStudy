@@ -7,6 +7,7 @@
   --muted: #51627b;
   --blue: #2557d6;
   --border: #dae4f2;
+  --control-border: #62768f;
   --mint: #d9f4e8;
   --sun: #ffd166;
 }
@@ -20,7 +21,8 @@ body {
 }
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 button {
@@ -38,6 +40,217 @@ select:focus-visible,
 a:focus-visible {
   outline: 3px solid var(--blue);
   outline-offset: 4px;
+}
+textarea:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+}
+.voice-settings {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid var(--border);
+}
+.voice-settings > p,
+.talk-stage > p,
+.talk-guide > p {
+  margin: 12px 0;
+}
+.voice-config-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.voice-config {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #f4f8ff;
+}
+.voice-config h4 {
+  margin: 0 0 16px;
+}
+.voice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 14px 0;
+}
+.voice-recorder {
+  border: 1px dashed var(--blue);
+  border-radius: 18px;
+  padding: 16px;
+  margin: 16px 0;
+  background: #f4f8ff;
+}
+.voice-recorder audio,
+.ai-audio audio {
+  display: block;
+  max-width: 100%;
+  margin-top: 10px;
+}
+.voice-test {
+  padding-top: 16px;
+}
+.ai-audio {
+  margin-top: 14px;
+}
+.talk-scenes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 20px 0 24px;
+}
+.talk-scene {
+  display: flex;
+  text-align: left;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border: 2px solid var(--border);
+  border-radius: 22px;
+  background: white;
+  box-shadow: 0 5px 0 var(--border);
+  min-height: 144px;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+.talk-scene.selected {
+  border-color: var(--blue);
+  box-shadow: 0 5px 0 var(--blue);
+  background: #edf3ff;
+}
+.talk-scene:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 var(--border);
+}
+.talk-scene strong {
+  font-size: 20px;
+}
+.talk-scene span {
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 13px;
+}
+.talk-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  align-items: start;
+  gap: 24px;
+}
+.talk-stage {
+  min-width: 0;
+}
+.talk-stage h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  max-width: 27ch;
+  margin: 10px 0;
+}
+.talk-guide {
+  background: var(--mint);
+}
+.talk-guide ol {
+  padding-left: 22px;
+}
+.talk-guide li {
+  margin: 12px 0;
+}
+.talk-starters {
+  margin: 22px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.talk-starters p {
+  flex-basis: 100%;
+}
+.talk-starters button,
+.voice-actions button {
+  min-height: 52px;
+}
+.talk-stage textarea {
+  font: inherit;
+  padding: 14px;
+  border: 2px solid var(--control-border);
+  border-radius: 16px;
+  width: 100%;
+  resize: vertical;
+  color: var(--ink);
+  background: white;
+}
+.talk-turn {
+  display: grid;
+  gap: 16px;
+  margin: 24px 0;
+  animation: talk-arrive 250ms ease-out;
+}
+.talk-bubble {
+  border-radius: 20px 20px 20px 4px;
+  background: #edf3ff;
+  padding: 20px;
+  width: min(100%, 650px);
+}
+.talk-bubble.learner {
+  border-radius: 20px 20px 4px 20px;
+  background: var(--mint);
+  justify-self: end;
+}
+.talk-bubble > p {
+  margin: 8px 0;
+}
+.talk-bubble p[lang="en"] {
+  font-size: 21px;
+  line-height: 1.65;
+}
+.talk-bubble small {
+  color: var(--muted);
+}
+.talk-hint {
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+@keyframes talk-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 1180px) {
+  .talk-layout {
+    grid-template-columns: 1fr;
+  }
+  .voice-config-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 680px) {
+  .talk-scenes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .talk-scene {
+    padding: 14px;
+  }
+  .talk-bubble {
+    padding: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .talk-scene {
+    transition: none;
+  }
+  .talk-turn {
+    animation: none;
+  }
+}
+[data-quiet="true"] .talk-turn {
+  animation: none;
 }
 h1,
 h2,

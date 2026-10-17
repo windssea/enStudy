@@ -113,13 +113,25 @@ app.use("*", async (c, next) => {
   }
   await next();
 });
-app.use(
-  "*",
-  bodyLimit({
-    maxSize: 16 * 1024,
-    onError: (c) => c.json(fault("BODY_TOO_LARGE", "请求内容过大。"), 413),
-  }),
-);
+app.use("*", async (c, next) => {
+  const audio =
+    c.req.path === "/api/v1/ai/voice/test/asr" ||
+    /^\/api\/v1\/learning\/conversations\/[a-f0-9-]{36}\/transcribe$/.test(
+      c.req.path,
+    );
+  if (audio) {
+    const allowed = c.req.path.includes("/test/")
+      ? await readAdult(c)
+      : await actorFrom(c);
+    if (!allowed)
+      return c.json(fault("AUTH_REQUIRED", "请先登录并选择相应档案。"), 401);
+  }
+  return bodyLimit({
+    maxSize: audio ? 1024 * 1024 : 16 * 1024,
+    onError: (c) =>
+      c.json(fault("BODY_TOO_LARGE", "请求内容过大，请录制更短的音频。"), 413),
+  })(c, next);
+});
 app.onError((error, c) => {
   if (error instanceof TrainingFault)
     return c.json(fault(error.code, error.message), 409);
