@@ -28,4 +28,23 @@ PC保留侧导航。平板和窄屏底部为地图、单词、专题、句式、
 
 生产构建、Functions编译和格式检查通过。Functions本机编译体约15.8MB（gzip约674kB），Three.js模块仍约916kB（gzip约243kB）；性能与加载优化继续推进。Tabbit诊断仍exit1且无输出，未取得本轮实际视觉、触控、屏幕阅读器或设备声音验收证据。朗读使用设备Web Speech，提供停止和不可用反馈，不等同于AI语音对话，也不记录口语能力。
 
-词义、搭配与年级仍需后续教研逐条复核，更多主题、构词、听写、图词、近义辨析及教材映射继续按总体范围实施。远程发布证据在实际成功后补录。
+词义、搭配与年级仍需后续教研逐条复核，更多主题、构词、听写、图词、近义辨析及教材映射继续按总体范围实施。
+
+## 发布受免费写入额度阻挡
+
+提交`a9d29cd`的[Actions39014586732](https://github.com/windssea/enStudy/actions/runs/39014586732)中，全部代码与本地运行检查通过；Preview执行0009时Cloudflare返回`7500`，明确为D1免费每日写入额度限制。流程停在Pages上传之前，Production步骤未执行。两站当前仍为v0.8；不能把代码提交或本地通过写成线上单词特训已发布。
+
+只读核对确认两个D1的最后迁移仍是0008，新`vocabulary-bank-v1`尚不存在，失败迁移未留下本轮发布内容。本机0009已成功应用，禁止为绕过限制而改写迁移。本机功能可通过`http://127.0.0.1:5173/#words`完整体验。
+
+已停止自动反复重试，未升级付费方案或新建账户/数据库。Cloudflare官方说明免费额度在00:00 UTC重置，当前下一次为北京时间2026-10-18 08:00；这是额度恢复时间，不是保证部署成功的时间。恢复后仍须重跑迁移、发布与线上单词检查，成功后才能更新本节状态。
+
+```powershell
+# 额度重置或账户方案由用户明确调整后再运行
+gh run rerun 39014586732 --failed --repo windssea/enStudy
+# 发布成功后依次验证；均会清理专用临时档案
+node scripts/smoke-vocabulary.mjs https://development.english-quest-dev.pages.dev
+node scripts/smoke-vocabulary.mjs https://enstudy.nanokid.win
+npm run verify:isolation
+```
+
+依据：[D1免费每日额度执行与重置](https://developers.cloudflare.com/changelog/post/2026-09-01-d1-free-tier-limit-enforcement/)、[D1定价与索引写入计数](https://developers.cloudflare.com/d1/platform/pricing/)、[Wrangler迁移失败回滚](https://developers.cloudflare.com/d1/wrangler-commands/)。
