@@ -7,7 +7,7 @@ M0-05,M0,跨家庭与幂等保护,越权拒绝且并发重试只计一次,done,�
 M0-06,M0,CLI免费优先资源计划和脚本,计划输出且账号检查和默认关闭开发身份,done,scripts/cloudflare.mjs
 M0-07,M0,本人账号创建开发Pages与D1,实际ID与绑定通过远程核验,done,2026-10-17本人OAuth与CLI创建成功
 M0-08,M0,预览发布与远程冒烟,实际URL与403开发身份保护和D1绑定验证,done,npm run verify:remote共8项通过
-M0-09,M0,GitHub Actions自动部署,main检查与受限Token部署实际通过,needs-ci-token,.github/workflows/cloudflare.yml已编写
+M0-09,M0,GitHub Actions自动部署,main检查与受限Token部署实际通过,done,Actions运行39008241021完整成功与8项线上检查通过
 M1-01,M1,正式成人身份与恢复,认证D1兼容测试与撤销通过,todo,
 M1-02,M1,家庭成员与儿童设备grant,跨家庭及成人入口权限验收,todo,
 M1-03,M1,会话重载与设备接管,重载恢复且旧lease不能重复写入,todo,

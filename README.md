@@ -4,6 +4,8 @@
 
 [开发预览](https://development.english-quest-dev.pages.dev) 已部署，线上开发身份关闭。前端、Functions和DB绑定通过8项远程检查；正式登录和线上学习记录仍待开发。
 
+GitHub Actions自动部署已启用：推送main后执行检查、D1迁移与Pages/Functions发布。首次完整[部署运行39008241021](https://github.com/windssea/enStudy/actions/runs/39008241021)通过，包含27项单元检查和8项线上检查。
+
 ## 运行开发版
 
 ```powershell

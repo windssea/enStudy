@@ -12,7 +12,7 @@
 | 学习API | Hono Pages Functions、8道私有答案样题、服务端判题 | 成人正式认证、开放表达与完整题型后续实现 |
 | D1 | 26张核心表首迁移、开发档案、答题/奖励/复习原子batch | 本地workerd与D1通过；远程D1还需验证 |
 | 权限与进度 | 受限开发会话、跨家庭约束、幂等与并发重试、提示证据 | 开发身份仅本机地址可用，云端默认锁定写入 |
-| Cloudflare CLI | 独立开发Pages/D1创建、迁移、预览发布与线上8项检查 | GitHub自动部署待CI Token，正式认证与生产资源后续完成 |
+| Cloudflare CLI与GitHub Actions | 独立开发Pages/D1创建、迁移、预览发布及CI完整部署通过 | 正式认证与生产资源后续完成 |
 
 当前依赖以package-lock.json为准。安装时仅批准了esbuild和workerd两个明确依赖的安装脚本；没有全局放开依赖安装脚本。
 
