@@ -21,8 +21,10 @@ import {
   settleAi,
   type AiRequestRow,
 } from "./aiBudget";
-import { exerciseById } from "./exercises";
+import { exerciseVersion } from "./exercises";
 import type { Actor, Env } from "./app";
+import { recordExposure } from "./exposure";
+import { sentenceKey } from "../domain/exposure";
 
 export interface AiEnv extends Env, AiConfig {}
 type B = { Bindings: AiEnv; Variables: { adult: AdultSession } };
@@ -647,7 +649,7 @@ export function createAiRoutes(
         422,
       );
     const current = await c.env.DB.prepare(
-      "SELECT si.item_id,a.outcome FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.position=s.cursor LEFT JOIN attempts a ON a.assignment_id=si.id WHERE s.id=? AND s.household_id=? AND s.child_id=? AND s.state='active' AND s.lease_id=? AND s.lease_grant_id=? AND si.id=?",
+      "SELECT si.item_id,si.item_version,a.outcome FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.position=s.cursor LEFT JOIN attempts a ON a.assignment_id=si.id WHERE s.id=? AND s.household_id=? AND s.child_id=? AND s.state='active' AND s.lease_id=? AND s.lease_grant_id=? AND si.id=?",
     )
       .bind(
         c.req.param("id"),
@@ -657,7 +659,11 @@ export function createAiRoutes(
         actor.grantId,
         body.assignmentId,
       )
-      .first<{ item_id: string; outcome: string | null }>();
+      .first<{
+        item_id: string;
+        item_version: number;
+        outcome: string | null;
+      }>();
     if (!current)
       return c.json(
         fault("LEASE_REPLACED", "学习进度已变化，请先刷新当前任务。"),
@@ -681,7 +687,7 @@ export function createAiRoutes(
         fault("AI_DISABLED", "家长还没有开启AI辅助，标准讲解照常可用。"),
         403,
       );
-    const item = exerciseById.get(current.item_id)!;
+    const item = exerciseVersion(current.item_id, current.item_version)!;
     const messages = [
       {
         role: conn.instruction_role,
@@ -748,6 +754,10 @@ export function createAiRoutes(
         ),
         409,
       );
+    if ("explanation" in result)
+      await recordExposure(c.env.DB, actor, [
+        sentenceKey(result.explanation.exampleEnglish),
+      ]);
     return c.json(result);
   });
   return routes;

@@ -64,9 +64,9 @@ const submit = (session, index = 2) => {
 try {
   const metadata = await request("/lessons");
   check(
-    metadata.data.lessons.length === 24 &&
+    metadata.data.lessons.length === 48 &&
       !JSON.stringify(metadata.data).includes('"answers":'),
-    "public metadata covers 24 lessons without answer keys",
+    "public metadata covers 48 lessons without answer keys",
   );
   check(
     Object.values(metadata.data.topicAvailability).filter(Boolean).length >= 15,
@@ -196,8 +196,8 @@ try {
     } else {
       const result = advancement[0].data.result;
       check(
-        result.total === 9 && result.correct === 8 && result.independent === 7,
-        "course result separates independent, hinted and incorrect evidence",
+        result.total === 9 && result.correct === 8 && result.independent === 0,
+        "legacy demonstration repetitions count as guided rather than independent evidence",
       );
       const repeated = await next(previous);
       check(

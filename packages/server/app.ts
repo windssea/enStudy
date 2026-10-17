@@ -14,8 +14,9 @@ import {
   sampleList,
   gradeAnswer,
   normalise,
-  courseRelease,
+  courseCatalog,
   exerciseById,
+  exerciseVersion,
   topicRelease,
   patternRelease,
   vocabularyRelease,
@@ -34,6 +35,15 @@ import { createAiRoutes } from "./aiRoutes";
 import type { AiConfig } from "./aiPolicy";
 import { trainingRoutes, prepareTraining, TrainingFault } from "./training";
 import type { TrainingPhase } from "../domain/training";
+import { answerExposureKeys } from "../domain/exposure";
+import {
+  recordExposure,
+  exposureStatements,
+  lessonExampleKeys,
+  exampleShownToday,
+  exposurePredicate,
+  hashedExposureKeys,
+} from "./exposure";
 
 export interface Env extends AiConfig {
   DB: D1Database;
@@ -55,6 +65,10 @@ type Bindings = {
 export const app = new Hono<Bindings>();
 const UUID =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+// Old foundation lessons displayed every practice sentence before starting.
+// Keep immutable receipts; reports conservatively treat these runs as guided.
+const reportIndependent =
+  "CASE WHEN s.source='lesson' AND s.release_id='course-foundations-v1' THEN 0 ELSE r.independent END";
 const loopback = (host: string) =>
   ["localhost", "127.0.0.1", "[::1]"].includes(host);
 export const devAllowed = (
@@ -138,8 +152,8 @@ app.get("/api/v1/exercises", (c) =>
 );
 app.get("/api/v1/lessons", (c) =>
   c.json({
-    release: courseRelease.id,
-    lessons: courseRelease.lessons,
+    release: courseCatalog.id,
+    lessons: courseCatalog.lessons,
     topicAvailability: Object.fromEntries(
       Object.entries(topicRelease.stats).map(([id, stats]) => [
         id,
@@ -319,6 +333,7 @@ interface Assignment {
   lease_version: number;
   assignment_id: string;
   item_id: string;
+  item_version: number;
   hint_level: number;
   state: LearningSession["state"];
   cursor: number;
@@ -339,7 +354,7 @@ async function loadSession(
 ): Promise<Assignment | null> {
   return db
     .prepare(
-      `SELECT s.id,s.lease_id,s.lease_grant_id,s.lease_version,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.hint_level,si.presentation_json,tr.cycle_id,tr.phase AS training_phase,tr.checkpoint,tc.topic_id AS training_topic_id,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor LEFT JOIN training_phase_runs tr ON tr.session_id=s.id LEFT JOIN training_cycles tc ON tc.id=tr.cycle_id WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
+      `SELECT s.id,s.lease_id,s.lease_grant_id,s.lease_version,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.item_version,si.hint_level,si.presentation_json,tr.cycle_id,tr.phase AS training_phase,tr.checkpoint,tc.topic_id AS training_topic_id,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor LEFT JOIN training_phase_runs tr ON tr.session_id=s.id LEFT JOIN training_cycles tc ON tc.id=tr.cycle_id WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
     )
     .bind(id, actor.householdId, actor.childId)
     .first<Assignment>();
@@ -373,7 +388,7 @@ function sessionPayload(row: Assignment, actor: Actor): LearningSession {
         }
       : {}),
     exercise: {
-      ...publicExercise(exerciseById.get(row.item_id)!),
+      ...publicExercise(exerciseVersion(row.item_id, row.item_version)!),
       ...(row.presentation_json ? JSON.parse(row.presentation_json) : {}),
     },
   };
@@ -387,11 +402,19 @@ async function sessionSnapshot(db: D1Database, actor: Actor, row: Assignment) {
     )
     .bind(row.assignment_id, actor.householdId, actor.childId)
     .first<{ receipt_json: string }>();
+  if (attempt)
+    await recordExposure(
+      db,
+      actor,
+      answerExposureKeys(exerciseVersion(row.item_id, row.item_version)!),
+    );
   return {
     childId: actor.childId,
     session: sessionPayload(row, actor),
     receipt: attempt ? JSON.parse(attempt.receipt_json) : null,
-    hint: row.hint_level ? exerciseById.get(row.item_id)?.hint : null,
+    hint: row.hint_level
+      ? exerciseVersion(row.item_id, row.item_version)?.hint
+      : null,
   };
 }
 app.get("/api/v1/sessions/current", async (c) => {
@@ -673,7 +696,7 @@ app.post("/api/v1/sessions", async (c) => {
       );
     return c.json(sessionPayload(existing, actor));
   }
-  const lesson = courseRelease.lessons.find(
+  const lesson = courseCatalog.lessons.find(
     (lesson) => lesson.id === body.lessonId,
   );
   const training = body.trainingCycleId
@@ -737,28 +760,20 @@ app.post("/api/v1/sessions", async (c) => {
       ),
       404,
     );
-  const release = selected.some((item) => item.wordThemeId)
-    ? vocabularyRelease.id
-    : selected.some((item) => item.patternId)
-      ? patternRelease.id
-      : selected.some((item) => item.topicId)
-        ? topicRelease.id
-        : selected.some((item) => item.lessonId)
-          ? courseRelease.id
-          : "dev-samples-v1";
   const publication = await c.env.DB.prepare(
-    `SELECT status,(SELECT count(*) FROM release_items ri WHERE ri.release_id=content_releases.id AND ri.item_id IN (${selected.map(() => "?").join(",")})) AS itemCount FROM content_releases WHERE id=?`,
+    `SELECT i.id,l.release_id FROM items i JOIN lessons l ON l.id=i.lesson_id AND l.version=i.lesson_version JOIN content_releases r ON r.id=l.release_id JOIN release_items ri ON ri.release_id=r.id AND ri.item_id=i.id AND ri.item_version=i.version WHERE (${selected.map(() => "(i.id=? AND i.version=?)").join(" OR ")}) AND i.status='published' AND r.status='published'`,
   )
-    .bind(...selected.map((item) => item.id), release)
-    .first<{ status: string; itemCount: number }>();
-  if (
-    publication?.status !== "published" ||
-    publication.itemCount !== selected.length
-  )
+    .bind(...selected.flatMap((item) => [item.id, item.version ?? 1]))
+    .all<{ id: string; release_id: string }>();
+  const origins = new Map(
+    publication.results.map((row) => [row.id, row.release_id]),
+  );
+  if (origins.size !== selected.length)
     return c.json(
       fault("CONTENT_UNAVAILABLE", "这份内容暂时不可用，请换一份任务。"),
       409,
     );
+  const release = origins.get(selected[0].id)!;
   const lease = crypto.randomUUID(),
     now = Date.now();
   const createdHere =
@@ -776,7 +791,7 @@ app.post("/api/v1/sessions", async (c) => {
         now,
       ),
       c.env.DB.prepare(
-        `INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref,lease_grant_id) SELECT ?,?,?,?,?,'active',?,?,?,?,? WHERE ${grantAuthorization} AND NOT EXISTS(SELECT 1 FROM learning_sessions s WHERE s.household_id=? AND s.child_id=? AND s.state='active' AND (s.lease_grant_id IS NULL OR s.lease_grant_id<>?)) ${training ? `AND EXISTS(SELECT 1 FROM training_cycles WHERE id=? AND household_id=? AND child_id=? AND version=?) AND NOT EXISTS(SELECT 1 FROM session_items seen WHERE seen.household_id=? AND seen.child_id=? AND seen.item_id IN (${training.guardedItems.map(() => "?").join(",")}))` : ""}`,
+        `INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref,lease_grant_id) SELECT ?,?,?,?,?,'active',?,?,?,?,? WHERE ${grantAuthorization} AND NOT EXISTS(SELECT 1 FROM learning_sessions s WHERE s.household_id=? AND s.child_id=? AND s.state='active' AND (s.lease_grant_id IS NULL OR s.lease_grant_id<>?)) ${training ? `AND EXISTS(SELECT 1 FROM training_cycles WHERE id=? AND household_id=? AND child_id=? AND version=?) AND NOT EXISTS(SELECT 1 FROM session_items seen WHERE seen.household_id=? AND seen.child_id=? AND seen.item_id IN (${training.guardedItems.map(() => "?").join(",")})) AND NOT EXISTS(SELECT 1 FROM teaching_exposures e WHERE e.household_id=? AND e.child_id=? AND e.evidence_key IN (${training.guardedExposureKeys.map(() => "?").join(",")}))` : ""}`,
       ).bind(
         body.clientRequestId,
         actor.householdId,
@@ -803,6 +818,9 @@ app.post("/api/v1/sessions", async (c) => {
               actor.householdId,
               actor.childId,
               ...training.guardedItems,
+              actor.householdId,
+              actor.childId,
+              ...training.guardedExposureKeys,
             ]
           : []),
       ),
@@ -826,7 +844,7 @@ app.post("/api/v1/sessions", async (c) => {
         : []),
       ...selected.map((item, index) =>
         c.env.DB.prepare(
-          `INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version,presentation_json) SELECT ?,?,?,?,?,?,1,? WHERE ${createdHere}`,
+          `INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version,presentation_json,content_release_id) SELECT ?,?,?,?,?,?,?,?,? WHERE ${createdHere}`,
         ).bind(
           crypto.randomUUID(),
           actor.householdId,
@@ -834,15 +852,29 @@ app.post("/api/v1/sessions", async (c) => {
           body.clientRequestId,
           index,
           item.id,
+          item.version ?? 1,
           JSON.stringify({
             ...(item.choices ? { choices: shuffle(item.choices) } : {}),
             ...(item.tokens ? { tokens: shuffle(item.tokens) } : {}),
           }),
+          origins.get(item.id)!,
           body.clientRequestId,
           lease,
           actor.grantId,
         ),
       ),
+      ...(lesson
+        ? await exposureStatements(
+            c.env.DB,
+            actor,
+            lessonExampleKeys(lesson.id),
+            now,
+            {
+              sql: createdHere,
+              params: [body.clientRequestId, lease, actor.grantId],
+            },
+          )
+        : []),
     ]);
   } catch (error) {
     const concurrent = await loadSession(c.env.DB, actor, body.clientRequestId);
@@ -883,7 +915,7 @@ app.post("/api/v1/sessions/:id/next", async (c) => {
     );
   const result = () =>
     c.env.DB.prepare(
-      "SELECT session_id AS sessionId,lesson_id AS lessonId,total,correct,independent,completed_at AS completedAt FROM session_results WHERE session_id=? AND household_id=? AND child_id=?",
+      `SELECT r.session_id AS sessionId,r.lesson_id AS lessonId,r.total,r.correct,${reportIndependent} AS independent,r.completed_at AS completedAt FROM session_results r JOIN learning_sessions s ON s.id=r.session_id WHERE r.session_id=? AND r.household_id=? AND r.child_id=?`,
     )
       .bind(row.id, actor.householdId, actor.childId)
       .first();
@@ -957,7 +989,7 @@ app.post("/api/v1/sessions/:id/next", async (c) => {
 app.get("/api/v1/learning/summary", async (c) => {
   const actor = c.get("actor");
   const completed = await c.env.DB.prepare(
-    "SELECT lesson_id AS lessonId,max(completed_at) AS completedAt,count(*) AS runs,max(independent) AS bestIndependent,max(total) AS total FROM session_results WHERE household_id=? AND child_id=? AND lesson_id IS NOT NULL GROUP BY lesson_id",
+    `SELECT r.lesson_id AS lessonId,max(r.completed_at) AS completedAt,count(*) AS runs,max(${reportIndependent}) AS bestIndependent,max(r.total) AS total FROM session_results r JOIN learning_sessions s ON s.id=r.session_id WHERE r.household_id=? AND r.child_id=? AND r.lesson_id IS NOT NULL GROUP BY r.lesson_id`,
   )
     .bind(actor.householdId, actor.childId)
     .all();
@@ -967,7 +999,7 @@ app.get("/api/v1/learning/summary", async (c) => {
     .bind(actor.householdId, actor.childId, Date.now())
     .first<{ total: number }>();
   const recent = await c.env.DB.prepare(
-    "SELECT session_id AS sessionId,lesson_id AS lessonId,total,correct,independent,completed_at AS completedAt FROM session_results WHERE household_id=? AND child_id=? ORDER BY completed_at DESC LIMIT 10",
+    `SELECT r.session_id AS sessionId,r.lesson_id AS lessonId,r.total,r.correct,${reportIndependent} AS independent,r.completed_at AS completedAt FROM session_results r JOIN learning_sessions s ON s.id=r.session_id WHERE r.household_id=? AND r.child_id=? ORDER BY r.completed_at DESC LIMIT 10`,
   )
     .bind(actor.householdId, actor.childId)
     .all();
@@ -985,6 +1017,13 @@ app.get("/api/v1/learning/vocabulary", async (c) => {
     .bind(Date.now(), actor.householdId, actor.childId)
     .first();
   return c.json(summary ?? { practisedWords: 0, dueWords: 0 });
+});
+app.post("/api/v1/learning/lessons/:id/view", async (c) => {
+  const keys = lessonExampleKeys(c.req.param("id"));
+  if (!keys.length)
+    return c.json(fault("NOT_FOUND", "这节课还在准备中。"), 404);
+  await recordExposure(c.env.DB, c.get("actor"), keys);
+  return c.json({ saved: true });
 });
 app.get("/api/v1/sessions/:id/snapshot", async (c) => {
   const actor = c.get("actor"),
@@ -1017,10 +1056,10 @@ app.post("/api/v1/sessions/:id/hint", async (c) => {
       fault("SESSION_CHANGED", "题目已经变化，请重新打开当前练习。"),
       409,
     );
-  const result = await c.env.DB.prepare(
-    `UPDATE session_items SET hint_level=1 WHERE id=? AND household_id=? AND child_id=? AND NOT EXISTS(SELECT 1 FROM attempts WHERE assignment_id=session_items.id) AND EXISTS(SELECT 1 FROM learning_sessions WHERE id=session_items.session_id AND state='active' AND lease_id=? AND lease_grant_id=?) AND ${grantAuthorization}`,
-  )
-    .bind(
+  const results = await c.env.DB.batch([
+    c.env.DB.prepare(
+      `UPDATE session_items SET hint_level=1 WHERE id=? AND household_id=? AND child_id=? AND NOT EXISTS(SELECT 1 FROM attempts WHERE assignment_id=session_items.id) AND EXISTS(SELECT 1 FROM learning_sessions WHERE id=session_items.session_id AND state='active' AND lease_id=? AND lease_grant_id=?) AND ${grantAuthorization}`,
+    ).bind(
       row.assignment_id,
       actor.householdId,
       actor.childId,
@@ -1029,12 +1068,22 @@ app.post("/api/v1/sessions/:id/hint", async (c) => {
       actor.grantId,
       Date.now(),
       Date.now(),
-    )
-    .run();
-  if (!result.meta.changes)
+    ),
+    ...(await exposureStatements(
+      c.env.DB,
+      actor,
+      answerExposureKeys(exerciseVersion(row.item_id, row.item_version)!),
+      Date.now(),
+      {
+        sql: "EXISTS(SELECT 1 FROM session_items si JOIN learning_sessions s ON s.id=si.session_id WHERE si.id=? AND si.hint_level=1 AND s.state='active' AND s.lease_id=? AND s.lease_grant_id=? AND NOT EXISTS(SELECT 1 FROM attempts a WHERE a.assignment_id=si.id))",
+        params: [row.assignment_id, row.lease_id, actor.grantId],
+      },
+    )),
+  ]);
+  if (!results[0].meta.changes)
     return c.json(fault("SESSION_CHANGED", "这次作答已完成或已切换。"), 409);
   return c.json({
-    hint: exerciseById.get(row.item_id)!.hint,
+    hint: exerciseVersion(row.item_id, row.item_version)!.hint,
     independentEvidence: false,
   });
 });
@@ -1042,6 +1091,8 @@ interface StoredAttempt {
   event_id: string;
   answer_json: string;
   receipt_json: string;
+  item_id: string;
+  item_version: number;
 }
 interface StoredCard {
   stage: number;
@@ -1079,17 +1130,26 @@ app.post("/api/v1/attempts", async (c) => {
   const canonical = JSON.stringify(normalise(body.answer));
   const prior = () =>
     c.env.DB.prepare(
-      "SELECT event_id,answer_json,receipt_json FROM attempts WHERE household_id=? AND child_id=? AND (event_id=? OR assignment_id=?)",
+      "SELECT a.event_id,a.answer_json,a.receipt_json,si.item_id,si.item_version FROM attempts a JOIN session_items si ON si.id=a.assignment_id WHERE a.household_id=? AND a.child_id=? AND (a.event_id=? OR a.assignment_id=?)",
     )
       .bind(actor.householdId, actor.childId, body.eventId, body.assignmentId)
       .first<StoredAttempt>();
-  const respondPrior = (stored: StoredAttempt) =>
-    stored.answer_json === canonical
-      ? c.json(JSON.parse(stored.receipt_json) as Receipt)
-      : c.json(
-          fault("IDEMPOTENCY_MISMATCH", "此编号已经提交过另一个答案。"),
-          409,
-        );
+  const respondPrior = async (stored: StoredAttempt) => {
+    if (stored.answer_json === canonical) {
+      await recordExposure(
+        c.env.DB,
+        actor,
+        answerExposureKeys(
+          exerciseVersion(stored.item_id, stored.item_version)!,
+        ),
+      );
+      return c.json(JSON.parse(stored.receipt_json) as Receipt);
+    }
+    return c.json(
+      fault("IDEMPOTENCY_MISMATCH", "此编号已经提交过另一个答案。"),
+      409,
+    );
+  };
   for (let retry = 0; retry < 3; retry++) {
     const stored = await prior();
     if (stored) return respondPrior(stored);
@@ -1105,13 +1165,15 @@ app.post("/api/v1/attempts", async (c) => {
         fault("LEASE_REPLACED", "学习会话已切换，请重新打开练习。"),
         409,
       );
-    const exercise = exerciseById.get(row.item_id)!;
+    const exercise = exerciseVersion(row.item_id, row.item_version)!;
+    const evidenceKeys = await hashedExposureKeys(answerExposureKeys(exercise));
+    const support = row.hint_level
+      ? "hint"
+      : (await exampleShownToday(c.env.DB, actor, exercise))
+        ? "example"
+        : undefined;
     const correct = gradeAnswer(exercise, body.answer);
-    const outcome = !correct
-      ? "incorrect"
-      : row.hint_level
-        ? "hinted"
-        : "correct";
+    const outcome = !correct ? "incorrect" : support ? "hinted" : "correct";
     const now = Date.now(),
       day = localDay(now, actor.timezone);
     const child = await c.env.DB.prepare(
@@ -1137,6 +1199,7 @@ app.post("/api/v1/attempts", async (c) => {
     const next = schedule(card, day, outcome),
       sequence = child!.stream_version + 1;
     const receipt: Receipt = {
+      ...(support ? { support } : {}),
       eventId: body.eventId,
       outcome,
       independentEvidence: outcome === "correct",
@@ -1148,7 +1211,7 @@ app.post("/api/v1/attempts", async (c) => {
     try {
       await c.env.DB.batch([
         c.env.DB.prepare(
-          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND ${grantAuthorization} AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.lease_grant_id=? AND s.state='active' AND si.id=? AND si.hint_level=?)`,
+          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND ${grantAuthorization} AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.lease_grant_id=? AND s.state='active' AND si.id=? AND si.hint_level=?) ${outcome === "correct" ? `AND ${exposurePredicate(answerExposureKeys(exercise).length)}` : ""}`,
         ).bind(
           actor.childId,
           actor.householdId,
@@ -1161,12 +1224,15 @@ app.post("/api/v1/attempts", async (c) => {
           actor.grantId,
           body.assignmentId,
           row.hint_level,
+          ...(outcome === "correct"
+            ? [actor.householdId, actor.childId, day, ...evidenceKeys]
+            : []),
         ),
         c.env.DB.prepare(
           "INSERT INTO commit_assertions(event_id,household_id,child_id,ok) VALUES(?,?,?,changes())",
         ).bind(body.eventId, actor.householdId, actor.childId),
         c.env.DB.prepare(
-          `INSERT INTO attempts(event_id,household_id,child_id,assignment_id,server_sequence,answer_json,outcome,independent_evidence,evidence_source,received_at,algorithm_version,receipt_json) VALUES(?,?,?,?,?,?,?,?,'online',?,'rules-v1',?)`,
+          `INSERT INTO attempts(event_id,household_id,child_id,assignment_id,server_sequence,answer_json,outcome,independent_evidence,evidence_source,received_at,algorithm_version,receipt_json) VALUES(?,?,?,?,?,?,?,?,'online',?,'rules-v2-exposure',?)`,
         ).bind(
           body.eventId,
           actor.householdId,
@@ -1179,6 +1245,12 @@ app.post("/api/v1/attempts", async (c) => {
           now,
           JSON.stringify(receipt),
         ),
+        ...(await exposureStatements(
+          c.env.DB,
+          actor,
+          answerExposureKeys(exercise),
+          now,
+        )),
         c.env.DB.prepare(
           `INSERT INTO review_cards(household_id,child_id,skill_id,modality,stage,due_at,lapses,independent_successes,last_success_day,version) VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(child_id,skill_id,modality) DO UPDATE SET stage=excluded.stage,due_at=excluded.due_at,lapses=excluded.lapses,independent_successes=excluded.independent_successes,last_success_day=excluded.last_success_day,version=excluded.version`,
         ).bind(

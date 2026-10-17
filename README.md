@@ -1,6 +1,6 @@
 # 英语探险岛
 
-面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.14：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。云端仍为v0.8，单词特训、3D动效、受管理家庭账号、跨设备续学、BYOK文本辅助与分步专题尚未发布。
+面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.15：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。课程48/288节，覆盖各年级前两个单元的文字核心内容；云端仍为v0.8，后续本地阶段尚未发布。
 
 [开发预览](https://development.english-quest-dev.pages.dev) 通过GitHub Actions发布。M1加入管理员登录（账号admin，密码使用用户指定值）、关闭注册、儿童档案管理与刷新续学；开发测试身份继续只限本机。验证与剩余范围见[M1进展](docs/23-next-phase-progress.md)。
 
@@ -36,7 +36,9 @@ v0.13加入家长自带AI文本服务：加密保存Key、域名白名单、文�
 
 v0.14为60专题加入分步计划：5题小尝试、10题巩固、5题应用和第1/3/7天回访，题池隔离、全部分配历史避重、逾期合并及暂停任务显式恢复。复习花园与家长报告可查看计划。114项单元检查与275项本地运行检查通过，真实界面与教学质量待验；见[分步训练记录](docs/33-topic-training-journeys.md)，可在[本机专题中心](http://127.0.0.1:5173/#topics)体验。
 
-同家庭多成人邀请、全面错因诊断与开放场景迁移、专用评估内容、离线队列、AI对话/出题/语音、教材精确映射及完整288课仍在里程碑待办中。当前只需儿童昵称和年级，不需要真实姓名或生日；设备朗读不等同于AI语音对话。
+v0.15新增六年级段第二单元24课、216任务（213句子家族），示范和练习分离；当天已看示范的正确答案单独记录，隔天独立提取仍可复习晋级。追加v2目标版本、历史任务恢复和混合来源复习，避免复制旧题库成员表。120项单元与297项本机运行检查通过；详见[课程扩展与示范证据](docs/34-course-expansion-and-exposure.md)，可在[本机地图](http://127.0.0.1:5173/#map)进入第二单元。
+
+同家庭多成人邀请、全面错因诊断与开放场景迁移、专用评估内容、离线队列、AI对话/出题/语音、教材精确映射及剩余240课仍在里程碑待办中。当前只需儿童昵称和年级，不需要真实姓名或生日；设备朗读不等同于AI语音对话。
 
 ## 检查和部署
 
@@ -49,6 +51,7 @@ npm run verify:account
 npm run verify:managed-accounts
 npm run verify:ownership
 npm run verify:course
+npm run verify:course-expansion
 npm run verify:topics
 npm run verify:training
 npm run verify:patterns

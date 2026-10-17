@@ -234,7 +234,7 @@ export default function TopicJourney({
                           {r.checkpoint ? ` · 第${r.checkpoint}天` : ""}
                         </strong>
                         <span>
-                          独立答对{r.independent}/{r.total}题 · 提示后答对
+                          独立答对{r.independent}/{r.total}题 · 提示/示范后答对
                           {(r.correct ?? 0) - (r.independent ?? 0)}题 · 还需巩固
                           {(r.total ?? 0) - (r.correct ?? 0)}题
                         </span>

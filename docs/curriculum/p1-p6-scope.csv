@@ -1,6 +1,6 @@
 ﻿unit_id,grade,term,unit_in_term,title,grammar_focus,vocabulary_theme,phonics_or_word_strategy,integrated_task,lesson_count,minimum_unit_items,mapping_status,content_status
-P1A-U01,1,A,1,你好新朋友,I am / You are,问候与姓名,字母名与常见音,听懂问候并介绍自己,4,36,not_bound,planned
-P1A-U02,1,A,2,我的书包,a / an; this is,文具与颜色,短元音a,读图识物并标注书包物品,4,36,not_bound,planned
+P1A-U01,1,A,1,你好新朋友,I am / You are,问候与姓名,字母名与常见音,听懂问候并介绍自己,4,36,not_bound,partial_text_core
+P1A-U02,1,A,2,我的书包,a / an; this is,文具与颜色,短元音a,读图识物并标注书包物品,4,36,not_bound,partial_text_core
 P1A-U03,1,A,3,玩具屋,单数与规则复数,玩具与数字1至10,短元音i,数一数并介绍玩具,4,36,not_bound,planned
 P1A-U04,1,A,4,我的家人,he / she; is,家庭与人物,短元音o,读家庭图并介绍一位家人,4,36,not_bound,planned
 P1A-U05,1,A,5,开心的一天,am / is / are,感受与状态,短元音e,听人物状态并用短句表达,4,36,not_bound,planned
@@ -11,8 +11,8 @@ P1B-U03,1,B,3,我的教室,where; in / on / under,教室与位置,起始辅音,�
 P1B-U04,1,B,4,一起动起来,can / can't,动作与运动,末尾辅音,听动作任务并说明能做什么,4,36,not_bound,planned
 P1B-U05,1,B,5,天气小记者,It is; weather,天气与衣物,初步词族,读天气卡并选衣物,4,36,not_bound,planned
 P1B-U06,1,B,6,我们的英语小展览,基础句型综合,全年主题复现,CVC混合复习,制作图文小册并口头介绍,4,36,not_bound,planned
-P2A-U01,2,A,1,我的新朋友,主语代词与be复习,个人信息与爱好,长元音a_e,读名片并介绍朋友,4,36,not_bound,planned
-P2A-U02,2,A,2,我会做这些,can问句与回答,技能与活动,长元音i_e,做技能调查并报告,4,36,not_bound,planned
+P2A-U01,2,A,1,我的新朋友,主语代词与be复习,个人信息与爱好,长元音a_e,读名片并介绍朋友,4,36,not_bound,partial_text_core
+P2A-U02,2,A,2,我会做这些,can问句与回答,技能与活动,长元音i_e,做技能调查并报告,4,36,not_bound,partial_text_core
 P2A-U03,2,A,3,快乐的家,there is / there are,房间与家具,长元音o_e,读房屋图并描述房间,4,36,not_bound,planned
 P2A-U04,2,A,4,整理小能手,物主形容词my / your / his / her,衣物与所属,长元音u_e,听失物描述并认领,4,36,not_bound,planned
 P2A-U05,2,A,5,去动物园,has / have,动物身体特征,sh / ch,阅读动物卡并比较外形,4,36,not_bound,planned
@@ -23,8 +23,8 @@ P2B-U03,2,B,3,社区散步,where; next to / near,社区地点,oa / ow长元音,�
 P2B-U04,2,B,4,穿衣小助手,these / those,衣物与季节,oo常见发音,读衣物描述并挑选,4,36,not_bound,planned
 P2B-U05,2,B,5,好习惯,and / but简单连接,健康与卫生,辅音连缀st / sp,读习惯清单并表达选择,4,36,not_bound,planned
 P2B-U06,2,B,6,我的周末图鉴,能力与日常综合,周末主题复现,辅音连缀bl / cl,制作周末图鉴并讲述,4,36,not_bound,planned
-P3A-U01,3,A,1,校园里的我们,be与have综合,校园与同伴,词族与拼读策略,读人物档案并完成介绍,4,36,not_bound,planned
-P3A-U02,3,A,2,一天的节奏,第三人称一般现在时,作息与时间,词尾s三种读音,听作息并描述朋友的一天,4,36,not_bound,planned
+P3A-U01,3,A,1,校园里的我们,be与have综合,校园与同伴,词族与拼读策略,读人物档案并完成介绍,4,36,not_bound,partial_text_core
+P3A-U02,3,A,2,一天的节奏,第三人称一般现在时,作息与时间,词尾s三种读音,听作息并描述朋友的一天,4,36,not_bound,partial_text_core
 P3A-U03,3,A,3,爱好俱乐部,do / does问句,爱好与频率,频率词拼写,调查爱好并整理结果,4,36,not_bound,planned
 P3A-U04,3,A,4,忙碌的现在,现在进行时肯定句,动作与场景,ing词形变化,读场景并说正在发生什么,4,36,not_bound,planned
 P3A-U05,3,A,5,寻找朋友,现在进行时问句,地点与活动,ng / nk,听线索定位人物,4,36,not_bound,planned
@@ -35,8 +35,8 @@ P3B-U03,3,B,3,去哪里玩,there be与方位综合,出行与公共地点,er / ir
 P3B-U04,3,B,4,一年四季,because简单原因,季节与天气,比较常见音形,读季节短文并解释喜好,4,36,not_bound,planned
 P3B-U05,3,B,5,小小厨房,可数与不可数入门,食材与烹饪,量词与高频词,读简易食谱并排序步骤,4,36,not_bound,planned
 P3B-U06,3,B,6,给朋友的邀请,现在时与问句综合,聚会与邀请,拼写检查策略,读邀请卡并写简短邀请,4,36,not_bound,planned
-P4A-U01,4,A,1,新学期新目标,现在时综合与频率副词,学习习惯与目标,高频不规则词,读学习日志并制定计划,4,36,not_bound,planned
-P4A-U02,4,A,2,过去的周末,was / were,过去活动与感受,过去式ed读音,听周末经历并写短记录,4,36,not_bound,planned
+P4A-U01,4,A,1,新学期新目标,现在时综合与频率副词,学习习惯与目标,高频不规则词,读学习日志并制定计划,4,36,not_bound,partial_text_core
+P4A-U02,4,A,2,过去的周末,was / were,过去活动与感受,过去式ed读音,听周末经历并写短记录,4,36,not_bound,partial_text_core
 P4A-U03,4,A,3,有趣的旅行,一般过去时规则动词,旅行与交通,规则过去式拼写,读旅行故事并整理时间线,4,36,not_bound,planned
 P4A-U04,4,A,4,故事里的发现,一般过去时常见不规则动词,故事动作与地点,不规则动词词形,复述简短故事的主要事件,4,36,not_bound,planned
 P4A-U05,4,A,5,更高更快更好,比较级,尺寸与运动特征,er比较级词形,读资料比较两件事物,4,36,not_bound,planned
@@ -47,8 +47,8 @@ P4B-U03,4,B,3,问路小帮手,方向祈使与位置介词,道路与地标,方位
 P4B-U04,4,B,4,安全与规则,must / mustn't,安全与公共规则,常见词尾,读规则海报并制作提示,4,36,not_bound,planned
 P4B-U05,4,B,5,周末将要做什么,be going to,未来活动与准备,缩略形式识读,看计划表并描述打算,4,36,not_bound,planned
 P4B-U06,4,B,6,我的故事展,过去现在与计划综合,全年主题复现,上下文猜词入门,写一封包含经历和计划的短信,4,36,not_bound,planned
-P5A-U01,5,A,1,我的成长手册,现在时与过去时对比,成长与个人经历,前缀un / re,读成长记录并描述变化,4,36,not_bound,planned
-P5A-U02,5,A,2,运动与健康,频率与程度副词,锻炼与健康选择,副词ly词形,读习惯调查并提出建议,4,36,not_bound,planned
+P5A-U01,5,A,1,我的成长手册,现在时与过去时对比,成长与个人经历,前缀un / re,读成长记录并描述变化,4,36,not_bound,partial_text_core
+P5A-U02,5,A,2,运动与健康,频率与程度副词,锻炼与健康选择,副词ly词形,读习惯调查并提出建议,4,36,not_bound,partial_text_core
 P5A-U03,5,A,3,那时正在发生,过去进行时入门,事件与动作,ing复习与词重音,根据图片描述过去场景,4,36,not_bound,planned
 P5A-U04,5,A,4,意外与帮助,when连接过去事件,帮助与意外,常见同形异义线索,阅读事件经过并整理因果,4,36,not_bound,planned
 P5A-U05,5,A,5,城市与乡村,比较级最高级综合,社区与环境,比较词与构词,比较生活环境并给理由,4,36,not_bound,planned
@@ -59,8 +59,8 @@ P5B-U03,5,B,3,绿色行动,because / so / although入门,环保与资源,前后�
 P5B-U04,5,B,4,美食与文化,数量限定much / many / a few,食物与文化,可数词与词形,比较菜单并介绍一种食物,4,36,not_bound,planned
 P5B-U05,5,B,5,数字世界,情态动词与规则综合,网络与信息,常见复合词,读安全提示并说明选择,4,36,not_bound,planned
 P5B-U06,5,B,6,我的观点小报,连接词与段落组织,校园议题复现,关键词与查词策略,写有主题句和理由的短段落,4,36,not_bound,planned
-P6A-U01,6,A,1,成为自主学习者,时态与问句诊断复习,学习策略与目标,词典与上下文策略,读学习建议并制定自评表,4,36,not_bound,planned
-P6A-U02,6,A,2,难忘的经历,现在完成时ever / never入门,经历与活动,过去分词常见词形,访谈经历并区分具体过去时间,4,36,not_bound,planned
+P6A-U01,6,A,1,成为自主学习者,时态与问句诊断复习,学习策略与目标,词典与上下文策略,读学习建议并制定自评表,4,36,not_bound,partial_text_core
+P6A-U02,6,A,2,难忘的经历,现在完成时ever / never入门,经历与活动,过去分词常见词形,访谈经历并区分具体过去时间,4,36,not_bound,partial_text_core
 P6A-U03,6,A,3,生活里的变化,过去与现在完成表达入门,变化与发展,词缀与词性线索,读变化短文并归纳证据,4,36,not_bound,planned
 P6A-U04,6,A,4,好故事有线索,过去时与过去进行时综合,叙事与情绪,叙事连接词,阅读故事并写有顺序的片段,4,36,not_bound,planned
 P6A-U05,6,A,5,如果我们一起行动,if真实条件句入门,选择与结果,词义关系与搭配,读行动方案并预测结果,4,36,not_bound,planned

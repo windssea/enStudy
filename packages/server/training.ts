@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import type { Actor, Env } from "./app";
 import { exerciseById, topicRelease, exercises } from "./exercises";
+import { hashedExposureKeys } from "./exposure";
+import { answerExposureKeys } from "../domain/exposure";
 import {
   drawTraining,
   nextTrainingStep,
@@ -164,6 +166,23 @@ export async function prepareTraining(
       return item ? trainingExposureKeys(item) : [r.item_id];
     }),
   );
+  const teaching = new Set(
+    (
+      await db
+        .prepare(
+          "SELECT evidence_key FROM teaching_exposures WHERE household_id=? AND child_id=?",
+        )
+        .bind(actor.householdId, actor.childId)
+        .all<{ evidence_key: string }>()
+    ).results.map((r) => r.evidence_key),
+  );
+  for (const item of topicItems.get(topic) ?? [])
+    if (
+      (await hashedExposureKeys(answerExposureKeys(item))).some((key) =>
+        teaching.has(key),
+      )
+    )
+      exposed.add(item.family ?? item.id);
   const weak = (
     await db
       .prepare(
@@ -192,7 +211,10 @@ export async function prepareTraining(
       ),
     ),
   ];
-  return { cycle, step, items, guardedItems };
+  const guardedExposureKeys = await hashedExposureKeys(
+    items.flatMap((item) => answerExposureKeys(item)),
+  );
+  return { cycle, step, items, guardedItems, guardedExposureKeys };
 }
 export const trainingRoutes = new Hono<{
   Bindings: Env;

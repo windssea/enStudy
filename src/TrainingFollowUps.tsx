@@ -87,7 +87,7 @@ export default function TrainingFollowUps({
                 {all && last && (
                   <p className="footnote">
                     最近完成{trainingLabels[last.phase]} · 独立答对
-                    {last.independent}/{last.total}题 · 提示后答对
+                    {last.independent}/{last.total}题 · 提示/示范后答对
                     {(last.correct ?? 0) - (last.independent ?? 0)}题
                   </p>
                 )}

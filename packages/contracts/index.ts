@@ -61,6 +61,10 @@ export interface TeachingCard {
   translation: string;
 }
 export interface CourseLesson {
+  version?: number;
+  releaseId?: string;
+  unitNumber?: number;
+  unitLesson?: number;
   id: string;
   unitId: string;
   unitTitle?: string;
@@ -125,6 +129,7 @@ export interface LearningSummary {
   recent: SessionResult[];
 }
 export interface Receipt {
+  support?: "hint" | "example";
   eventId: string;
   outcome: "correct" | "incorrect" | "hinted";
   independentEvidence: boolean;

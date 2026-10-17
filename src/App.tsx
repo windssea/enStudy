@@ -1112,6 +1112,7 @@ export default function App() {
                             {completed ? "已完成练习" : "约6分钟"}
                           </span>
                           <h3>{lesson.title}</h3>
+                          <p className="footnote">{lesson.unitTitle}</p>
                           <p>{lesson.subtitle}</p>
                           <small>
                             {lesson.itemCount}个练习任务 ·{" "}
@@ -1445,7 +1446,7 @@ export default function App() {
                     <h2>这一小轮，完成啦！</h2>
                     <p>
                       完成{lastResult.total}步练习 · 独立答对
-                      {lastResult.independent}步 · 包含提示共答对
+                      {lastResult.independent}步 · 含提示/示范共答对
                       {lastResult.correct}步
                     </p>
                     <p>
@@ -1557,6 +1558,7 @@ export default function App() {
           )}
           {view === "lesson" && selectedLesson && (
             <LessonView
+              childId={identity.child?.id}
               lesson={selectedLesson}
               busy={busy}
               onStart={() => start("", { lessonId: selectedLesson.id })}
@@ -1779,7 +1781,9 @@ export default function App() {
                         {receipt.outcome === "correct"
                           ? "这一步，想对了！"
                           : receipt.outcome === "hinted"
-                            ? "跟着提示，完成了这一步。"
+                            ? receipt.support === "example"
+                              ? "跟着示范，完成了这一步。"
+                              : "跟着提示，完成了这一步。"
                             : "先看看这个规律，再用新题练习。"}
                       </strong>
                       <p>{receipt.feedback}</p>
@@ -1833,7 +1837,7 @@ export default function App() {
                 </fieldset>
               </article>
               <p className="footnote">
-                同一份答案重试不会重复计分；提示后答对不晋级。每轮学完可以休息，完整课程会持续更新。
+                同一份答案重试不会重复计分；提示/示范后答对不晋级。每轮学完可以休息，完整课程会持续更新。
               </p>
             </div>
           )}

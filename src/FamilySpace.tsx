@@ -352,7 +352,8 @@ export default function FamilySpace({
             </li>
           </ol>
           <div className="notice">
-            当前有24节首站语法与表达微课，覆盖一至六年级。其余课程、完整听说读写与教材映射会按阶段更新。
+            当前有{lessons.length}
+            节文字语法与表达微课，覆盖一至六年级的前两个单元。其余课程、完整听说读写与教材映射会按阶段更新。
           </div>
         </aside>
       </div>
@@ -419,7 +420,7 @@ export default function FamilySpace({
             <p className="notice">完成一轮练习后，这里就会留下孩子的小进步。</p>
           )}
           <p className="footnote">
-            使用提示后的答对会单独记录；完成一课不代表已经完全掌握。
+            提示或当天看过示范后的答对会单独记录；完成一课不代表已经完全掌握。
           </p>
         </section>
       )}

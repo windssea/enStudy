@@ -44,6 +44,9 @@ for (const path of [
   "/tests/auth.test.ts",
   "/content/course-release.v1.json",
   "/content/courses-v1.mjs",
+  "/content/course-expansion.v1.json",
+  "/content/course-expansion.latest.json",
+  "/content/courses-expansion-v1.mjs",
   "/content/topic-release.v1.json",
   "/content/topics-v1.mjs",
   "/content/pattern-release.v1.json",
@@ -151,8 +154,13 @@ checked("concurrent-retry-returns-one-receipt", () => {
   assert.equal(one.data.serverSequence, two.data.serverSequence);
 });
 checked("server-graded-and-scheduled", () => {
-  assert.equal(one.data.outcome, "correct");
-  assert.equal(one.data.independentEvidence, true);
+  assert.ok(
+    (one.data.outcome === "correct" && one.data.independentEvidence) ||
+      (one.data.outcome === "hinted" &&
+        one.data.support === "example" &&
+        !one.data.independentEvidence),
+    "correct grading distinguishes fresh material from examples already shown to this reusable local profile",
+  );
   assert.match(one.data.nextReviewDay, /^\d{4}-\d{2}-\d{2}$/);
 });
 const after = (await request("/progress", { cookie: a.cookie })).data;

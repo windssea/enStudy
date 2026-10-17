@@ -1,6 +1,8 @@
 import type { CourseLesson } from "../packages/contracts/index";
 import SpeechButton from "./SpeechButton";
 import SceneStage from "./SceneStage";
+import { useEffect } from "react";
+import { api } from "./api";
 
 export default function LessonView({
   lesson,
@@ -8,13 +10,19 @@ export default function LessonView({
   onStart,
   onBack,
   completed,
+  childId,
 }: {
   lesson: CourseLesson;
   busy: boolean;
   onStart: () => void;
   onBack: () => void;
   completed: boolean;
+  childId?: string;
 }) {
+  useEffect(() => {
+    if (childId)
+      void api(`/learning/lessons/${lesson.id}/view`, {}).catch(() => {});
+  }, [childId, lesson.id]);
   return (
     <div className="lesson-view">
       <button className="secondary" onClick={onBack}>
@@ -25,7 +33,8 @@ export default function LessonView({
           <p className="eyebrow">LEARN IT. TRY IT. USE IT.</p>
           <span className="badge">
             {["一", "二", "三", "四", "五", "六"][lesson.grade - 1]}年级 · 第
-            {lesson.order}课 · 约{lesson.minutes}分钟
+            {lesson.unitLesson ?? lesson.order}课 · {lesson.unitTitle} · 约
+            {lesson.minutes}分钟
           </span>
           <h1>{lesson.title}</h1>
           <p className="lead">{lesson.subtitle}</p>

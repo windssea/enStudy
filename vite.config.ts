@@ -12,6 +12,7 @@ export default defineConfig({
         "**/.dev.vars*",
         "**/content/exercises.json",
         "**/content/course-release*.json",
+        "**/content/course-expansion*.json",
         "**/content/courses-*.mjs",
         "**/content/topic-release*.json",
         "**/content/topics-*.mjs",

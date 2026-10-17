@@ -49,6 +49,7 @@ try {
   await run("smoke-managed-accounts.mjs");
   await run("smoke-session-ownership.mjs");
   await run("smoke-course.mjs");
+  await run("smoke-course-expansion.mjs");
   await run("smoke-topics.mjs");
   await run("smoke-training.mjs");
   await run("smoke-patterns.mjs");

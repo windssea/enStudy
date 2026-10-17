@@ -1,5 +1,7 @@
 import raw from "../../content/exercises.json";
 import course from "../../content/course-release.v1.json";
+import expansion from "../../content/course-expansion.v1.json";
+import expansionLatest from "../../content/course-expansion.latest.json";
 import topics from "../../content/topic-release.v1.json";
 import patterns from "../../content/pattern-release.v1.json";
 import vocabulary from "../../content/vocabulary-release.v1.json";
@@ -13,6 +15,7 @@ import type {
   WordMode,
 } from "../contracts/index";
 export interface PrivateExercise extends Exercise {
+  version?: number;
   answers: string[];
   skill: string;
   modality: string;
@@ -33,6 +36,17 @@ export const courseRelease = course as unknown as {
   lessons: CourseLesson[];
   items: PrivateExercise[];
   topicSkills: Record<string, string>;
+};
+export const courseExpansion = expansionLatest as unknown as {
+  id: string;
+  manifestHash: string;
+  lessons: CourseLesson[];
+  items: PrivateExercise[];
+};
+export const courseCatalog = {
+  id: "course-catalog-v2",
+  lessons: [...courseRelease.lessons, ...courseExpansion.lessons],
+  items: [...courseRelease.items, ...courseExpansion.items],
 };
 export const topicRelease = topics as unknown as {
   id: string;
@@ -61,6 +75,7 @@ export const patternRelease = patterns as unknown as {
 export const exercises = [
   ...raw,
   ...courseRelease.items,
+  ...courseExpansion.items,
   ...topicRelease.items,
   ...patternRelease.items,
   ...vocabulary.items,
@@ -77,6 +92,14 @@ export const wordThemes: WordTheme[] = vocabularyRelease.themes.map(
   ({ words, ...theme }) => theme,
 );
 export const exerciseById = new Map(exercises.map((item) => [item.id, item]));
+const versionedExercises = new Map(
+  [...expansion.items, ...exercises].map((item) => [
+    `${item.id}@${(item as PrivateExercise).version ?? 1}`,
+    item as PrivateExercise,
+  ]),
+);
+export const exerciseVersion = (id: string, version = 1) =>
+  versionedExercises.get(`${id}@${version}`);
 export function publicExercise(exercise: PrivateExercise): Exercise {
   const {
     id,
