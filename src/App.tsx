@@ -25,6 +25,8 @@ import type {
 import { api } from "./api";
 import FamilySpace from "./FamilySpace";
 import LessonView from "./LessonView";
+import SceneStage, { MotionShell } from "./SceneStage";
+import FlatMap from "./FlatMap";
 const World = lazy(() => import("./World"));
 const WordTraining = lazy(() => import("./WordTraining"));
 const labels: Record<string, string> = {
@@ -118,17 +120,21 @@ function Icon({ kind = "compass" }: { kind?: string }) {
   );
 }
 class WorldBoundary extends Component<
-  { children: ReactNode },
+  { children: ReactNode; onLost: () => void },
   { failed: boolean }
 > {
   state = { failed: false };
   static getDerivedStateFromError() {
     return { failed: true };
   }
+  componentDidCatch() {
+    this.props.onLost();
+  }
   render() {
     return this.state.failed ? (
-      <div className="world-fallback">
-        地图暂时使用2D模式，下方单元入口照常可用。
+      <div className="world-static">
+        <FlatMap />
+        <p>地图暂时使用2D模式，下方单元入口照常可用。</p>
       </div>
     ) : (
       this.props.children
@@ -497,7 +503,7 @@ export default function App() {
     ["parent", "家长空间", "person"],
   ];
   return (
-    <div className="app-shell" data-quiet={quiet || reduced}>
+    <MotionShell quiet={quiet || reduced} flat={twoD}>
       <a className="skip" href="#main">
         跳到主要内容
       </a>
@@ -543,6 +549,13 @@ export default function App() {
           <div className="toolbar">
             <button
               className="soft-button"
+              aria-pressed={twoD}
+              onClick={() => setTwoD(!twoD)}
+            >
+              {twoD ? "2D 场景" : "3D 场景"}
+            </button>
+            <button
+              className="soft-button"
               aria-pressed={quiet || reduced}
               disabled={reduced}
               onClick={() => setQuiet(!quiet)}
@@ -566,7 +579,14 @@ export default function App() {
             </button>
           </div>
         </header>
-        <main id="main" ref={mainRef} tabIndex={-1}>
+        <main
+          id="main"
+          ref={mainRef}
+          tabIndex={-1}
+          className="page-motion"
+          key={view}
+          data-scene-page={view}
+        >
           {error && (
             <div className="notice error" role="alert">
               {error}
@@ -654,13 +674,9 @@ export default function App() {
                   </div>
                   <div className="world-scene" ref={worldRef}>
                     {twoD ? (
-                      <div className="flat-world" aria-hidden="true">
-                        <span />
-                        <span />
-                        <span />
-                      </div>
+                      <FlatMap />
                     ) : (
-                      <WorldBoundary>
+                      <WorldBoundary onLost={() => setTwoD(true)}>
                         <Suspense
                           fallback={
                             <div className="world-fallback">
@@ -671,6 +687,7 @@ export default function App() {
                           <World
                             quiet={quiet || reduced || hidden || !worldVisible}
                             greet={greet}
+                            onLost={() => setTwoD(true)}
                             completed={
                               learning.completedLessons.filter((row) =>
                                 lessons.some(
@@ -688,7 +705,7 @@ export default function App() {
                       <span role="status">
                         {greet
                           ? "你好，小探险家！"
-                          : "热气球带着新发现，等你一起出发。"}
+                          : "小伙伴和热气球，等你一起出发。"}
                       </span>
                     </div>
                   </div>
@@ -717,7 +734,7 @@ export default function App() {
                         className="text-button"
                         onClick={() => setGreet(greet + 1)}
                       >
-                        和热气球打个招呼
+                        和探险伙伴打个招呼
                       </button>
                     )}
                     <button
@@ -882,11 +899,16 @@ export default function App() {
           )}
           {view === "topics" && (
             <>
-              <p className="eyebrow">FOCUS ON ONE LITTLE CHALLENGE</p>
-              <h1>选一个专题，把它练明白。</h1>
-              <p className="lead">
-                每次抽一组新挑战，慢慢把规律练熟。最近练过的题组会尽量避开。
-              </p>
+              <div className="discovery-hero">
+                <div>
+                  <p className="eyebrow">FOCUS ON ONE LITTLE CHALLENGE</p>
+                  <h1>选一个专题，把它练明白。</h1>
+                  <p className="lead">
+                    每次抽一组新挑战，慢慢把规律练熟。最近练过的题组会尽量避开。
+                  </p>
+                </div>
+                <SceneStage kind="workshop" />
+              </div>
               <div className="filter-row">
                 <label>
                   专题分类
@@ -980,11 +1002,16 @@ export default function App() {
           )}
           {view === "patterns" && (
             <>
-              <p className="eyebrow">THE PATTERN WORKSHOP</p>
-              <h1>一个句框，装下好多想法。</h1>
-              <p className="lead">
-                先读懂情景，再选词、填词、搭句子。每轮随机抽题，最近练过的句子会尽量避开。
-              </p>
+              <div className="discovery-hero">
+                <div>
+                  <p className="eyebrow">THE PATTERN WORKSHOP</p>
+                  <h1>一个句框，装下好多想法。</h1>
+                  <p className="lead">
+                    先读懂情景，再选词、填词、搭句子。每轮随机抽题，最近练过的句子会尽量避开。
+                  </p>
+                </div>
+                <SceneStage kind="workshop" />
+              </div>
               <div className="filter-row">
                 <label>
                   句式主题
@@ -1102,9 +1129,14 @@ export default function App() {
                   </button>
                 </section>
               )}
-              <p className="eyebrow">YOUR MEMORY GARDEN</p>
-              <h1>让记忆，慢慢长大。</h1>
-              <p className="lead">隔几天独立想起来，才是记忆变稳的证据。</p>
+              <div className="discovery-hero">
+                <div>
+                  <p className="eyebrow">YOUR MEMORY GARDEN</p>
+                  <h1>让记忆，慢慢长大。</h1>
+                  <p className="lead">隔几天独立想起来，才是记忆变稳的证据。</p>
+                </div>
+                <SceneStage kind="garden" />
+              </div>
               <div className="review-start card">
                 <div>
                   <h2>
@@ -1256,10 +1288,12 @@ export default function App() {
                 <p className="eyebrow">ONE STEP AT A TIME</p>
                 <h1>{session.exercise.title}</h1>
                 <p className="lead">{session.exercise.context}</p>
-                <div className="buddies" aria-hidden="true">
-                  <span />
-                  <span />
-                </div>
+                <SceneStage
+                  key={session.assignmentId}
+                  kind="feedback"
+                  compact
+                  reaction={receipt?.outcome ?? "thinking"}
+                />
                 {session.exercise.reading && (
                   <section
                     className="reading-passage"
@@ -1359,6 +1393,7 @@ export default function App() {
                 {receipt ? (
                   <div
                     className={`feedback ${receipt.outcome === "correct" ? "success" : ""}`}
+                    data-outcome={receipt.outcome}
                     role="status"
                   >
                     <strong>
@@ -1423,6 +1458,6 @@ export default function App() {
           )}
         </main>
       </div>
-    </div>
+    </MotionShell>
   );
 }

@@ -1,5 +1,6 @@
 import type { CourseLesson } from "../packages/contracts/index";
 import SpeechButton from "./SpeechButton";
+import SceneStage from "./SceneStage";
 
 export default function LessonView({
   lesson,
@@ -29,11 +30,7 @@ export default function LessonView({
           <h1>{lesson.title}</h1>
           <p className="lead">{lesson.subtitle}</p>
         </div>
-        <div className="lesson-mascot" aria-hidden="true">
-          <span>Aa</span>
-          <i />
-          <i />
-        </div>
+        <SceneStage kind="lesson" />
       </div>
       <ol className="learning-steps" aria-label="这一课的学习步骤">
         <li aria-current="step">

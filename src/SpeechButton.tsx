@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { acquireSpeech, releaseSpeech } from "./speechActivity";
 
 export default function SpeechButton({
   text,
@@ -11,10 +12,13 @@ export default function SpeechButton({
     [error, setError] = useState("");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const generation = useRef(0);
+  const owner = useRef(Symbol("speech"));
   useEffect(() => {
     const stop = () => {
       generation.current++;
       setPlaying(false);
+      if (releaseSpeech(owner.current) && "speechSynthesis" in window)
+        window.speechSynthesis.cancel();
       if (timer.current) clearTimeout(timer.current);
     };
     document.addEventListener("eq-stop-speech", stop);
@@ -22,7 +26,8 @@ export default function SpeechButton({
       generation.current++;
       document.removeEventListener("eq-stop-speech", stop);
       if (timer.current) clearTimeout(timer.current);
-      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      if (releaseSpeech(owner.current) && "speechSynthesis" in window)
+        window.speechSynthesis.cancel();
     };
   }, []);
   const play = () => {
@@ -51,23 +56,35 @@ export default function SpeechButton({
     utterance.onend = () => {
       if (current !== generation.current) return;
       setPlaying(false);
+      releaseSpeech(owner.current);
       if (timer.current) clearTimeout(timer.current);
     };
     utterance.onerror = (event) => {
       if (current !== generation.current) return;
       setPlaying(false);
+      releaseSpeech(owner.current);
       if (!["interrupted", "canceled"].includes(event.error))
         setError("朗读暂时没有完成，可以看着文字跟读。");
       if (timer.current) clearTimeout(timer.current);
     };
     setPlaying(true);
+    acquireSpeech(owner.current);
     timer.current = setTimeout(() => {
       if (current !== generation.current) return;
       window.speechSynthesis.cancel();
       setPlaying(false);
+      releaseSpeech(owner.current);
       setError("声音暂时没有响应，可以先看文字练习。");
     }, 15000);
-    window.speechSynthesis.speak(utterance);
+    try {
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      generation.current++;
+      releaseSpeech(owner.current);
+      setPlaying(false);
+      if (timer.current) clearTimeout(timer.current);
+      setError("朗读暂时没有响应，可以看着文字跟读。");
+    }
   };
   return (
     <span className="speech-control">

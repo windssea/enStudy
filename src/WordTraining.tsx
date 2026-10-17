@@ -7,6 +7,7 @@ import type {
 } from "../packages/contracts/index";
 import { api } from "./api";
 import SpeechButton from "./SpeechButton";
+import SceneStage from "./SceneStage";
 const modes: { id: WordMode; title: string; description: string }[] = [
   { id: "mixed", title: "混合挑战", description: "词义、拼写与语境轮流练" },
   { id: "meaning", title: "认词义", description: "看到英文，找中文意思" },
@@ -113,13 +114,7 @@ export default function WordTraining({
             <span>一至六年级</span>
           </div>
         </div>
-        <div className="word-art" aria-hidden="true">
-          <span>Aa</span>
-          <i>apple</i>
-          <svg viewBox="0 0 80 80">
-            <path d="M42 26c-8-12-29-7-26 12 2 15 9 25 17 23 5-2 8-2 13 0 9 3 17-9 18-23 2-18-15-24-22-12Zm0-2c0-10 8-16 17-15-1 9-8 15-17 15Z" />
-          </svg>
-        </div>
+        <SceneStage kind="words" />
       </div>
       {childId && (
         <div className="word-progress-strip" role="status">

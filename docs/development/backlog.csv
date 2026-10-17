@@ -1,6 +1,7 @@
 id,milestone,task,acceptance,status,evidence
 M0-01,M0,React TypeScript Vite工程与依赖锁定,类型检查与生产构建通过,done,package-lock.json与npm run build
 M0-02,M0,真实Three.js地图模块与DOM降级,懒加载和2D切换实现且实机另验,implemented-unverified-visual,src/World.tsx
+M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,local-checked-visual-pending-quota-blocked,docs/29-motion-and-3d.md及64项单元与33项本机基础冒烟而浏览器实机未验
 M0-03,M0,课程专题句式目录,72单元60专题72句式可读且标明草稿,done,public/content/catalog.json与HTTP检查
 M0-04,M0,本地D1迁移和样课闭环,服务端判题保存调度与提示证据通过,done,npm run verify:local
 M0-05,M0,跨家庭与幂等保护,越权拒绝且并发重试只计一次,done,本地workerd HTTP验证
