@@ -1,6 +1,87 @@
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useRef } from "react";
-import type { Group } from "three";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useRef } from "react";
+import type { Group, OrthographicCamera } from "three";
+
+function Framing() {
+  const { camera, size, invalidate } = useThree();
+  useEffect(() => {
+    const lens = camera as OrthographicCamera;
+    lens.zoom = Math.max(20, Math.min(43, size.width / 14));
+    lens.updateProjectionMatrix();
+    invalidate();
+  }, [camera, size.width, invalidate]);
+  return null;
+}
+function Cloud({
+  position,
+  scale = 1,
+}: {
+  position: [number, number, number];
+  scale?: number;
+}) {
+  return (
+    <group position={position} scale={scale}>
+      {[-0.4, 0, 0.4].map((x, i) => (
+        <mesh
+          key={x}
+          position={[x, i === 1 ? 0.18 : 0, 0]}
+          scale={[0.6, 0.36, 0.4]}
+        >
+          <sphereGeometry args={[1, 10, 8]} />
+          <meshStandardMaterial color="#ffffff" flatShading />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+function Balloon({ quiet, greet }: { quiet: boolean; greet: number }) {
+  const group = useRef<Group>(null);
+  const started = useRef(-100);
+  const seen = useRef(greet);
+  useFrame(({ clock }, delta) => {
+    if (!group.current || quiet) return;
+    const t = clock.elapsedTime;
+    if (seen.current !== greet) {
+      seen.current = greet;
+      started.current = t;
+    }
+    const wave = Math.max(0, 1 - (t - started.current) / 2);
+    group.current.position.x = 2 + Math.sin(t * 0.18) * 0.6;
+    group.current.position.y =
+      3 + Math.sin(t * 0.7) * 0.12 + Math.sin(wave * Math.PI * 3) * wave * 0.18;
+    group.current.rotation.z +=
+      (Math.sin(t * 0.5) * 0.05 + wave * 0.12 - group.current.rotation.z) *
+      Math.min(delta * 4, 1);
+  });
+  return (
+    <group ref={group} position={[2, 3, -1.5]}>
+      <mesh scale={[0.72, 0.9, 0.72]}>
+        <sphereGeometry args={[1, 12, 10]} />
+        <meshStandardMaterial
+          color={greet % 2 ? "#f7c85f" : "#ef9f87"}
+          flatShading
+        />
+      </mesh>
+      {[
+        [-0.3, -0.9, 0.2],
+        [0.3, -0.9, 0.2],
+      ].map((p, i) => (
+        <mesh key={i} position={p as [number, number, number]}>
+          <cylinderGeometry args={[0.018, 0.018, 0.6, 4]} />
+          <meshStandardMaterial color="#987659" />
+        </mesh>
+      ))}
+      <mesh position={[0, -1.2, 0]}>
+        <boxGeometry args={[0.55, 0.32, 0.45]} />
+        <meshStandardMaterial color="#d5a96b" />
+      </mesh>
+      <mesh position={[0, -1.32, 0.03]}>
+        <boxGeometry args={[0.65, 0.09, 0.5]} />
+        <meshStandardMaterial color="#b6844b" />
+      </mesh>
+    </group>
+  );
+}
 
 function Island({
   position,
@@ -46,7 +127,13 @@ function Island({
     </group>
   );
 }
-export default function World({ quiet }: { quiet: boolean }) {
+export default function World({
+  quiet,
+  greet = 0,
+}: {
+  quiet: boolean;
+  greet?: number;
+}) {
   return (
     <Canvas
       aria-hidden="true"
@@ -57,10 +144,27 @@ export default function World({ quiet }: { quiet: boolean }) {
       gl={{ antialias: true, alpha: true }}
     >
       <ambientLight intensity={1.9} />
+      <Framing />
       <directionalLight position={[3, 8, 5]} intensity={2.5} />
       <Island position={[-3.3, 0, 0.8]} color="#a4dcc0" animate={!quiet} />
-      <Island position={[0, 0.65, -0.8]} color="#c3e5a7" animate={!quiet} />
+      <Island position={[0, 0.65, -0.8]} color="#c3e5a7" animate={false} />
       <Island position={[3.1, 0.05, 0.4]} color="#a5d7e4" animate={false} />
+      <Balloon quiet={quiet} greet={greet} />
+      <Cloud position={[-4, 2.5, -2]} scale={0.8} />
+      <Cloud position={[4.2, 1.9, 1.5]} scale={0.7} />
+      {Array.from({ length: 9 }, (_, i) => (
+        <mesh
+          key={i}
+          position={[
+            -2.5 + i * 0.65,
+            0.35 + Math.sin(i * 0.7) * 0.3,
+            0.4 - i * 0.1,
+          ]}
+        >
+          <sphereGeometry args={[0.075, 6, 6]} />
+          <meshStandardMaterial color="#f5ce68" />
+        </mesh>
+      ))}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.2, 0]}>
         <circleGeometry args={[6.2, 48]} />
         <meshBasicMaterial color="#d4eaf5" transparent opacity={0.65} />

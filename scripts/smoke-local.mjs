@@ -21,7 +21,10 @@ async function request(path, { method = "GET", body, cookie, raw } = {}) {
   return {
     status: response.status,
     data,
-    cookie: response.headers.get("set-cookie")?.split(";")[0],
+    cookie: response.headers
+      .getSetCookie()
+      .find((value) => value.startsWith("eq_dev_session="))
+      ?.split(";")[0],
   };
 }
 const health = await request("/health");
@@ -37,6 +40,8 @@ for (const path of [
   "/content/exercises.json",
   "/packages/server/app.ts",
   "/.dev.vars",
+  "/migrations/0003_pilot_content.sql",
+  "/tests/auth.test.ts",
 ]) {
   const privateFile = await fetch(`http://127.0.0.1:5173${path}`, {
     signal: AbortSignal.timeout(5000),

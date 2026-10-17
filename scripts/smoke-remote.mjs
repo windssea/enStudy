@@ -34,6 +34,10 @@ check(
   "development identity and AI disabled",
 );
 check(health.databaseBinding === true, "DB binding present");
+check(
+  health.registrationOpen === false && health.accountLoginAvailable === true,
+  "account login available and registration closed",
+);
 const dev = await request("/api/v1/dev/session", {
   method: "POST",
   headers: { "Content-Type": "application/json", Origin: base.origin },

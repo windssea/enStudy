@@ -27,6 +27,9 @@ jobs:
       - run: npm run check
       - run: npm run build
       - run: npm run check:functions
+      - run: npm run setup:local
+      - name: Verify account and learning flows on local workerd and D1
+        run: npm run verify:runtime
 
   deploy:
     needs: check

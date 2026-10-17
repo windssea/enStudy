@@ -1,8 +1,8 @@
 # 英语探险岛
 
-面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。已进入M0开发：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行。独立开发环境已创建，采用免费优先服务。
+面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。已进入M1开发：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行。独立开发环境已创建，采用免费优先服务。
 
-[开发预览](https://development.english-quest-dev.pages.dev) 已部署，线上开发身份关闭。前端、Functions和DB绑定通过8项远程检查；正式登录和线上学习记录仍待开发。
+[开发预览](https://development.english-quest-dev.pages.dev) 通过GitHub Actions发布。M1加入管理员登录（账号admin，密码使用用户指定值）、关闭注册、儿童档案管理与刷新续学；开发测试身份继续只限本机。验证与剩余范围见[M1进展](docs/23-next-phase-progress.md)。
 
 GitHub Actions自动部署已启用：推送main后执行检查、D1迁移与Pages/Functions发布。首次完整[部署运行39008241021](https://github.com/windssea/enStudy/actions/runs/39008241021)通过，包含27项单元检查和8项线上检查。
 
@@ -14,11 +14,11 @@ npm run setup:local
 npm run dev
 ```
 
-打开 [本地开发页面](http://127.0.0.1:5173)，在家长空间选择虚构开发档案，再体验样题与进度保存。API运行于 [本地8788](http://127.0.0.1:8788/api/v1/health)。要求Node.js 22.12以上，当前验证版本24.19.0。
+打开 [本地开发页面](http://127.0.0.1:5173)，在家长空间登录admin，选择或创建儿童昵称档案，再体验启航练习与进度保存。本机仍有虚构测试档案入口。API运行于 [本地8788](http://127.0.0.1:8788/api/v1/health)。要求Node.js 22.12以上，当前验证版本24.19.0。
 
 已实现：72单元/60专题/72句式的草稿目录，8道开发样题，服务端判题、提示记录、D1持久化、原子幂等提交、复习调度、跨家庭隔离，以及懒加载3D地图与2D切换。课程数量是首发生产目标，不代表288课与全题库已完成。
 
-正式成人认证、跨设备恢复、完整复习选题、离线队列、AI/BYOK/语音、教材精确映射及完整课件仍在里程碑待办中。当前开发身份同时限制本地地址与本地环境开关，远程默认关闭；不收集真实儿童数据和AI密钥。
+多账号管理、完整复习选题、离线队列、AI/BYOK/语音、教材精确映射及完整课件仍在里程碑待办中。当前只需儿童昵称和年级，不需要真实姓名或生日；AI密钥入口将在BYOK阶段实现。
 
 ## 检查和部署
 
@@ -27,6 +27,7 @@ npm run check
 npm run build
 npm run check:functions
 npm run verify:local
+npm run verify:account
 npm run cf:plan
 ```
 

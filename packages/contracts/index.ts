@@ -30,7 +30,14 @@ export interface Receipt {
 export interface Identity {
   authenticated: boolean;
   developmentIdentityAvailable: boolean;
+  registrationOpen?: boolean;
+  adult?: { username: string; householdId: string };
   child?: { id: string; nickname: string; grade: number; householdId: string };
+}
+export interface ChildProfile {
+  id: string;
+  nickname: string;
+  grade: number;
 }
 export interface Progress {
   answered: number;

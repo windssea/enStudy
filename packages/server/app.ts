@@ -16,6 +16,7 @@ import {
   normalise,
 } from "./exercises";
 import type { Answer, LearningSession, Receipt } from "../contracts/index";
+import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 
 export interface Env {
   DB: D1Database;
@@ -108,6 +109,8 @@ app.get("/api/v1/health", (c) =>
     stage: c.env.APP_STAGE ?? "preview",
     developmentIdentityAvailable: devAllowed(c.env, c.req.url),
     aiEnabled: false,
+    registrationOpen: false,
+    accountLoginAvailable: true,
     databaseBinding: Boolean(c.env.DB),
   }),
 );
@@ -116,6 +119,8 @@ app.get("/api/v1/exercises", (c) =>
 );
 
 async function actorFrom(c: Context<Bindings>): Promise<Actor | null> {
+  const accountActor = await readAccountActor(c);
+  if (accountActor) return accountActor;
   const token = getCookie(c, "eq_dev_session");
   if (!token || !devAllowed(c.env, c.req.url)) return null;
   return c.env.DB.prepare(
@@ -126,9 +131,14 @@ async function actorFrom(c: Context<Bindings>): Promise<Actor | null> {
 }
 app.get("/api/v1/me", async (c) => {
   const actor = await actorFrom(c);
+  const adult = await readAdult(c);
   return c.json({
     authenticated: Boolean(actor),
     developmentIdentityAvailable: devAllowed(c.env, c.req.url),
+    registrationOpen: false,
+    ...(adult
+      ? { adult: { username: adult.username, householdId: adult.householdId } }
+      : {}),
     ...(actor
       ? {
           child: {
@@ -141,6 +151,7 @@ app.get("/api/v1/me", async (c) => {
       : {}),
   });
 });
+app.route("/api/v1", authRoutes);
 app.post("/api/v1/dev/session", async (c) => {
   if (!devAllowed(c.env, c.req.url))
     return c.json(
@@ -157,6 +168,7 @@ app.post("/api/v1/dev/session", async (c) => {
     return c.json(fault("INVALID_PROFILE", "请选择有效开发档案。"), 422);
   const householdId = `dev-family-${body.family}`;
   const childId = `dev-child-${body.family}${body.child}`;
+  await logoutAccount(c);
   if (
     !(await c.env.DB.prepare(
       "SELECT id FROM children WHERE id=? AND household_id=?",
@@ -198,6 +210,7 @@ app.post("/api/v1/dev/session", async (c) => {
   return c.json({ saved: true });
 });
 app.post("/api/v1/logout", async (c) => {
+  await logoutAccount(c);
   const token = getCookie(c, "eq_dev_session");
   if (token && devAllowed(c.env, c.req.url))
     await c.env.DB.prepare(
@@ -212,28 +225,40 @@ app.post("/api/v1/logout", async (c) => {
 app.use("/api/v1/sessions/*", async (c, next) => {
   const actor = await actorFrom(c);
   if (!actor)
-    return c.json(fault("AUTH_REQUIRED", "请先选择本地开发档案。"), 401);
+    return c.json(
+      fault("AUTH_REQUIRED", "请先登录，再选择你的探险档案。"),
+      401,
+    );
   c.set("actor", actor);
   await next();
 });
 app.use("/api/v1/sessions", async (c, next) => {
   const actor = await actorFrom(c);
   if (!actor)
-    return c.json(fault("AUTH_REQUIRED", "请先选择本地开发档案。"), 401);
+    return c.json(
+      fault("AUTH_REQUIRED", "请先登录，再选择你的探险档案。"),
+      401,
+    );
   c.set("actor", actor);
   await next();
 });
 app.use("/api/v1/attempts", async (c, next) => {
   const actor = await actorFrom(c);
   if (!actor)
-    return c.json(fault("AUTH_REQUIRED", "请先选择本地开发档案。"), 401);
+    return c.json(
+      fault("AUTH_REQUIRED", "请先登录，再选择你的探险档案。"),
+      401,
+    );
   c.set("actor", actor);
   await next();
 });
 app.use("/api/v1/progress", async (c, next) => {
   const actor = await actorFrom(c);
   if (!actor)
-    return c.json(fault("AUTH_REQUIRED", "请先选择本地开发档案。"), 401);
+    return c.json(
+      fault("AUTH_REQUIRED", "请先登录，再选择你的探险档案。"),
+      401,
+    );
   c.set("actor", actor);
   await next();
 });
@@ -267,6 +292,29 @@ function sessionPayload(row: Assignment): LearningSession {
     exercise: publicExercise(exercises.find((e) => e.id === row.item_id)!),
   };
 }
+app.get("/api/v1/sessions/current", async (c) => {
+  const actor = c.get("actor");
+  const active = await c.env.DB.prepare(
+    "SELECT id FROM learning_sessions WHERE household_id=? AND child_id=? AND state='active' ORDER BY created_at DESC LIMIT 1",
+  )
+    .bind(actor.householdId, actor.childId)
+    .first<{ id: string }>();
+  if (!active) return c.json({ session: null });
+  const row = await loadSession(c.env.DB, actor, active.id);
+  if (!row) return c.json({ session: null });
+  const attempt = await c.env.DB.prepare(
+    "SELECT receipt_json FROM attempts WHERE assignment_id=? AND household_id=? AND child_id=?",
+  )
+    .bind(row.assignment_id, actor.householdId, actor.childId)
+    .first<{ receipt_json: string }>();
+  return c.json({
+    session: sessionPayload(row),
+    receipt: attempt ? JSON.parse(attempt.receipt_json) : null,
+    hint: row.hint_level
+      ? exercises.find((e) => e.id === row.item_id)?.hint
+      : null,
+  });
+});
 app.post("/api/v1/sessions", async (c) => {
   const actor = c.get("actor");
   const body = await c.req.json<{
@@ -441,12 +489,13 @@ app.post("/api/v1/attempts", async (c) => {
     try {
       await c.env.DB.batch([
         c.env.DB.prepare(
-          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND EXISTS(SELECT 1 FROM child_grants WHERE id=? AND revoked_at IS NULL AND expires_at>?) AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.state='active' AND si.id=? AND si.hint_level=?)`,
+          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND EXISTS(SELECT 1 FROM child_grants g WHERE g.id=? AND g.revoked_at IS NULL AND g.expires_at>? AND (g.parent_session_id IS NULL OR EXISTS(SELECT 1 FROM account_sessions p WHERE p.id=g.parent_session_id AND p.revoked_at IS NULL AND p.expires_at>?))) AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.state='active' AND si.id=? AND si.hint_level=?)`,
         ).bind(
           actor.childId,
           actor.householdId,
           child!.stream_version,
           actor.grantId,
+          now,
           now,
           body.sessionId,
           body.leaseId,

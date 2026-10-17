@@ -28,6 +28,7 @@
 | 22 | [Cloudflare免费部署与CLI](20-cloudflare-free-deployment.md) | 免费边界、建资源、迁移、预览发布、控制台与Git替代模式 |
 | 23 | [M0验证记录](21-m0-verification.md) | 实际构建与运行证据，远程和实机未完成项 |
 | 24 | [GitHub部署手册](22-github-deployment.md) | 仓库、Actions检查、Secret配置与自动部署 |
+| 25 | [M1阶段进展](23-next-phase-progress.md) | 关闭注册、admin登录、儿童档案、刷新续学与下一阶段范围 |
 
 配套资料：
 

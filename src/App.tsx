@@ -17,6 +17,7 @@ import type {
   Receipt,
 } from "../packages/contracts/index";
 import { api } from "./api";
+import FamilySpace from "./FamilySpace";
 const World = lazy(() => import("./World"));
 const labels: Record<string, string> = {
   grammar: "语法",
@@ -103,6 +104,13 @@ const emptyProgress: Progress = {
   cards: [],
   recent: [],
 };
+const storedFlag = (key: string) => {
+  try {
+    return localStorage.getItem(key) === "true";
+  } catch {
+    return false;
+  }
+};
 
 export default function App() {
   const [view, setView] = useState<View>("map");
@@ -118,11 +126,38 @@ export default function App() {
   const [category, setCategory] = useState("all"),
     [patternCluster, setPatternCluster] = useState("all");
   const [search, setSearch] = useState("");
-  const [quiet, setQuiet] = useState(
+  const [quiet, setQuiet] = useState(() => storedFlag("eq-quiet"));
+  const [reduced, setReduced] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
-  const [twoD, setTwoD] = useState(false),
+  const [twoD, setTwoD] = useState(() => storedFlag("eq-2d")),
     [hidden, setHidden] = useState(document.hidden);
+  const [greet, setGreet] = useState(0);
+  const [worldVisible, setWorldVisible] = useState(true);
+  const worldRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const listener = () => setReduced(media.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem("eq-quiet", String(quiet));
+      localStorage.setItem("eq-2d", String(twoD));
+    } catch {
+      /* preferences remain available in memory */
+    }
+  }, [quiet, twoD]);
+  useEffect(() => {
+    const element = worldRef.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(([entry]) =>
+      setWorldVisible(entry.isIntersecting),
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [view]);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const [session, setSession] = useState<LearningSession | null>(null),
@@ -146,10 +181,10 @@ export default function App() {
   };
   useEffect(() => {
     let cancelled = false;
+    const initialEpoch = epoch.current;
     fetch("/content/catalog.json")
       .then((r) => {
-        if (!r.ok)
-          throw new Error("课程目录未生成，请运行npm run content:build。");
+        if (!r.ok) throw new Error("课程目录暂时没有加载好，请刷新后重试。");
         return r.json() as Promise<Catalog>;
       })
       .then((data) => {
@@ -163,10 +198,14 @@ export default function App() {
       api<Identity>("/me"),
     ])
       .then(async ([exerciseList, me]) => {
-        if (cancelled) return;
+        if (cancelled || epoch.current !== initialEpoch) return;
         setSamples(exerciseList.items);
         setIdentity(me);
-        if (me.authenticated) await refreshProgress();
+        if (me.child) setGrade(me.child.grade);
+        if (me.authenticated) {
+          await refreshProgress();
+          await restoreSession(epoch.current);
+        }
       })
       .catch((e) => {
         if (!cancelled) setError(message(e));
@@ -178,41 +217,50 @@ export default function App() {
       document.removeEventListener("visibilitychange", visibility);
     };
   }, []);
-  async function login(value: string) {
-    setBusy(true);
-    setError("");
+  async function refreshIdentity() {
     const current = ++epoch.current;
+    const me = await api<Identity>("/me");
+    if (epoch.current !== current) return;
+    setIdentity(me);
     setSession(null);
     setReceipt(null);
+    setHint("");
+    setAnswer("");
     setProgress(emptyProgress);
-    try {
-      const [family, child] = value.split(":");
-      await api("/dev/session", { family, child: Number(child) });
-      const me = await api<Identity>("/me");
-      if (epoch.current !== current) return;
-      setIdentity(me);
-      if (me.child) setGrade(me.child.grade);
+    if (me.child) setGrade(me.child.grade);
+    if (me.authenticated) {
       await refreshProgress(current);
-    } catch (e) {
-      setIdentity({ authenticated: false, developmentIdentityAvailable: true });
-      setError(message(e));
-    } finally {
-      setBusy(false);
+      await restoreSession(current);
     }
+  }
+  async function restoreSession(current: number) {
+    const saved = await api<{
+      session: LearningSession | null;
+      receipt?: Receipt | null;
+      hint?: string | null;
+    }>("/sessions/current");
+    if (epoch.current !== current || !saved.session) return;
+    setSession(saved.session);
+    setReceipt(saved.receipt ?? null);
+    setHint(saved.hint ?? "");
+    setAnswer(saved.session.exercise.type === "order" ? [] : "");
+    eventId.current = crypto.randomUUID();
   }
   async function start(exerciseId: string) {
     if (!identity.authenticated) {
       move("parent");
-      setError("请先选择一个本地开发档案。线上成人登录将在下一阶段实现。");
+      setError("先请家长登录，再选择你的探险档案。");
       return;
     }
     setBusy(true);
     setError("");
+    const current = epoch.current;
     try {
       const data = await api<LearningSession>("/sessions", {
         exerciseId,
         clientRequestId: crypto.randomUUID(),
       });
+      if (epoch.current !== current) return;
       setSession(data);
       setAnswer(data.exercise.type === "order" ? [] : "");
       setReceipt(null);
@@ -236,6 +284,7 @@ export default function App() {
     }
     setBusy(true);
     setError("");
+    const current = epoch.current;
     try {
       const result = await api<Receipt>("/attempts", {
         eventId: eventId.current,
@@ -244,8 +293,9 @@ export default function App() {
         leaseId: session.leaseId,
         answer,
       });
+      if (epoch.current !== current) return;
       setReceipt(result);
-      await refreshProgress();
+      await refreshProgress(current);
     } catch (e) {
       setError(message(e));
     } finally {
@@ -256,12 +306,13 @@ export default function App() {
     if (!session) return;
     setBusy(true);
     setError("");
+    const current = epoch.current;
     try {
       const data = await api<{ hint: string }>(
         `/sessions/${session.id}/hint`,
         {},
       );
-      setHint(data.hint);
+      if (epoch.current === current) setHint(data.hint);
     } catch (e) {
       setError(message(e));
     } finally {
@@ -324,12 +375,12 @@ export default function App() {
           <strong>每天，一小步就很好。</strong>
           <p>学完一小轮，就去生活里试试新学的英语。</p>
         </div>
-        <span className="build-label">M0 · 本地开发版</span>
+        <span className="build-label">M1 · 探险启航</span>
       </aside>
       <div className="workspace">
         <header className="topbar">
           <div>
-            <small>开发预览 · 原创内容样稿</small>
+            <small>原创英语探索 · 每天进步一点点</small>
             <strong>
               {nav.find((n) => n[0] === view)?.[1] ?? "今天的小练习"}
             </strong>
@@ -337,10 +388,15 @@ export default function App() {
           <div className="toolbar">
             <button
               className="soft-button"
-              aria-pressed={quiet}
+              aria-pressed={quiet || reduced}
+              disabled={reduced}
               onClick={() => setQuiet(!quiet)}
             >
-              {quiet ? "安静模式 · 开" : "安静模式 · 关"}
+              {reduced
+                ? "跟随系统减少动效"
+                : quiet
+                  ? "安静模式 · 开"
+                  : "安静模式 · 关"}
             </button>
             <span className="stars">
               <Icon kind="star" />
@@ -381,7 +437,8 @@ export default function App() {
                     >
                       {journeys.map((j, i) => (
                         <option key={j} value={i + 1}>
-                          P{i + 1} · {j}之旅
+                          {["一", "二", "三", "四", "五", "六"][i]}年级 · {j}
+                          之旅
                         </option>
                       ))}
                     </select>
@@ -392,12 +449,32 @@ export default function App() {
                       value={term}
                       onChange={(e) => setTerm(e.target.value)}
                     >
-                      <option>A</option>
-                      <option>B</option>
+                      <option value="A">上学期</option>
+                      <option value="B">下学期</option>
                     </select>
                   </label>
                 </div>
               </div>
+              {session && identity.authenticated && (
+                <section className="resume-banner">
+                  <div>
+                    <span className="eyebrow">YOUR ADVENTURE CONTINUES</span>
+                    <h2>{receipt ? "看看上次的小收获" : "接着上次的小脚印"}</h2>
+                    <p>
+                      {session.exercise.title} ·{" "}
+                      {receipt ? "作答已保存" : "上次停下的练习还在这里"}
+                    </p>
+                  </div>
+                  <button
+                    className="primary"
+                    disabled={busy}
+                    onClick={() => move("exercise")}
+                  >
+                    {receipt ? "查看上次练习" : "继续练习"}
+                    <Icon kind="arrow" />
+                  </button>
+                </section>
+              )}
               <div className="dashboard">
                 <section className="map-card">
                   <div className="map-caption">
@@ -416,7 +493,7 @@ export default function App() {
                       {twoD ? "试试3D地图" : "切换2D"}
                     </button>
                   </div>
-                  <div className="world-scene">
+                  <div className="world-scene" ref={worldRef}>
                     {twoD ? (
                       <div className="flat-world" aria-hidden="true">
                         <span />
@@ -432,13 +509,19 @@ export default function App() {
                             </div>
                           }
                         >
-                          <World quiet={quiet || hidden} />
+                          <World
+                            quiet={quiet || reduced || hidden || !worldVisible}
+                            greet={greet}
+                          />
                         </Suspense>
                       </WorldBoundary>
                     )}
                     <div className="world-caption">
-                      {twoD ? "轻量2D模式" : "Three.js探险地图"} ·
-                      课程规划，课件待制作
+                      <span role="status">
+                        {greet
+                          ? "你好，小探险家！"
+                          : "热气球带着新发现，等你一起出发。"}
+                      </span>
                     </div>
                   </div>
                   <div className="unit-path" aria-label="本学期单元">
@@ -451,7 +534,14 @@ export default function App() {
                     ))}
                   </div>
                   <div className="map-footer">
-                    <p>先体验开发样课，完整内容按计划逐步制作。</p>
+                    {!twoD && (
+                      <button
+                        className="text-button"
+                        onClick={() => setGreet(greet + 1)}
+                      >
+                        和热气球打个招呼
+                      </button>
+                    )}
                     <button
                       className="primary"
                       disabled={busy}
@@ -667,9 +757,9 @@ export default function App() {
               </div>
               {!identity.authenticated ? (
                 <div className="card empty-state">
-                  <p>先选择本地开发档案，再体验进度保存。</p>
+                  <p>先请家长登录，让每次进步都有自己的记录。</p>
                   <button className="primary" onClick={() => move("parent")}>
-                    选择开发档案
+                    登录并选择档案
                   </button>
                 </div>
               ) : progress.cards.length ? (
@@ -712,85 +802,7 @@ export default function App() {
             </>
           )}
           {view === "parent" && (
-            <>
-              <p className="eyebrow">DEVELOPMENT SPACE</p>
-              <h1>从一个可靠的小步骤开始。</h1>
-              <p className="lead">
-                先验证学习闭环，再逐步接入正式账号、AI与语音。
-              </p>
-              <div className="parent-grid">
-                <section className="card">
-                  <h2>本地开发档案</h2>
-                  <p>
-                    四个虚构档案用于测试多家庭隔离。此入口同时要求本地地址和开发开关，云端预览默认关闭。
-                  </p>
-                  {identity.developmentIdentityAvailable ? (
-                    <label className="field">
-                      选择测试档案
-                      <select
-                        disabled={busy}
-                        value={
-                          identity.child
-                            ? `${identity.child.householdId.endsWith("a") ? "a" : "b"}:${identity.child.id.endsWith("1") ? "1" : "2"}`
-                            : ""
-                        }
-                        onChange={(e) => login(e.target.value)}
-                      >
-                        <option value="" disabled>
-                          请选择一个档案
-                        </option>
-                        <option value="a:1">家庭A · 乐乐 · P3</option>
-                        <option value="a:2">家庭A · 小雨 · P1</option>
-                        <option value="b:1">家庭B · 小河 · P3</option>
-                        <option value="b:2">家庭B · 小树 · P1</option>
-                      </select>
-                    </label>
-                  ) : (
-                    <div className="notice">
-                      开发身份未启用。云端只展示内容目录；正式成人登录将在M1实现。
-                    </div>
-                  )}
-                  {identity.authenticated && (
-                    <button
-                      className="secondary"
-                      disabled={busy}
-                      onClick={async () => {
-                        setBusy(true);
-                        try {
-                          await api("/logout", {});
-                          epoch.current++;
-                          setIdentity({
-                            authenticated: false,
-                            developmentIdentityAvailable: true,
-                          });
-                          setProgress(emptyProgress);
-                          setSession(null);
-                        } catch (e) {
-                          setError(message(e));
-                        } finally {
-                          setBusy(false);
-                        }
-                      }}
-                    >
-                      退出当前开发档案
-                    </button>
-                  )}
-                </section>
-                <section className="card">
-                  <h2>Cloudflare免费优先</h2>
-                  <ul className="plain-list">
-                    <li>Pages托管静态页面和课程目录</li>
-                    <li>Functions处理受限API</li>
-                    <li>D1保存档案、答题与复习</li>
-                    <li>R2、KV和付费AI当前不启用</li>
-                  </ul>
-                  <p className="footnote">
-                    本页不收集API
-                    Key。BYOK、语音与成人认证均有后续开发计划，不显示虚假的连接成功。
-                  </p>
-                </section>
-              </div>
-            </>
+            <FamilySpace identity={identity} refresh={refreshIdentity} />
           )}
           {view === "exercise" && session && (
             <div className="exercise-wrap">
@@ -798,7 +810,7 @@ export default function App() {
                 <button className="secondary" onClick={() => move("topics")}>
                   返回专题
                 </button>
-                <span className="badge">开发样题 · 服务端判题</span>
+                <span className="badge">启航小练习</span>
               </div>
               <article className="card exercise-card">
                 <p className="eyebrow">ONE STEP AT A TIME</p>
@@ -908,7 +920,7 @@ export default function App() {
                     </strong>
                     <p>{receipt.feedback}</p>
                     <small>
-                      已保存到本地D1 · 下次复习{receipt.nextReviewDay} ·
+                      学习记录已保存 · 下次复习{receipt.nextReviewDay} ·
                       完成奖励+{receipt.rewardDelta}
                     </small>
                   </div>

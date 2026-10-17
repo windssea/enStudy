@@ -20,7 +20,7 @@ export async function api<T>(path: string, body?: unknown): Promise<T> {
     result = (await response.json()) as typeof result;
   } catch {
     throw new ApiError(
-      "API未就绪，请检查本地8788服务。",
+      "暂时没连上学习服务，请稍后重试。",
       "INVALID_RESPONSE",
       response.status,
     );
