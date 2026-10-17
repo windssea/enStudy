@@ -16,8 +16,14 @@ import {
   normalise,
   courseRelease,
   exerciseById,
+  topicRelease,
 } from "./exercises";
-import { selectReviewItems, type ReviewTarget } from "../domain/selection";
+import {
+  selectReviewItems,
+  selectTopicItems,
+  shuffle,
+  type ReviewTarget,
+} from "../domain/selection";
 import type { Answer, LearningSession, Receipt } from "../contracts/index";
 import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 
@@ -125,15 +131,13 @@ app.get("/api/v1/lessons", (c) =>
     release: courseRelease.id,
     lessons: courseRelease.lessons,
     topicAvailability: Object.fromEntries(
-      Object.entries(courseRelease.topicSkills).map(([id, skill]) => [
+      Object.entries(topicRelease.stats).map(([id, stats]) => [
         id,
-        new Set(
-          exercises
-            .filter((item) => item.skill === skill)
-            .map((item) => item.family ?? item.id),
-        ).size,
+        stats.families,
       ]),
     ),
+    topicStats: topicRelease.stats,
+    topicRelease: topicRelease.id,
   }),
 );
 
@@ -304,6 +308,7 @@ interface Assignment {
   lesson_id: string | null;
   source: "lesson" | "topic" | "review" | "single";
   source_ref: string | null;
+  presentation_json: string | null;
 }
 async function loadSession(
   db: D1Database,
@@ -312,7 +317,7 @@ async function loadSession(
 ): Promise<Assignment | null> {
   return db
     .prepare(
-      `SELECT s.id,s.lease_id,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.hint_level,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
+      `SELECT s.id,s.lease_id,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.hint_level,si.presentation_json,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
     )
     .bind(id, actor.householdId, actor.childId)
     .first<Assignment>();
@@ -327,7 +332,10 @@ function sessionPayload(row: Assignment): LearningSession {
     total: row.total,
     lessonId: row.lesson_id,
     source: row.source,
-    exercise: publicExercise(exercises.find((e) => e.id === row.item_id)!),
+    exercise: {
+      ...publicExercise(exerciseById.get(row.item_id)!),
+      ...(row.presentation_json ? JSON.parse(row.presentation_json) : {}),
+    },
   };
 }
 app.get("/api/v1/sessions/current", async (c) => {
@@ -406,6 +414,14 @@ app.post("/api/v1/sessions", async (c) => {
     return c.json(fault("INVALID_SESSION", "学习任务格式不正确。"), 422);
   if (selectors.filter(Boolean).length !== 1)
     return c.json(fault("INVALID_SESSION", "请选择一种有效的学习任务。"), 422);
+  if (
+    body.roundSize !== undefined &&
+    (!body.topicId || ![5, 10, 20].includes(body.roundSize))
+  )
+    return c.json(
+      fault("INVALID_ROUND_SIZE", "专题每轮可选5、10或20题。"),
+      422,
+    );
   const source: Assignment["source"] = body.lessonId
     ? "lesson"
     : body.topicId
@@ -416,7 +432,7 @@ app.post("/api/v1/sessions", async (c) => {
   const reference = String(
     body.lessonId ?? body.topicId ?? body.exerciseId ?? "due",
   );
-  const sourceRef = `${source}:${reference}`;
+  const sourceRef = `${source}:${reference}${source === "topic" ? `:${body.roundSize ?? 10}` : ""}`;
   const existing = await loadSession(c.env.DB, actor, body.clientRequestId);
   if (existing) {
     if (
@@ -445,15 +461,21 @@ app.post("/api/v1/sessions", async (c) => {
         : [];
   if (source === "lesson" && !lesson) selected = [];
   if (source === "topic") {
-    const skill = courseRelease.topicSkills[body.topicId];
-    const families = new Map<string, typeof exercises>();
-    for (const item of exercises.filter((item) => item.skill === skill)) {
-      const family = item.family ?? item.id;
-      families.set(family, [...(families.get(family) ?? []), item]);
-    }
-    selected = Array.from(families.values())
-      .slice(0, 6)
-      .map((group, index) => group[index % group.length]);
+    const recent = await c.env.DB.prepare(
+      "SELECT si.item_id FROM session_items si JOIN learning_sessions s ON s.id=si.session_id WHERE si.household_id=? AND si.child_id=? ORDER BY s.created_at DESC,si.position LIMIT 400",
+    )
+      .bind(actor.householdId, actor.childId)
+      .all<{ item_id: string }>();
+    const recentFamilies = new Set(
+      recent.results.map(
+        (row) => exerciseById.get(row.item_id)?.family ?? row.item_id,
+      ),
+    );
+    selected = selectTopicItems(
+      topicRelease.items.filter((item) => item.topicId === body.topicId),
+      recentFamilies,
+      body.roundSize ?? 10,
+    );
   }
   if (source === "review")
     selected = selectReviewItems(
@@ -471,9 +493,11 @@ app.post("/api/v1/sessions", async (c) => {
       ),
       404,
     );
-  const release = selected.some((item) => item.lessonId)
-    ? courseRelease.id
-    : "dev-samples-v1";
+  const release = selected.some((item) => item.topicId)
+    ? topicRelease.id
+    : selected.some((item) => item.lessonId)
+      ? courseRelease.id
+      : "dev-samples-v1";
   const publication = await c.env.DB.prepare(
     `SELECT status,(SELECT count(*) FROM release_items ri WHERE ri.release_id=content_releases.id AND ri.item_id IN (${selected.map(() => "?").join(",")})) AS itemCount FROM content_releases WHERE id=?`,
   )
@@ -509,7 +533,7 @@ app.post("/api/v1/sessions", async (c) => {
       ),
       ...selected.map((item, index) =>
         c.env.DB.prepare(
-          "INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version) VALUES(?,?,?,?,?,?,1)",
+          "INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version,presentation_json) VALUES(?,?,?,?,?,?,1,?)",
         ).bind(
           crypto.randomUUID(),
           actor.householdId,
@@ -517,6 +541,10 @@ app.post("/api/v1/sessions", async (c) => {
           body.clientRequestId,
           index,
           item.id,
+          JSON.stringify({
+            ...(item.choices ? { choices: shuffle(item.choices) } : {}),
+            ...(item.tokens ? { tokens: shuffle(item.tokens) } : {}),
+          }),
         ),
       ),
     ]);

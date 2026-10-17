@@ -11,6 +11,7 @@ import type {
   Answer,
   Catalog,
   CourseLesson,
+  TopicStats,
   LearningSummary,
   SessionResult,
   Identity,
@@ -136,6 +137,8 @@ export default function App() {
   const [topicAvailability, setTopicAvailability] = useState<
     Record<string, number>
   >({});
+  const [topicStats, setTopicStats] = useState<Record<string, TopicStats>>({});
+  const [topicRoundSize, setTopicRoundSize] = useState(10);
   const [learning, setLearning] = useState<LearningSummary>(emptyLearning);
   const [lastResult, setLastResult] = useState<SessionResult | null>(null);
   const selectedLesson = lessons.find((lesson) => lesson.id === lessonId);
@@ -230,13 +233,16 @@ export default function App() {
   useEffect(() => {
     let cancelled = false;
     const initialEpoch = epoch.current;
-    api<{ lessons: CourseLesson[]; topicAvailability: Record<string, number> }>(
-      "/lessons",
-    )
+    api<{
+      lessons: CourseLesson[];
+      topicAvailability: Record<string, number>;
+      topicStats?: Record<string, TopicStats>;
+    }>("/lessons")
       .then((data) => {
         if (!cancelled) {
           setLessons(data.lessons);
           setTopicAvailability(data.topicAvailability);
+          setTopicStats(data.topicStats ?? {});
         }
       })
       .catch((e) => {
@@ -310,7 +316,12 @@ export default function App() {
   }
   async function start(
     exerciseId: string,
-    task?: { lessonId?: string; topicId?: string; mode?: "review" },
+    task?: {
+      lessonId?: string;
+      topicId?: string;
+      mode?: "review";
+      roundSize?: number;
+    },
   ) {
     if (!identity.authenticated) {
       move("parent");
@@ -796,7 +807,7 @@ export default function App() {
               <p className="eyebrow">FOCUS ON ONE LITTLE CHALLENGE</p>
               <h1>选一个专题，把它练明白。</h1>
               <p className="lead">
-                语法、时态、词形与表达，各有自己的练习方法。
+                每次抽一组新挑战，慢慢把规律练熟。最近练过的题组会尽量避开。
               </p>
               <div className="filter-row">
                 <label>
@@ -822,6 +833,18 @@ export default function App() {
                     placeholder="例如：过去、介词、邀请"
                   />
                 </label>
+                <label>
+                  每轮题量
+                  <select
+                    value={topicRoundSize}
+                    onChange={(e) => setTopicRoundSize(Number(e.target.value))}
+                    disabled={busy}
+                  >
+                    <option value={5}>5题 · 轻松热身</option>
+                    <option value={10}>10题 · 标准练习</option>
+                    <option value={20}>20题 · 加强挑战</option>
+                  </select>
+                </label>
                 <span className="badge">
                   {topics.length}个专题 ·{" "}
                   {Object.values(topicAvailability).filter(Boolean).length}
@@ -835,16 +858,36 @@ export default function App() {
                       {labels[t.category]} · P{t.grade_min}–P{t.grade_max}
                     </span>
                     <h2>{t.title}</h2>
-                    <p>{t.interaction}</p>
+                    <p>
+                      {t.category === "phonics"
+                        ? "文字音形准备 · 听辨另练"
+                        : t.category === "expression"
+                          ? "句框文字练习 · 口语与自由写作另练"
+                          : "选择与填写 · 随机练习"}
+                    </p>
+                    {topicStats[t.topic_id] && (
+                      <p className="topic-bank-count">
+                        <strong>{topicStats[t.topic_id].items}道题</strong>
+                        <span>
+                          {topicStats[t.topic_id].families}组题干 · 每轮随机
+                          {topicRoundSize}题
+                        </span>
+                      </p>
+                    )}
                     <button
                       className={
                         topicAvailability[t.topic_id] ? "primary" : "secondary"
                       }
                       disabled={!topicAvailability[t.topic_id] || busy}
-                      onClick={() => start("", { topicId: t.topic_id })}
+                      onClick={() =>
+                        start("", {
+                          topicId: t.topic_id,
+                          roundSize: topicRoundSize,
+                        })
+                      }
                     >
                       {topicAvailability[t.topic_id]
-                        ? "开始一轮特训"
+                        ? `随机抽${topicRoundSize}题`
                         : "内容已规划，待制作"}
                     </button>
                   </article>
@@ -1082,9 +1125,16 @@ export default function App() {
                   <span />
                   <span />
                 </div>
-                <h2 className="question" lang="en">
-                  {session.exercise.prompt}
-                </h2>
+                {session.exercise.reading && (
+                  <section
+                    className="reading-passage"
+                    aria-label="阅读材料"
+                    lang="en"
+                  >
+                    {session.exercise.reading}
+                  </section>
+                )}
+                <h2 className="question">{session.exercise.prompt}</h2>
                 {session.exercise.type === "choice" && (
                   <div className="answer-options">
                     {session.exercise.choices?.map((o) => (
@@ -1102,7 +1152,7 @@ export default function App() {
                 )}
                 {session.exercise.type === "input" && (
                   <label className="field word-answer">
-                    你的词形
+                    你的答案
                     <input
                       lang="en"
                       spellCheck={false}

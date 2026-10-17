@@ -13,6 +13,8 @@ export default defineConfig({
         "**/content/exercises.json",
         "**/content/course-release*.json",
         "**/content/courses-*.mjs",
+        "**/content/topic-release*.json",
+        "**/content/topics-*.mjs",
         "**/packages/server/**",
         "**/migrations/**",
         "**/tests/**",

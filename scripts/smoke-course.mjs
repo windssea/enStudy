@@ -247,7 +247,7 @@ try {
     topic.status === 201 &&
       topic.data.source === "topic" &&
       topic.data.total > 1 &&
-      topic.data.total <= 6,
+      topic.data.total === 10,
     "topic opens a bounded multi-step training round",
   );
   if (local) {

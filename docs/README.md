@@ -31,6 +31,7 @@
 | 25 | [M1阶段进展](23-next-phase-progress.md) | 关闭注册、admin登录、儿童档案、刷新续学与下一阶段范围 |
 | 26 | [Production同步发布](24-production-deployment.md) | Preview和Production同版本发布、正式域名与独立D1 |
 | 27 | [v0.6课程与复习进展](25-learning-course-progress.md) | 24节原创微课、专题初步练习、到期复习与完成记录 |
+| 28 | [v0.7随机专题题库](26-random-topic-banks.md) | 每专题120变体、随机抽取、近期避重与展示快照 |
 
 配套资料：
 

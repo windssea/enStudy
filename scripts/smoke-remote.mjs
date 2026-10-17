@@ -62,8 +62,10 @@ const course = await lessonResponse.json();
 check(
   lessonResponse.status === 200 &&
     course.lessons?.length === 24 &&
-    Object.values(course.topicAvailability ?? {}).filter(Boolean).length >=
-      15 &&
+    Object.keys(course.topicStats ?? {}).length === 60 &&
+    Object.values(course.topicStats ?? {}).every(
+      (stats) => stats.items >= 120 && stats.families >= 60,
+    ) &&
     !JSON.stringify(course).includes('"answers":'),
   "published lesson metadata and real topic availability delivered without answer keys",
 );

@@ -44,6 +44,8 @@ for (const path of [
   "/tests/auth.test.ts",
   "/content/course-release.v1.json",
   "/content/courses-v1.mjs",
+  "/content/topic-release.v1.json",
+  "/content/topics-v1.mjs",
 ]) {
   const privateFile = await fetch(`http://127.0.0.1:5173${path}`, {
     signal: AbortSignal.timeout(5000),

@@ -1,6 +1,8 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { parse } from "csv-parse/sync";
 import "./build-course.mjs";
+// Sequenced after course generation: the topic snapshot imports its members.
+await import("./build-topics.mjs");
 const readCSV = async (name) =>
   parse(
     await readFile(

@@ -47,6 +47,7 @@ try {
   await run("smoke-local.mjs");
   await run("smoke-account.mjs");
   await run("smoke-course.mjs");
+  await run("smoke-topics.mjs");
 } catch (error) {
   console.error(output);
   throw error;

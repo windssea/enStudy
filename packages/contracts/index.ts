@@ -47,6 +47,12 @@ export interface CourseLesson {
   topicIds: string[];
   itemCount: number;
 }
+export interface TopicStats {
+  items: number;
+  families: number;
+  roundSizes: number[];
+  mode: string;
+}
 export interface SessionResult {
   sessionId: string;
   lessonId: string | null;

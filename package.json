@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -27,6 +27,7 @@
     "verify:remote": "node scripts/smoke-remote.mjs",
     "verify:account": "node scripts/smoke-account.mjs",
     "verify:course": "node scripts/smoke-course.mjs",
+    "verify:topics": "node scripts/smoke-topics.mjs",
     "verify:runtime": "node scripts/verify-runtime.mjs",
     "cf:provision:production": "node scripts/cloudflare.mjs provision --production",
     "cf:deploy:production": "node scripts/cloudflare.mjs deploy --production",
