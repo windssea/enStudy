@@ -45,6 +45,7 @@
 | 39 | [v0.18听辨、阅读与第三单元](37-listening-and-evidence-reading.md) | 72课、听音确认/文字辅助、阅读依据、听词辨义及播放器兼容 |
 | 40 | [v0.19专题与句式分步入口](38-guided-training-centres.md) | 8类与12场景、当前任务、中文句框、返回状态和示例证据 |
 | 41 | [v0.20时态与词形实验台](39-time-and-word-form-labs.md) | 16专题48示范、时间线与词块3D、2D替代和跨题型示范记录 |
+| 42 | [v0.21第四单元与儿童引导](40-fourth-unit-and-clearer-navigation.md) | 96课、216混合任务、版本保留、鲜明主题色与单词快速开始 |
 
 配套资料：
 

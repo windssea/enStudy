@@ -8,6 +8,42 @@ import type {
 import { api } from "./api";
 import SpeechButton from "./SpeechButton";
 import SceneStage from "./SceneStage";
+const themePaths: Record<string, string> = {
+  animals:
+    "M7 12 4 6l7 3h2l7-3-3 6v4a5 5 0 0 1-10 0v-4Zm2 2h.01M15 14h.01M10 18l2 1 2-1",
+  school: "M7 8V6a5 5 0 0 1 10 0v2M6 8h12l2 13H4L6 8Zm3 5h6v5H9v-5Z",
+  "colours-shapes":
+    "M3 3h7v7H3V3Zm15 0 5 8H13l5-8ZM11 17a5 5 0 1 1-10 0 5 5 0 0 1 10 0Zm4-2h6v6h-6v-6Z",
+  food: "M12 8c-8-6-12 6-6 12 3 3 4 0 6 0s3 3 6 0c6-6 2-18-6-12Zm0 0c-1-5 2-7 6-7-1 5-3 6-6 7Z",
+  family:
+    "M7 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm10 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM1 21v-2a6 6 0 0 1 12 0v2m-2-5a6 6 0 0 1 12 3v2",
+  body: "M12 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4 10h16m-8-3v9m0 0-5 6m5-6 5 6",
+  home: "m2 11 10-8 10 8M5 9v12h14V9M9 21v-8h6v8",
+  clothes: "m8 3-6 4 3 5 3-2v11h8V10l3 2 3-5-6-4a4 4 0 0 1-8 0Z",
+  actions:
+    "M16 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm-8 7 3-5 5 3 5 1m-10-4 1 8 6 5m-6-5-5 6M2 8h4M1 12h4",
+  places:
+    "M3 21V6h8v15M11 21V2h10v19M1 21h22M6 10h2m-2 4h2m6-8h4m-4 4h4m-4 4h4",
+  nature:
+    "M12 21V9m0 5C1 17 1 3 1 3s13-1 11 11Zm0 3C11 6 23 6 23 6s0 12-11 11Z",
+  time: "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM12 6v6l4 3",
+  feelings:
+    "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM8 9h.01M16 9h.01M7 14q5 8 10 0",
+  travel: "m2 12 8-2 4-8h3l-2 8 7 2-7 2 2 8h-3l-4-8-8-2Z",
+  learning: "M12 5C8 2 3 4 3 4v16s5-2 9 1c4-3 9-1 9-1V4s-5-2-9 1Zm0 0v16",
+  environment:
+    "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM5 6l5 2-2 5 4 2 1 6m5-17-3 6 6 3",
+  community:
+    "M4 12V3h16v9M7 7h10M7 10h5M3 21v-3a4 4 0 0 1 8 0v3m2 0v-3a4 4 0 0 1 8 0v3",
+  describing: "M4 3h16v18H4V3Zm4 5h8m-8 4h5m-5 4h8",
+};
+function ThemeSymbol({ id }: { id: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d={themePaths[id] ?? themePaths.learning} />
+    </svg>
+  );
+}
 const modes: { id: WordMode; title: string; description: string }[] = [
   { id: "meaning", title: "认词义", description: "看到英文，找中文意思" },
   {
@@ -32,6 +68,8 @@ export default function WordTraining({
   busy,
   onStart,
   onReview,
+  resume,
+  onResume,
 }: {
   themes: WordTheme[];
   grade: number;
@@ -41,6 +79,13 @@ export default function WordTraining({
   busy: boolean;
   onStart: (themeId: string, wordMode: WordMode, roundSize: number) => void;
   onReview: () => void;
+  resume?: {
+    title: string;
+    position: number;
+    saved: boolean;
+    takeover: boolean;
+  };
+  onResume: () => void;
 }) {
   const [year, setYear] = useState(grade),
     [query, setQuery] = useState(""),
@@ -145,83 +190,78 @@ export default function WordTraining({
       {!selected && (
         <div className="word-hero">
           <div>
-            <p className="eyebrow">单词探险 · WORD ISLAND</p>
-            <h1>今天，去单词岛探险！</h1>
-            <p className="lead">挑一个喜欢的主题，做一轮小挑战。</p>
+            <p className="eyebrow">单词特训 · 一次玩一小轮</p>
+            <h1>今天，玩一轮单词吧！</h1>
+            <p className="lead">认词义、听发音、练拼写，从5道小题开始。</p>
             {recommended && (
-              <button
-                className="primary word-quick-start"
-                disabled={busy}
-                ref={(node) => {
-                  if (node) themeButtons.current.set("recommended", node);
-                  else themeButtons.current.delete("recommended");
-                }}
-                onClick={() => choose(recommended.id, "recommended")}
-              >
-                从「{recommended.title}」开始 <span aria-hidden="true">→</span>
-              </button>
+              <div className="word-launch">
+                <p>
+                  <span>{resume ? "上次的小挑战" : "入门主题"}</span>
+                  <strong>{resume?.title ?? recommended.title}</strong>
+                </p>
+                <button
+                  className="primary word-quick-start"
+                  disabled={busy}
+                  ref={(node) => {
+                    if (node) themeButtons.current.set("recommended", node);
+                    else themeButtons.current.delete("recommended");
+                  }}
+                  onClick={() =>
+                    resume ? onResume() : onStart(recommended.id, "meaning", 5)
+                  }
+                >
+                  {busy
+                    ? "正在准备…"
+                    : childId
+                      ? resume
+                        ? resume.takeover
+                          ? "接着上次练习"
+                          : resume.saved
+                            ? "查看上次作答"
+                            : `继续第${resume.position}题`
+                        : "开始5题挑战"
+                      : "选择档案，再开始"}{" "}
+                  <span aria-hidden="true">→</span>
+                </button>
+                <small>
+                  {childId
+                    ? resume
+                      ? "进度已经保存，接着上次继续。"
+                      : "认词义 · 随机抽题 · 不计时"
+                    : "请家长登录并选好档案，保存你的学习进度。"}
+                </small>
+              </div>
             )}
-            <div className="word-totals">
-              <span>{themes.reduce((n, t) => n + t.wordCount, 0)}个单词</span>
-              <span>{themes.length}个生活主题</span>
-            </div>
           </div>
           <SceneStage kind="words" />
         </div>
       )}
-      <ol className="word-path" aria-label="单词探险步骤">
-        {["选个主题", "准备挑战", "做小练习"].map((label, index) => (
-          <li
-            key={label}
-            aria-current={index === (selected ? 1 : 0) ? "step" : undefined}
-            data-done={selected && index === 0}
-          >
-            <span aria-hidden="true">
-              {selected && index === 0 ? "✓" : index + 1}
-            </span>
-            <strong>{label}</strong>
-          </li>
-        ))}
-      </ol>
-      {!selected && childId && (
-        <div className="word-progress-strip" role="status">
-          {summary ? (
-            <>
-              <span>
-                已经练过 <strong>{summary.practisedWords}</strong> 个词条
+      {selected && (
+        <ol className="word-path" aria-label="单词探险步骤">
+          {["选个主题", "准备挑战", "做小练习"].map((label, index) => (
+            <li
+              key={label}
+              aria-current={index === (selected ? 1 : 0) ? "step" : undefined}
+              data-done={selected && index === 0}
+            >
+              <span aria-hidden="true">
+                {selected && index === 0 ? "✓" : index + 1}
               </span>
-              <span>
-                到了复习时间 <strong>{summary.dueWords}</strong> 个词条
-              </span>
-              <button className="text-button" onClick={onReview}>
-                去复习花园 →
-              </button>
-            </>
-          ) : summaryError ? (
-            <>
-              <span>学习记录暂时没加载好。</span>
-              <button
-                className="text-button"
-                onClick={() => setReload((n) => n + 1)}
-              >
-                重试
-              </button>
-            </>
-          ) : (
-            <span>正在读取学习记录…</span>
-          )}
-        </div>
+              <strong>{label}</strong>
+            </li>
+          ))}
+        </ol>
       )}
       {!selected && (
         <section className="word-chooser" aria-labelledby="word-chooser-title">
           <div className="word-section-heading">
             <div>
-              <p className="eyebrow">第1步 · 选你喜欢的</p>
+              <p className="eyebrow">自己选，也很好</p>
               <h2 id="word-chooser-title" ref={chooserHeading} tabIndex={-1}>
-                也可以自己挑一个主题
+                想练别的？挑个喜欢的主题
               </h2>
             </div>
-            <p>年级只是起点，想挑战别的也可以。</p>
+            <p>{themes.length}个生活主题 · 选好后再开始</p>
           </div>
           <div className="filter-row">
             <label>
@@ -252,7 +292,7 @@ export default function WordTraining({
             </label>
           </div>
           <div className="word-theme-grid" aria-label="单词主题">
-            {visible.map((theme, index) => (
+            {visible.map((theme) => (
               <button
                 className={`word-theme word-tone-${themes.indexOf(theme) % 4}`}
                 onClick={() => choose(theme.id, theme.id)}
@@ -264,7 +304,7 @@ export default function WordTraining({
                 key={theme.id}
               >
                 <span className="word-theme-number" aria-hidden="true">
-                  {String(index + 1).padStart(2, "0")}
+                  <ThemeSymbol id={theme.id} />
                 </span>
                 <span>
                   <span className="eyebrow">
@@ -273,9 +313,9 @@ export default function WordTraining({
                   </span>
                   <strong>{theme.title}</strong>
                   <span>{theme.description}</span>
-                </span>
-                <span className="word-theme-arrow" aria-hidden="true">
-                  →
+                  <span className="word-theme-action">
+                    选这个主题 <span aria-hidden="true">→</span>
+                  </span>
                 </span>
               </button>
             ))}
@@ -286,6 +326,33 @@ export default function WordTraining({
             </p>
           )}
         </section>
+      )}
+      {!selected && childId && (
+        <div className="word-progress-strip" role="status">
+          {summary ? (
+            <>
+              <span>
+                已经练过 <strong>{summary.practisedWords}</strong> 个词条 ·
+                到期复习 <strong>{summary.dueWords}</strong> 个
+              </span>
+              <button className="text-button" onClick={onReview}>
+                看看复习安排 →
+              </button>
+            </>
+          ) : summaryError ? (
+            <>
+              <span>学习记录暂时没加载好。</span>
+              <button
+                className="text-button"
+                onClick={() => setReload((n) => n + 1)}
+              >
+                重试
+              </button>
+            </>
+          ) : (
+            <span>正在读取学习记录…</span>
+          )}
+        </div>
       )}
       {selected && (
         <section
@@ -318,6 +385,25 @@ export default function WordTraining({
               </p>
               <span>{selectedMode.description}</span>
             </div>
+          </div>
+          <div className="word-start">
+            <button
+              className="primary"
+              disabled={busy}
+              onClick={() => onStart(selected.id, mode, roundSize)}
+            >
+              {busy
+                ? "正在准备…"
+                : !childId
+                  ? "选择档案，再开始"
+                  : `出发，练${roundSize}题`}
+              <span aria-hidden="true">→</span>
+            </button>
+            <p>
+              {childId
+                ? "不用赶时间，想一想再回答。"
+                : "请家长登录并选好档案，就能保存你的进度。"}
+            </p>
           </div>
           <details className="word-options" key={`options-${selected.id}`}>
             <summary>
@@ -363,25 +449,6 @@ export default function WordTraining({
               </label>
             </div>
           </details>
-          <div className="word-start">
-            <button
-              className="primary"
-              disabled={busy}
-              onClick={() => onStart(selected.id, mode, roundSize)}
-            >
-              {busy
-                ? "正在准备…"
-                : !childId
-                  ? "选择档案，再开始"
-                  : `出发，练${roundSize}题`}
-              <span aria-hidden="true">→</span>
-            </button>
-            <p>
-              {childId
-                ? "不用赶时间，想一想再回答。"
-                : "请家长登录并选好档案，就能保存你的进度。"}
-            </p>
-          </div>
           <details className="word-preview" key={`preview-${selected.id}`}>
             <summary>
               还不熟？先看一看单词卡 <span>{selected.wordCount}张词卡</span>

@@ -30,6 +30,8 @@ export default defineConfig({
         "**/content/story-courses*.mjs",
         "**/content/word-listening-release*.json",
         "**/content/concept-exposure-map.json",
+        "**/content/action-courses*.json",
+        "**/content/action-course-release*.json",
         "**/.wrangler/**",
         "**/.cloudflare/**",
         "**/.git/**",

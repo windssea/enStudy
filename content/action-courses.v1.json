@@ -1,0 +1,2490 @@
+{
+  "version": 1,
+  "lessons": [
+    {
+      "id": "P1A-U04-L1",
+      "unitId": "P1A-U04",
+      "grade": 1,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 1,
+      "order": 13,
+      "title": "家庭相册第一页",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "This is my uncle. His name is Ken.",
+          "这位叔叔叫什么？",
+          "Ken",
+          "Ben",
+          "Tom"
+        ],
+        [
+          "My aunt has a green hat.",
+          "阿姨的帽子是什么颜色？",
+          "绿色",
+          "红色",
+          "蓝色"
+        ]
+      ],
+      "reading": [
+        [
+          "This is my family photo.",
+          "这是什么照片？",
+          "a family photo",
+          "a class photo",
+          "a pet photo"
+        ],
+        [
+          "My sister is by the window.",
+          "姐姐在哪里？",
+          "by the window",
+          "under the table",
+          "in the garden"
+        ],
+        [
+          "My father is near the door."
+        ]
+      ],
+      "choice": [
+        "照片里的奶奶，本文用she称呼。",
+        "___ is my grandma.",
+        "She",
+        "He",
+        "They"
+      ],
+      "repair": [
+        "介绍哥哥：他是我的哥哥。",
+        "He [are] my brother.",
+        "is"
+      ],
+      "sorting": {
+        "groups": [
+          "和is作伙伴",
+          "和are作伙伴"
+        ],
+        "cards": [
+          [
+            "He",
+            "0"
+          ],
+          [
+            "She",
+            "0"
+          ],
+          [
+            "We",
+            "1"
+          ],
+          [
+            "They",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "照片里的叔叔是我的叔叔，缺一个be词。",
+        "He ___ my uncle.",
+        "is"
+      ],
+      "ordering": [
+        "介绍爷爷：他是我的爷爷。",
+        "He is my grandfather."
+      ],
+      "repairTarget": "He"
+    },
+    {
+      "id": "P1A-U04-L2",
+      "unitId": "P1A-U04",
+      "grade": 1,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 2,
+      "order": 14,
+      "title": "认识相册里的亲人",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "My brother has a red cap.",
+          "哥哥戴什么颜色的帽子？",
+          "红色",
+          "黄色",
+          "白色"
+        ],
+        [
+          "My grandmother is in the kitchen.",
+          "奶奶在哪里？",
+          "厨房",
+          "卧室",
+          "花园"
+        ]
+      ],
+      "reading": [
+        [
+          "This is Uncle Ray.",
+          "这位叔叔叫什么？",
+          "Ray",
+          "Dan",
+          "Max"
+        ],
+        [
+          "He has a blue bag.",
+          "Ray叔叔的包是什么颜色？",
+          "blue",
+          "green",
+          "pink"
+        ],
+        [
+          "He is by the gate."
+        ]
+      ],
+      "choice": [
+        "这位家人是爸爸，本文用he称呼。",
+        "___ is my dad.",
+        "He",
+        "She",
+        "We"
+      ],
+      "repair": [
+        "介绍一位阿姨：她是我的阿姨。",
+        "She [am] my aunt.",
+        "is"
+      ],
+      "sorting": {
+        "groups": [
+          "一个人，配is",
+          "多个人，配are"
+        ],
+        "cards": [
+          [
+            "My father",
+            "0"
+          ],
+          [
+            "My mother",
+            "0"
+          ],
+          [
+            "My parents",
+            "1"
+          ],
+          [
+            "My cousins",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "介绍姐姐：她是我的姐姐。",
+        "She ___ my sister.",
+        "is"
+      ],
+      "ordering": [
+        "介绍妹妹：她是我的妹妹。",
+        "She is my little sister."
+      ],
+      "repairTarget": "She"
+    },
+    {
+      "id": "P1A-U04-L3",
+      "unitId": "P1A-U04",
+      "grade": 1,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 3,
+      "order": 15,
+      "title": "一起看周末照片",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "My aunt is beside a tree.",
+          "阿姨站在哪里？",
+          "树旁",
+          "桌下",
+          "门后"
+        ],
+        [
+          "My grandfather has a brown coat.",
+          "爷爷的外套是什么颜色？",
+          "棕色",
+          "紫色",
+          "黑色"
+        ]
+      ],
+      "reading": [
+        [
+          "This is Aunt Joy.",
+          "这位阿姨叫什么？",
+          "Joy",
+          "May",
+          "Sue"
+        ],
+        [
+          "She is on a bench.",
+          "Joy阿姨坐在哪里？",
+          "on a bench",
+          "on a bed",
+          "on the floor"
+        ],
+        [
+          "She has a little dog."
+        ]
+      ],
+      "choice": [
+        "照片里的爷爷，本文用he称呼。",
+        "___ is my grandpa.",
+        "He",
+        "She",
+        "They"
+      ],
+      "repair": [
+        "爷爷在家，修改对应的be词。",
+        "Grandpa [are] at home.",
+        "is"
+      ],
+      "sorting": {
+        "groups": [
+          "一个人，配is",
+          "多个人，配are"
+        ],
+        "cards": [
+          [
+            "My brother",
+            "0"
+          ],
+          [
+            "My aunt",
+            "0"
+          ],
+          [
+            "My brothers",
+            "1"
+          ],
+          [
+            "My uncles",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "介绍一位女教师，本文用she称呼。",
+        "___ is my teacher.",
+        "She"
+      ],
+      "ordering": [
+        "介绍外婆：她是我的外婆。",
+        "She is my grandmother."
+      ],
+      "repairTarget": "Grandpa"
+    },
+    {
+      "id": "P1A-U04-L4",
+      "unitId": "P1A-U04",
+      "grade": 1,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 4,
+      "order": 16,
+      "title": "我的家庭小介绍",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "My cousin has two toy boats.",
+          "表亲有几条玩具船？",
+          "两条",
+          "三条",
+          "四条"
+        ],
+        [
+          "My mother is in a yellow dress.",
+          "妈妈穿什么颜色的连衣裙？",
+          "黄色",
+          "红色",
+          "蓝色"
+        ]
+      ],
+      "reading": [
+        [
+          "This is my little brother, Tim.",
+          "弟弟叫什么？",
+          "Tim",
+          "Jim",
+          "Sam"
+        ],
+        [
+          "He is near the sofa.",
+          "Tim在哪里？",
+          "near the sofa",
+          "behind the door",
+          "under the bed"
+        ],
+        [
+          "He has a toy lion."
+        ]
+      ],
+      "choice": [
+        "这位家人是妈妈，本文用she称呼。",
+        "___ is my mum.",
+        "She",
+        "He",
+        "We"
+      ],
+      "repair": [
+        "这位叔叔是医生，本文用he称呼，修改be词。",
+        "He [am] a doctor.",
+        "is"
+      ],
+      "sorting": {
+        "groups": [
+          "一个人，配is",
+          "多个人，配are"
+        ],
+        "cards": [
+          [
+            "Grandpa",
+            "0"
+          ],
+          [
+            "Grandma",
+            "0"
+          ],
+          [
+            "My grandparents",
+            "1"
+          ],
+          [
+            "Our sisters",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "这位男孩是我的朋友，本文用he称呼。",
+        "___ is my friend.",
+        "He"
+      ],
+      "ordering": [
+        "介绍一位女表亲，本文用she称呼。",
+        "She is my cousin."
+      ],
+      "repairTarget": "He"
+    },
+    {
+      "id": "P2A-U04-L1",
+      "unitId": "P2A-U04",
+      "grade": 2,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 1,
+      "order": 13,
+      "title": "衣帽架的小标签",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "My jacket is on the chair.",
+          "我的夹克在哪里？",
+          "椅子上",
+          "床下",
+          "门后"
+        ],
+        [
+          "Your scarf is purple.",
+          "你的围巾是什么颜色？",
+          "紫色",
+          "绿色",
+          "棕色"
+        ]
+      ],
+      "reading": [
+        [
+          "May has a pink coat.",
+          "May的外套是什么颜色？",
+          "pink",
+          "blue",
+          "white"
+        ],
+        [
+          "Her coat is in the cupboard.",
+          "外套在哪里？",
+          "in the cupboard",
+          "on the desk",
+          "under the chair"
+        ],
+        [
+          "Ben has a black belt."
+        ]
+      ],
+      "choice": [
+        "这是Ben的帽子，本文用he称呼Ben。",
+        "This is ___ cap.",
+        "his",
+        "her",
+        "my"
+      ],
+      "repair": [
+        "这是女孩May的裙子，本文用she称呼May。",
+        "This is [his] skirt.",
+        "her"
+      ],
+      "sorting": {
+        "groups": [
+          "说话人的东西",
+          "听话人的东西"
+        ],
+        "cards": [
+          [
+            "my yellow cap",
+            "0"
+          ],
+          [
+            "my blue gloves",
+            "0"
+          ],
+          [
+            "your red scarf",
+            "1"
+          ],
+          [
+            "your green socks",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "这是我的靴子，要用my。",
+        "These are ___ boots.",
+        "my"
+      ],
+      "ordering": [
+        "介绍妈妈的橙色围巾，本文用she称呼妈妈。",
+        "This is her orange scarf."
+      ],
+      "repairTarget": "his"
+    },
+    {
+      "id": "P2A-U04-L2",
+      "unitId": "P2A-U04",
+      "grade": 2,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 2,
+      "order": 14,
+      "title": "帮衣物找到主人",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "His socks are in a small box.",
+          "他的袜子在哪里？",
+          "小盒子里",
+          "桌上",
+          "门旁"
+        ],
+        [
+          "Her shoes are white.",
+          "她的鞋是什么颜色？",
+          "白色",
+          "黑色",
+          "棕色"
+        ]
+      ],
+      "reading": [
+        [
+          "Leo finds his green gloves.",
+          "Leo找到了什么颜色的手套？",
+          "green",
+          "red",
+          "yellow"
+        ],
+        [
+          "He puts the gloves in his bag.",
+          "Leo把手套放在哪里？",
+          "in his bag",
+          "on the shelf",
+          "under the bed"
+        ],
+        [
+          "His sister has a purple hat."
+        ]
+      ],
+      "choice": [
+        "老师对你说：这是你的外套。",
+        "This is ___ coat.",
+        "your",
+        "my",
+        "his"
+      ],
+      "repair": [
+        "Ben说这是他自己的蓝帽子，此处用my。",
+        "This is [your] blue hat.",
+        "my"
+      ],
+      "sorting": {
+        "groups": [
+          "Ben的，本文用he称呼Ben",
+          "May的，本文用she称呼May"
+        ],
+        "cards": [
+          [
+            "his red belt",
+            "0"
+          ],
+          [
+            "his brown coat",
+            "0"
+          ],
+          [
+            "her pink dress",
+            "1"
+          ],
+          [
+            "her white shoes",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "这是女孩Ann的绿色书包，本文用she称呼Ann。",
+        "This is ___ green bag.",
+        "her"
+      ],
+      "ordering": [
+        "介绍男孩Tom的黄色夹克，本文用he称呼Tom。",
+        "This is his yellow jacket."
+      ],
+      "repairTarget": "my"
+    },
+    {
+      "id": "P2A-U04-L3",
+      "unitId": "P2A-U04",
+      "grade": 2,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 3,
+      "order": 15,
+      "title": "失物盒开箱",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Your mittens are beside the door.",
+          "你的连指手套在哪里？",
+          "门旁",
+          "桌下",
+          "床上"
+        ],
+        [
+          "My raincoat is red.",
+          "我的雨衣是什么颜色？",
+          "红色",
+          "蓝色",
+          "黄色"
+        ]
+      ],
+      "reading": [
+        [
+          "Nina looks for her striped scarf.",
+          "Nina在找什么？",
+          "her striped scarf",
+          "her blue coat",
+          "her black shoes"
+        ],
+        [
+          "The scarf is on a hook.",
+          "围巾在哪里？",
+          "on a hook",
+          "in a drawer",
+          "under a desk"
+        ],
+        [
+          "She puts it around her neck."
+        ]
+      ],
+      "choice": [
+        "女孩Sue说：这是我的连衣裙。",
+        "This is ___ dress.",
+        "my",
+        "your",
+        "her"
+      ],
+      "repair": [
+        "这是男孩Dan的绿色外套，本文用he称呼Dan。",
+        "This is [her] green coat.",
+        "his"
+      ],
+      "sorting": {
+        "groups": [
+          "说话人的东西",
+          "女孩Nina的，本文用she称呼Nina"
+        ],
+        "cards": [
+          [
+            "my warm hat",
+            "0"
+          ],
+          [
+            "my wool socks",
+            "0"
+          ],
+          [
+            "her new skirt",
+            "1"
+          ],
+          [
+            "her orange belt",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "请对听话人说：这是你的围巾。",
+        "This is ___ scarf.",
+        "your"
+      ],
+      "ordering": [
+        "介绍女孩Lily的白色帽子，本文用she称呼Lily。",
+        "This is her white hat."
+      ],
+      "repairTarget": "his"
+    },
+    {
+      "id": "P2A-U04-L4",
+      "unitId": "P2A-U04",
+      "grade": 2,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 4,
+      "order": 16,
+      "title": "整理衣柜小分队",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "His sweater is on the top shelf.",
+          "他的毛衣在哪里？",
+          "最上层架子上",
+          "床底下",
+          "门口"
+        ],
+        [
+          "Her rain boots are yellow.",
+          "她的雨靴是什么颜色？",
+          "黄色",
+          "紫色",
+          "蓝色"
+        ]
+      ],
+      "reading": [
+        [
+          "Tom puts his grey trousers in a drawer.",
+          "Tom的长裤是什么颜色？",
+          "grey",
+          "pink",
+          "green"
+        ],
+        [
+          "His sister puts her dress on a hanger.",
+          "姐姐把连衣裙放在哪里？",
+          "on a hanger",
+          "in a bag",
+          "under a chair"
+        ],
+        [
+          "Their cupboard is tidy now."
+        ]
+      ],
+      "choice": [
+        "这是男孩Jack的鞋，本文用he称呼Jack。",
+        "These are ___ shoes.",
+        "his",
+        "her",
+        "my"
+      ],
+      "repair": [
+        "女孩Kim说：这是我自己的毛衣，此处用my。",
+        "This is [her] sweater.",
+        "my"
+      ],
+      "sorting": {
+        "groups": [
+          "听话人的东西",
+          "男孩Jack的，本文用he称呼Jack"
+        ],
+        "cards": [
+          [
+            "your blue shirt",
+            "0"
+          ],
+          [
+            "your warm coat",
+            "0"
+          ],
+          [
+            "his green jumper",
+            "1"
+          ],
+          [
+            "his black socks",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "这是女孩May的围巾，本文用she称呼May。",
+        "This is ___ scarf.",
+        "her"
+      ],
+      "ordering": [
+        "请向听话人介绍：这是你的红色雨衣。",
+        "This is your red raincoat."
+      ],
+      "repairTarget": "my"
+    },
+    {
+      "id": "P3A-U04-L1",
+      "unitId": "P3A-U04",
+      "grade": 3,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 1,
+      "order": 13,
+      "title": "操场此刻在发生什么",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Anna is skipping near the gate now.",
+          "Anna现在在做什么？",
+          "跳绳",
+          "画画",
+          "看书"
+        ],
+        [
+          "Two boys are carrying a goalpost.",
+          "几个男孩正在搬球门？",
+          "两个",
+          "三个",
+          "五个"
+        ]
+      ],
+      "reading": [
+        [
+          "Leo is drawing a chalk line on the playground.",
+          "Leo正在地上画什么？",
+          "a chalk line",
+          "a flower",
+          "a boat"
+        ],
+        [
+          "May is holding a long rope beside him.",
+          "May正拿着什么？",
+          "a long rope",
+          "a paintbrush",
+          "a flag"
+        ],
+        [
+          "Their teacher is watching from the steps."
+        ]
+      ],
+      "choice": [
+        "此刻Kim正在拍照，主语只有Kim一个人。",
+        "Kim ___ taking a photo now.",
+        "is",
+        "are",
+        "am"
+      ],
+      "repair": [
+        "Sam此刻正在跑步，只改动拼错的词形。",
+        "Sam is [runing] beside the fence.",
+        "running"
+      ],
+      "sorting": {
+        "groups": [
+          "直接加ing",
+          "去掉不发音e再加ing"
+        ],
+        "cards": [
+          [
+            "read",
+            "0"
+          ],
+          [
+            "paint",
+            "0"
+          ],
+          [
+            "make",
+            "1"
+          ],
+          [
+            "dance",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "现在三名女孩正在唱歌，填一个be词。",
+        "The three girls ___ singing now.",
+        "are"
+      ],
+      "ordering": [
+        "此刻男孩们正在洗靴子；now可放句首、be词后或句尾。",
+        "The boys are washing their boots now."
+      ],
+      "repairTarget": "run"
+    },
+    {
+      "id": "P3A-U04-L2",
+      "unitId": "P3A-U04",
+      "grade": 3,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 2,
+      "order": 14,
+      "title": "美术室里的忙碌",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Ben is mixing blue paint now.",
+          "Ben正在调什么颜色的颜料？",
+          "蓝色",
+          "红色",
+          "黄色"
+        ],
+        [
+          "Nina is cutting a paper circle.",
+          "Nina正在剪什么形状？",
+          "圆形",
+          "星形",
+          "三角形"
+        ]
+      ],
+      "reading": [
+        [
+          "Tom is gluing two wings onto a paper bird.",
+          "Tom正往纸鸟上粘什么？",
+          "two wings",
+          "three legs",
+          "a long tail"
+        ],
+        [
+          "His friend is choosing a ribbon from a box.",
+          "他的朋友正从盒子里选什么？",
+          "a ribbon",
+          "a stone",
+          "a spoon"
+        ],
+        [
+          "The art teacher is cleaning a brush."
+        ]
+      ],
+      "choice": [
+        "我此刻正在给面具涂色。",
+        "I ___ colouring a mask now.",
+        "am",
+        "is",
+        "are"
+      ],
+      "repair": [
+        "Lily正在做一张卡片，只改动多余的e。",
+        "Lily is [makeing] a card.",
+        "making"
+      ],
+      "sorting": {
+        "groups": [
+          "直接加ing",
+          "去掉不发音e再加ing"
+        ],
+        "cards": [
+          [
+            "jump",
+            "0"
+          ],
+          [
+            "walk",
+            "0"
+          ],
+          [
+            "bake",
+            "1"
+          ],
+          [
+            "ride",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "两个同学此刻正在分享胶水。",
+        "Two classmates ___ sharing glue now.",
+        "are"
+      ],
+      "ordering": [
+        "Dad现在正在给木盒涂色；now可放句首、be词后或句尾。",
+        "Dad is painting a wooden box now."
+      ],
+      "repairTarget": "make"
+    },
+    {
+      "id": "P3A-U04-L3",
+      "unitId": "P3A-U04",
+      "grade": 3,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 3,
+      "order": 15,
+      "title": "图书角的安静动作",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Mia is putting bookmarks in a book.",
+          "Mia正把书签放在哪里？",
+          "书里",
+          "盒子里",
+          "杯子里"
+        ],
+        [
+          "Jack is looking at a map now.",
+          "Jack此刻正在看什么？",
+          "地图",
+          "漫画",
+          "菜单"
+        ]
+      ],
+      "reading": [
+        [
+          "A librarian is moving a small trolley.",
+          "图书管理员正在移动什么？",
+          "a small trolley",
+          "a long ladder",
+          "a big desk"
+        ],
+        [
+          "Two children are reading a story about a whale.",
+          "两个孩子正在读关于什么的故事？",
+          "a whale",
+          "a tiger",
+          "a fox"
+        ],
+        [
+          "They are sitting on soft cushions."
+        ]
+      ],
+      "choice": [
+        "此刻两个男孩正在找一本字典。",
+        "The boys ___ finding a dictionary now.",
+        "are",
+        "is",
+        "am"
+      ],
+      "repair": [
+        "Nora此刻正在写字，只改动词形。",
+        "Nora is [writeing] a note.",
+        "writing"
+      ],
+      "sorting": {
+        "groups": [
+          "直接加ing",
+          "去掉不发音e再加ing"
+        ],
+        "cards": [
+          [
+            "cook",
+            "0"
+          ],
+          [
+            "help",
+            "0"
+          ],
+          [
+            "have",
+            "1"
+          ],
+          [
+            "write",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "一个孩子现在正在借一本新书，填be词。",
+        "A child ___ borrowing a new book now.",
+        "is"
+      ],
+      "ordering": [
+        "此刻我正在读一本恐龙书；now可放句首、be词后或句尾。",
+        "I am reading a dinosaur book now."
+      ],
+      "repairTarget": "write"
+    },
+    {
+      "id": "P3A-U04-L4",
+      "unitId": "P3A-U04",
+      "grade": 3,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 4,
+      "order": 16,
+      "title": "厨房里的小帮手",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Grandpa is peeling a potato.",
+          "爷爷正在削什么？",
+          "土豆",
+          "苹果",
+          "梨"
+        ],
+        [
+          "My cousins are setting the table.",
+          "我的表亲们正在做什么？",
+          "摆餐具",
+          "洗碗",
+          "切面包"
+        ]
+      ],
+      "reading": [
+        [
+          "Mum is washing spinach in the sink.",
+          "妈妈正在洗什么？",
+          "spinach",
+          "carrots",
+          "grapes"
+        ],
+        [
+          "Dan is counting six spoons on the table.",
+          "Dan正在数几把勺子？",
+          "six",
+          "four",
+          "eight"
+        ],
+        [
+          "Dad is warming some soup."
+        ]
+      ],
+      "choice": [
+        "两个姐姐此刻正在装野餐篮。",
+        "My sisters ___ packing a picnic basket now.",
+        "are",
+        "is",
+        "am"
+      ],
+      "repair": [
+        "小猫此刻坐在门口，只改动拼错的词形。",
+        "The kitten is [siting] by the door.",
+        "sitting"
+      ],
+      "sorting": {
+        "groups": [
+          "直接加ing",
+          "这里双写末尾辅音再加ing"
+        ],
+        "cards": [
+          [
+            "play",
+            "0"
+          ],
+          [
+            "clean",
+            "0"
+          ],
+          [
+            "run",
+            "1"
+          ],
+          [
+            "sit",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "我现在正在切一根黄瓜，填be词。",
+        "I ___ cutting a cucumber now.",
+        "am"
+      ],
+      "ordering": [
+        "现在我们正在给花浇水；now可放句首、be词后或句尾。",
+        "We are watering the flowers now."
+      ],
+      "repairTarget": "sit"
+    },
+    {
+      "id": "P4A-U04-L1",
+      "unitId": "P4A-U04",
+      "grade": 4,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 1,
+      "order": 13,
+      "title": "河边小故事的开头",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Mia found a feather near the river yesterday.",
+          "Mia昨天在河边找到了什么？",
+          "羽毛",
+          "钥匙",
+          "手套"
+        ],
+        [
+          "Ben took a notebook to the pond.",
+          "Ben带了什么去池塘？",
+          "笔记本",
+          "雨伞",
+          "篮子"
+        ]
+      ],
+      "reading": [
+        [
+          "Last Saturday, Lily went to the old bridge.",
+          "Lily上周六去了哪里？",
+          "the old bridge",
+          "the new library",
+          "the sports hall"
+        ],
+        [
+          "She saw a heron standing in the water.",
+          "Lily看到了什么鸟？",
+          "a heron",
+          "a parrot",
+          "an owl"
+        ],
+        [
+          "She drew the bird in her notebook."
+        ]
+      ],
+      "choice": [
+        "昨晚我们吃了面条。",
+        "We ___ noodles last night.",
+        "ate",
+        "eat",
+        "eated"
+      ],
+      "repair": [
+        "昨天Leo走到了木屋，只改动go的过去式。",
+        "Leo [goed] to the wooden hut yesterday.",
+        "went"
+      ],
+      "sorting": {
+        "groups": [
+          "动词原形",
+          "本组动词的过去式"
+        ],
+        "cards": [
+          [
+            "go",
+            "0"
+          ],
+          [
+            "take",
+            "0"
+          ],
+          [
+            "went",
+            "1"
+          ],
+          [
+            "took",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "昨天Sam写了一张留言条，填write的过去式。",
+        "Sam ___ a note yesterday.",
+        "wrote"
+      ],
+      "ordering": [
+        "昨天Mia带了一把蓝雨伞；yesterday可放句首、主语后或句尾。",
+        "Mia took a blue umbrella yesterday."
+      ],
+      "repairTarget": "go"
+    },
+    {
+      "id": "P4A-U04-L2",
+      "unitId": "P4A-U04",
+      "grade": 4,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 2,
+      "order": 14,
+      "title": "迷路的小狗有线索",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Jack heard a bark behind the shed.",
+          "Jack在棚子后面听到了什么？",
+          "狗叫声",
+          "钟声",
+          "鸟叫声"
+        ],
+        [
+          "Nina brought a bowl of water.",
+          "Nina拿来了什么？",
+          "一碗水",
+          "一袋米",
+          "一杯果汁"
+        ]
+      ],
+      "reading": [
+        [
+          "Yesterday, Tom lost a red dog lead.",
+          "Tom昨天丢了什么？",
+          "a red dog lead",
+          "a green ball",
+          "a blue coat"
+        ],
+        [
+          "His sister found it under a bench.",
+          "姐姐在哪里找到了它？",
+          "under a bench",
+          "inside a bag",
+          "behind a tree"
+        ],
+        [
+          "They took it back to the owner."
+        ]
+      ],
+      "choice": [
+        "昨天下午Ann买了一包狗粮。",
+        "Ann ___ some dog food yesterday afternoon.",
+        "bought",
+        "buy",
+        "buyed"
+      ],
+      "repair": [
+        "昨天我们看见一只迷路小狗，只改动see的过去式。",
+        "We [seed] a lost puppy yesterday.",
+        "saw"
+      ],
+      "sorting": {
+        "groups": [
+          "动词原形",
+          "本组动词的过去式"
+        ],
+        "cards": [
+          [
+            "see",
+            "0"
+          ],
+          [
+            "bring",
+            "0"
+          ],
+          [
+            "saw",
+            "1"
+          ],
+          [
+            "brought",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "昨天Ken给小狗喝了一些水，填give的过去式。",
+        "Ken ___ the puppy some water yesterday.",
+        "gave"
+      ],
+      "ordering": [
+        "昨天Leo找到了一枚银色硬币；yesterday可放句首、主语后或句尾。",
+        "Leo found a silver coin yesterday."
+      ],
+      "repairTarget": "see"
+    },
+    {
+      "id": "P4A-U04-L3",
+      "unitId": "P4A-U04",
+      "grade": 4,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 3,
+      "order": 15,
+      "title": "旧箱子里的发现",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Grandma gave May a small key.",
+          "奶奶给了May什么？",
+          "一把小钥匙",
+          "一张照片",
+          "一朵花"
+        ],
+        [
+          "Leo read an old letter yesterday.",
+          "Leo昨天读了什么？",
+          "一封旧信",
+          "一本新书",
+          "一张菜单"
+        ]
+      ],
+      "reading": [
+        [
+          "Last night, Ben opened a wooden box.",
+          "Ben昨晚打开了什么？",
+          "a wooden box",
+          "a paper bag",
+          "a metal tin"
+        ],
+        [
+          "He found a black-and-white photo inside.",
+          "箱子里有什么？",
+          "a black-and-white photo",
+          "a red scarf",
+          "a silver bell"
+        ],
+        [
+          "He showed it to his father."
+        ]
+      ],
+      "choice": [
+        "昨天我们做了一只纸龙。",
+        "We ___ a paper dragon yesterday.",
+        "made",
+        "make",
+        "maked"
+      ],
+      "repair": [
+        "昨天Kim在盒子里发现一枚徽章，只改动find的过去式。",
+        "Kim [finded] a badge in the box yesterday.",
+        "found"
+      ],
+      "sorting": {
+        "groups": [
+          "动词原形",
+          "本组动词的过去式"
+        ],
+        "cards": [
+          [
+            "eat",
+            "0"
+          ],
+          [
+            "write",
+            "0"
+          ],
+          [
+            "ate",
+            "1"
+          ],
+          [
+            "wrote",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "昨晚May唱了一首老歌，填sing的过去式。",
+        "May ___ an old song last night.",
+        "sang"
+      ],
+      "ordering": [
+        "昨天Anna给我看了一张照片；yesterday可放句首、主语后或句尾。",
+        "Anna showed me a photograph yesterday."
+      ],
+      "repairTarget": "find"
+    },
+    {
+      "id": "P4A-U04-L4",
+      "unitId": "P4A-U04",
+      "grade": 4,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 4,
+      "order": 16,
+      "title": "把小故事讲完整",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Sam met a friend beside the fountain.",
+          "Sam在哪里遇到了朋友？",
+          "喷泉旁",
+          "桥下",
+          "图书馆里"
+        ],
+        [
+          "Lily left her compass on a stone.",
+          "Lily把指南针落在哪里？",
+          "石头上",
+          "书包里",
+          "桌子下"
+        ]
+      ],
+      "reading": [
+        [
+          "Yesterday, Nora rode her bicycle to the lake.",
+          "Nora昨天怎样去湖边？",
+          "by bicycle",
+          "by bus",
+          "on foot"
+        ],
+        [
+          "She saw a small turtle on the path.",
+          "Nora在小路上看到了什么？",
+          "a small turtle",
+          "a big rabbit",
+          "a little fox"
+        ],
+        [
+          "She moved it away from the wheels carefully."
+        ]
+      ],
+      "choice": [
+        "昨晚Max选择了一条安全小路。",
+        "Max ___ a safe path last night.",
+        "chose",
+        "choose",
+        "choosed"
+      ],
+      "repair": [
+        "昨天Dan把一块玻璃打碎了，只改动break的过去式。",
+        "Dan [breaked] a piece of glass yesterday.",
+        "broke"
+      ],
+      "sorting": {
+        "groups": [
+          "动词原形",
+          "本组动词的过去式"
+        ],
+        "cards": [
+          [
+            "buy",
+            "0"
+          ],
+          [
+            "choose",
+            "0"
+          ],
+          [
+            "bought",
+            "1"
+          ],
+          [
+            "chose",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "昨天爷爷教我打一个结，填teach的过去式。",
+        "Grandpa ___ me a knot yesterday.",
+        "taught"
+      ],
+      "ordering": [
+        "昨天Sam把钥匙还给了门卫；yesterday可放句首、主语后或句尾。",
+        "Sam gave the key back to the guard yesterday."
+      ],
+      "repairTarget": "break"
+    },
+    {
+      "id": "P5A-U04-L1",
+      "unitId": "P5A-U04",
+      "grade": 5,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 1,
+      "order": 13,
+      "title": "铃声响起的那一刻",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Mia was fastening her helmet when the whistle blew.",
+          "哨声响时Mia正在做什么？",
+          "系头盔带",
+          "画地图",
+          "喝水"
+        ],
+        [
+          "The guide called Ben at the gate.",
+          "向导在哪里叫住Ben？",
+          "大门口",
+          "桥下面",
+          "山顶上"
+        ]
+      ],
+      "reading": [
+        [
+          "Nora was arranging tools when a bell rang.",
+          "铃响时Nora正在做什么？",
+          "arranging tools",
+          "painting a sign",
+          "packing her lunch"
+        ],
+        [
+          "She put the tools down and opened the gate.",
+          "Nora放下工具后做了什么？",
+          "opened the gate",
+          "closed a window",
+          "climbed a tree"
+        ],
+        [
+          "A neighbour was waiting outside with a parcel."
+        ]
+      ],
+      "choice": [
+        "故事把准备午餐作为铃响时正在进行的背景。",
+        "We ___ preparing lunch when the bell rang.",
+        "were",
+        "was",
+        "are"
+      ],
+      "repair": [
+        "昨晚画海报时灯闪了一下，只改动过去的事件动词。",
+        "I was drawing a poster when the lamp [flash].",
+        "flashed"
+      ],
+      "sorting": {
+        "groups": [
+          "当时正在进行的背景",
+          "发生的一次事件"
+        ],
+        "cards": [
+          [
+            "She was tying her shoes.",
+            "0"
+          ],
+          [
+            "We were cleaning a shelf.",
+            "0"
+          ],
+          [
+            "The bucket fell.",
+            "1"
+          ],
+          [
+            "A dog barked.",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "故事把浇花作为当时正在进行的背景。",
+        "Dad ___ watering the plants when I arrived.",
+        "was"
+      ],
+      "ordering": [
+        "先说正在进行的背景，再用when接上事件。",
+        "I was feeding the cat when the bell rang."
+      ],
+      "repairTarget": null
+    },
+    {
+      "id": "P5A-U04-L2",
+      "unitId": "P5A-U04",
+      "grade": 5,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 2,
+      "order": 14,
+      "title": "雨来了，互相帮个忙",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Leo was unloading a basket when the rain started.",
+          "雨开始下时Leo正在做什么？",
+          "卸下篮子",
+          "搭帐篷",
+          "擦黑板"
+        ],
+        [
+          "May lent a dry coat to Nina.",
+          "May把干外套借给了谁？",
+          "Nina",
+          "Ben",
+          "Tom"
+        ]
+      ],
+      "reading": [
+        [
+          "Kim was collecting leaves when she heard thunder.",
+          "Kim听见雷声时正在做什么？",
+          "collecting leaves",
+          "washing cups",
+          "reading a notice"
+        ],
+        [
+          "Her friend held an umbrella above her.",
+          "朋友用什么帮助Kim？",
+          "an umbrella",
+          "a towel",
+          "a notebook"
+        ],
+        [
+          "They carried the leaves into the classroom together."
+        ]
+      ],
+      "choice": [
+        "故事把搬箱子作为雨开始时正在进行的背景。",
+        "The boys ___ carrying boxes when the rain began.",
+        "were",
+        "was",
+        "is"
+      ],
+      "repair": [
+        "昨天我们正在擦长凳，只改动主语对应的be词。",
+        "We [was] wiping the bench when Dad called.",
+        "were"
+      ],
+      "sorting": {
+        "groups": [
+          "当时正在进行的背景",
+          "发生的一次事件"
+        ],
+        "cards": [
+          [
+            "Mum was peeling potatoes.",
+            "0"
+          ],
+          [
+            "They were folding maps.",
+            "0"
+          ],
+          [
+            "A branch broke.",
+            "1"
+          ],
+          [
+            "The phone rang.",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "故事把系鞋带作为老师叫我时正在进行的背景。",
+        "I ___ tying my shoes when the teacher called.",
+        "was"
+      ],
+      "ordering": [
+        "先说正在进行的背景，再用when接上事件。",
+        "They were sorting leaves when the rain began."
+      ],
+      "repairTarget": null
+    },
+    {
+      "id": "P5A-U04-L3",
+      "unitId": "P5A-U04",
+      "grade": 5,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 3,
+      "order": 15,
+      "title": "一次小意外的经过",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Anna was carrying a tray when a cup slipped.",
+          "杯子滑落时Anna正在做什么？",
+          "端托盘",
+          "锁门",
+          "剪纸"
+        ],
+        [
+          "Ben fetched a cloth from the kitchen.",
+          "Ben去厨房拿了什么？",
+          "一块布",
+          "一把勺子",
+          "一只碗"
+        ]
+      ],
+      "reading": [
+        [
+          "Sam was filling a jug when he spilled some water.",
+          "Sam洒水时正在做什么？",
+          "filling a jug",
+          "moving a chair",
+          "washing a coat"
+        ],
+        [
+          "His cousin put a towel on the wet floor.",
+          "表亲把毛巾放在哪里？",
+          "on the wet floor",
+          "on the shelf",
+          "in the sink"
+        ],
+        [
+          "They dried the floor before anyone walked past."
+        ]
+      ],
+      "choice": [
+        "故事把修风筝作为线断时正在进行的背景。",
+        "Leo ___ fixing a kite when the string snapped.",
+        "was",
+        "were",
+        "are"
+      ],
+      "repair": [
+        "昨天正端盘子时门开了，只改动过去的事件动词。",
+        "Nina was carrying plates when the door [open].",
+        "opened"
+      ],
+      "sorting": {
+        "groups": [
+          "当时正在进行的背景",
+          "发生的一次事件"
+        ],
+        "cards": [
+          [
+            "Ben was brushing a coat.",
+            "0"
+          ],
+          [
+            "The girls were painting masks.",
+            "0"
+          ],
+          [
+            "The jug tipped over.",
+            "1"
+          ],
+          [
+            "A plate cracked.",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "故事把洗罐子作为我敲门时正在进行的背景。",
+        "She ___ washing a jar when I knocked.",
+        "was"
+      ],
+      "ordering": [
+        "先说正在进行的背景，再用when接上事件。",
+        "We were carrying a tray when a cup slipped."
+      ],
+      "repairTarget": null
+    },
+    {
+      "id": "P5A-U04-L4",
+      "unitId": "P5A-U04",
+      "grade": 5,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 4,
+      "order": 16,
+      "title": "帮助之后说清楚",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Nora was lifting a box when her friend arrived.",
+          "朋友到来时Nora正在做什么？",
+          "抬箱子",
+          "读报纸",
+          "捡贝壳"
+        ],
+        [
+          "The neighbour thanked Jack for the torch.",
+          "邻居为什么感谢Jack？",
+          "借来了手电筒",
+          "送来了晚饭",
+          "修好了自行车"
+        ]
+      ],
+      "reading": [
+        [
+          "Lily was looking for a torch when the lights went out.",
+          "停电时Lily正在找什么？",
+          "a torch",
+          "a scarf",
+          "a key"
+        ],
+        [
+          "Her brother brought one from the cupboard.",
+          "哥哥从哪里拿来了手电筒？",
+          "the cupboard",
+          "the garden",
+          "the bathroom"
+        ],
+        [
+          "They used it to check the path safely."
+        ]
+      ],
+      "choice": [
+        "故事把检查大门作为访客到来时正在进行的背景。",
+        "Dad ___ checking the gate when the visitors arrived.",
+        "was",
+        "were",
+        "am"
+      ],
+      "repair": [
+        "昨天两个男孩正扶着梯子，只改动对应的be词。",
+        "The boys [was] holding the ladder when I came.",
+        "were"
+      ],
+      "sorting": {
+        "groups": [
+          "当时正在进行的背景",
+          "发生的一次事件"
+        ],
+        "cards": [
+          [
+            "Nina was loading a trolley.",
+            "0"
+          ],
+          [
+            "Our cousins were carrying chairs.",
+            "0"
+          ],
+          [
+            "The visitor arrived.",
+            "1"
+          ],
+          [
+            "The torch stopped working.",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "故事把打包作为我到家时正在进行的背景。",
+        "They ___ packing the equipment when I got home.",
+        "were"
+      ],
+      "ordering": [
+        "先说正在进行的背景，再用when接上事件。",
+        "Mum was packing a bag when the taxi arrived."
+      ],
+      "repairTarget": null
+    },
+    {
+      "id": "P6A-U04-L1",
+      "unitId": "P6A-U04",
+      "grade": 6,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 1,
+      "order": 13,
+      "title": "线索藏在背景里",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "The caretaker was locking the shed when he heard a rustle.",
+          "听到沙沙声时管理员正在做什么？",
+          "锁棚子",
+          "扫小路",
+          "提水桶"
+        ],
+        [
+          "A red ribbon lay beside the wheelbarrow.",
+          "独轮车旁有什么？",
+          "红丝带",
+          "蓝围巾",
+          "白信封"
+        ]
+      ],
+      "reading": [
+        [
+          "The wind was shaking the branches when Tara noticed a torn label.",
+          "Tara注意到破标签时，风在做什么？",
+          "shaking the branches",
+          "drying the path",
+          "moving a curtain"
+        ],
+        [
+          "She matched the label to a parcel under the stairs.",
+          "Tara把标签和什么对应起来？",
+          "a parcel under the stairs",
+          "a suitcase by the gate",
+          "a book on a bench"
+        ],
+        [
+          "The parcel belonged to the caretaker, so she called him."
+        ]
+      ],
+      "choice": [
+        "故事把检查窗闩作为一声响发生时正在进行的背景。",
+        "The caretaker ___ checking a latch when a crash sounded.",
+        "was",
+        "were",
+        "is"
+      ],
+      "repair": [
+        "昨晚正查看小路时看到了袋子，只改动一次事件的动词。",
+        "Tara was checking the path when she [notice] a bag.",
+        "noticed"
+      ],
+      "sorting": {
+        "groups": [
+          "过去某刻正在进行的背景",
+          "过去发生的完整事件"
+        ],
+        "cards": [
+          [
+            "The leaves were swirling.",
+            "0"
+          ],
+          [
+            "Tara was studying a footprint.",
+            "0"
+          ],
+          [
+            "The latch broke.",
+            "1"
+          ],
+          [
+            "A parcel slid down.",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "故事把记录线索作为灯熄灭时正在进行的背景。",
+        "We ___ recording clues when the lamp went out.",
+        "were"
+      ],
+      "ordering": [
+        "先说正在进行的背景，再用when接上完整事件。",
+        "Tara was checking the gate when a twig snapped."
+      ],
+      "repairTarget": null
+    },
+    {
+      "id": "P6A-U04-L2",
+      "unitId": "P6A-U04",
+      "grade": 6,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 2,
+      "order": 14,
+      "title": "两段线索，先后有序",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Noah was sketching a footprint when the guard returned.",
+          "保安回来时Noah正在做什么？",
+          "画脚印",
+          "擦窗户",
+          "折地图"
+        ],
+        [
+          "The missing tag was inside a blue envelope.",
+          "丢失的标签在哪里？",
+          "蓝信封里",
+          "门垫下",
+          "抽屉上"
+        ]
+      ],
+      "reading": [
+        [
+          "While Zoe was comparing two maps, Noah was checking the timetable.",
+          "Zoe比较地图时Noah在做什么？",
+          "checking the timetable",
+          "closing the gate",
+          "washing a bucket"
+        ],
+        [
+          "A new notice said the bus left early, so the bench was empty.",
+          "长凳为什么空着？",
+          "The bus left early.",
+          "The bench was wet.",
+          "The station was closed."
+        ],
+        [
+          "The group used the new time to plan their return."
+        ]
+      ],
+      "choice": [
+        "这里描述过去两件同时进行的背景动作。",
+        "While I was drawing, my friends ___ measuring the path.",
+        "were",
+        "was",
+        "are"
+      ],
+      "repair": [
+        "昨天正找标签时发现了信封，只改动过去的事件动词。",
+        "We were searching for a tag when we [find] an envelope.",
+        "found"
+      ],
+      "sorting": {
+        "groups": [
+          "过去某刻正在进行的背景",
+          "过去发生的完整事件"
+        ],
+        "cards": [
+          [
+            "Noah was reading a faded notice.",
+            "0"
+          ],
+          [
+            "Zoe was counting the steps.",
+            "0"
+          ],
+          [
+            "The guard returned.",
+            "1"
+          ],
+          [
+            "A suitcase toppled over.",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "故事把追踪小路作为哨声响时正在进行的背景。",
+        "They ___ following the path when the whistle blew.",
+        "were"
+      ],
+      "ordering": [
+        "先说正在进行的背景，再用when接上完整事件。",
+        "Noah was sketching the wall when a guard returned."
+      ],
+      "repairTarget": null
+    },
+    {
+      "id": "P6A-U04-L3",
+      "unitId": "P6A-U04",
+      "grade": 6,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 3,
+      "order": 15,
+      "title": "从原因走向结果",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "The volunteers were testing a lantern when the battery failed.",
+          "电池没电时志愿者正在做什么？",
+          "测试灯笼",
+          "油漆围栏",
+          "擦地图"
+        ],
+        [
+          "A damp ticket lay beneath the mat.",
+          "门垫下有什么？",
+          "一张湿票",
+          "一枚硬币",
+          "一把钥匙"
+        ]
+      ],
+      "reading": [
+        [
+          "Mira was inspecting a cable when she saw a loose plug.",
+          "Mira看见松动插头时正在做什么？",
+          "inspecting a cable",
+          "replacing a sign",
+          "drawing a route"
+        ],
+        [
+          "An adult reconnected the plug, so the display worked again.",
+          "显示屏为什么重新工作？",
+          "An adult reconnected the plug.",
+          "The rain stopped.",
+          "Mira moved a chair."
+        ],
+        [
+          "Mira wrote down the cause and result in her notebook."
+        ]
+      ],
+      "choice": [
+        "故事把观察显示屏作为画面消失时正在进行的背景。",
+        "The visitors ___ watching the display when it went blank.",
+        "were",
+        "was",
+        "is"
+      ],
+      "repair": [
+        "昨天正整理票据时一张票掉了，只改动一次事件的动词。",
+        "Mira was sorting tickets when one [fall] onto the floor.",
+        "fell"
+      ],
+      "sorting": {
+        "groups": [
+          "过去某刻正在进行的背景",
+          "过去发生的完整事件"
+        ],
+        "cards": [
+          [
+            "Mira was tracing a cable on a diagram.",
+            "0"
+          ],
+          [
+            "The adults were checking the equipment.",
+            "0"
+          ],
+          [
+            "The battery failed.",
+            "1"
+          ],
+          [
+            "A plug came loose.",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "故事把抄写说明作为管理员到来时正在进行的背景。",
+        "I ___ copying the instructions when the caretaker arrived.",
+        "was"
+      ],
+      "ordering": [
+        "先说正在进行的背景，再用when接上完整事件。",
+        "Mira was reading a notice when the screen went blank."
+      ],
+      "repairTarget": null
+    },
+    {
+      "id": "P6A-U04-L4",
+      "unitId": "P6A-U04",
+      "grade": 6,
+      "term": "A",
+      "unitNumber": 4,
+      "unitLesson": 4,
+      "order": 16,
+      "title": "把发现写成一段故事",
+      "subtitle": "听读找线索，分类、改句子，再表达",
+      "minutes": 12,
+      "audio": [
+        [
+          "Lena was pinning up a map when the curator entered.",
+          "馆员进来时Lena正在做什么？",
+          "钉地图",
+          "关窗户",
+          "收拾地毯"
+        ],
+        [
+          "The final clue was a mark behind the frame.",
+          "最后的线索是什么？",
+          "画框后的记号",
+          "桌下的纸条",
+          "门上的标签"
+        ]
+      ],
+      "reading": [
+        [
+          "While Lena was examining a frame, Omar was listing the objects.",
+          "Lena检查画框时Omar在做什么？",
+          "listing the objects",
+          "opening a window",
+          "polishing a lamp"
+        ],
+        [
+          "They found matching numbers on the frame and a storage box.",
+          "什么地方的数字一致？",
+          "the frame and a storage box",
+          "the door and the window",
+          "a cup and a plate"
+        ],
+        [
+          "The curator used those numbers to identify the missing label."
+        ]
+      ],
+      "choice": [
+        "这里描述过去两件同时进行的动作。",
+        "While Omar was writing, Lena ___ examining the frame.",
+        "was",
+        "were",
+        "are"
+      ],
+      "repair": [
+        "昨天正比较数字时馆员进来了，只改动过去的事件动词。",
+        "The children were comparing numbers when the curator [enter].",
+        "entered"
+      ],
+      "sorting": {
+        "groups": [
+          "过去某刻正在进行的背景",
+          "过去发生的完整事件"
+        ],
+        "cards": [
+          [
+            "Omar was arranging the notes.",
+            "0"
+          ],
+          [
+            "Lena was photographing a label.",
+            "0"
+          ],
+          [
+            "The curator entered.",
+            "1"
+          ],
+          [
+            "A number appeared on the screen.",
+            "1"
+          ]
+        ]
+      },
+      "fill": [
+        "故事把写结尾作为老师叫我时正在进行的背景。",
+        "I ___ writing the ending when the teacher called.",
+        "was"
+      ],
+      "ordering": [
+        "先说正在进行的背景，再用when接上完整事件。",
+        "Lena was comparing the numbers when the curator smiled."
+      ],
+      "repairTarget": null
+    }
+  ],
+  "plans": {
+    "1": {
+      "skill": "grammar.pronouns.subject",
+      "sortingSkill": "grammar.be.present",
+      "repairSkill": "grammar.be.present",
+      "topics": [
+        "grammar.pronouns",
+        "grammar.be"
+      ],
+      "rule": "先看介绍的是谁。本文he指已说明的男性人物，she指已说明的女性人物；一个he/she配is，we/they或多个人配are。",
+      "examples": [
+        [
+          "He is my cousin, Hugo.",
+          "他是我的表亲Hugo。"
+        ],
+        [
+          "She is Aunt Eva.",
+          "她是Eva阿姨。"
+        ],
+        [
+          "They are my neighbours.",
+          "他们是我的邻居。"
+        ]
+      ],
+      "words": [
+        [
+          "family",
+          "家人"
+        ],
+        [
+          "uncle",
+          "叔叔或舅舅等男性长辈"
+        ],
+        [
+          "aunt",
+          "阿姨或姑姑等女性长辈"
+        ],
+        [
+          "photo",
+          "照片"
+        ]
+      ]
+    },
+    "2": {
+      "skill": "grammar.possession",
+      "sortingSkill": "grammar.possession",
+      "repairSkill": "grammar.possession",
+      "topics": [
+        "grammar.possession"
+      ],
+      "rule": "my是说话人的，your是听话人的；本文明确用he称呼的人配his，用she称呼的人配her。先找物品属于谁，再选词。",
+      "examples": [
+        [
+          "This is his striped scarf.",
+          "这是他的条纹围巾。"
+        ],
+        [
+          "These are her silver shoes.",
+          "这是她的银色鞋子。"
+        ],
+        [
+          "That is your warm jacket.",
+          "那是你的保暖夹克。"
+        ]
+      ],
+      "words": [
+        [
+          "coat",
+          "外套"
+        ],
+        [
+          "scarf",
+          "围巾"
+        ],
+        [
+          "gloves",
+          "手套"
+        ],
+        [
+          "tidy",
+          "整齐的"
+        ]
+      ]
+    },
+    "3": {
+      "skill": "grammar.present-continuous",
+      "sortingSkill": "morphology.verb.ing",
+      "repairSkill": "morphology.verb.ing",
+      "topics": [
+        "tense.present-continuous",
+        "forms.ing"
+      ],
+      "rule": "这些情景说此刻正在进行的动作，用am/is/are加动词-ing。I配am，单数人物配is，you/we/they及复数人物配are；-ing拼写需按具体词核对，不把双写套到所有词。",
+      "examples": [
+        [
+          "Eva is planting seeds beside a wall.",
+          "Eva正在墙边种种子。"
+        ],
+        [
+          "Our friends are polishing a model plane.",
+          "朋友们正在擦一架模型飞机。"
+        ],
+        [
+          "I am hanging a paper lantern.",
+          "我正在挂一盏纸灯笼。"
+        ]
+      ],
+      "words": [
+        [
+          "carry",
+          "搬、提"
+        ],
+        [
+          "rope",
+          "绳子"
+        ],
+        [
+          "glue",
+          "胶水"
+        ],
+        [
+          "borrow",
+          "借入"
+        ]
+      ]
+    },
+    "4": {
+      "skill": "grammar.past-simple",
+      "sortingSkill": "morphology.verb.irregular-past",
+      "repairSkill": "morphology.verb.irregular-past",
+      "topics": [
+        "tense.past-simple",
+        "forms.irregular-past"
+      ],
+      "rule": "说明确过去的完整事件，本组重点看不规则过去式，不能给所有动词直接加ed。阅读和听音先找人物、地点、物品及事件；词形与故事理解分开记录。",
+      "examples": [
+        [
+          "I drove to the harbour last month.",
+          "我上个月开车去了海港。"
+        ],
+        [
+          "Eva ran to the bus stop yesterday.",
+          "Eva昨天跑到了公交车站。"
+        ],
+        [
+          "The guide gave Eva a ticket yesterday.",
+          "向导昨天给了Eva一张票。"
+        ]
+      ],
+      "words": [
+        [
+          "clue",
+          "线索"
+        ],
+        [
+          "owner",
+          "主人"
+        ],
+        [
+          "compass",
+          "指南针"
+        ],
+        [
+          "carefully",
+          "小心地"
+        ]
+      ]
+    },
+    "5": {
+      "skill": "grammar.past-contrast",
+      "sortingSkill": "grammar.past-contrast",
+      "repairSkill": "grammar.past-contrast",
+      "topics": [
+        "tense.past-contrast",
+        "tense.past-continuous"
+      ],
+      "rule": "本组用过去进行时交代当时正在做的背景，用一般过去时讲发生的事件，再用when连接。不能只看到when就猜时态，要看题目指定的背景与事件意义。",
+      "examples": [
+        [
+          "I was polishing a helmet when the coach waved.",
+          "教练挥手时，我正在擦头盔。"
+        ],
+        [
+          "Eva was checking a rope when the guide called.",
+          "向导叫她时，Eva正在检查绳子。"
+        ],
+        [
+          "We were loading a canoe when the horn sounded.",
+          "汽笛响时，我们正在装独木舟。"
+        ]
+      ],
+      "words": [
+        [
+          "parcel",
+          "包裹"
+        ],
+        [
+          "spill",
+          "洒出"
+        ],
+        [
+          "equipment",
+          "器材"
+        ],
+        [
+          "neighbour",
+          "邻居"
+        ]
+      ]
+    },
+    "6": {
+      "skill": "grammar.past-contrast",
+      "sortingSkill": "grammar.past-contrast",
+      "repairSkill": "grammar.past-contrast",
+      "topics": [
+        "tense.past-contrast",
+        "reading.inference"
+      ],
+      "rule": "叙事中要分清过去正在进行的背景、发生的完整事件，以及同时进行的动作。阅读时把时间、原因与结果放回原文找依据，不把一种连词机械对应唯一时态。",
+      "examples": [
+        [
+          "While the guide was studying a map, Eva was checking a compass.",
+          "向导研究地图时，Eva正在检查指南针。"
+        ],
+        [
+          "The gate creaked while the visitors were waiting.",
+          "访客等待时，大门吱呀作响。"
+        ],
+        [
+          "Eva was tracing a route when the curator called her.",
+          "馆员叫Eva时，她正在描路线。"
+        ]
+      ],
+      "words": [
+        [
+          "caretaker",
+          "管理员"
+        ],
+        [
+          "curator",
+          "馆员"
+        ],
+        [
+          "label",
+          "标签"
+        ],
+        [
+          "evidence",
+          "依据"
+        ]
+      ]
+    }
+  }
+}

@@ -9,6 +9,8 @@ import workshop from "../../content/workshop-release.v1.json";
 import workshopLatest from "../../content/workshop-release.latest.json";
 import story from "../../content/story-course-release.v1.json";
 import wordListening from "../../content/word-listening-release.v1.json";
+import action from "../../content/action-course-release.v1.json";
+import actionLatest from "../../content/action-course-release.latest.json";
 import { structuredCanonical, sortPlacements } from "../domain/structured";
 import type {
   Answer,
@@ -55,21 +57,30 @@ export const courseExpansion = expansionLatest as unknown as {
   items: PrivateExercise[];
 };
 export const courseCatalog = {
-  id: "course-catalog-v3",
+  id: "course-catalog-v4",
   lessons: [
     ...courseRelease.lessons,
     ...courseExpansion.lessons,
     ...story.lessons,
+    ...actionLatest.lessons,
   ] as CourseLesson[],
   items: [
     ...courseRelease.items,
     ...courseExpansion.items,
     ...story.items,
+    ...actionLatest.items,
   ] as PrivateExercise[],
 };
 export const storyRelease = story as unknown as {
   id: string;
   manifestHash: string;
+  lessons: CourseLesson[];
+  items: PrivateExercise[];
+};
+export const actionRelease = actionLatest as unknown as {
+  id: string;
+  manifestHash: string;
+  releases: string[];
   lessons: CourseLesson[];
   items: PrivateExercise[];
 };
@@ -107,6 +118,7 @@ export const exercises = [
   ...workshopLatest.items,
   ...story.items,
   ...wordListening.items,
+  ...actionLatest.items,
 ] as PrivateExercise[];
 export const workshopRelease = workshopLatest as unknown as {
   id: string;
@@ -141,10 +153,12 @@ export const wordThemes: WordTheme[] = vocabularyRelease.themes.map(
 );
 export const exerciseById = new Map(exercises.map((item) => [item.id, item]));
 const versionedExercises = new Map(
-  [...expansion.items, ...workshop.items, ...exercises].map((item) => [
-    `${item.id}@${(item as PrivateExercise).version ?? 1}`,
-    item as PrivateExercise,
-  ]),
+  [...expansion.items, ...workshop.items, ...action.items, ...exercises].map(
+    (item) => [
+      `${item.id}@${(item as PrivateExercise).version ?? 1}`,
+      item as PrivateExercise,
+    ],
+  ),
 );
 export const exerciseVersion = (id: string, version = 1) =>
   versionedExercises.get(`${id}@${version}`);

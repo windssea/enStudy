@@ -16,6 +16,8 @@ const paths = [
   "workshop-release.latest.json",
   "story-course-release.v1.json",
   "word-listening-release.v1.json",
+  "action-course-release.v1.json",
+  "action-course-release.latest.json",
 ];
 const items = [
   ...new Map(
@@ -89,7 +91,11 @@ for (const lab of source.labs) {
         for (const key of primary) keys.add(key);
       if (skills.has(item.skill) && item.sorting) {
         const ids = item.sorting.cards
-          .filter((card) => normalize(card.text) === normalize(example.base))
+          .filter(
+            (card) =>
+              normalize(card.text) === normalize(example.base) ||
+              forms.has(normalize(card.text)),
+          )
           .map((card) => card.id);
         for (const key of item.evidenceTargets ?? [])
           if (ids.some((id) => key.endsWith(`:${id}`))) keys.add(key);

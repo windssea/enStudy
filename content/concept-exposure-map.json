@@ -111,14 +111,17 @@
       "sentence:nora is folding a paper boat"
     ],
     "forms.ing/bake": [
-      "sentence:grandpa is baking a small loaf"
+      "sentence:grandpa is baking a small loaf",
+      "workshop-target:morphology.verb.ing:c3c8c082e4732"
     ],
     "forms.ing/sit": [
       "family:fact-a2ccb690c4eb839a",
+      "family:fact-a9948cfb0e50cacc",
       "family:topic-fact-596f8df614bf7db3a43f",
       "family:workshop-sentence-91d7edf3dc575ca8",
       "sentence:ben is sitting by the window",
       "sentence:mia was sitting by the lake when i arrived",
+      "sentence:the kitten is sitting by the door",
       "sentence:the kitten is sitting on a cushion",
       "sentence:写出sit的-ing形式。",
       "workshop-target:morphology.verb.ing:c584178e5e351"
@@ -151,27 +154,38 @@
       "family:topic-fact-b2e46155648f9a825165",
       "sentence:nora brought a compass yesterday",
       "sentence:写出不规则动词bring的过去式。",
-      "sentence:用于have/has之后:写出bring的过去分词。"
+      "sentence:用于have/has之后:写出bring的过去分词。",
+      "workshop-target:morphology.verb.irregular-past:c4311902217ad",
+      "workshop-target:morphology.verb.irregular-past:c553f3e2340aa"
     ],
     "forms.irregular-past/choose": [
+      "family:fact-01921cfc652a066e",
       "family:topic-fact-4204eb659a1b658ccd13",
+      "sentence:max chose a safe path last night",
       "sentence:we chose a quiet picnic spot yesterday",
-      "sentence:写出不规则动词choose的过去式。"
+      "sentence:写出不规则动词choose的过去式。",
+      "workshop-target:morphology.verb.irregular-past:c40f7ad19cd04",
+      "workshop-target:morphology.verb.irregular-past:c725fed9d1ae9"
     ],
     "forms.irregular-past/write": [
+      "family:fact-873bf8614d3cbba7",
       "family:topic-fact-208ff7c3f972a2e33a8f",
       "family:topic-fact-3611d90d94b739d26cfe",
       "family:topic-fact-44cd0e7db5083b3dd506",
       "family:topic-fact-a423db1c454693660217",
       "sentence:nora wrote a postcard last night",
+      "sentence:sam wrote a note yesterday",
       "sentence:yesterday, lily wrote a letter.(write)",
       "sentence:写出不规则动词write的过去式。",
       "sentence:完整过去事件:lily wrote a letter yesterday.(write)",
-      "sentence:明确过去时间:lily wrote a letter yesterday.(write)"
+      "sentence:明确过去时间:lily wrote a letter yesterday.(write)",
+      "workshop-target:morphology.verb.irregular-past:c10fd874b68da",
+      "workshop-target:morphology.verb.irregular-past:c5a3365e9b3ec"
     ],
     "forms.past-participle/go": [
       "family:fact-05606abe8f26c216",
       "family:fact-c684a33382f8f01a",
+      "family:fact-fbef8363f1eba646",
       "family:fact-fe91daf722e1785f",
       "family:sample.form.go",
       "family:sample.past.1",
@@ -181,6 +195,7 @@
       "family:workshop-sentence-83c37f5464171ab2",
       "sentence:ben went home last night",
       "sentence:ben went to the library last sunday",
+      "sentence:leo went to the wooden hut yesterday",
       "sentence:mia went to the library yesterday",
       "sentence:mia went to the park yesterday",
       "sentence:nora has gone to the clinic. she is not here now",
@@ -193,6 +208,7 @@
       "workshop-target:morphology.verb.irregular-past:cbd7e83102fa3"
     ],
     "forms.past-participle/write": [
+      "family:fact-873bf8614d3cbba7",
       "family:topic-fact-208ff7c3f972a2e33a8f",
       "family:topic-fact-3611d90d94b739d26cfe",
       "family:topic-fact-44cd0e7db5083b3dd506",
@@ -202,19 +218,25 @@
       "family:topic-fact-bf07dc7fc6c9101d617c",
       "sentence:lily has already written a letter.(write)",
       "sentence:nora has written a postcard",
+      "sentence:sam wrote a note yesterday",
       "sentence:we have not written a letter yet.(write)",
       "sentence:yesterday, lily wrote a letter.(write)",
       "sentence:写出不规则动词write的过去式。",
       "sentence:完整过去事件:lily wrote a letter yesterday.(write)",
       "sentence:明确过去时间:lily wrote a letter yesterday.(write)",
-      "sentence:用于have/has之后:写出write的过去分词。"
+      "sentence:用于have/has之后:写出write的过去分词。",
+      "workshop-target:morphology.verb.irregular-past:c10fd874b68da",
+      "workshop-target:morphology.verb.irregular-past:c5a3365e9b3ec"
     ],
     "forms.past-participle/break": [
+      "family:fact-082b0a4e7cf1a7e0",
       "family:topic-fact-c230e710458d17eb59a7",
       "family:topic-fact-d013ab8da0dd32145ebf",
+      "sentence:dan broke a piece of glass yesterday",
       "sentence:the puppy has broken a flowerpot",
       "sentence:写出不规则动词break的过去式。",
-      "sentence:用于have/has之后:写出break的过去分词。"
+      "sentence:用于have/has之后:写出break的过去分词。",
+      "workshop-target:morphology.verb.irregular-past:c14ebe56a5008"
     ],
     "forms.comparison/wide": [
       "family:pattern-sentence-18ff19500d87a8bfd5bf",

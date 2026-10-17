@@ -563,7 +563,7 @@ export default function App() {
       trainingVersion?: number;
     },
   ) {
-    if (!identity.authenticated) {
+    if (!identity.authenticated || !identity.child) {
       move("parent");
       setError("先请家长登录，再选择你的探险档案。");
       return;
@@ -822,22 +822,33 @@ export default function App() {
         </div>
         <nav aria-label="主导航">
           {nav.map(([id, label, icon]) => (
-            <button
-              key={id}
-              data-nav={id}
-              aria-current={activeNav === id ? "page" : undefined}
-              onClick={() => {
-                move(id);
-              }}
-            >
-              <span className="nav-symbol">
-                <Icon kind={icon} />
-              </span>
-              <span className="nav-copy">
-                {label}
-                <small>{navHints[id]}</small>
-              </span>
-            </button>
+            <div className="nav-entry" key={id} data-nav={id}>
+              {(id === "map" || id === "words" || id === "review") && (
+                <span className="nav-group-label">
+                  {id === "map"
+                    ? "跟着课程学"
+                    : id === "words"
+                      ? "自由特训"
+                      : "复习与记录"}
+                </span>
+              )}
+              <button
+                key={id}
+                data-nav={id}
+                aria-current={activeNav === id ? "page" : undefined}
+                onClick={() => {
+                  move(id);
+                }}
+              >
+                <span className="nav-symbol">
+                  <Icon kind={icon} />
+                </span>
+                <span className="nav-copy">
+                  {label}
+                  <small>{navHints[id]}</small>
+                </span>
+              </button>
+            </div>
           ))}
         </nav>
         <div className="sidebar-note">
@@ -849,7 +860,7 @@ export default function App() {
       <div className="workspace">
         <header className="topbar">
           <div>
-            <small>原创英语探索 · 每天进步一点点</small>
+            <small>你在这里</small>
             <strong>
               {view === "workshops"
                 ? "英语互动工坊"
@@ -861,25 +872,30 @@ export default function App() {
             </strong>
           </div>
           <div className="toolbar">
-            <button
-              className="soft-button"
-              aria-pressed={twoD}
-              onClick={() => setTwoD(!twoD)}
-            >
-              {twoD ? "2D 场景" : "3D 场景"}
-            </button>
-            <button
-              className="soft-button"
-              aria-pressed={quiet || reduced}
-              disabled={reduced}
-              onClick={() => setQuiet(!quiet)}
-            >
-              {reduced
-                ? "跟随系统减少动效"
-                : quiet
-                  ? "安静模式 · 开"
-                  : "安静模式 · 关"}
-            </button>
+            <details className="display-settings" key={view}>
+              <summary>画面设置</summary>
+              <div className="display-settings-panel">
+                <button
+                  className="soft-button"
+                  aria-pressed={twoD}
+                  onClick={() => setTwoD(!twoD)}
+                >
+                  {twoD ? "2D 场景" : "3D 场景"}
+                </button>
+                <button
+                  className="soft-button"
+                  aria-pressed={quiet || reduced}
+                  disabled={reduced}
+                  onClick={() => setQuiet(!quiet)}
+                >
+                  {reduced
+                    ? "跟随系统减少动效"
+                    : quiet
+                      ? "安静模式 · 开"
+                      : "安静模式 · 关"}
+                </button>
+              </div>
+            </details>
             <span className="stars">
               <Icon kind="star" />
               {progress.stars}
@@ -1197,17 +1213,6 @@ export default function App() {
           )}
           {view === "words" && (
             <>
-              {session?.source === "vocabulary" && (
-                <div className="notice">
-                  还有一轮单词练习可以继续。
-                  <button
-                    className="text-button"
-                    onClick={() => move("exercise")}
-                  >
-                    继续第{session.position}题 →
-                  </button>
-                </div>
-              )}
               <Suspense
                 fallback={
                   <p className="empty-state" role="status">
@@ -1219,6 +1224,17 @@ export default function App() {
                   themes={wordThemes}
                   grade={grade}
                   childId={identity.child?.id}
+                  resume={
+                    session?.source === "vocabulary"
+                      ? {
+                          title: session.exercise.title,
+                          position: session.position ?? 1,
+                          saved: Boolean(receipt),
+                          takeover: session.access === "takeover-required",
+                        }
+                      : undefined
+                  }
+                  onResume={() => move("exercise")}
                   selectedId={wordThemeId}
                   onSelect={setWordThemeId}
                   busy={busy}
@@ -1556,7 +1572,7 @@ export default function App() {
               >
                 <p className="eyebrow">
                   {session.source === "vocabulary"
-                    ? "第3步 · 做一轮单词小练习"
+                    ? "单词小挑战 · 想一想，再回答"
                     : "ONE STEP AT A TIME"}
                 </p>
                 {session.training && (
