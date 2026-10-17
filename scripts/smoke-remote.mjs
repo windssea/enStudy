@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { setTimeout as delay } from "node:timers/promises";
 
 const base = new URL(
   process.argv[2] ?? "https://development.english-quest-dev.pages.dev",
@@ -57,16 +58,26 @@ check(
     catalog.patterns?.length === 72,
   "draft curriculum catalog available",
 );
-const lessonResponse = await request("/api/v1/lessons");
-const course = await lessonResponse.json();
-check(
+let lessonResponse = await request("/api/v1/lessons");
+let course = await lessonResponse.json();
+const courseReady = () =>
   lessonResponse.status === 200 &&
-    course.lessons?.length === 24 &&
-    Object.keys(course.topicStats ?? {}).length === 60 &&
-    Object.values(course.topicStats ?? {}).every(
-      (stats) => stats.items >= 120 && stats.families >= 60,
-    ) &&
-    !JSON.stringify(course).includes('"answers":'),
+  course.lessons?.length === 24 &&
+  Object.keys(course.topicStats ?? {}).length === 60 &&
+  Object.values(course.topicStats ?? {}).every(
+    (stats) => stats.items >= 120 && stats.families >= 60,
+  ) &&
+  !JSON.stringify(course).includes('"answers":');
+// Pages may report completion before the branch alias serves the new Functions
+// on every edge. Wait only for release propagation; all security checks above
+// still fail immediately. A persistently wrong release must fail the job.
+for (let attempt = 0; !courseReady() && attempt < 12; attempt++) {
+  await delay(2500);
+  lessonResponse = await request("/api/v1/lessons");
+  course = await lessonResponse.json();
+}
+check(
+  courseReady(),
   "published lesson metadata and real topic availability delivered without answer keys",
 );
 console.log(`${checks} remote checks passed on ${base.origin}`);
