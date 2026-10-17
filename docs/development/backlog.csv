@@ -8,9 +8,9 @@ M0-06,M0,CLI免费优先资源计划和脚本,计划输出且账号检查和默�
 M0-07,M0,本人账号创建开发Pages与D1,实际ID与绑定通过远程核验,done,2026-10-17本人OAuth与CLI创建成功
 M0-08,M0,预览发布与远程冒烟,实际URL与403开发身份保护和D1绑定验证,done,npm run verify:remote共8项通过
 M0-09,M0,GitHub Actions自动部署,main检查与受限Token部署实际通过,done,Actions运行39008241021完整成功与8项线上检查通过
-M1-01,M1,关闭注册与管理员身份,指定admin密码哈希和登录撤销通过,implemented-local-verified,auth.ts与24项账号接口检查
-M1-02,M1,儿童档案与设备授权,增改删切换及旧授权撤销通过,implemented-local-verified,24项账号接口检查与25项学习接口检查
-M1-03,M1,会话重载与设备接管,重载恢复且旧lease不能重复写入,implemented-local-verified,sessions/current与恢复回执提示测试
+M1-01,M1,关闭注册与管理员身份,指定admin密码哈希和登录撤销通过,done,CI39009235672与线上23项账号检查
+M1-02,M1,儿童档案与设备授权,增改删切换及旧授权撤销通过,done,CI接口验证与线上23项账号检查
+M1-03,M1,会话重载与设备接管,重载恢复且旧lease不能重复写入,resume-verified-takeover-pending,sessions/current恢复回执提示已通过而显式设备接管待实现
 M1-04,M1,更多受管理账号与家庭,保持注册关闭且账号管理权限隔离,todo,
 M2-01,M2,不可变内容release和审核流水线,发布审核撤题与版本兼容通过,todo,
 M2-02,M2,全年级课程与媒体,288微课与各年级综合能力覆盖审核,todo,
