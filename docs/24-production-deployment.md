@@ -33,6 +33,12 @@ CLI使用指定Account ID。生产迁移带`--env production`；Pages发布带`-
 
 `verify:isolation`检查两个站点的JS构建一致、两个环境均可登录、生产Token无法在预览使用，以及生产创建的临时儿童档案在预览不可见。结束时移除该测试档案并退出测试会话。账号完整流程仍可分别通过`smoke-account.mjs`执行，测试脚本不输出密码或Cookie。
 
+## 发布证据
+
+2026-10-17，提交`0f101d1`通过[Actions运行39009786446](https://github.com/windssea/enStudy/actions/runs/39009786446)。Preview部署`9587973c`、Production部署`7a960567`均成功，分别通过9项公开检查；32项单元检查及原学习/账号本地接口检查也全部通过。
+
+正式域名`enstudy.nanokid.win`另外通过9项公开检查和23项真实账号检查，确认生产APP_STAGE、admin登录、Cookie保护、儿童档案CRUD、进度保存、刷新恢复与退出撤销。6项环境隔离检查全部通过；所有本轮临时测试档案及其学习数据均已移除。没有复制或删除既有儿童档案与答题数据。
+
 Production指Cloudflare发布环境，完整课程、专题、复习、BYOK、语音与实机验收继续按总体目标推进；不能把Production部署成功解释为全部学习功能已完成。
 
 依据：[Pages环境配置与分支选择](https://developers.cloudflare.com/pages/functions/wrangler-configuration/)、[Pages绑定](https://developers.cloudflare.com/pages/functions/bindings/)。
