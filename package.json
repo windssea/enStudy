@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -32,6 +32,7 @@
     "verify:ownership": "node scripts/smoke-session-ownership.mjs",
     "verify:course": "node scripts/smoke-course.mjs",
     "verify:topics": "node scripts/smoke-topics.mjs",
+    "verify:training": "node scripts/smoke-training.mjs",
     "verify:patterns": "node scripts/smoke-patterns.mjs",
     "verify:vocabulary": "node scripts/smoke-vocabulary.mjs",
     "verify:runtime": "node scripts/verify-runtime.mjs",

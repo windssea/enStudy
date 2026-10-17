@@ -27,6 +27,32 @@ export interface LearningSession {
   total?: number;
   lessonId?: string | null;
   source?: "lesson" | "topic" | "pattern" | "vocabulary" | "review" | "single";
+  training?: {
+    cycleId: string;
+    topicId: string;
+    phase: import("../domain/training").TrainingPhase;
+    checkpoint: number;
+  };
+}
+export interface TrainingCycle {
+  id: string;
+  topicId: string;
+  title: string;
+  version: number;
+  planVersion: number;
+  scope: "new-frame" | "new-lexeme";
+  finished: boolean;
+  results: import("../domain/training").TrainingResult[];
+  coaching: { rule: string; example: string; hinted: boolean }[];
+  next: {
+    phase: import("../domain/training").TrainingPhase;
+    label: string;
+    checkpoint: number;
+    readyAt: number;
+    size: number;
+    sessionId: string | null;
+    sessionState: string | null;
+  };
 }
 export interface TeachingCard {
   title: string;

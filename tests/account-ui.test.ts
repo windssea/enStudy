@@ -11,6 +11,7 @@ const render = (identity: Identity) =>
       refresh: async () => {},
       learning: { completedLessons: [], dueCount: 0, recent: [] },
       lessons: [],
+      onOpenTraining: () => {},
     }),
   );
 describe("family account entry states", () => {

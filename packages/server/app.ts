@@ -32,6 +32,8 @@ import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 import { managedAccountRoutes } from "./managedAccounts";
 import { createAiRoutes } from "./aiRoutes";
 import type { AiConfig } from "./aiPolicy";
+import { trainingRoutes, prepareTraining, TrainingFault } from "./training";
+import type { TrainingPhase } from "../domain/training";
 
 export interface Env extends AiConfig {
   DB: D1Database;
@@ -105,6 +107,8 @@ app.use(
   }),
 );
 app.onError((error, c) => {
+  if (error instanceof TrainingFault)
+    return c.json(fault(error.code, error.message), 409);
   if (error instanceof SyntaxError)
     return c.json(fault("INVALID_JSON", "JSON格式不正确。"), 400);
   console.error(
@@ -303,9 +307,11 @@ for (const path of [
   "/api/v1/attempts",
   "/api/v1/progress",
   "/api/v1/learning/*",
+  "/api/v1/training/*",
 ])
   app.use(path, learningAccess);
 app.route("/api/v1", createAiRoutes(actorFrom));
+app.route("/api/v1", trainingRoutes);
 interface Assignment {
   id: string;
   lease_id: string;
@@ -321,6 +327,10 @@ interface Assignment {
   source: "lesson" | "topic" | "pattern" | "vocabulary" | "review" | "single";
   source_ref: string | null;
   presentation_json: string | null;
+  cycle_id: string | null;
+  training_phase: TrainingPhase | null;
+  checkpoint: number | null;
+  training_topic_id: string | null;
 }
 async function loadSession(
   db: D1Database,
@@ -329,7 +339,7 @@ async function loadSession(
 ): Promise<Assignment | null> {
   return db
     .prepare(
-      `SELECT s.id,s.lease_id,s.lease_grant_id,s.lease_version,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.hint_level,si.presentation_json,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
+      `SELECT s.id,s.lease_id,s.lease_grant_id,s.lease_version,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.hint_level,si.presentation_json,tr.cycle_id,tr.phase AS training_phase,tr.checkpoint,tc.topic_id AS training_topic_id,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor LEFT JOIN training_phase_runs tr ON tr.session_id=s.id LEFT JOIN training_cycles tc ON tc.id=tr.cycle_id WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
     )
     .bind(id, actor.householdId, actor.childId)
     .first<Assignment>();
@@ -352,6 +362,16 @@ function sessionPayload(row: Assignment, actor: Actor): LearningSession {
     total: row.total,
     lessonId: row.lesson_id,
     source: row.source,
+    ...(row.cycle_id
+      ? {
+          training: {
+            cycleId: row.cycle_id,
+            topicId: row.training_topic_id!,
+            phase: row.training_phase!,
+            checkpoint: row.checkpoint!,
+          },
+        }
+      : {}),
     exercise: {
       ...publicExercise(exerciseById.get(row.item_id)!),
       ...(row.presentation_json ? JSON.parse(row.presentation_json) : {}),
@@ -400,7 +420,8 @@ app.post("/api/v1/sessions/:id/takeover", async (c) => {
     typeof body.clientRequestId !== "string" ||
     !UUID.test(body.clientRequestId) ||
     !Number.isSafeInteger(body.expectedLeaseVersion) ||
-    body.expectedLeaseVersion < 0
+    body.expectedLeaseVersion < 0 ||
+    (body.resume !== undefined && typeof body.resume !== "boolean")
   )
     return c.json(
       fault("INVALID_TAKEOVER", "请先读取最新进度，再选择在本设备接着学。"),
@@ -445,7 +466,11 @@ app.post("/api/v1/sessions/:id/takeover", async (c) => {
   };
   const saved = await prior();
   if (saved) return replay(saved);
-  if (row.state !== "active" || row.lease_version !== body.expectedLeaseVersion)
+  const resume = body.resume === true;
+  if (
+    row.state !== (resume ? "paused" : "active") ||
+    row.lease_version !== body.expectedLeaseVersion
+  )
     return c.json(
       fault("LEASE_REPLACED", "进度已变化，请刷新后再选择接着学。"),
       409,
@@ -454,19 +479,44 @@ app.post("/api/v1/sessions/:id/takeover", async (c) => {
     now = Date.now();
   try {
     await c.env.DB.batch([
+      ...(resume
+        ? [
+            c.env.DB.prepare(
+              `UPDATE learning_sessions SET state='paused' WHERE household_id=? AND child_id=? AND state='active' AND lease_grant_id=? AND ${grantAuthorization}`,
+            ).bind(
+              actor.householdId,
+              actor.childId,
+              actor.grantId,
+              actor.grantId,
+              now,
+              now,
+            ),
+          ]
+        : []),
       c.env.DB.prepare(
-        `UPDATE learning_sessions SET lease_id=?,lease_grant_id=?,lease_version=lease_version+1 WHERE id=? AND household_id=? AND child_id=? AND state='active' AND lease_version=? AND ${grantAuthorization}`,
+        `UPDATE learning_sessions SET state='active',lease_id=?,lease_grant_id=?,lease_version=lease_version+1 WHERE id=? AND household_id=? AND child_id=? AND state=? AND lease_version=? AND ${grantAuthorization} AND NOT EXISTS(SELECT 1 FROM learning_sessions other WHERE other.household_id=? AND other.child_id=? AND other.state='active' AND other.id<>?)`,
       ).bind(
         lease,
         actor.grantId,
         id,
         actor.householdId,
         actor.childId,
+        resume ? "paused" : "active",
         body.expectedLeaseVersion,
         actor.grantId,
         now,
         now,
+        actor.householdId,
+        actor.childId,
+        id,
       ),
+      ...(resume
+        ? [
+            c.env.DB.prepare(
+              "INSERT INTO session_activation_checks(request_id,household_id,child_id,ok) VALUES(?,?,?,changes())",
+            ).bind(body.clientRequestId, actor.householdId, actor.childId),
+          ]
+        : []),
       c.env.DB.prepare(
         "INSERT INTO session_claims(household_id,child_id,request_id,session_id,grant_id,expected_version,lease_id,created_at) SELECT ?,?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM learning_sessions WHERE id=? AND lease_id=? AND lease_grant_id=?)",
       ).bind(
@@ -486,6 +536,11 @@ app.post("/api/v1/sessions/:id/takeover", async (c) => {
   } catch (error) {
     const concurrent = await prior();
     if (concurrent) return replay(concurrent);
+    if (resume)
+      return c.json(
+        fault("LEASE_REPLACED", "另一任务或设备仍在使用进度，请刷新后接续。"),
+        409,
+      );
     throw error;
   }
   const committed = await prior();
@@ -569,6 +624,18 @@ app.post("/api/v1/sessions", async (c) => {
       fault("INVALID_WORD_MODE", "请选择词义、拼写、语境或混合练习。"),
       422,
     );
+  if (
+    body.trainingCycleId !== undefined &&
+    (!body.topicId ||
+      typeof body.trainingCycleId !== "string" ||
+      !UUID.test(body.trainingCycleId) ||
+      !Number.isSafeInteger(body.trainingVersion) ||
+      body.roundSize !== undefined)
+  )
+    return c.json(
+      fault("INVALID_TRAINING", "请从专题计划中继续，步骤与题量由服务端决定。"),
+      422,
+    );
   const source: Assignment["source"] = body.lessonId
     ? "lesson"
     : body.topicId
@@ -588,7 +655,7 @@ app.post("/api/v1/sessions", async (c) => {
       body.exerciseId ??
       "due",
   );
-  const sourceRef = `${source}:${reference}${["topic", "pattern", "vocabulary"].includes(source) ? `:${body.roundSize ?? 10}` : ""}${source === "vocabulary" ? `:${body.wordMode ?? "mixed"}` : ""}`;
+  const sourceRef = `${source}:${reference}${["topic", "pattern", "vocabulary"].includes(source) ? `:${body.roundSize ?? 10}` : ""}${source === "vocabulary" ? `:${body.wordMode ?? "mixed"}` : ""}${body.trainingCycleId ? `:training:${body.trainingCycleId}:${body.trainingVersion}` : ""}`;
   const existing = await loadSession(c.env.DB, actor, body.clientRequestId);
   if (existing) {
     if (
@@ -609,6 +676,15 @@ app.post("/api/v1/sessions", async (c) => {
   const lesson = courseRelease.lessons.find(
     (lesson) => lesson.id === body.lessonId,
   );
+  const training = body.trainingCycleId
+    ? await prepareTraining(
+        c.env.DB,
+        actor,
+        body.trainingCycleId,
+        body.trainingVersion,
+        body.topicId,
+      )
+    : null;
   let selected =
     source === "lesson"
       ? exercises.filter((item) => item.lessonId === lesson?.id)
@@ -616,7 +692,8 @@ app.post("/api/v1/sessions", async (c) => {
         ? exercises.filter((item) => item.id === body.exerciseId)
         : [];
   if (source === "lesson" && !lesson) selected = [];
-  if (["topic", "pattern", "vocabulary"].includes(source)) {
+  if (training) selected = training.items;
+  else if (["topic", "pattern", "vocabulary"].includes(source)) {
     const recent = await c.env.DB.prepare(
       "SELECT si.item_id FROM session_items si JOIN learning_sessions s ON s.id=si.session_id WHERE si.household_id=? AND si.child_id=? ORDER BY s.created_at DESC,si.position LIMIT 400",
     )
@@ -699,7 +776,7 @@ app.post("/api/v1/sessions", async (c) => {
         now,
       ),
       c.env.DB.prepare(
-        `INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref,lease_grant_id) SELECT ?,?,?,?,?,'active',?,?,?,?,? WHERE ${grantAuthorization} AND NOT EXISTS(SELECT 1 FROM learning_sessions s WHERE s.household_id=? AND s.child_id=? AND s.state='active' AND (s.lease_grant_id IS NULL OR s.lease_grant_id<>?))`,
+        `INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref,lease_grant_id) SELECT ?,?,?,?,?,'active',?,?,?,?,? WHERE ${grantAuthorization} AND NOT EXISTS(SELECT 1 FROM learning_sessions s WHERE s.household_id=? AND s.child_id=? AND s.state='active' AND (s.lease_grant_id IS NULL OR s.lease_grant_id<>?)) ${training ? `AND EXISTS(SELECT 1 FROM training_cycles WHERE id=? AND household_id=? AND child_id=? AND version=?) AND NOT EXISTS(SELECT 1 FROM session_items seen WHERE seen.household_id=? AND seen.child_id=? AND seen.item_id IN (${training.guardedItems.map(() => "?").join(",")}))` : ""}`,
       ).bind(
         body.clientRequestId,
         actor.householdId,
@@ -717,7 +794,36 @@ app.post("/api/v1/sessions", async (c) => {
         actor.householdId,
         actor.childId,
         actor.grantId,
+        ...(training
+          ? [
+              training.cycle.id,
+              actor.householdId,
+              actor.childId,
+              training.cycle.version,
+              actor.householdId,
+              actor.childId,
+              ...training.guardedItems,
+            ]
+          : []),
       ),
+      ...(training
+        ? [
+            c.env.DB.prepare(
+              "INSERT INTO training_claim_checks(session_id,ok) VALUES(?,changes())",
+            ).bind(body.clientRequestId),
+            c.env.DB.prepare(
+              "INSERT INTO training_phase_runs(cycle_id,phase,checkpoint,session_id) VALUES(?,?,?,?)",
+            ).bind(
+              training.cycle.id,
+              training.step.phase,
+              training.step.checkpoint,
+              body.clientRequestId,
+            ),
+            c.env.DB.prepare(
+              "UPDATE training_cycles SET version=version+1 WHERE id=? AND version=?",
+            ).bind(training.cycle.id, training.cycle.version),
+          ]
+        : []),
       ...selected.map((item, index) =>
         c.env.DB.prepare(
           `INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version,presentation_json) SELECT ?,?,?,?,?,?,1,? WHERE ${createdHere}`,
@@ -742,6 +848,11 @@ app.post("/api/v1/sessions", async (c) => {
     const concurrent = await loadSession(c.env.DB, actor, body.clientRequestId);
     if (concurrent?.source_ref === sourceRef && concurrent.state === "active")
       return c.json(sessionPayload(concurrent, actor));
+    if (training)
+      throw new TrainingFault(
+        "TRAINING_CHANGED",
+        "专题计划或设备进度已变化，请刷新后继续原任务。",
+      );
     throw error;
   }
   const created = await loadSession(c.env.DB, actor, body.clientRequestId);
@@ -874,6 +985,13 @@ app.get("/api/v1/learning/vocabulary", async (c) => {
     .bind(Date.now(), actor.householdId, actor.childId)
     .first();
   return c.json(summary ?? { practisedWords: 0, dueWords: 0 });
+});
+app.get("/api/v1/sessions/:id/snapshot", async (c) => {
+  const actor = c.get("actor"),
+    row = await loadSession(c.env.DB, actor, c.req.param("id"));
+  return row
+    ? c.json(await sessionSnapshot(c.env.DB, actor, row))
+    : c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
 });
 app.get("/api/v1/sessions/:id", async (c) => {
   const actor = c.get("actor");

@@ -9,17 +9,20 @@ import { api } from "./api";
 import AccountSecurity from "./AccountSecurity";
 const ManagedAccounts = lazy(() => import("./ManagedAccounts"));
 const AiSettings = lazy(() => import("./AiSettings"));
+const TrainingFollowUps = lazy(() => import("./TrainingFollowUps"));
 
 export default function FamilySpace({
   identity,
   refresh,
   learning,
   lessons,
+  onOpenTraining,
 }: {
   identity: Identity;
   refresh: () => Promise<void>;
   learning: LearningSummary;
   lessons: CourseLesson[];
+  onOpenTraining: (id: string) => void;
 }) {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
@@ -420,6 +423,18 @@ export default function FamilySpace({
           </p>
         </section>
       )}
+      {identity.adult &&
+        !identity.adult.mustChangePassword &&
+        identity.child && (
+          <Suspense fallback={<p role="status">正在读取专题记录…</p>}>
+            <TrainingFollowUps
+              key={identity.child.id}
+              childId={identity.child.id}
+              all
+              onOpen={onOpenTraining}
+            />
+          </Suspense>
+        )}
       {identity.developmentIdentityAvailable && (
         <details className="dev-tools">
           <summary>本机开发测试档案</summary>
