@@ -27,4 +27,6 @@
 
 生产构建、Functions编译、格式检查通过。Tabbit仍exit1且无输出，本次未取得浏览器截图、触控、屏幕阅读器或平板性能验收证据。内容仍需逐题教研复核；独立诊断题池、自由表达评分和口语能力不因本轮练习数量增加而宣称完成。
 
-远程发布及验证证据在实际成功后补录。Preview与Production继续通过GitHub Actions同步发布，两个D1保持隔离。
+远程已发布：[Actions39013474360](https://github.com/windssea/enStudy/actions/runs/39013474360)全部成功，提交`81d7f10`。Preview部署`8046dd7f`、Production部署`73d73b24`，各自D1完成0008迁移，各通过10项公开检查。Preview与正式域名`enstudy.nanokid.win`随后各通过13项真实句式检查，正式域名另通过10项公开检查。6项版本一致性与数据隔离检查通过，所有本轮临时档案及级联学习数据已清理。远程测试未更改复习日期；到期复习本轮使用本机专用档案夹具验证。
+
+Preview与Production继续通过GitHub Actions同步发布，两个D1保持隔离。
