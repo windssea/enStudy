@@ -4,6 +4,8 @@
 
 [开发预览](https://development.english-quest-dev.pages.dev) 通过GitHub Actions发布。M1加入管理员登录（账号admin，密码使用用户指定值）、关闭注册、儿童档案管理与刷新续学；开发测试身份继续只限本机。验证与剩余范围见[M1进展](docs/23-next-phase-progress.md)。
 
+Production地址为[enstudy.nanokid.win](https://enstudy.nanokid.win)及[Pages正式地址](https://english-quest-dev.pages.dev)。main通过预览检查后同步发布Production，两个环境使用独立D1，详见[同步发布说明](docs/24-production-deployment.md)。
+
 GitHub Actions自动部署已启用：推送main后执行检查、D1迁移与Pages/Functions发布。首次完整[部署运行39008241021](https://github.com/windssea/enStudy/actions/runs/39008241021)通过，包含27项单元检查和8项线上检查。
 
 ## 运行开发版

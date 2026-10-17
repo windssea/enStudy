@@ -29,6 +29,7 @@
 | 23 | [M0验证记录](21-m0-verification.md) | 实际构建与运行证据，远程和实机未完成项 |
 | 24 | [GitHub部署手册](22-github-deployment.md) | 仓库、Actions检查、Secret配置与自动部署 |
 | 25 | [M1阶段进展](23-next-phase-progress.md) | 关闭注册、admin登录、儿童档案、刷新续学与下一阶段范围 |
+| 26 | [Production同步发布](24-production-deployment.md) | Preview和Production同版本发布、正式域名与独立D1 |
 
 配套资料：
 

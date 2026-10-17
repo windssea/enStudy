@@ -15,4 +15,20 @@
     "APP_STAGE": "preview",
     "ALLOW_DEV_AUTH": "false",
   },
+  "env": {
+    "production": {
+      "vars": {
+        "APP_STAGE": "production",
+        "ALLOW_DEV_AUTH": "false",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "english-quest-prod-db",
+          "database_id": "bfbbf58a-56fc-4173-bfa4-81442a15e257",
+          "migrations_dir": "migrations",
+        },
+      ],
+    },
+  },
 }

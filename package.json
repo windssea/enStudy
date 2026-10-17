@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -26,7 +26,11 @@
     "verify:local": "node scripts/smoke-local.mjs",
     "verify:remote": "node scripts/smoke-remote.mjs",
     "verify:account": "node scripts/smoke-account.mjs",
-    "verify:runtime": "node scripts/verify-runtime.mjs"
+    "verify:runtime": "node scripts/verify-runtime.mjs",
+    "cf:provision:production": "node scripts/cloudflare.mjs provision --production",
+    "cf:deploy:production": "node scripts/cloudflare.mjs deploy --production",
+    "verify:production": "node scripts/smoke-remote.mjs https://english-quest-dev.pages.dev production",
+    "verify:isolation": "node scripts/smoke-isolation.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.2",

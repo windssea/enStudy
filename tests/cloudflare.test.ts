@@ -15,6 +15,29 @@ const invoke = (...args: string[]) =>
     env: { ...process.env, CLOUDFLARE_ACCOUNT_ID: "" },
   });
 describe("cloud resource guardrails", () => {
+  it("validates isolated production bindings and selects main", () => {
+    const code = `
+      import assert from 'node:assert/strict';
+      import { deploymentTarget } from './scripts/cloudflare-target.mjs';
+      const project={projectName:'english-quest-dev',databaseName:'english-quest-dev-db',productionDatabaseName:'english-quest-prod-db',productionBranch:'main',previewBranch:'development'};
+      const preview={vars:{APP_STAGE:'preview',ALLOW_DEV_AUTH:'false'},d1_databases:[{binding:'DB',database_name:project.databaseName,database_id:'11111111-1111-4111-8111-111111111111'}]};
+      const production={vars:{APP_STAGE:'production',ALLOW_DEV_AUTH:'false'},d1_databases:[{binding:'DB',database_name:project.productionDatabaseName,database_id:'22222222-2222-4222-8222-222222222222'}]};
+      const root={name:project.projectName,...preview,env:{production}};
+      assert.equal(deploymentTarget(root,project,true).branch,'main');
+      assert.equal(deploymentTarget(root,project).branch,'development');
+      assert.throws(()=>deploymentTarget({...root,env:{}},project,true),/explicit configuration/);
+      assert.throws(()=>deploymentTarget({...root,env:{production:{...production,d1_databases:[{...production.d1_databases[0],database_id:preview.d1_databases[0].database_id}]}}},project,true),/different D1/);
+      assert.throws(()=>deploymentTarget({...root,env:{production:{...production,vars:{APP_STAGE:'production',ALLOW_DEV_AUTH:'true'}}}},project,true),/Unsafe/);
+      assert.throws(()=>deploymentTarget({...root,env:{production:{...production,vars:{APP_STAGE:'preview',ALLOW_DEV_AUTH:'false'}}}},project,true),/Unsafe/);
+    `;
+    const result = spawnSync(
+      process.execPath,
+      ["--input-type=module", "-e", code],
+      { encoding: "utf8" },
+    );
+    expect(result.stderr).toBe("");
+    expect(result.status).toBe(0);
+  });
   it("recognizes the actual Wrangler Pages JSON display headings", () => {
     const result = spawnSync(
       process.execPath,

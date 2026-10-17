@@ -3,9 +3,15 @@ import { resolve } from "node:path";
 import { run } from "./runtime.mjs";
 import { parse, printParseErrorCode } from "jsonc-parser";
 import { pagesProjectNames } from "./cloudflare-output.mjs";
+import { deploymentTarget } from "./cloudflare-target.mjs";
 const action = process.argv[2] ?? "plan";
 const apply = process.argv.includes("--apply");
+const production = process.argv.includes("--production");
 const project = JSON.parse(await readFile("cloudflare.project.json", "utf8"));
+const stage = production ? "production" : "preview";
+const databaseName = production
+  ? project.productionDatabaseName
+  : project.databaseName;
 // Validate local configuration before any resource can be created.
 const configErrors = [];
 const rootConfig = parse(
@@ -27,6 +33,7 @@ if (
 for (const field of [
   "projectName",
   "databaseName",
+  "productionDatabaseName",
   "productionBranch",
   "previewBranch",
 ])
@@ -41,7 +48,7 @@ if (
   );
 const plan = {
   creates: [
-    { type: "D1", name: project.databaseName },
+    { type: "D1", name: databaseName },
     { type: "Pages Direct Upload", name: project.projectName },
   ],
   disabled: [
@@ -52,17 +59,21 @@ const plan = {
     "Workers AI",
     "paid-plan activation",
   ],
-  stage: "preview",
+  stage,
   developmentIdentity: false,
   requiredEnvironment: ["CLOUDFLARE_ACCOUNT_ID"],
   commands: [
     "npm run cf:whoami",
     "npx wrangler login (only if not authenticated)",
-    "npm run cf:provision -- --apply",
+    production
+      ? "npm run cf:provision:production -- --apply"
+      : "npm run cf:provision -- --apply",
     "npm run build",
-    "npm run cf:deploy:preview -- --apply",
+    production
+      ? "npm run cf:deploy:production -- --apply"
+      : "npm run cf:deploy:preview -- --apply",
   ],
-  note: "Creates development resources only after login and explicit account selection. Existing account plan and combined account usage still matter. Never upgrades a plan or activates billing.",
+  note: "Uses explicit account selection and separate preview/production databases. Existing account plan and combined account usage still matter. Never upgrades a plan or activates billing.",
 };
 if (action === "plan" || !apply) {
   console.log(JSON.stringify(plan, null, 2));
@@ -84,7 +95,9 @@ const jsonOutput = (text) => {
   return JSON.parse(text.slice(start, end + 1));
 };
 await mkdir(".cloudflare", { recursive: true });
-const statePath = ".cloudflare/resources.local.json";
+const statePath = production
+  ? ".cloudflare/resources.production.local.json"
+  : ".cloudflare/resources.local.json";
 if (action === "provision") {
   const identity = run(["whoami"], { capture: true });
   if (/not authenticated|not logged in/i.test(identity))
@@ -103,7 +116,7 @@ if (action === "provision") {
       "This checkout is registered to a different account. Use a separate checkout or reconcile resource ownership before applying.",
     );
   let databases = jsonOutput(run(["d1", "list", "--json"], { capture: true }));
-  let database = databases.find((row) => row.name === project.databaseName);
+  let database = databases.find((row) => row.name === databaseName);
   if (
     database &&
     priorState?.databaseId !== database.uuid &&
@@ -117,9 +130,9 @@ if (action === "provision") {
       throw new Error(
         "Free-first guard: account already has 10 or more D1 databases; no new resource or plan upgrade attempted.",
       );
-    run(["d1", "create", project.databaseName]);
+    run(["d1", "create", databaseName]);
     databases = jsonOutput(run(["d1", "list", "--json"], { capture: true }));
-    database = databases.find((row) => row.name === project.databaseName);
+    database = databases.find((row) => row.name === databaseName);
   }
   if (!database?.uuid)
     throw new Error(
@@ -131,7 +144,7 @@ if (action === "provision") {
       {
         accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
         projectName: project.projectName,
-        databaseName: project.databaseName,
+        databaseName,
         databaseId: database.uuid,
         pagesVerified: Boolean(
           priorState?.pagesVerified &&
@@ -173,20 +186,28 @@ if (action === "provision") {
     throw new Error(
       "Pages creation could not be verified; reconcile the account before retrying.",
     );
-  const config = {
-    ...rootConfig,
-    name: project.projectName,
-    pages_build_output_dir: "./dist",
-    vars: { APP_STAGE: "preview", ALLOW_DEV_AUTH: "false" },
+  const environment = {
+    vars: { APP_STAGE: stage, ALLOW_DEV_AUTH: "false" },
     d1_databases: [
       {
         binding: "DB",
-        database_name: project.databaseName,
+        database_name: databaseName,
         database_id: database.uuid,
         migrations_dir: "migrations",
       },
     ],
   };
+  const config = {
+    ...rootConfig,
+    name: project.projectName,
+    pages_build_output_dir: "./dist",
+    ...(!production ? environment : {}),
+    env: {
+      ...rootConfig.env,
+      [production ? "production" : "preview"]: environment,
+    },
+  };
+  deploymentTarget(config, project, production);
   await writeFile("wrangler.jsonc", JSON.stringify(config, null, 2));
   await writeFile(
     statePath,
@@ -194,7 +215,7 @@ if (action === "provision") {
       {
         accountId: process.env.CLOUDFLARE_ACCOUNT_ID,
         projectName: project.projectName,
-        databaseName: project.databaseName,
+        databaseName,
         databaseId: database.uuid,
         pagesVerified: true,
       },
@@ -203,11 +224,12 @@ if (action === "provision") {
     ),
   );
   console.log(
-    "Verified D1 and Pages project. Preview configuration written. No deployment performed.",
+    `Verified D1 and Pages project. ${stage} configuration written. No deployment performed.`,
   );
 } else {
   await access("dist/index.html");
-  const config = rootConfig;
+  const target = deploymentTarget(rootConfig, project, production);
+  const config = target.config;
   let state;
   if (process.argv.includes("--ci")) {
     if (process.env.GITHUB_ACTIONS !== "true")
@@ -215,7 +237,7 @@ if (action === "provision") {
     const databases = jsonOutput(
       run(["d1", "list", "--json"], { capture: true }),
     );
-    const database = databases.find((row) => row.name === project.databaseName);
+    const database = databases.find((row) => row.name === databaseName);
     const projects = jsonOutput(
       run(["pages", "project", "list", "--json"], { capture: true }),
     );
@@ -240,13 +262,20 @@ if (action === "provision") {
     );
   if (
     config.vars?.ALLOW_DEV_AUTH !== "false" ||
-    config.vars?.APP_STAGE !== "preview" ||
+    config.vars?.APP_STAGE !== stage ||
     config.name !== project.projectName ||
     !config.d1_databases?.[0]?.database_id ||
     config.d1_databases[0].database_id.startsWith("00000000")
   )
     throw new Error("Unsafe or unprovisioned remote configuration.");
-  run(["d1", "migrations", "apply", "DB", "--remote"]);
+  run([
+    "d1",
+    "migrations",
+    "apply",
+    "DB",
+    "--remote",
+    ...(rootConfig.env?.[stage] ? ["--env", stage] : []),
+  ]);
   run([
     "pages",
     "deploy",
@@ -254,6 +283,6 @@ if (action === "provision") {
     "--project-name",
     project.projectName,
     "--branch",
-    project.previewBranch,
+    target.branch,
   ]);
 }

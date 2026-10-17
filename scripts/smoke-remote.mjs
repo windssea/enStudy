@@ -4,6 +4,8 @@ const base = new URL(
   process.argv[2] ?? "https://development.english-quest-dev.pages.dev",
 );
 assert.equal(base.protocol, "https:");
+const stage = process.argv[3] ?? "preview";
+assert.ok(["preview", "production"].includes(stage), "known deployment stage");
 let checks = 0;
 const check = (condition, message) => {
   assert.ok(condition, message);
@@ -26,8 +28,8 @@ const health = await healthResponse.json();
 check(
   healthResponse.status === 200 &&
     health.status === "ok" &&
-    health.stage === "preview",
-  "preview Functions healthy",
+    health.stage === stage,
+  `${stage} Functions healthy`,
 );
 check(
   health.developmentIdentityAvailable === false && health.aiEnabled === false,

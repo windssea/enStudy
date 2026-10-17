@@ -27,7 +27,7 @@
 | --- | --- | --- | --- |
 | local | Wrangler本机模拟 | `.wrangler/state` | 两个虚构家庭；APP_STAGE=local且ALLOW_DEV_AUTH=true并仅loopback才可用 |
 | development preview | english-quest-dev | english-quest-dev-db | APP_STAGE=preview、ALLOW_DEV_AUTH=false；M1允许admin登录后管理儿童档案和保存进度，注册关闭 |
-| production | M1后单独建立 | 独立生产库 | 不与preview混绑；正式成人认证、Secret、备份与验收先完成 |
+| production | 同一Pages项目的main生产分支 | english-quest-prod-db | APP_STAGE=production且开发身份关闭；admin登录；不与preview混绑 |
 
 名字在`cloudflare.project.json`声明，可在首次创建前修改。`wrangler.jsonc`初始D1 UUID全零仅用于本地；远程provision成功后写入真实非秘密ID。`.cloudflare/resources.local.json`保存账号/项目/库的绑定回执，不存token并被Git忽略。
 

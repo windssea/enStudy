@@ -1,6 +1,7 @@
 {
   "projectName": "english-quest-dev",
   "databaseName": "english-quest-dev-db",
+  "productionDatabaseName": "english-quest-prod-db",
   "productionBranch": "main",
   "previewBranch": "development",
   "services": ["pages", "functions", "d1"],

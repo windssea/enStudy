@@ -1,4 +1,4 @@
-name: Check and deploy development
+name: Check and deploy Cloudflare
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
-      group: cloudflare-development
+      group: cloudflare-release
       cancel-in-progress: false
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
@@ -65,3 +65,11 @@ jobs:
         run: npm run cf:deploy:preview -- --apply --ci
       - name: Verify deployed preview
         run: npm run verify:remote
+      - name: Migrate production D1 and deploy the same build to Production
+        if: vars.CLOUDFLARE_PRODUCTION_DEPLOY_ENABLED == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npm run cf:deploy:production -- --apply --ci
+      - name: Verify deployed Production
+        if: vars.CLOUDFLARE_PRODUCTION_DEPLOY_ENABLED == 'true'
+        run: npm run verify:production

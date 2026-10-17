@@ -1,6 +1,6 @@
 # GitHub提交与Cloudflare自动部署
 
-目标仓库由用户指定为`https://github.com/windssea/enStudy.git`，主分支为`main`。后续由GitHub Actions构建并部署现有Cloudflare Pages前端与Pages Functions（Worker），继续绑定独立开发D1，不新建另一套Worker或生产资源。
+目标仓库由用户指定为`https://github.com/windssea/enStudy.git`，主分支为`main`。由GitHub Actions构建并部署Cloudflare Pages前端与Pages Functions（Worker）。后续用户已要求同步Production，现采用同项目Preview与Production、独立D1，见[Production同步发布](24-production-deployment.md)。
 
 ## 已编写的工作流
 
@@ -48,7 +48,7 @@ gh run list --repo windssea/enStudy --workflow cloudflare.yml --limit 3
 
 Missing CLOUDFLARE_API_TOKEN：核对Secret名称和存储层级；Authentication error或权限拒绝：核对Token有效期、目标账号以及两项Edit权限；资源身份不匹配：先核对wrangler.jsonc和实际D1 UUID，不通过新建数据库绕过检查。
 
-配置完毕后在Actions页手动运行工作流，或继续推送main。部署目标是`development.english-quest-dev.pages.dev`；代码主分支main仍发布到Cloudflare的development预览分支，不发布生产。
+配置完毕后在Actions页手动运行工作流，或继续推送main。先部署`development.english-quest-dev.pages.dev`；生产开关`CLOUDFLARE_PRODUCTION_DEPLOY_ENABLED=true`时，预览验证通过后将同一份构建发布到main生产分支。
 
 私有仓库的GitHub Actions也有账号套餐额度，超额行为按GitHub账号设置处理；工作流不购买额度或开通任何收费服务。
 
