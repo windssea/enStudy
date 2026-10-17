@@ -779,6 +779,14 @@ export default function App() {
   const units = (catalog?.units ?? []).filter(
     (u) => u.grade === String(grade) && u.term === term,
   );
+  const availableLessons = lessons.filter(
+    (lesson) => lesson.grade === grade && lesson.term === term,
+  );
+  const nextLesson =
+    availableLessons.find(
+      (lesson) =>
+        !learning.completedLessons.some((row) => row.lessonId === lesson.id),
+    ) ?? availableLessons[0];
   const nav: [View, string, string][] = [
     ["map", "探险地图", "map"],
     ["words", "单词特训", "words"],
@@ -941,9 +949,11 @@ export default function App() {
             <>
               <div className="page-head">
                 <div>
-                  <p className="eyebrow">HELLO, EXPLORER</p>
-                  <h1>今天，去发现一个新世界。</h1>
-                  <p className="lead">听见单词，搭出句子，让记忆慢慢长大。</p>
+                  <p className="eyebrow">课程探险 · 一站一站学</p>
+                  <h1>今天，去英语岛探险！</h1>
+                  <p className="lead">
+                    跟课程学新知识；想练单词或语法，从导航选特训。
+                  </p>
                 </div>
                 <div className="filters">
                   <label>
@@ -1010,7 +1020,7 @@ export default function App() {
                         {journeys[grade - 1]}岛{" "}
                         <span className="badge">自主路线</span>
                       </h2>
-                      <p>六个单元，连成一段新的探索。</p>
+                      <p>先看小课，再做练习。下方课程卡可以自由选择。</p>
                     </div>
                     <button
                       className="text-button"
@@ -1077,22 +1087,35 @@ export default function App() {
                     })}
                   </div>
                   <div className="map-footer">
-                    {!twoD && (
+                    <div>
+                      <strong>
+                        {nextLesson
+                          ? `下一站：${nextLesson.title}`
+                          : "这个学期的课程正在准备"}
+                      </strong>
+                      {!twoD && (
+                        <button
+                          className="text-button"
+                          onClick={() => setGreet(greet + 1)}
+                        >
+                          和小伙伴打个招呼
+                        </button>
+                      )}
+                    </div>
+                    {nextLesson && (
                       <button
-                        className="text-button"
-                        onClick={() => setGreet(greet + 1)}
+                        className={
+                          session && identity.authenticated
+                            ? "secondary"
+                            : "primary"
+                        }
+                        disabled={busy}
+                        onClick={() => openLesson(nextLesson)}
                       >
-                        和探险伙伴打个招呼
+                        打开这节课
+                        <Icon kind="arrow" />
                       </button>
                     )}
-                    <button
-                      className="primary"
-                      disabled={busy}
-                      onClick={() => start("sample.be.1")}
-                    >
-                      开始一题体验
-                      <Icon kind="arrow" />
-                    </button>
                   </div>
                 </section>
                 <aside className="right-rail">
@@ -1119,7 +1142,10 @@ export default function App() {
                         <span>3</span>试一种新的表达
                       </li>
                     </ol>
-                    <button className="primary" onClick={() => move("topics")}>
+                    <button
+                      className="secondary"
+                      onClick={() => move("topics")}
+                    >
                       去专题特训
                       <Icon kind="arrow" />
                     </button>

@@ -90,6 +90,7 @@ export default function WordTraining({
   const [year, setYear] = useState(grade),
     [query, setQuery] = useState(""),
     [wordQuery, setWordQuery] = useState("");
+  const [chooserOpen, setChooserOpen] = useState(false);
   const [mode, setMode] = useState<WordMode>("meaning"),
     [roundSize, setRoundSize] = useState(5);
   const workshopHeading = useRef<HTMLHeadingElement>(null);
@@ -107,9 +108,7 @@ export default function WordTraining({
     [summaryError, setSummaryError] = useState(false);
   useEffect(() => setYear(grade), [grade]);
   const selected = themes.find((theme) => theme.id === selectedId);
-  const recommended = themes.find(
-    (theme) => year === 0 || theme.grade === year,
-  );
+  const recommended = themes.find((theme) => theme.grade === grade);
   const selectedMode = modes.find((option) => option.id === mode)!;
   const visible = themes.filter(
     (theme) =>
@@ -134,6 +133,8 @@ export default function WordTraining({
     onSelect(id);
   };
   const changeTheme = () => {
+    if (selected) returnTarget.current = selected.id;
+    setChooserOpen(true);
     focusNext.current = "choose";
     onSelect(null);
   };
@@ -190,13 +191,21 @@ export default function WordTraining({
       {!selected && (
         <div className="word-hero">
           <div>
-            <p className="eyebrow">单词特训 · 一次玩一小轮</p>
-            <h1>今天，玩一轮单词吧！</h1>
-            <p className="lead">认词义、听发音、练拼写，从5道小题开始。</p>
+            <p className="eyebrow">单词探险岛 · WORD QUEST</p>
+            <h1>
+              每天一小轮，
+              <br />
+              单词越玩越熟！
+            </h1>
+            <p className="lead">先认意思，再听、再拼。今天从5题开始。</p>
             {recommended && (
               <div className="word-launch">
                 <p>
-                  <span>{resume ? "上次的小挑战" : "入门主题"}</span>
+                  <span>
+                    {resume
+                      ? "接着上次"
+                      : `${["一", "二", "三", "四", "五", "六"][grade - 1]}年级 · 今日起点`}
+                  </span>
                   <strong>{resume?.title ?? recommended.title}</strong>
                 </p>
                 <button
@@ -232,13 +241,24 @@ export default function WordTraining({
                 </small>
               </div>
             )}
+            <ul className="word-loop" aria-label="这一轮怎么玩">
+              <li>
+                <span aria-hidden="true">1</span> 想一想
+              </li>
+              <li>
+                <span aria-hidden="true">2</span> 看解释
+              </li>
+              <li>
+                <span aria-hidden="true">3</span> 记得复习
+              </li>
+            </ul>
           </div>
           <SceneStage kind="words" />
         </div>
       )}
       {selected && (
         <ol className="word-path" aria-label="单词探险步骤">
-          {["选个主题", "准备挑战", "做小练习"].map((label, index) => (
+          {["主题已选", "确认玩法", "开始挑战"].map((label, index) => (
             <li
               key={label}
               aria-current={index === (selected ? 1 : 0) ? "step" : undefined}
@@ -253,79 +273,100 @@ export default function WordTraining({
         </ol>
       )}
       {!selected && (
-        <section className="word-chooser" aria-labelledby="word-chooser-title">
-          <div className="word-section-heading">
-            <div>
-              <p className="eyebrow">自己选，也很好</p>
-              <h2 id="word-chooser-title" ref={chooserHeading} tabIndex={-1}>
-                想练别的？挑个喜欢的主题
-              </h2>
+        <details
+          className="word-browse"
+          open={chooserOpen}
+          onToggle={(event) => setChooserOpen(event.currentTarget.open)}
+        >
+          <summary>
+            <span className="word-browse-icon" aria-hidden="true">
+              <ThemeSymbol id="learning" />
+            </span>
+            <span>
+              <strong>想换个主题？自己挑</strong>
+              <small>动物、校园、美食… {themes.length}个主题等你探索</small>
+            </span>
+            <span className="word-browse-toggle" aria-hidden="true">
+              {chooserOpen ? "收起 −" : "展开 +"}
+            </span>
+          </summary>
+          <section
+            className="word-chooser"
+            aria-labelledby="word-chooser-title"
+          >
+            <div className="word-section-heading">
+              <div>
+                <p className="eyebrow">先选主题 → 确认玩法 → 开始挑战</p>
+                <h2 id="word-chooser-title" ref={chooserHeading} tabIndex={-1}>
+                  挑一个你感兴趣的主题
+                </h2>
+              </div>
+              <p>{themes.length}个生活主题 · 选好后再开始</p>
             </div>
-            <p>{themes.length}个生活主题 · 选好后再开始</p>
-          </div>
-          <div className="filter-row">
-            <label>
-              年级
-              <select
-                value={year}
-                onChange={(e) => {
-                  setYear(Number(e.target.value));
-                }}
-                disabled={busy}
-              >
-                <option value={0}>全部年级</option>
-                {["一", "二", "三", "四", "五", "六"].map((name, index) => (
-                  <option key={name} value={index + 1}>
-                    {name}年级
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              找主题
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="例如：动物、餐桌、出行"
-              />
-            </label>
-          </div>
-          <div className="word-theme-grid" aria-label="单词主题">
-            {visible.map((theme) => (
-              <button
-                className={`word-theme word-tone-${themes.indexOf(theme) % 4}`}
-                onClick={() => choose(theme.id, theme.id)}
-                disabled={busy}
-                ref={(node) => {
-                  if (node) themeButtons.current.set(theme.id, node);
-                  else themeButtons.current.delete(theme.id);
-                }}
-                key={theme.id}
-              >
-                <span className="word-theme-number" aria-hidden="true">
-                  <ThemeSymbol id={theme.id} />
-                </span>
-                <span>
-                  <span className="eyebrow">
-                    {["一", "二", "三", "四", "五", "六"][theme.grade - 1]}年级
-                    · {theme.wordCount}个词
+            <div className="filter-row">
+              <label>
+                年级
+                <select
+                  value={year}
+                  onChange={(e) => {
+                    setYear(Number(e.target.value));
+                  }}
+                  disabled={busy}
+                >
+                  <option value={0}>全部年级</option>
+                  {["一", "二", "三", "四", "五", "六"].map((name, index) => (
+                    <option key={name} value={index + 1}>
+                      {name}年级
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                找主题
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="例如：动物、餐桌、出行"
+                />
+              </label>
+            </div>
+            <div className="word-theme-grid" aria-label="单词主题">
+              {visible.map((theme) => (
+                <button
+                  className={`word-theme word-tone-${themes.indexOf(theme) % 4}`}
+                  onClick={() => choose(theme.id, theme.id)}
+                  disabled={busy}
+                  ref={(node) => {
+                    if (node) themeButtons.current.set(theme.id, node);
+                    else themeButtons.current.delete(theme.id);
+                  }}
+                  key={theme.id}
+                >
+                  <span className="word-theme-number" aria-hidden="true">
+                    <ThemeSymbol id={theme.id} />
                   </span>
-                  <strong>{theme.title}</strong>
-                  <span>{theme.description}</span>
-                  <span className="word-theme-action">
-                    选这个主题 <span aria-hidden="true">→</span>
+                  <span>
+                    <span className="eyebrow">
+                      {["一", "二", "三", "四", "五", "六"][theme.grade - 1]}
+                      年级 · {theme.wordCount}个词
+                    </span>
+                    <strong>{theme.title}</strong>
+                    <span>{theme.description}</span>
+                    <span className="word-theme-action">
+                      选主题，再选玩法 <span aria-hidden="true">→</span>
+                    </span>
                   </span>
-                </span>
-              </button>
-            ))}
-          </div>
-          {!visible.length && (
-            <p className="empty-state">
-              没有找到这个主题，换个关键词或年级试试。
-            </p>
-          )}
-        </section>
+                </button>
+              ))}
+            </div>
+            {!visible.length && (
+              <p className="empty-state">
+                没有找到这个主题，换个关键词或年级试试。
+              </p>
+            )}
+          </section>
+        </details>
       )}
       {!selected && childId && (
         <div className="word-progress-strip" role="status">
@@ -361,7 +402,7 @@ export default function WordTraining({
         >
           <div className="word-workshop-heading">
             <div>
-              <p className="eyebrow">第2步 · 准备好就出发</p>
+              <p className="eyebrow">主题选好啦 · 确认这轮怎么玩</p>
               <h1 id="word-workshop-title" ref={workshopHeading} tabIndex={-1}>
                 {selected.title}
               </h1>
@@ -379,35 +420,19 @@ export default function WordTraining({
               {roundSize}
             </span>
             <div>
-              <h2>这次的小挑战</h2>
+              <h2>这轮这样玩</h2>
               <p>
                 {selectedMode.title} · {roundSize}道题
               </p>
               <span>{selectedMode.description}</span>
             </div>
           </div>
-          <div className="word-start">
-            <button
-              className="primary"
-              disabled={busy}
-              onClick={() => onStart(selected.id, mode, roundSize)}
-            >
-              {busy
-                ? "正在准备…"
-                : !childId
-                  ? "选择档案，再开始"
-                  : `出发，练${roundSize}题`}
-              <span aria-hidden="true">→</span>
-            </button>
-            <p>
-              {childId
-                ? "不用赶时间，想一想再回答。"
-                : "请家长登录并选好档案，就能保存你的进度。"}
-            </p>
-          </div>
           <details className="word-options" key={`options-${selected.id}`}>
             <summary>
-              换一种练法或题量 <span>按需调整</span>
+              调整玩法和题量{" "}
+              <span>
+                当前：{selectedMode.title} · {roundSize}题
+              </span>
             </summary>
             <fieldset className="word-modes">
               <legend>今天想怎么练？</legend>
@@ -449,6 +474,25 @@ export default function WordTraining({
               </label>
             </div>
           </details>
+          <div className="word-start">
+            <button
+              className="primary"
+              disabled={busy}
+              onClick={() => onStart(selected.id, mode, roundSize)}
+            >
+              {busy
+                ? "正在准备…"
+                : !childId
+                  ? "选择档案，再开始"
+                  : `开始${roundSize}题 · ${selectedMode.title}`}
+              <span aria-hidden="true">→</span>
+            </button>
+            <p>
+              {childId
+                ? "不用赶时间，想一想再回答。"
+                : "请家长登录并选好档案，就能保存你的进度。"}
+            </p>
+          </div>
           <details className="word-preview" key={`preview-${selected.id}`}>
             <summary>
               还不熟？先看一看单词卡 <span>{selected.wordCount}张词卡</span>
