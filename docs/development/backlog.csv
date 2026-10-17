@@ -1,7 +1,7 @@
 id,milestone,task,acceptance,status,evidence
 M0-01,M0,React TypeScript Vite工程与依赖锁定,类型检查与生产构建通过,done,package-lock.json与npm run build
 M0-02,M0,真实Three.js地图模块与DOM降级,懒加载和2D切换实现且实机另验,implemented-unverified-visual,src/World.tsx
-M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,local-checked-visual-pending-quota-blocked,docs/29-motion-and-3d.md及64项单元与33项本机基础冒烟而浏览器实机未验
+M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,local-checked-visual-pending-quota-blocked,docs/39-time-and-word-form-labs.md及16专题48教学演示与静态检查而浏览器GPU实机未验
 M0-03,M0,课程专题句式目录,72单元60专题72句式可读且标明草稿,done,public/content/catalog.json与HTTP检查
 M0-04,M0,本地D1迁移和样课闭环,服务端判题保存调度与提示证据通过,done,npm run verify:local
 M0-05,M0,跨家庭与幂等保护,越权拒绝且并发重试只计一次,done,本地workerd HTTP验证
@@ -19,7 +19,7 @@ M2-01,M2,不可变内容release和审核流水线,发布审核撤题与版本兼
 M2-02,M2,全年级课程与媒体,288微课与各年级综合能力覆盖审核,partial-72-of-288,docs/37-listening-and-evidence-reading.md及第三单元24课216不同事实听读与语法已保存而剩余216课和完整媒体教研审核待做
 M2-03,M2,完整互动题型与可访问替代,听读分类纠错与引导表达可用,partial-listen-evidence-player,docs/37-listening-and-evidence-reading.md及设备听辨辅助状态与阅读依据加原有分类修正共用判题复习和接续而真机发声丰富媒体表达及PC平板验收待做
 M3-01,M3,60专题诊断与迁移,分层与题目家族隔离通过,partial-local-training-journeys,docs/33-topic-training-journeys.md与38-guided-training-centres.md及60专题分步和8类入口而全面错因诊断专用内容开放场景及教研审核待做
-M3-02,M3,72句式和词形规则,槽位与合法变体及错误归因通过,partial-72-frame-banks,docs/38-guided-training-centres.md及72句式各120变体与12场景中文句框示例记录而完整归因迁移教研审核待做
+M3-02,M3,72句式和词形规则,槽位与合法变体及错误归因通过,partial-72-frame-banks,docs/38-guided-training-centres.md与39-time-and-word-form-labs.md及句式题库与词形演示而完整归因迁移教研审核待做
 M3-03,M3,复习选题与延迟测验,积压保护与同日跨入口不重复晋级,partial-local-delayed-checkpoints,docs/33-topic-training-journeys.md及1/3/7日共用卡片和逾期合并通过而专用评估池与跨入口任务合并待做
 M3-04,M3,离线队列与报告,断网恢复且未确认进度不虚报,partial-modality-report,docs/36-interactive-workshops.md及复习卡片明确能力类型和已有课程独立计数而离线完整报告与教学统计待做
 M3-05,M3,独立单词特训,分级词库多模式随机与复习进度通过,partial-local-word-listening,docs/37-listening-and-evidence-reading.md及360词条18主题1440任务含听辨与本机记录而真实设备与教研审核及云端免费发布待验

@@ -32,6 +32,8 @@ import {
   type ReviewTarget,
 } from "../domain/selection";
 import type { Answer, LearningSession, Receipt } from "../contracts/index";
+import { conceptLab } from "../domain/concepts";
+import conceptExposure from "../../content/concept-exposure-map.json";
 import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 import { managedAccountRoutes } from "./managedAccounts";
 import { createAiRoutes } from "./aiRoutes";
@@ -1276,6 +1278,50 @@ app.post("/api/v1/learning/patterns/:id/view", async (c) => {
       409,
     );
   return c.json({ saved: true, example: preview.example });
+});
+app.post("/api/v1/learning/concepts/:id/view", async (c) => {
+  const lab = conceptLab(c.req.param("id"));
+  if (!lab) return c.json(fault("NOT_FOUND", "这个互动示范还在准备中。"), 404);
+  const body = await c.req.json();
+  if (
+    !body ||
+    typeof body !== "object" ||
+    Array.isArray(body) ||
+    typeof body.caseId !== "string"
+  )
+    return c.json(fault("INVALID_CONCEPT", "请选择一个演示例子。"), 422);
+  const example = lab.cases.find((row) => row.id === body.caseId);
+  const keys = (conceptExposure.entries as Record<string, string[]>)[
+    `${lab.id}/${body.caseId}`
+  ];
+  if (!example || !keys?.length)
+    return c.json(
+      fault("INVALID_CONCEPT", "请选择这个专题里的演示例子。"),
+      422,
+    );
+  const actor = c.get("actor");
+  await recordExposure(c.env.DB, actor, keys);
+  const [key] = await hashedExposureKeys(keys),
+    now = Date.now();
+  const saved = await c.env.DB.prepare(
+    `SELECT 1 FROM teaching_exposures WHERE household_id=? AND child_id=? AND evidence_key=? AND shown_day=? AND ${grantAuthorization}`,
+  )
+    .bind(
+      actor.householdId,
+      actor.childId,
+      key,
+      localDay(now, actor.timezone),
+      actor.grantId,
+      now,
+      now,
+    )
+    .first();
+  if (!saved)
+    return c.json(
+      fault("AUTH_CHANGED", "档案权限有变化，请刷新后再打开示范。"),
+      409,
+    );
+  return c.json({ saved: true, example });
 });
 app.get("/api/v1/sessions/:id/snapshot", async (c) => {
   const actor = c.get("actor"),

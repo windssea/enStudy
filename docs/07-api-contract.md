@@ -10,6 +10,8 @@ v0.18网页升级到`X-EQ-Player-Version: 3`，新增listen/evidence；v2仍能�
 
 v0.19新增实际端点`POST /learning/patterns/:id/view`，空对象请求。服务端从公开目录定位示例，将句子/对应家族的示范证据写入现有表并核对当天记录与有效授权后，才返回`{saved:true,example}`；未确认时前端不揭示例句。未知ID为404，无授权401，授权中途变化409/AUTH_CHANGED。同日重遇同句沿用support=example，不回写旧回执；见[实现与验证](38-guided-training-centres.md)。没有新增数据库迁移。
 
+v0.20新增实际端点`POST /learning/concepts/:id/view`，body为`{caseId}`。只接受对应实验台的已编写案例；先将原句/已披露词形和对应家族映射到现有示范记录，核对后返回`{saved:true,example}`。未知实验台404，错误案例或类型422，无身份401，Origin不符403，授权变化409。播放不改变题目游标、答题或课程完成数，具体见[实验台接口与证据](39-time-and-word-form-labs.md)。
+
 统一前缀 `/api/v1`，JSON UTF-8，Cookie 同源会话，所有修改操作验证 Origin/CSRF。成人认证相关端点交由已选认证库，业务接口禁止接受客户端声称的 adult_id 作为权限依据。这里定义核心开发契约，除顶部明确标注的实际接口外，其余仍含目标草案。
 
 ## 端点

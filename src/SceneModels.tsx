@@ -144,7 +144,12 @@ export function Tile({
     const ctx = canvas.getContext("2d");
     if (ctx) {
       ctx.fillStyle = "#172b4d";
-      ctx.font = "700 60px sans-serif";
+      let size = 60;
+      ctx.font = `700 ${size}px sans-serif`;
+      while (size > 18 && ctx.measureText(word).width > 228) {
+        size -= 2;
+        ctx.font = `700 ${size}px sans-serif`;
+      }
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(word, 128, 96);

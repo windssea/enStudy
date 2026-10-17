@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import type { TrainingCycle } from "../packages/contracts/index";
 import { api } from "./api";
 import {
@@ -6,6 +6,8 @@ import {
   type TrainingPhase,
 } from "../packages/domain/training";
 import SceneStage from "./SceneStage";
+import { conceptLab } from "../packages/domain/concepts";
+const ConceptLab = lazy(() => import("./ConceptLab"));
 export default function TopicJourney({
   topicId,
   title,
@@ -33,6 +35,8 @@ export default function TopicJourney({
     [error, setError] = useState(""),
     [loadFailed, setLoadFailed] = useState(false),
     [roundSize, setRoundSize] = useState(5);
+  const [labOpen, setLabOpen] = useState(false);
+  const lab = conceptLab(topicId);
   const createId = useRef(crypto.randomUUID());
   const generation = useRef(0);
   const creating = useRef(false);
@@ -129,7 +133,7 @@ export default function TopicJourney({
             先看看会什么，再看规律、换材料。隔几天回来试一次，给记忆一点生长的时间。
           </p>
         </div>
-        <SceneStage kind="workshop" compact />
+        {!labOpen && <SceneStage kind="workshop" compact />}
       </div>
       {error && (
         <p className="notice error" role="alert">
@@ -281,6 +285,23 @@ export default function TopicJourney({
               刷新计划与日期
             </button>
           </>
+        )}
+        {lab && (
+          <details
+            className="library-disclosure concept-disclosure"
+            onToggle={(event) => setLabOpen(event.currentTarget.open)}
+          >
+            <summary>
+              {lab.kind === "timeline"
+                ? "先玩一玩时态时间线"
+                : "先玩一玩单词变形台"}
+            </summary>
+            {labOpen && (
+              <Suspense fallback={<p role="status">正在搭建互动示范…</p>}>
+                <ConceptLab lab={lab} childId={childId} />
+              </Suspense>
+            )}
+          </details>
         )}
         <details className="library-disclosure training-path-details">
           <summary>看看后面怎么学</summary>

@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "sourceHash": "2ed2ee6ea75c5e1884f7a209799b5fe2fa544ed382fa98d0be4e33127852a37d",
+  "entries": {
+    "tense.present-simple/habit": [
+      "sentence:every thursday, nora waters the lemon tree"
+    ],
+    "tense.present-simple/fact": [
+      "sentence:nora lives beside the harbour"
+    ],
+    "tense.present-simple/plural": [
+      "sentence:my cousins collect shells on sundays"
+    ],
+    "tense.present-continuous/fold": [
+      "sentence:nora is folding a paper boat right now"
+    ],
+    "tense.present-continuous/carry": [
+      "sentence:her cousins are carrying a picnic basket at the moment"
+    ],
+    "tense.present-continuous/sleep": [
+      "sentence:the puppy is sleeping under the chair now"
+    ],
+    "tense.present-contrast/usually": [
+      "sentence:nora usually paints after school"
+    ],
+    "tense.present-contrast/right-now": [
+      "sentence:nora is fixing her kite right now"
+    ],
+    "tense.present-contrast/not-now": [
+      "sentence:she is not painting now"
+    ],
+    "tense.past-simple/yesterday": [
+      "sentence:nora packed her telescope yesterday"
+    ],
+    "tense.past-simple/last-week": [
+      "sentence:her cousins found a smooth stone last week"
+    ],
+    "tense.past-simple/question": [
+      "sentence:did nora pack her telescope yesterday"
+    ],
+    "tense.past-continuous/four": [
+      "sentence:at four yesterday, nora was polishing her telescope"
+    ],
+    "tense.past-continuous/cousins": [
+      "sentence:her cousins were sorting stones at four yesterday"
+    ],
+    "tense.past-continuous/negative": [
+      "sentence:nora was not drawing at four yesterday"
+    ],
+    "tense.past-contrast/background": [
+      "sentence:nora was drawing a map when the doorbell rang"
+    ],
+    "tense.past-contrast/event": [
+      "sentence:the doorbell rang at four yesterday"
+    ],
+    "tense.past-contrast/together": [
+      "sentence:while nora was drawing, her brother was reading"
+    ],
+    "tense.future/decision": [
+      "sentence:the phone is ringing. i will answer it"
+    ],
+    "tense.future/plan": [
+      "sentence:we have bought tickets. we are going to visit the aquarium on saturday"
+    ],
+    "tense.future/evidence": [
+      "sentence:look at those dark clouds. it is going to rain"
+    ],
+    "tense.present-perfect/result": [
+      "sentence:i have lost my library card. i cannot borrow a book now"
+    ],
+    "tense.present-perfect/specific": [
+      "sentence:i lost my library card last tuesday"
+    ],
+    "tense.present-perfect/experience": [
+      "sentence:nora has visited a lighthouse before"
+    ],
+    "forms.noun-plural/dish": [
+      "family:fact-f021ca94456221cb",
+      "family:topic-fact-6cc47653edbcbc256cfc",
+      "sentence:there are three dishes",
+      "sentence:there are three dishes on the tray",
+      "sentence:写出dish表示两个或更多时的复数形式。",
+      "workshop-target:morphology.noun.plural:cedcf27a66a54"
+    ],
+    "forms.noun-plural/berry": [
+      "sentence:the berries are in the bowl"
+    ],
+    "forms.noun-plural/tooth": [
+      "family:topic-fact-1886fa5aa1acdea84194",
+      "family:topic-fact-c13d8c320985135c1ae6",
+      "sentence:brush your teeth before bed",
+      "sentence:写出tooth表示两个或更多时的复数形式。",
+      "sentence:字母拼合:t / e / e / t / h,写成一个词。"
+    ],
+    "forms.third-person/climb": [
+      "family:topic-fact-71b4db9c49e9b7fb225e",
+      "sentence:he/she/it作主语:把climb变为一般现在时第三人称单数形式。",
+      "sentence:nora climbs the hill on sundays"
+    ],
+    "forms.third-person/fix": [
+      "sentence:dad fixes toy boats at weekends",
+      "workshop-target:morphology.verb.third-person:c1c6e6c4c02e5"
+    ],
+    "forms.third-person/carry": [
+      "family:workshop-sentence-5810c4d5d2fbe8eb",
+      "sentence:he carries a bag every morning",
+      "sentence:nora carries a blue lunch box",
+      "workshop-target:morphology.verb.third-person:c6ef49cacb4c3"
+    ],
+    "forms.ing/fold": [
+      "sentence:nora is folding a paper boat"
+    ],
+    "forms.ing/bake": [
+      "sentence:grandpa is baking a small loaf"
+    ],
+    "forms.ing/sit": [
+      "family:fact-a2ccb690c4eb839a",
+      "family:topic-fact-596f8df614bf7db3a43f",
+      "family:workshop-sentence-91d7edf3dc575ca8",
+      "sentence:ben is sitting by the window",
+      "sentence:mia was sitting by the lake when i arrived",
+      "sentence:the kitten is sitting on a cushion",
+      "sentence:写出sit的-ing形式。",
+      "workshop-target:morphology.verb.ing:c584178e5e351"
+    ],
+    "forms.regular-past/paint": [
+      "family:topic-fact-79655b964caa05beb228",
+      "sentence:nora painted a wooden star yesterday",
+      "sentence:把动词paint变为过去式。"
+    ],
+    "forms.regular-past/worry": [
+      "family:pattern-sentence-e8ae23e0a7d609588230",
+      "family:topic-fact-9f7a95fa94adaca820d1",
+      "family:word-sense-feelings.worried",
+      "sentence:dad worried about the missing key yesterday",
+      "sentence:how are you? i'm worried",
+      "sentence:i feel worried because i cannot find my key",
+      "sentence:把动词worry变为过去式。",
+      "sentence:按本词表写出“担心的”的英文。"
+    ],
+    "forms.regular-past/plan": [
+      "family:topic-fact-833dc7b77151c847303a",
+      "family:workshop-sentence-4d884ec7bcc25986",
+      "sentence:we planned a puppet show last night",
+      "sentence:we planned the trip last week",
+      "sentence:把动词plan变为过去式。",
+      "workshop-target:morphology.verb.regular-past:c64879f7d6b96"
+    ],
+    "forms.irregular-past/bring": [
+      "family:topic-fact-8f616356782694b9e604",
+      "family:topic-fact-b2e46155648f9a825165",
+      "sentence:nora brought a compass yesterday",
+      "sentence:写出不规则动词bring的过去式。",
+      "sentence:用于have/has之后:写出bring的过去分词。"
+    ],
+    "forms.irregular-past/choose": [
+      "family:topic-fact-4204eb659a1b658ccd13",
+      "sentence:we chose a quiet picnic spot yesterday",
+      "sentence:写出不规则动词choose的过去式。"
+    ],
+    "forms.irregular-past/write": [
+      "family:topic-fact-208ff7c3f972a2e33a8f",
+      "family:topic-fact-3611d90d94b739d26cfe",
+      "family:topic-fact-44cd0e7db5083b3dd506",
+      "family:topic-fact-a423db1c454693660217",
+      "sentence:nora wrote a postcard last night",
+      "sentence:yesterday, lily wrote a letter.(write)",
+      "sentence:写出不规则动词write的过去式。",
+      "sentence:完整过去事件:lily wrote a letter yesterday.(write)",
+      "sentence:明确过去时间:lily wrote a letter yesterday.(write)"
+    ],
+    "forms.past-participle/go": [
+      "family:fact-05606abe8f26c216",
+      "family:fact-c684a33382f8f01a",
+      "family:fact-fe91daf722e1785f",
+      "family:sample.form.go",
+      "family:sample.past.1",
+      "family:topic-fact-227d5533c888ee9c8b1d",
+      "family:topic-fact-b385e4f185e309908db4",
+      "family:workshop-sentence-09a644d7b4904269",
+      "family:workshop-sentence-83c37f5464171ab2",
+      "sentence:ben went home last night",
+      "sentence:ben went to the library last sunday",
+      "sentence:mia went to the library yesterday",
+      "sentence:mia went to the park yesterday",
+      "sentence:nora has gone to the clinic. she is not here now",
+      "sentence:we went to the river yesterday",
+      "sentence:we went to the zoo yesterday",
+      "sentence:写出go的过去式。",
+      "sentence:写出不规则动词go的过去式。",
+      "sentence:用于have/has之后:写出go的过去分词。",
+      "workshop-target:morphology.verb.irregular-past:c4cd0e21a9a07",
+      "workshop-target:morphology.verb.irregular-past:cbd7e83102fa3"
+    ],
+    "forms.past-participle/write": [
+      "family:topic-fact-208ff7c3f972a2e33a8f",
+      "family:topic-fact-3611d90d94b739d26cfe",
+      "family:topic-fact-44cd0e7db5083b3dd506",
+      "family:topic-fact-83ea693902c7778c476d",
+      "family:topic-fact-a312ac1c16f2f6aa78e5",
+      "family:topic-fact-a423db1c454693660217",
+      "family:topic-fact-bf07dc7fc6c9101d617c",
+      "sentence:lily has already written a letter.(write)",
+      "sentence:nora has written a postcard",
+      "sentence:we have not written a letter yet.(write)",
+      "sentence:yesterday, lily wrote a letter.(write)",
+      "sentence:写出不规则动词write的过去式。",
+      "sentence:完整过去事件:lily wrote a letter yesterday.(write)",
+      "sentence:明确过去时间:lily wrote a letter yesterday.(write)",
+      "sentence:用于have/has之后:写出write的过去分词。"
+    ],
+    "forms.past-participle/break": [
+      "family:topic-fact-c230e710458d17eb59a7",
+      "family:topic-fact-d013ab8da0dd32145ebf",
+      "sentence:the puppy has broken a flowerpot",
+      "sentence:写出不规则动词break的过去式。",
+      "sentence:用于have/has之后:写出break的过去分词。"
+    ],
+    "forms.comparison/wide": [
+      "family:pattern-sentence-18ff19500d87a8bfd5bf",
+      "sentence:this bag is wider than that one",
+      "sentence:this is the widest path in the garden"
+    ],
+    "forms.comparison/thin": [
+      "family:pattern-sentence-090c54e66452333381b2",
+      "family:topic-fact-08e20aa8b50b030bc673",
+      "family:topic-fact-cb0c04ecaf79e6b10f81",
+      "sentence:this bag is thinner than that one",
+      "sentence:this is the thinnest notebook of the three",
+      "sentence:比较三者或更多:写出thin的最高级。",
+      "sentence:比较两者:写出thin的比较级。"
+    ],
+    "forms.comparison/good": [
+      "family:topic-fact-645b0fe4920d61fc2cd0",
+      "family:topic-fact-737f3ac35e3282069404",
+      "sentence:this is the best route to the harbour",
+      "sentence:比较三者或更多:写出good的最高级。",
+      "sentence:比较两者:写出good的比较级。"
+    ],
+    "forms.derivation/kind": [
+      "family:topic-fact-b0ab4e5528c3d96e96b0",
+      "sentence:that was an unkind remark",
+      "sentence:给kind加前缀或后缀,组成表示“不友善”的词。"
+    ],
+    "forms.derivation/teach": [
+      "family:topic-fact-e7bd86cde833f61b3b68",
+      "family:word-sense-school.teacher",
+      "sentence:ms lin is a science teacher",
+      "sentence:our teacher helps us learn",
+      "sentence:按本词表写出“教师”的英文。",
+      "sentence:给teach加前缀或后缀,组成表示“教师”的词。"
+    ],
+    "forms.derivation/care": [
+      "family:topic-fact-7842aeb760359b6af523",
+      "family:word-sense-describing.careful",
+      "sentence:a careful person pays attention to avoid mistakes",
+      "sentence:nora is careful with the glass jar",
+      "sentence:按本词表写出“小心的”的英文。",
+      "sentence:给care加前缀或后缀,组成表示“小心的”的词。"
+    ]
+  }
+}

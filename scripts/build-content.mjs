@@ -11,6 +11,7 @@ await import("./build-workshops.mjs");
 await import("./build-workshop-review.mjs");
 await import("./build-story-courses.mjs");
 await import("./build-word-listening.mjs");
+await import("./build-concept-labs.mjs");
 const readCSV = async (name) =>
   parse(
     await readFile(

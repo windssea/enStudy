@@ -1,0 +1,1253 @@
+{
+  "version": 1,
+  "labs": [
+    {
+      "id": "tense.present-simple",
+      "kind": "timeline",
+      "skill": "grammar.present-simple",
+      "title": "习惯日历",
+      "description": "点点不同的情景，看习惯和事实怎样表达。",
+      "cases": [
+        {
+          "id": "habit",
+          "label": "每周的习惯",
+          "sentence": "Every Thursday, Nora waters the lemon tree.",
+          "translation": "每周四，诺拉给柠檬树浇水。",
+          "note": "说经常做的事。Nora是一个人，这里用waters。",
+          "visual": {
+            "point": 0.6,
+            "repeat": [
+              0.12,
+              0.3,
+              0.48,
+              0.6
+            ]
+          }
+        },
+        {
+          "id": "fact",
+          "label": "现在的事实",
+          "sentence": "Nora lives beside the harbour.",
+          "translation": "诺拉住在海港旁。",
+          "note": "这里描述现在的居住情况，不是说她此刻正在搬家。",
+          "visual": {
+            "point": 0.6,
+            "span": [
+              0.15,
+              0.85
+            ]
+          }
+        },
+        {
+          "id": "plural",
+          "label": "不止一个人",
+          "sentence": "My cousins collect shells on Sundays.",
+          "translation": "我的表亲们周日收集贝壳。",
+          "note": "主语cousins不止一个，这里用collect，不加s。",
+          "visual": {
+            "point": 0.6,
+            "repeat": [
+              0.12,
+              0.3,
+              0.48,
+              0.6
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tense.present-continuous",
+      "kind": "timeline",
+      "skill": "grammar.present-continuous",
+      "title": "把此刻定格",
+      "description": "看看现在正在发生的动作。",
+      "cases": [
+        {
+          "id": "fold",
+          "label": "正在折纸船",
+          "sentence": "Nora is folding a paper boat right now.",
+          "translation": "诺拉此刻正在折一只纸船。",
+          "note": "is加folding，告诉我们动作现在正在进行。",
+          "visual": {
+            "point": 0.6,
+            "span": [
+              0.38,
+              0.8
+            ]
+          }
+        },
+        {
+          "id": "carry",
+          "label": "他们正在做什么",
+          "sentence": "Her cousins are carrying a picnic basket at the moment.",
+          "translation": "她的表亲们此刻正在提一个野餐篮。",
+          "note": "主语不止一个人，用are carrying。",
+          "visual": {
+            "point": 0.6,
+            "span": [
+              0.38,
+              0.8
+            ]
+          }
+        },
+        {
+          "id": "sleep",
+          "label": "小狗正在睡",
+          "sentence": "The puppy is sleeping under the chair now.",
+          "translation": "小狗现在正在椅子下面睡觉。",
+          "note": "这幅情景里的动作还在进行，用is sleeping。",
+          "visual": {
+            "point": 0.6,
+            "span": [
+              0.38,
+              0.8
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tense.present-contrast",
+      "kind": "timeline",
+      "skill": "grammar.present-contrast",
+      "title": "平时与此刻",
+      "description": "日历里的习惯和眼前的动作，不一定一样。",
+      "cases": [
+        {
+          "id": "usually",
+          "label": "平时的习惯",
+          "sentence": "Nora usually paints after school.",
+          "translation": "诺拉放学后通常画画。",
+          "note": "说平时常做的事，用paints。",
+          "visual": {
+            "point": 0.6,
+            "repeat": [
+              0.1,
+              0.28,
+              0.46,
+              0.6
+            ]
+          }
+        },
+        {
+          "id": "right-now",
+          "label": "今天此刻",
+          "sentence": "Nora is fixing her kite right now.",
+          "translation": "诺拉此刻正在修她的风筝。",
+          "note": "这一次眼前的动作是修风筝，用is fixing。",
+          "visual": {
+            "point": 0.6,
+            "span": [
+              0.38,
+              0.8
+            ]
+          }
+        },
+        {
+          "id": "not-now",
+          "label": "此刻没在做",
+          "sentence": "She is not painting now.",
+          "translation": "她现在没有在画画。",
+          "note": "is not painting说的是此刻，不表示她从来不画画。",
+          "visual": {
+            "point": 0.6,
+            "span": [
+              0.38,
+              0.8
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tense.past-simple",
+      "kind": "timeline",
+      "skill": "grammar.past-simple",
+      "title": "过去事件站",
+      "description": "把已经发生的事件放到过去。",
+      "cases": [
+        {
+          "id": "yesterday",
+          "label": "昨天完成",
+          "sentence": "Nora packed her telescope yesterday.",
+          "translation": "诺拉昨天收好了她的望远镜。",
+          "note": "这里把收好望远镜看作过去的一次完整事件。",
+          "visual": {
+            "point": 0.22
+          }
+        },
+        {
+          "id": "last-week",
+          "label": "上周发生",
+          "sentence": "Her cousins found a smooth stone last week.",
+          "translation": "她的表亲们上周发现了一块光滑的石头。",
+          "note": "过去发生的事，find的过去式是found。",
+          "visual": {
+            "point": 0.22
+          }
+        },
+        {
+          "id": "question",
+          "label": "问问昨天",
+          "sentence": "Did Nora pack her telescope yesterday?",
+          "translation": "诺拉昨天收好她的望远镜了吗？",
+          "note": "问句中did已经表达过去，后面用pack原形。",
+          "visual": {
+            "point": 0.22
+          }
+        }
+      ]
+    },
+    {
+      "id": "tense.past-continuous",
+      "kind": "timeline",
+      "skill": "grammar.past-continuous",
+      "title": "过去的放大镜",
+      "description": "把过去某一刻放大，看当时正在做的事。",
+      "cases": [
+        {
+          "id": "four",
+          "label": "昨天下午四点",
+          "sentence": "At four yesterday, Nora was polishing her telescope.",
+          "translation": "昨天下午四点，诺拉正在擦她的望远镜。",
+          "note": "在过去四点这个参照时刻，擦拭的动作正在进行。",
+          "visual": {
+            "point": 0.25,
+            "span": [
+              0.1,
+              0.42
+            ]
+          }
+        },
+        {
+          "id": "cousins",
+          "label": "他们当时在做",
+          "sentence": "Her cousins were sorting stones at four yesterday.",
+          "translation": "她的表亲们昨天下午四点正在给石头分类。",
+          "note": "过去的那一刻，表亲们正在分类，用were sorting。",
+          "visual": {
+            "point": 0.25,
+            "span": [
+              0.1,
+              0.42
+            ]
+          }
+        },
+        {
+          "id": "negative",
+          "label": "当时没在做",
+          "sentence": "Nora was not drawing at four yesterday.",
+          "translation": "诺拉昨天下午四点没有在画画。",
+          "note": "否定过去某一刻正在进行的动作，用was not drawing。",
+          "visual": {
+            "point": 0.25,
+            "span": [
+              0.1,
+              0.42
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tense.past-contrast",
+      "kind": "timeline",
+      "skill": "grammar.past-contrast",
+      "title": "背景与事件",
+      "description": "一段正在进行的背景里，可能发生另一件事。",
+      "cases": [
+        {
+          "id": "background",
+          "label": "背景加事件",
+          "sentence": "Nora was drawing a map when the doorbell rang.",
+          "translation": "门铃响时，诺拉正在画地图。",
+          "note": "画地图是当时正在进行的背景；门铃响是发生的事件。",
+          "visual": {
+            "point": 0.25,
+            "span": [
+              0.1,
+              0.42
+            ]
+          }
+        },
+        {
+          "id": "event",
+          "label": "只说那次事件",
+          "sentence": "The doorbell rang at four yesterday.",
+          "translation": "门铃昨天下午四点响了。",
+          "note": "这里把门铃响看作过去的一次事件，用rang。",
+          "visual": {
+            "point": 0.25
+          }
+        },
+        {
+          "id": "together",
+          "label": "同时进行",
+          "sentence": "While Nora was drawing, her brother was reading.",
+          "translation": "诺拉画画时，她的弟弟正在阅读。",
+          "note": "两件事在过去一段时间同时进行，用两段线表示。",
+          "visual": {
+            "point": 0.25,
+            "span": [
+              0.1,
+              0.42
+            ],
+            "secondSpan": [
+              0.08,
+              0.45
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tense.future",
+      "kind": "timeline",
+      "skill": "grammar.future",
+      "title": "未来小路",
+      "description": "先读情景，再理解will和going to。",
+      "cases": [
+        {
+          "id": "decision",
+          "label": "现在做决定",
+          "sentence": "The phone is ringing. I will answer it.",
+          "translation": "电话响了。我来接。",
+          "note": "这个情景里，说话时决定接电话，用will；不是所有将来表达都只有一种说法。",
+          "visual": {
+            "point": 0.88
+          }
+        },
+        {
+          "id": "plan",
+          "label": "事先有计划",
+          "sentence": "We have bought tickets. We are going to visit the aquarium on Saturday.",
+          "translation": "我们已经买好票，打算周六参观水族馆。",
+          "note": "买好票说明已经有计划，这里用are going to。",
+          "visual": {
+            "point": 0.88
+          }
+        },
+        {
+          "id": "evidence",
+          "label": "眼前有迹象",
+          "sentence": "Look at those dark clouds. It is going to rain.",
+          "translation": "看那些乌云。要下雨了。",
+          "note": "根据眼前的乌云作预测，这里用is going to。",
+          "visual": {
+            "point": 0.88
+          }
+        }
+      ]
+    },
+    {
+      "id": "tense.present-perfect",
+      "kind": "timeline",
+      "skill": "grammar.present-perfect.intro",
+      "title": "过去连到现在",
+      "description": "看看过去的事怎样和现在相连，再和具体过去时间比较。",
+      "cases": [
+        {
+          "id": "result",
+          "label": "现在还有影响",
+          "sentence": "I have lost my library card. I cannot borrow a book now.",
+          "translation": "我的借书证丢了，现在没法借书。",
+          "note": "have lost连接过去的丢失和现在的影响。",
+          "visual": {
+            "point": 0.25,
+            "linkToNow": true
+          }
+        },
+        {
+          "id": "specific",
+          "label": "说清过去时间",
+          "sentence": "I lost my library card last Tuesday.",
+          "translation": "我上周二丢了借书证。",
+          "note": "说具体过去时间last Tuesday，这里用一般过去时lost。",
+          "visual": {
+            "point": 0.25
+          }
+        },
+        {
+          "id": "experience",
+          "label": "说说经历",
+          "sentence": "Nora has visited a lighthouse before.",
+          "translation": "诺拉以前参观过灯塔。",
+          "note": "这里说截至现在的经历，没有指定哪一天。",
+          "visual": {
+            "point": 0.25,
+            "linkToNow": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "forms.noun-plural",
+      "kind": "morph",
+      "skill": "morphology.noun.plural",
+      "title": "不止一个，词尾怎么变",
+      "description": "点选例子，拆开看看，再合起来。中间词块不一定是完整单词。",
+      "cases": [
+        {
+          "id": "dish",
+          "label": "加es",
+          "base": "dish",
+          "result": "dishes",
+          "targetForms": [
+            "dishes"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "dish"
+              ],
+              "note": "先看一个盘子。"
+            },
+            {
+              "tiles": [
+                "dish",
+                "es"
+              ],
+              "note": "dish结尾是sh，这里加es。"
+            },
+            {
+              "tiles": [
+                "dishes"
+              ],
+              "note": "合起来表示不止一个盘子。"
+            }
+          ],
+          "sentence": "There are three dishes on the tray.",
+          "translation": "托盘上有三个盘子。",
+          "note": "dish → dishes。这里只演示可数名词的复数。"
+        },
+        {
+          "id": "berry",
+          "label": "辅音加y",
+          "base": "berry",
+          "result": "berries",
+          "targetForms": [
+            "berries"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "berry"
+              ],
+              "note": "先找词尾的y。"
+            },
+            {
+              "tiles": [
+                "berr",
+                "ies"
+              ],
+              "note": "berry的y前是辅音r，去y加ies。"
+            },
+            {
+              "tiles": [
+                "berries"
+              ],
+              "note": "合起来表示多颗莓果。"
+            }
+          ],
+          "sentence": "The berries are in the bowl.",
+          "translation": "莓果在碗里。",
+          "note": "辅音字母+y的这类词，常去y加ies；toy则是toys。"
+        },
+        {
+          "id": "tooth",
+          "label": "不规则变化",
+          "base": "tooth",
+          "result": "teeth",
+          "targetForms": [
+            "teeth"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "tooth"
+              ],
+              "note": "先认识一个牙齿的词形。"
+            },
+            {
+              "tiles": [
+                "tooth",
+                "teeth"
+              ],
+              "note": "这对词形要单独记，不直接加s。",
+              "joiner": "→"
+            },
+            {
+              "tiles": [
+                "teeth"
+              ],
+              "note": "复数是teeth。"
+            }
+          ],
+          "sentence": "Brush your teeth before bed.",
+          "translation": "睡前刷牙。",
+          "note": "tooth → teeth是不规则复数。"
+        }
+      ]
+    },
+    {
+      "id": "forms.third-person",
+      "kind": "morph",
+      "skill": "morphology.verb.third-person",
+      "title": "一个他或她，动词怎么变",
+      "description": "点选例子，拆开看看，再合起来。中间词块不一定是完整单词。",
+      "cases": [
+        {
+          "id": "climb",
+          "label": "直接加s",
+          "base": "climb",
+          "result": "climbs",
+          "targetForms": [
+            "climbs"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "climb"
+              ],
+              "note": "先看动词原形。"
+            },
+            {
+              "tiles": [
+                "climb",
+                "s"
+              ],
+              "note": "Nora是第三人称单数，一般现在时这里加s。"
+            },
+            {
+              "tiles": [
+                "climbs"
+              ],
+              "note": "合起来是climbs。"
+            }
+          ],
+          "sentence": "Nora climbs the hill on Sundays.",
+          "translation": "诺拉周日爬山。",
+          "note": "说习惯且主语是Nora时用climbs；I climb不加s。"
+        },
+        {
+          "id": "fix",
+          "label": "词尾加es",
+          "base": "fix",
+          "result": "fixes",
+          "targetForms": [
+            "fixes"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "fix"
+              ],
+              "note": "先看词尾x。"
+            },
+            {
+              "tiles": [
+                "fix",
+                "es"
+              ],
+              "note": "这个词的三单形式加es。"
+            },
+            {
+              "tiles": [
+                "fixes"
+              ],
+              "note": "合起来是fixes。"
+            }
+          ],
+          "sentence": "Dad fixes toy boats at weekends.",
+          "translation": "爸爸周末修玩具船。",
+          "note": "fix → fixes。主语和句子时态也要一起看。"
+        },
+        {
+          "id": "carry",
+          "label": "去y加ies",
+          "base": "carry",
+          "result": "carries",
+          "targetForms": [
+            "carries"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "carry"
+              ],
+              "note": "找到辅音r后面的y。"
+            },
+            {
+              "tiles": [
+                "carr",
+                "ies"
+              ],
+              "note": "辅音+y，这里去y加ies。"
+            },
+            {
+              "tiles": [
+                "carries"
+              ],
+              "note": "合起来是carries。"
+            }
+          ],
+          "sentence": "Nora carries a blue lunch box.",
+          "translation": "诺拉提着一个蓝色午餐盒。",
+          "note": "carry → carries；play的y前是元音，变成plays。"
+        }
+      ]
+    },
+    {
+      "id": "forms.ing",
+      "kind": "morph",
+      "skill": "morphology.verb.ing",
+      "title": "把动作装进ing词形",
+      "description": "点选例子，拆开看看，再合起来。中间词块不一定是完整单词。",
+      "cases": [
+        {
+          "id": "fold",
+          "label": "直接加ing",
+          "base": "fold",
+          "result": "folding",
+          "targetForms": [
+            "folding"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "fold"
+              ],
+              "note": "先看原形fold。"
+            },
+            {
+              "tiles": [
+                "fold",
+                "ing"
+              ],
+              "note": "这里直接加ing。"
+            },
+            {
+              "tiles": [
+                "folding"
+              ],
+              "note": "合起来是folding。"
+            }
+          ],
+          "sentence": "Nora is folding a paper boat.",
+          "translation": "诺拉正在折一只纸船。",
+          "note": "fold → folding。-ing词形要放到合适的句子结构中。"
+        },
+        {
+          "id": "bake",
+          "label": "去e再加",
+          "base": "bake",
+          "result": "baking",
+          "targetForms": [
+            "baking"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "bake"
+              ],
+              "note": "找到末尾不发音的e。"
+            },
+            {
+              "tiles": [
+                "bak",
+                "ing"
+              ],
+              "note": "去掉这个e，再加ing；bak只是中间词块。"
+            },
+            {
+              "tiles": [
+                "baking"
+              ],
+              "note": "合起来是baking。"
+            }
+          ],
+          "sentence": "Grandpa is baking a small loaf.",
+          "translation": "爷爷正在烤一条小面包。",
+          "note": "bake → baking。不能把所有以e结尾的词都用同一条规则。"
+        },
+        {
+          "id": "sit",
+          "label": "双写再加",
+          "base": "sit",
+          "result": "sitting",
+          "targetForms": [
+            "sitting"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "sit"
+              ],
+              "note": "这是短元音加末尾辅音的短词。"
+            },
+            {
+              "tiles": [
+                "sitt",
+                "ing"
+              ],
+              "note": "sit在这里双写t，再加ing。"
+            },
+            {
+              "tiles": [
+                "sitting"
+              ],
+              "note": "合起来是sitting。"
+            }
+          ],
+          "sentence": "The kitten is sitting on a cushion.",
+          "translation": "小猫正坐在垫子上。",
+          "note": "sit → sitting。双写还要看重音和词尾，不能套到所有CVC词上。"
+        }
+      ]
+    },
+    {
+      "id": "forms.regular-past",
+      "kind": "morph",
+      "skill": "morphology.verb.regular-past",
+      "title": "过去做过，词尾怎么变",
+      "description": "点选例子，拆开看看，再合起来。中间词块不一定是完整单词。",
+      "cases": [
+        {
+          "id": "paint",
+          "label": "直接加ed",
+          "base": "paint",
+          "result": "painted",
+          "targetForms": [
+            "painted"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "paint"
+              ],
+              "note": "先看原形paint。"
+            },
+            {
+              "tiles": [
+                "paint",
+                "ed"
+              ],
+              "note": "这个规则动词直接加ed。"
+            },
+            {
+              "tiles": [
+                "painted"
+              ],
+              "note": "合起来是painted。"
+            }
+          ],
+          "sentence": "Nora painted a wooden star yesterday.",
+          "translation": "诺拉昨天给一颗木星星涂了色。",
+          "note": "paint → painted。词尾的读音另有规律，这里先观察拼写。"
+        },
+        {
+          "id": "worry",
+          "label": "去y加ied",
+          "base": "worry",
+          "result": "worried",
+          "targetForms": [
+            "worried"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "worry"
+              ],
+              "note": "找到辅音r后面的y。"
+            },
+            {
+              "tiles": [
+                "worr",
+                "ied"
+              ],
+              "note": "辅音+y，去y后加ied。"
+            },
+            {
+              "tiles": [
+                "worried"
+              ],
+              "note": "合起来是worried。"
+            }
+          ],
+          "sentence": "Dad worried about the missing key yesterday.",
+          "translation": "爸爸昨天为丢失的钥匙担心。",
+          "note": "worry → worried。play则直接加ed成为played。"
+        },
+        {
+          "id": "plan",
+          "label": "双写再加ed",
+          "base": "plan",
+          "result": "planned",
+          "targetForms": [
+            "planned"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "plan"
+              ],
+              "note": "这是短元音加末尾辅音的重读短词。"
+            },
+            {
+              "tiles": [
+                "plann",
+                "ed"
+              ],
+              "note": "这里双写n，再加ed。"
+            },
+            {
+              "tiles": [
+                "planned"
+              ],
+              "note": "合起来是planned。"
+            }
+          ],
+          "sentence": "We planned a puppet show last night.",
+          "translation": "我们昨晚计划了一场木偶表演。",
+          "note": "plan → planned。不是所有末尾辅音都要双写。"
+        }
+      ]
+    },
+    {
+      "id": "forms.irregular-past",
+      "kind": "morph",
+      "skill": "morphology.verb.irregular-past",
+      "title": "这些过去式，单独记",
+      "description": "点选例子，拆开看看，再合起来。中间词块不一定是完整单词。",
+      "cases": [
+        {
+          "id": "bring",
+          "label": "bring这一组",
+          "base": "bring",
+          "result": "brought",
+          "targetForms": [
+            "brought"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "bring"
+              ],
+              "note": "原形是bring。"
+            },
+            {
+              "tiles": [
+                "bring",
+                "brought"
+              ],
+              "note": "过去式换成brought，不是直接加ed。",
+              "joiner": "→"
+            },
+            {
+              "tiles": [
+                "brought"
+              ],
+              "note": "把过去式放进情景。"
+            }
+          ],
+          "sentence": "Nora brought a compass yesterday.",
+          "translation": "诺拉昨天带来了一个指南针。",
+          "note": "bring → brought。词形变化需要随词记。"
+        },
+        {
+          "id": "choose",
+          "label": "choose这一组",
+          "base": "choose",
+          "result": "chose",
+          "targetForms": [
+            "chose"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "choose"
+              ],
+              "note": "原形是choose。"
+            },
+            {
+              "tiles": [
+                "choose",
+                "chose"
+              ],
+              "note": "过去式是chose。",
+              "joiner": "→"
+            },
+            {
+              "tiles": [
+                "chose"
+              ],
+              "note": "注意中间的拼写变化。"
+            }
+          ],
+          "sentence": "We chose a quiet picnic spot yesterday.",
+          "translation": "我们昨天选了一处安静的野餐地点。",
+          "note": "choose → chose；过去分词是chosen，不能混成同一种词形。"
+        },
+        {
+          "id": "write",
+          "label": "write这一组",
+          "base": "write",
+          "result": "wrote",
+          "targetForms": [
+            "wrote"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "write"
+              ],
+              "note": "原形是write。"
+            },
+            {
+              "tiles": [
+                "write",
+                "wrote"
+              ],
+              "note": "过去式是wrote。",
+              "joiner": "→"
+            },
+            {
+              "tiles": [
+                "wrote"
+              ],
+              "note": "把它用在过去的完整事件里。"
+            }
+          ],
+          "sentence": "Nora wrote a postcard last night.",
+          "translation": "诺拉昨晚写了一张明信片。",
+          "note": "write → wrote。过去分词written要另记。"
+        }
+      ]
+    },
+    {
+      "id": "forms.past-participle",
+      "kind": "morph",
+      "skill": "morphology.verb.past-participle",
+      "title": "动词三形，分开看",
+      "description": "点选例子，拆开看看，再合起来。中间词块不一定是完整单词。",
+      "cases": [
+        {
+          "id": "go",
+          "label": "go · went · gone",
+          "base": "go",
+          "result": "gone",
+          "targetForms": [
+            "went",
+            "gone"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "go"
+              ],
+              "note": "原形。"
+            },
+            {
+              "tiles": [
+                "went"
+              ],
+              "note": "这是过去式，不是过去分词。"
+            },
+            {
+              "tiles": [
+                "gone"
+              ],
+              "note": "这是过去分词，不能由went加词尾得到。"
+            }
+          ],
+          "sentence": "Nora has gone to the clinic. She is not here now.",
+          "translation": "诺拉去诊所了，现在不在这里。",
+          "note": "go、went、gone分别是原形、过去式、过去分词。"
+        },
+        {
+          "id": "write",
+          "label": "write · wrote · written",
+          "base": "write",
+          "result": "written",
+          "targetForms": [
+            "wrote",
+            "written"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "write"
+              ],
+              "note": "原形。"
+            },
+            {
+              "tiles": [
+                "wrote"
+              ],
+              "note": "这是过去式。"
+            },
+            {
+              "tiles": [
+                "written"
+              ],
+              "note": "这是过去分词，要单独记。"
+            }
+          ],
+          "sentence": "Nora has written a postcard.",
+          "translation": "诺拉已经写好了一张明信片。",
+          "note": "完成时里这里用has written；written不能直接代替所有过去式。"
+        },
+        {
+          "id": "break",
+          "label": "break · broke · broken",
+          "base": "break",
+          "result": "broken",
+          "targetForms": [
+            "broke",
+            "broken"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "break"
+              ],
+              "note": "原形。"
+            },
+            {
+              "tiles": [
+                "broke"
+              ],
+              "note": "这是过去式。"
+            },
+            {
+              "tiles": [
+                "broken"
+              ],
+              "note": "这是过去分词。"
+            }
+          ],
+          "sentence": "The puppy has broken a flowerpot.",
+          "translation": "小狗打破了一个花盆。",
+          "note": "break、broke、broken是三个不同词形。"
+        }
+      ]
+    },
+    {
+      "id": "forms.comparison",
+      "kind": "morph",
+      "skill": "morphology.adjective.comparison",
+      "title": "比较台阶，一阶一阶看",
+      "description": "点选例子，拆开看看，再合起来。中间词块不一定是完整单词。",
+      "cases": [
+        {
+          "id": "wide",
+          "label": "wide这一组",
+          "base": "wide",
+          "result": "widest",
+          "targetForms": [
+            "wider",
+            "widest"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "wide"
+              ],
+              "note": "原级。"
+            },
+            {
+              "tiles": [
+                "wider"
+              ],
+              "note": "比较级：以e结尾，这里加r。"
+            },
+            {
+              "tiles": [
+                "widest"
+              ],
+              "note": "最高级：这里加st。"
+            }
+          ],
+          "sentence": "This is the widest path in the garden.",
+          "translation": "这是花园里最宽的小路。",
+          "note": "wide、wider、widest；比较级与最高级要放在相应情景中。"
+        },
+        {
+          "id": "thin",
+          "label": "thin这一组",
+          "base": "thin",
+          "result": "thinnest",
+          "targetForms": [
+            "thinner",
+            "thinnest"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "thin"
+              ],
+              "note": "原级。"
+            },
+            {
+              "tiles": [
+                "thinner"
+              ],
+              "note": "比较级：这里双写n再加er。"
+            },
+            {
+              "tiles": [
+                "thinnest"
+              ],
+              "note": "最高级：这里双写n再加est。"
+            }
+          ],
+          "sentence": "This is the thinnest notebook of the three.",
+          "translation": "这是三本中最薄的笔记本。",
+          "note": "thin、thinner、thinnest；不要写成more thinner。"
+        },
+        {
+          "id": "good",
+          "label": "good这一组",
+          "base": "good",
+          "result": "best",
+          "targetForms": [
+            "better",
+            "best"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "good"
+              ],
+              "note": "原级。"
+            },
+            {
+              "tiles": [
+                "better"
+              ],
+              "note": "不规则比较级。"
+            },
+            {
+              "tiles": [
+                "best"
+              ],
+              "note": "不规则最高级。"
+            }
+          ],
+          "sentence": "This is the best route to the harbour.",
+          "translation": "这是去海港的最佳路线。",
+          "note": "good、better、best要单独记。"
+        }
+      ]
+    },
+    {
+      "id": "forms.derivation",
+      "kind": "morph",
+      "skill": "morphology.derivation",
+      "title": "词语添伙伴，意思也变化",
+      "description": "点选例子，拆开看看，再合起来。中间词块不一定是完整单词。",
+      "cases": [
+        {
+          "id": "kind",
+          "label": "加前缀un",
+          "base": "kind",
+          "result": "unkind",
+          "targetForms": [
+            "unkind"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "kind"
+              ],
+              "note": "kind在这里表示友善的。"
+            },
+            {
+              "tiles": [
+                "un",
+                "kind"
+              ],
+              "note": "这个词加un-，变成相反意思。"
+            },
+            {
+              "tiles": [
+                "unkind"
+              ],
+              "note": "unkind表示不友善的。"
+            }
+          ],
+          "sentence": "That was an unkind remark.",
+          "translation": "那是一句不友善的话。",
+          "note": "不是所有词都能随意加un-；这里记kind和unkind这一对。"
+        },
+        {
+          "id": "teach",
+          "label": "动作变人物",
+          "base": "teach",
+          "result": "teacher",
+          "targetForms": [
+            "teacher"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "teach"
+              ],
+              "note": "teach是教、讲授。"
+            },
+            {
+              "tiles": [
+                "teach",
+                "er"
+              ],
+              "note": "在这个词后加-er。"
+            },
+            {
+              "tiles": [
+                "teacher"
+              ],
+              "note": "teacher是教师，词性和意思都变了。"
+            }
+          ],
+          "sentence": "Ms Lin is a science teacher.",
+          "translation": "林老师是一位科学教师。",
+          "note": "teach → teacher是构词，不是同一个动词的时态变化。"
+        },
+        {
+          "id": "care",
+          "label": "加后缀ful",
+          "base": "care",
+          "result": "careful",
+          "targetForms": [
+            "careful"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "care"
+              ],
+              "note": "care在这里作名词，表示照顾、谨慎。"
+            },
+            {
+              "tiles": [
+                "care",
+                "ful"
+              ],
+              "note": "加-ful，这个后缀只写一个l。"
+            },
+            {
+              "tiles": [
+                "careful"
+              ],
+              "note": "careful是形容词，表示小心的。"
+            }
+          ],
+          "sentence": "Nora is careful with the glass jar.",
+          "translation": "诺拉拿玻璃罐时很小心。",
+          "note": "care → careful；不要照full的拼写写成carefull。"
+        }
+      ]
+    }
+  ]
+}
