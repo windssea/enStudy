@@ -17,6 +17,7 @@ import {
   courseRelease,
   exerciseById,
   topicRelease,
+  patternRelease,
 } from "./exercises";
 import {
   selectReviewItems,
@@ -138,6 +139,8 @@ app.get("/api/v1/lessons", (c) =>
     ),
     topicStats: topicRelease.stats,
     topicRelease: topicRelease.id,
+    patternStats: patternRelease.stats,
+    patternRelease: patternRelease.id,
   }),
 );
 
@@ -306,7 +309,7 @@ interface Assignment {
   cursor: number;
   total: number;
   lesson_id: string | null;
-  source: "lesson" | "topic" | "review" | "single";
+  source: "lesson" | "topic" | "pattern" | "review" | "single";
   source_ref: string | null;
   presentation_json: string | null;
 }
@@ -356,9 +359,7 @@ app.get("/api/v1/sessions/current", async (c) => {
   return c.json({
     session: sessionPayload(row),
     receipt: attempt ? JSON.parse(attempt.receipt_json) : null,
-    hint: row.hint_level
-      ? exercises.find((e) => e.id === row.item_id)?.hint
-      : null,
+    hint: row.hint_level ? exerciseById.get(row.item_id)?.hint : null,
   });
 });
 async function reviewTargets(db: D1Database, actor: Actor) {
@@ -399,10 +400,11 @@ app.post("/api/v1/sessions", async (c) => {
     typeof body.exerciseId === "string",
     typeof body.lessonId === "string",
     typeof body.topicId === "string",
+    typeof body.patternId === "string",
     body.mode === "review",
   ];
   if (
-    ["exerciseId", "lessonId", "topicId"].some(
+    ["exerciseId", "lessonId", "topicId", "patternId"].some(
       (key) =>
         body[key] !== undefined &&
         (typeof body[key] !== "string" ||
@@ -416,23 +418,25 @@ app.post("/api/v1/sessions", async (c) => {
     return c.json(fault("INVALID_SESSION", "请选择一种有效的学习任务。"), 422);
   if (
     body.roundSize !== undefined &&
-    (!body.topicId || ![5, 10, 20].includes(body.roundSize))
+    (!(body.topicId || body.patternId) || ![5, 10, 20].includes(body.roundSize))
   )
     return c.json(
-      fault("INVALID_ROUND_SIZE", "专题每轮可选5、10或20题。"),
+      fault("INVALID_ROUND_SIZE", "专题和句式每轮可选5、10或20题。"),
       422,
     );
   const source: Assignment["source"] = body.lessonId
     ? "lesson"
     : body.topicId
       ? "topic"
-      : body.mode === "review"
-        ? "review"
-        : "single";
+      : body.patternId
+        ? "pattern"
+        : body.mode === "review"
+          ? "review"
+          : "single";
   const reference = String(
-    body.lessonId ?? body.topicId ?? body.exerciseId ?? "due",
+    body.lessonId ?? body.topicId ?? body.patternId ?? body.exerciseId ?? "due",
   );
-  const sourceRef = `${source}:${reference}${source === "topic" ? `:${body.roundSize ?? 10}` : ""}`;
+  const sourceRef = `${source}:${reference}${["topic", "pattern"].includes(source) ? `:${body.roundSize ?? 10}` : ""}`;
   const existing = await loadSession(c.env.DB, actor, body.clientRequestId);
   if (existing) {
     if (
@@ -460,7 +464,7 @@ app.post("/api/v1/sessions", async (c) => {
         ? exercises.filter((item) => item.id === body.exerciseId)
         : [];
   if (source === "lesson" && !lesson) selected = [];
-  if (source === "topic") {
+  if (source === "topic" || source === "pattern") {
     const recent = await c.env.DB.prepare(
       "SELECT si.item_id FROM session_items si JOIN learning_sessions s ON s.id=si.session_id WHERE si.household_id=? AND si.child_id=? ORDER BY s.created_at DESC,si.position LIMIT 400",
     )
@@ -472,7 +476,11 @@ app.post("/api/v1/sessions", async (c) => {
       ),
     );
     selected = selectTopicItems(
-      topicRelease.items.filter((item) => item.topicId === body.topicId),
+      source === "pattern"
+        ? patternRelease.items.filter(
+            (item) => item.patternId === body.patternId,
+          )
+        : topicRelease.items.filter((item) => item.topicId === body.topicId),
       recentFamilies,
       body.roundSize ?? 10,
     );
@@ -493,11 +501,13 @@ app.post("/api/v1/sessions", async (c) => {
       ),
       404,
     );
-  const release = selected.some((item) => item.topicId)
-    ? topicRelease.id
-    : selected.some((item) => item.lessonId)
-      ? courseRelease.id
-      : "dev-samples-v1";
+  const release = selected.some((item) => item.patternId)
+    ? patternRelease.id
+    : selected.some((item) => item.topicId)
+      ? topicRelease.id
+      : selected.some((item) => item.lessonId)
+        ? courseRelease.id
+        : "dev-samples-v1";
   const publication = await c.env.DB.prepare(
     `SELECT status,(SELECT count(*) FROM release_items ri WHERE ri.release_id=content_releases.id AND ri.item_id IN (${selected.map(() => "?").join(",")})) AS itemCount FROM content_releases WHERE id=?`,
   )
@@ -684,7 +694,7 @@ app.post("/api/v1/sessions/:id/hint", async (c) => {
   if (!result.meta.changes)
     return c.json(fault("SESSION_CHANGED", "这次作答已完成或已切换。"), 409);
   return c.json({
-    hint: exercises.find((e) => e.id === row.item_id)!.hint,
+    hint: exerciseById.get(row.item_id)!.hint,
     independentEvidence: false,
   });
 });
@@ -754,7 +764,7 @@ app.post("/api/v1/attempts", async (c) => {
         fault("LEASE_REPLACED", "学习会话已切换，请重新打开练习。"),
         409,
       );
-    const exercise = exercises.find((e) => e.id === row.item_id)!;
+    const exercise = exerciseById.get(row.item_id)!;
     const correct = gradeAnswer(exercise, body.answer);
     const outcome = !correct
       ? "incorrect"

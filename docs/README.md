@@ -32,6 +32,7 @@
 | 26 | [Production同步发布](24-production-deployment.md) | Preview和Production同版本发布、正式域名与独立D1 |
 | 27 | [v0.6课程与复习进展](25-learning-course-progress.md) | 24节原创微课、专题初步练习、到期复习与完成记录 |
 | 28 | [v0.7随机专题题库](26-random-topic-banks.md) | 每专题120变体、随机抽取、近期避重与展示快照 |
+| 29 | [v0.8随机固定句式](27-random-pattern-banks.md) | 72句式各120变体、选择填写组句与精确句式抽取 |
 
 配套资料：
 

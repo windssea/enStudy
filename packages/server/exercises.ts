@@ -1,6 +1,7 @@
 import raw from "../../content/exercises.json";
 import course from "../../content/course-release.v1.json";
 import topics from "../../content/topic-release.v1.json";
+import patterns from "../../content/pattern-release.v1.json";
 import type {
   Answer,
   Category,
@@ -17,6 +18,7 @@ export interface PrivateExercise extends Exercise {
   lessonId?: string;
   topicId?: string;
   pattern?: string;
+  patternId?: string;
 }
 export const courseRelease = course as unknown as {
   id: string;
@@ -34,10 +36,26 @@ export const topicRelease = topics as unknown as {
     { items: number; families: number; roundSizes: number[]; mode: string }
   >;
 };
+export const patternRelease = patterns as unknown as {
+  id: string;
+  manifestHash: string;
+  items: PrivateExercise[];
+  stats: Record<
+    string,
+    {
+      items: number;
+      contexts: number;
+      families: number;
+      roundSizes: number[];
+      mode: string;
+    }
+  >;
+};
 export const exercises = [
   ...raw,
   ...courseRelease.items,
   ...topicRelease.items,
+  ...patternRelease.items,
 ] as PrivateExercise[];
 export const exerciseById = new Map(exercises.map((item) => [item.id, item]));
 export function publicExercise(exercise: PrivateExercise): Exercise {

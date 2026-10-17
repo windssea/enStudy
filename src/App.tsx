@@ -12,6 +12,7 @@ import type {
   Catalog,
   CourseLesson,
   TopicStats,
+  PatternStats,
   LearningSummary,
   SessionResult,
   Identity,
@@ -138,6 +139,10 @@ export default function App() {
     Record<string, number>
   >({});
   const [topicStats, setTopicStats] = useState<Record<string, TopicStats>>({});
+  const [patternStats, setPatternStats] = useState<
+    Record<string, PatternStats>
+  >({});
+  const [patternRoundSize, setPatternRoundSize] = useState(10);
   const [topicRoundSize, setTopicRoundSize] = useState(10);
   const [learning, setLearning] = useState<LearningSummary>(emptyLearning);
   const [lastResult, setLastResult] = useState<SessionResult | null>(null);
@@ -237,12 +242,14 @@ export default function App() {
       lessons: CourseLesson[];
       topicAvailability: Record<string, number>;
       topicStats?: Record<string, TopicStats>;
+      patternStats?: Record<string, PatternStats>;
     }>("/lessons")
       .then((data) => {
         if (!cancelled) {
           setLessons(data.lessons);
           setTopicAvailability(data.topicAvailability);
           setTopicStats(data.topicStats ?? {});
+          setPatternStats(data.patternStats ?? {});
         }
       })
       .catch((e) => {
@@ -319,6 +326,7 @@ export default function App() {
     task?: {
       lessonId?: string;
       topicId?: string;
+      patternId?: string;
       mode?: "review";
       roundSize?: number;
     },
@@ -904,7 +912,9 @@ export default function App() {
             <>
               <p className="eyebrow">THE PATTERN WORKSHOP</p>
               <h1>一个句框，装下好多想法。</h1>
-              <p className="lead">固定的部分记住，可替换的部分大胆尝试。</p>
+              <p className="lead">
+                先读懂情景，再选词、填词、搭句子。每轮随机抽题，最近练过的句子会尽量避开。
+              </p>
               <div className="filter-row">
                 <label>
                   句式主题
@@ -930,8 +940,28 @@ export default function App() {
                   />
                 </label>
                 <span className="badge">
-                  {patterns.length}条样稿 · 待教研复核
+                  {patterns.length}条句式 · {Object.keys(patternStats).length}
+                  条可练
                 </span>
+              </div>
+              <div className="filter-row">
+                <label>
+                  每轮题量
+                  <select
+                    value={patternRoundSize}
+                    onChange={(e) =>
+                      setPatternRoundSize(Number(e.target.value))
+                    }
+                    disabled={busy}
+                  >
+                    <option value={5}>5题 · 轻松热身</option>
+                    <option value={10}>10题 · 标准练习</option>
+                    <option value={20}>20题 · 加强挑战</option>
+                  </select>
+                </label>
+                <p className="footnote">
+                  选择、填写、词块组句交替练习；题库仍会持续做教研复核。
+                </p>
               </div>
               <div className="pattern-grid">
                 {patterns.map((p) => (
@@ -944,15 +974,30 @@ export default function App() {
                       {p.example}
                     </p>
                     <p>{p.slot_rule}</p>
-                    {p.topic_id === "sentence.patterns.suggestions" && (
-                      <button
-                        className="secondary"
-                        disabled={busy}
-                        onClick={() => start("sample.pattern.about")}
-                      >
-                        练习邀请与建议
-                      </button>
+                    {patternStats[p.pattern_id] && (
+                      <p className="topic-bank-count">
+                        <strong>
+                          {patternStats[p.pattern_id].items}个练习变体
+                        </strong>
+                        <span>
+                          {patternStats[p.pattern_id].contexts}组情境 · 3种练法
+                        </span>
+                      </p>
                     )}
+                    <button
+                      className="primary"
+                      disabled={busy || !patternStats[p.pattern_id]}
+                      onClick={() =>
+                        start("", {
+                          patternId: p.pattern_id,
+                          roundSize: patternRoundSize,
+                        })
+                      }
+                    >
+                      {patternStats[p.pattern_id]
+                        ? `随机练${patternRoundSize}题`
+                        : "题库正在准备"}
+                    </button>
                   </article>
                 ))}
               </div>

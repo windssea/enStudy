@@ -48,6 +48,7 @@ try {
   await run("smoke-account.mjs");
   await run("smoke-course.mjs");
   await run("smoke-topics.mjs");
+  await run("smoke-patterns.mjs");
 } catch (error) {
   console.error(output);
   throw error;

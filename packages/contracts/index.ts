@@ -23,7 +23,7 @@ export interface LearningSession {
   position?: number;
   total?: number;
   lessonId?: string | null;
-  source?: "lesson" | "topic" | "review" | "single";
+  source?: "lesson" | "topic" | "pattern" | "review" | "single";
 }
 export interface TeachingCard {
   title: string;
@@ -52,6 +52,9 @@ export interface TopicStats {
   families: number;
   roundSizes: number[];
   mode: string;
+}
+export interface PatternStats extends TopicStats {
+  contexts: number;
 }
 export interface SessionResult {
   sessionId: string;

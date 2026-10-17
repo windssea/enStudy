@@ -2,6 +2,7 @@ import bank from "../content/topics-v1.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { parse } from "csv-parse/sync";
+import { writeContent } from "./content-write.mjs";
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 const topics = parse(
   await readFile("docs/curriculum/topic-training-scope.csv", "utf8"),
@@ -165,7 +166,7 @@ const existing = await readFile(path, "utf8").catch((e) => {
 if (existing !== null && existing.replaceAll("\r\n", "\n") !== migration)
   throw new Error("Immutable topic migration changed; publish a new version.");
 if (existing === null) await writeFile(path, migration);
-await writeFile("content/topic-release.v1.json", JSON.stringify(release));
+await writeContent("content/topic-release.v1.json", JSON.stringify(release));
 console.log(
   `Built ${topics.length} topic banks: ${items.length} variants / ${items.length / 2} authored text task groups; at least 120 items per topic.`,
 );

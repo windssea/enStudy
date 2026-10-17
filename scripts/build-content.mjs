@@ -3,6 +3,7 @@ import { parse } from "csv-parse/sync";
 import "./build-course.mjs";
 // Sequenced after course generation: the topic snapshot imports its members.
 await import("./build-topics.mjs");
+await import("./build-patterns.mjs");
 const readCSV = async (name) =>
   parse(
     await readFile(

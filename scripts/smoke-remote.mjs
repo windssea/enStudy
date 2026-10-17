@@ -67,6 +67,11 @@ const courseReady = () =>
   Object.values(course.topicStats ?? {}).every(
     (stats) => stats.items >= 120 && stats.families >= 60,
   ) &&
+  Object.keys(course.patternStats ?? {}).length === 72 &&
+  Object.values(course.patternStats ?? {}).every(
+    (stats) =>
+      stats.items >= 120 && stats.contexts >= 40 && stats.families >= 20,
+  ) &&
   !JSON.stringify(course).includes('"answers":');
 // Pages may report completion before the branch alias serves the new Functions
 // on every edge. Wait only for release propagation; all security checks above
