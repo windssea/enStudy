@@ -1509,6 +1509,7 @@ export default function App() {
           {view === "parent" && (
             <FamilySpace
               onOpenTraining={openTraining}
+              onReview={() => move("review")}
               identity={identity}
               refresh={refreshIdentity}
               learning={learning}

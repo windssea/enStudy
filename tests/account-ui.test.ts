@@ -12,6 +12,7 @@ const render = (identity: Identity) =>
       learning: { completedLessons: [], dueCount: 0, recent: [] },
       lessons: [],
       onOpenTraining: () => {},
+      onReview: () => {},
     }),
   );
 describe("family account entry states", () => {

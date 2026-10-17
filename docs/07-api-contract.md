@@ -134,3 +134,7 @@ v0.20新增实际端点`POST /learning/concepts/:id/view`，body为`{caseId}`。
 | 502/504 | PROVIDER_PROTOCOL_ERROR、AI_TIMEOUT | 使用审核过的讲解，不阻塞答题保存 |
 
 业务 API 默认最多 64 KB JSON，sync 最多 256 KB，录音最多 20 秒且 2 MB，图像上传首发关闭。重试仅限幂等学习请求，指数退避加抖动，最多 3 次；AI 请求由服务端 requestId 查状态后决定，禁止盲重试。
+
+## v0.22已实现的家长学习报告
+
+`GET /api/v1/family/children/:id/report?days=7`：成人会话与家庭范围验证，临时密码须先修改；默认7天，可选30天，其他或重复参数422，未知/外家庭档案404。返回`LearningReport`中的窗口、总计、逐日、入口、题型、最多8组需再练记录和即时复习数量。使用孩子时区与服务端保存时间，只读、不推进学习；未确认与辅助证据分列，不返回答案、原始回执或权限。具体口径与本地验证见[家长报告](41-guardian-learning-reports.md)。此实现不代表上文规划的离线同步、通用报表或导出已完成。

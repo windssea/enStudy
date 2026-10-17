@@ -36,6 +36,7 @@ import { conceptLab } from "../domain/concepts";
 import conceptExposure from "../../content/concept-exposure-map.json";
 import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 import { managedAccountRoutes } from "./managedAccounts";
+import { reportRoutes } from "./reports";
 import { createAiRoutes } from "./aiRoutes";
 import type { AiConfig } from "./aiPolicy";
 import { trainingRoutes, prepareTraining, TrainingFault } from "./training";
@@ -264,6 +265,7 @@ app.get("/api/v1/me", async (c) => {
 });
 app.route("/api/v1", authRoutes);
 app.route("/api/v1", managedAccountRoutes);
+app.route("/api/v1", reportRoutes);
 app.post("/api/v1/dev/session", async (c) => {
   if (!devAllowed(c.env, c.req.url))
     return c.json(

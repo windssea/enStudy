@@ -154,6 +154,40 @@ export interface LearningSummary {
   dueCount: number;
   recent: SessionResult[];
 }
+export interface ReportCounts {
+  attempts: number;
+  independent: number;
+  assisted: number;
+  incorrect: number;
+  unscored: number;
+}
+export interface LearningReport {
+  child: { id: string; nickname: string };
+  window: {
+    days: 7 | 30;
+    from: string;
+    through: string;
+    timezone: string;
+    timezoneFallback: boolean;
+    generatedAt: number;
+  };
+  totals: ReportCounts & {
+    activeDays: number;
+    completedRounds: number;
+    completedLessons: number;
+    taskFamilies: number;
+    independentTaskFamilies: number;
+  };
+  days: (ReportCounts & { day: string })[];
+  sources: (ReportCounts & { source: string })[];
+  interactions: (ReportCounts & { type: string })[];
+  practice: (ReportCounts & {
+    skillId: string;
+    label: string;
+    modality: string;
+  })[];
+  review: { total: number; dueNow: number; dueNext7Days: number };
+}
 export interface Receipt {
   details?: {
     label: string;

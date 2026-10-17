@@ -10,6 +10,7 @@ import AccountSecurity from "./AccountSecurity";
 const ManagedAccounts = lazy(() => import("./ManagedAccounts"));
 const AiSettings = lazy(() => import("./AiSettings"));
 const TrainingFollowUps = lazy(() => import("./TrainingFollowUps"));
+const LearningReport = lazy(() => import("./LearningReport"));
 
 export default function FamilySpace({
   identity,
@@ -17,12 +18,14 @@ export default function FamilySpace({
   learning,
   lessons,
   onOpenTraining,
+  onReview,
 }: {
   identity: Identity;
   refresh: () => Promise<void>;
   learning: LearningSummary;
   lessons: CourseLesson[];
   onOpenTraining: (id: string) => void;
+  onReview: () => void;
 }) {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
@@ -353,10 +356,22 @@ export default function FamilySpace({
           </ol>
           <div className="notice">
             当前有{lessons.length}
-            节文字语法与表达微课，覆盖一至六年级的前两个单元。其余课程、完整听说读写与教材映射会按阶段更新。
+            节原创微课，覆盖一至六年级；课程包含文字、听辨、阅读和部分分类修正互动。其余课程、完整听说读写与教材映射会按阶段更新。
           </div>
         </aside>
       </div>
+      {identity.adult &&
+        !identity.adult.mustChangePassword &&
+        identity.child && (
+          <Suspense fallback={<p role="status">正在准备学习报告…</p>}>
+            <LearningReport
+              key={`${identity.adult.username}:${identity.child.id}`}
+              childId={identity.child.id}
+              nickname={identity.child.nickname}
+              onReview={onReview}
+            />
+          </Suspense>
+        )}
       {identity.adult && !identity.adult.mustChangePassword && (
         <details className="card account-security">
           <summary>账号与密码 · {identity.adult.username}</summary>
@@ -385,45 +400,47 @@ export default function FamilySpace({
           </Suspense>
         </details>
       )}
-      {identity.adult && identity.child && (
-        <section
-          className="card learning-report"
-          aria-labelledby="report-title"
-        >
-          <span className="eyebrow">每一步，都有迹可循</span>
-          <h2 id="report-title">{identity.child.nickname}的学习足迹</h2>
-          <p>
-            已完成{learning.completedLessons.length}节微课，当前有
-            {learning.dueCount}个知识点到了复习时间。
-          </p>
-          {learning.recent.length ? (
-            <ul className="learning-records">
-              {learning.recent.map((result) => (
-                <li key={result.sessionId}>
-                  <div>
-                    <strong>
-                      {lessons.find((lesson) => lesson.id === result.lessonId)
-                        ?.title ?? "专题或复习练习"}
-                    </strong>
-                    <p>
-                      共{result.total}题，答对{result.correct}题，其中独立完成
-                      {result.independent}题。
-                    </p>
-                  </div>
-                  <time dateTime={new Date(result.completedAt).toISOString()}>
-                    {new Date(result.completedAt).toLocaleDateString("zh-CN")}
-                  </time>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="notice">完成一轮练习后，这里就会留下孩子的小进步。</p>
-          )}
-          <p className="footnote">
-            提示、文字辅助或当天看过示范后的答对会单独记录；完成一课不代表已经完全掌握。
-          </p>
-        </section>
-      )}
+      {identity.adult &&
+        !identity.adult.mustChangePassword &&
+        identity.child && (
+          <details className="card learning-report">
+            <summary>最近十轮原始记录与累计完成</summary>
+            <span className="eyebrow">每一步，都有迹可循</span>
+            <h2>{identity.child.nickname}的学习足迹</h2>
+            <p>
+              已完成{learning.completedLessons.length}节微课，当前有
+              {learning.dueCount}项记忆到了复习时间。
+            </p>
+            {learning.recent.length ? (
+              <ul className="learning-records">
+                {learning.recent.map((result) => (
+                  <li key={result.sessionId}>
+                    <div>
+                      <strong>
+                        {lessons.find((lesson) => lesson.id === result.lessonId)
+                          ?.title ?? "专题或复习练习"}
+                      </strong>
+                      <p>
+                        共{result.total}题，答对{result.correct}题，其中独立完成
+                        {result.independent}题。
+                      </p>
+                    </div>
+                    <time dateTime={new Date(result.completedAt).toISOString()}>
+                      {new Date(result.completedAt).toLocaleDateString("zh-CN")}
+                    </time>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="notice">
+                完成一轮练习后，这里就会留下孩子的小进步。
+              </p>
+            )}
+            <p className="footnote">
+              提示、文字辅助或当天看过示范后的答对会单独记录；完成一课不代表已经完全掌握。
+            </p>
+          </details>
+        )}
       {identity.adult &&
         !identity.adult.mustChangePassword &&
         identity.child && (
