@@ -8,6 +8,7 @@ import type {
 import { api } from "./api";
 import AccountSecurity from "./AccountSecurity";
 const ManagedAccounts = lazy(() => import("./ManagedAccounts"));
+const AiSettings = lazy(() => import("./AiSettings"));
 
 export default function FamilySpace({
   identity,
@@ -30,6 +31,7 @@ export default function FamilySpace({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [aiOpen, setAiOpen] = useState(false);
   const loadChildren = async () =>
     setChildren((await api<{ items: ChildProfile[] }>("/children")).items);
   useEffect(() => {
@@ -367,6 +369,17 @@ export default function FamilySpace({
         <Suspense fallback={<p role="status">正在准备家庭账号管理…</p>}>
           <ManagedAccounts />
         </Suspense>
+      )}
+      {identity.adult && !identity.adult.mustChangePassword && (
+        <details
+          className="card ai-settings-disclosure"
+          onToggle={(event) => setAiOpen(event.currentTarget.open)}
+        >
+          <summary>家长设置 · AI辅助解释</summary>
+          <Suspense fallback={<p role="status">正在准备AI连接设置…</p>}>
+            {aiOpen && <AiSettings key={identity.adult.username} />}
+          </Suspense>
+        </details>
       )}
       {identity.adult && identity.child && (
         <section

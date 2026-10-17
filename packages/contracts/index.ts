@@ -135,6 +135,51 @@ export interface ChildProfile {
   nickname: string;
   grade: number;
 }
+export interface AiConnectionSummary {
+  id: string;
+  label: string;
+  baseUrl: string;
+  model: string;
+  policyUrl: string;
+  version: number;
+  hasKey: boolean;
+  keySuffix: string;
+  approved: boolean;
+  tested: boolean;
+  tokenParameter: "max_tokens" | "max_completion_tokens";
+  instructionRole: "system" | "developer";
+  capabilities: {
+    text: "unknown" | "supported" | "error";
+    asr: string;
+    tts: string;
+    realtime: string;
+  };
+}
+export interface AiSettingsView {
+  available: boolean;
+  allowedHosts: string[];
+  items: AiConnectionSummary[];
+  settings: {
+    connectionId: string | null;
+    enabled: boolean;
+    dailyCalls: number;
+    dailyUnits: number;
+    childCalls: number;
+    version: number;
+  };
+  usage: { calls: number; units: number };
+  day: string;
+}
+export interface AiExplanationResult {
+  requestId: string;
+  pending?: boolean;
+  cached?: boolean;
+  explanation?: {
+    explanationChinese: string;
+    exampleEnglish: string;
+    exampleChinese: string;
+  };
+}
 export interface Progress {
   answered: number;
   correct: number;

@@ -31,6 +31,7 @@ import SessionAccess from "./SessionAccess";
 import { reconcileDraft } from "./sessionDraft";
 const World = lazy(() => import("./World"));
 const WordTraining = lazy(() => import("./WordTraining"));
+const AiExplanation = lazy(() => import("./AiExplanation"));
 const labels: Record<string, string> = {
   grammar: "语法",
   tense: "时态",
@@ -1675,6 +1676,17 @@ export default function App() {
                         <Icon kind="arrow" />
                       </button>
                     </div>
+                  )}
+                  {receipt && (
+                    <Suspense
+                      fallback={<p className="footnote">正在准备辅助理解…</p>}
+                    >
+                      <AiExplanation
+                        key={session.assignmentId}
+                        session={session}
+                        allowed={canWriteSession}
+                      />
+                    </Suspense>
                   )}
                   {receipt && (
                     <button

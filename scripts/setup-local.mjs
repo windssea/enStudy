@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir, access } from "node:fs/promises";
 import { run } from "./runtime.mjs";
+import { prepareLocalAi } from "./prepare-local-ai.mjs";
 const exists = (path) =>
   access(path).then(
     () => true,
@@ -7,6 +8,7 @@ const exists = (path) =>
   );
 if (!(await exists(".dev.vars")))
   await writeFile(".dev.vars", await readFile(".dev.vars.example", "utf8"));
+await prepareLocalAi();
 await mkdir(".wrangler", { recursive: true });
 run(["d1", "migrations", "apply", "DB", "--local"]);
 const samples = JSON.parse(await readFile("content/exercises.json", "utf8"));

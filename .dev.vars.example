@@ -1,3 +1,6 @@
 # Local only. Remote deployments must never enable development identity.
 APP_STAGE=local
 ALLOW_DEV_AUTH=true
+# npm run setup:local creates an encryption key once in ignored .dev.vars.
+# Never add provider API keys to frontend variables or source control.
+# AI_HOST_ALLOWLIST=api.openai.com

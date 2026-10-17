@@ -30,13 +30,15 @@ import {
 import type { Answer, LearningSession, Receipt } from "../contracts/index";
 import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 import { managedAccountRoutes } from "./managedAccounts";
+import { createAiRoutes } from "./aiRoutes";
+import type { AiConfig } from "./aiPolicy";
 
-export interface Env {
+export interface Env extends AiConfig {
   DB: D1Database;
   APP_STAGE?: string;
   ALLOW_DEV_AUTH?: string;
 }
-interface Actor {
+export interface Actor {
   childId: string;
   householdId: string;
   grantId: string;
@@ -164,7 +166,9 @@ app.get("/api/v1/vocabulary/:themeId", (c) => {
   });
 });
 
-async function actorFrom(c: Context<Bindings>): Promise<Actor | null> {
+async function actorFrom<E extends { Bindings: Env }>(
+  c: Context<E>,
+): Promise<Actor | null> {
   const accountActor = await readAccountActor(c);
   if (accountActor) return accountActor;
   if (getCookie(c, "eq_account")) return null;
@@ -301,6 +305,7 @@ for (const path of [
   "/api/v1/learning/*",
 ])
   app.use(path, learningAccess);
+app.route("/api/v1", createAiRoutes(actorFrom));
 interface Assignment {
   id: string;
   lease_id: string;

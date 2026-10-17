@@ -52,6 +52,7 @@ try {
   await run("smoke-topics.mjs");
   await run("smoke-patterns.mjs");
   await run("smoke-vocabulary.mjs");
+  await run("smoke-ai.mjs");
 } catch (error) {
   console.error(output);
   throw error;

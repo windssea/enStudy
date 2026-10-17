@@ -1,6 +1,6 @@
 # 英语探险岛
 
-面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.12：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。云端仍为v0.8，单词特训、3D动效、受管理家庭账号及跨设备续学尚未发布。
+面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.13：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。云端仍为v0.8，单词特训、3D动效、受管理家庭账号、跨设备续学与BYOK文本辅助尚未发布。
 
 [开发预览](https://development.english-quest-dev.pages.dev) 通过GitHub Actions发布。M1加入管理员登录（账号admin，密码使用用户指定值）、关闭注册、儿童档案管理与刷新续学；开发测试身份继续只限本机。验证与剩余范围见[M1进展](docs/23-next-phase-progress.md)。
 
@@ -32,7 +32,9 @@ v0.11新增管理员创建家庭账号、停用/恢复、重设临时密码，�
 
 v0.12加入显式跨设备续学：其他设备先读取只读进度，点击接续才换发权限；旧设备不能提交新答案、提示或下一步。题目顺序、已保存提示与回执保留，并处理同页草稿、并发接续、档案切换和旧响应。76项单元检查及本机206项HTTP回归通过，详见[续学记录](docs/31-device-session-handover.md)；真机和云端验证待完成。
 
-同家庭多成人邀请、全专题诊断与迁移、延迟测验、离线队列、AI/BYOK/语音、教材精确映射及完整288课仍在里程碑待办中。当前只需儿童昵称和年级，不需要真实姓名或生日；设备朗读不等同于AI语音对话。
+v0.13加入家长自带AI文本服务：加密保存Key、域名白名单、文本协议测试、明确同意、家庭与孩子每日额度，孩子保存答案后可请求中文解释及英文例句。106项单元与246项本机运行检查通过；真实供应商、PC/iPad界面和生产主密钥配置待验证。可在[本机家长空间](http://127.0.0.1:5173/#parent)配置，详见[AI文本记录与配置](docs/32-ai-text-assistance.md)。
+
+同家庭多成人邀请、全专题诊断与迁移、延迟测验、离线队列、AI对话/出题/语音、教材精确映射及完整288课仍在里程碑待办中。当前只需儿童昵称和年级，不需要真实姓名或生日；设备朗读不等同于AI语音对话。
 
 ## 检查和部署
 
@@ -48,6 +50,7 @@ npm run verify:course
 npm run verify:topics
 npm run verify:patterns
 npm run verify:vocabulary
+npm run verify:ai
 npm run cf:plan
 ```
 

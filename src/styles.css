@@ -1853,6 +1853,106 @@ button.unit-node:not(:disabled) {
 .account-fields .field {
   min-width: 0;
 }
+.ai-settings-disclosure {
+  margin-top: 28px;
+}
+.ai-settings-disclosure > summary,
+.ai-advanced > summary {
+  min-height: 52px;
+  padding: 12px 0;
+  cursor: pointer;
+  font-weight: 750;
+}
+.ai-settings-disclosure > summary:focus-visible,
+.ai-advanced > summary:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.ai-settings.card {
+  border: 0;
+  padding: 24px 0 0;
+  box-shadow: none;
+}
+.ai-settings h3 {
+  margin-top: 32px;
+}
+.ai-privacy,
+.ai-target {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 20px;
+  background: #e8efff;
+}
+.ai-privacy p,
+.ai-settings .footnote {
+  overflow-wrap: anywhere;
+}
+.ai-connection-list {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+}
+.ai-connection-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+.ai-connection-list li > div {
+  min-width: 0;
+}
+.ai-connection-list p,
+.ai-connection-list strong {
+  overflow-wrap: anywhere;
+}
+.ai-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 52px;
+  padding: 12px 0;
+  cursor: pointer;
+}
+.ai-checkbox input {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  accent-color: var(--blue);
+}
+.ai-explanation {
+  margin: 24px 0;
+  padding: clamp(16px, 3vw, 28px);
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  background: #f4f8ff;
+}
+.ai-explanation-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+}
+.ai-explanation h3 {
+  margin: 12px 0;
+}
+.ai-explanation p {
+  overflow-wrap: anywhere;
+}
+.ai-example {
+  margin: 16px 0;
+  padding: 16px;
+  background: white;
+  border-radius: 16px;
+}
+.ai-example .teaching-english {
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+}
 .managed-account-list {
   list-style: none;
   margin: 24px 0;

@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -18,6 +18,8 @@
     "format:check": "prettier --check src packages functions scripts tests package.json tsconfig.json vite.config.ts wrangler.jsonc cloudflare.project.json",
     "test": "vitest run",
     "setup:local": "node scripts/setup-local.mjs",
+    "setup:ai:local": "node scripts/prepare-local-ai.mjs",
+    "verify:ai": "node scripts/smoke-ai.mjs",
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "cf:whoami": "wrangler whoami",
     "cf:plan": "node scripts/cloudflare.mjs plan",
@@ -53,7 +55,9 @@
     "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "6.1.2",
     "csv-parse": "^6.0.0",
+    "esbuild": "0.28.2",
     "jsonc-parser": "3.3.1",
+    "miniflare": "5.20261012.1-beta",
     "prettier": "3.9.10",
     "typescript": "7.0.2",
     "vite": "8.3.4",
