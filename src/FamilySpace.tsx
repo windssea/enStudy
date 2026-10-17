@@ -1,13 +1,22 @@
 import { useEffect, useState, type FormEvent } from "react";
-import type { ChildProfile, Identity } from "../packages/contracts/index";
+import type {
+  ChildProfile,
+  Identity,
+  LearningSummary,
+  CourseLesson,
+} from "../packages/contracts/index";
 import { api } from "./api";
 
 export default function FamilySpace({
   identity,
   refresh,
+  learning,
+  lessons,
 }: {
   identity: Identity;
   refresh: () => Promise<void>;
+  learning: LearningSummary;
+  lessons: CourseLesson[];
 }) {
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("");
@@ -312,10 +321,49 @@ export default function FamilySpace({
             </li>
           </ol>
           <div className="notice">
-            课程覆盖一至六年级的规划。当前可练内容仍为启航练习，完整课程会按阶段更新。
+            当前有24节首站语法与表达微课，覆盖一至六年级。其余课程、完整听说读写与教材映射会按阶段更新。
           </div>
         </aside>
       </div>
+      {identity.adult && identity.child && (
+        <section
+          className="card learning-report"
+          aria-labelledby="report-title"
+        >
+          <span className="eyebrow">每一步，都有迹可循</span>
+          <h2 id="report-title">{identity.child.nickname}的学习足迹</h2>
+          <p>
+            已完成{learning.completedLessons.length}节微课，当前有
+            {learning.dueCount}个知识点到了复习时间。
+          </p>
+          {learning.recent.length ? (
+            <ul className="learning-records">
+              {learning.recent.map((result) => (
+                <li key={result.sessionId}>
+                  <div>
+                    <strong>
+                      {lessons.find((lesson) => lesson.id === result.lessonId)
+                        ?.title ?? "专题或复习练习"}
+                    </strong>
+                    <p>
+                      共{result.total}题，答对{result.correct}题，其中独立完成
+                      {result.independent}题。
+                    </p>
+                  </div>
+                  <time dateTime={new Date(result.completedAt).toISOString()}>
+                    {new Date(result.completedAt).toLocaleDateString("zh-CN")}
+                  </time>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="notice">完成一轮练习后，这里就会留下孩子的小进步。</p>
+          )}
+          <p className="footnote">
+            使用提示后的答对会单独记录；完成一课不代表已经完全掌握。
+          </p>
+        </section>
+      )}
       {identity.developmentIdentityAvailable && (
         <details className="dev-tools">
           <summary>本机开发测试档案</summary>

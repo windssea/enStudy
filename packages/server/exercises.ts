@@ -1,13 +1,29 @@
 import raw from "../../content/exercises.json";
-import type { Answer, Category, Exercise } from "../contracts/index";
+import course from "../../content/course-release.v1.json";
+import type {
+  Answer,
+  Category,
+  CourseLesson,
+  Exercise,
+} from "../contracts/index";
 export interface PrivateExercise extends Exercise {
   answers: string[];
   skill: string;
   modality: string;
   hint: string;
   explanation: string;
+  family?: string;
+  lessonId?: string;
 }
-export const exercises = raw as PrivateExercise[];
+export const courseRelease = course as unknown as {
+  id: string;
+  manifestHash: string;
+  lessons: CourseLesson[];
+  items: PrivateExercise[];
+  topicSkills: Record<string, string>;
+};
+export const exercises = [...raw, ...courseRelease.items] as PrivateExercise[];
+export const exerciseById = new Map(exercises.map((item) => [item.id, item]));
 export function publicExercise(exercise: PrivateExercise): Exercise {
   const {
     id,
@@ -19,6 +35,8 @@ export function publicExercise(exercise: PrivateExercise): Exercise {
     choices,
     tokens,
     gradeMin,
+    reading,
+    audioText,
   } = exercise;
   return {
     id,
@@ -30,10 +48,14 @@ export function publicExercise(exercise: PrivateExercise): Exercise {
     choices,
     tokens,
     gradeMin,
+    reading,
+    audioText,
   };
 }
 export function normalise(answer: Answer): string {
   return (Array.isArray(answer) ? answer.join(" ") : answer)
+    .normalize("NFKC")
+    .replace(/[‘’]/g, "'")
     .trim()
     .replace(/\s+/g, " ")
     .toLocaleLowerCase("en-US");
@@ -48,6 +70,9 @@ export function gradeAnswer(
 }
 export function sampleList(category?: Category): Exercise[] {
   return exercises
-    .filter((e) => !category || e.category === category)
+    .filter(
+      (e) =>
+        e.id.startsWith("sample.") && (!category || e.category === category),
+    )
     .map(publicExercise);
 }

@@ -14,7 +14,10 @@ import {
   sampleList,
   gradeAnswer,
   normalise,
+  courseRelease,
+  exerciseById,
 } from "./exercises";
+import { selectReviewItems, type ReviewTarget } from "../domain/selection";
 import type { Answer, LearningSession, Receipt } from "../contracts/index";
 import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 
@@ -116,6 +119,22 @@ app.get("/api/v1/health", (c) =>
 );
 app.get("/api/v1/exercises", (c) =>
   c.json({ items: sampleList(), contentState: "development-samples" }),
+);
+app.get("/api/v1/lessons", (c) =>
+  c.json({
+    release: courseRelease.id,
+    lessons: courseRelease.lessons,
+    topicAvailability: Object.fromEntries(
+      Object.entries(courseRelease.topicSkills).map(([id, skill]) => [
+        id,
+        new Set(
+          exercises
+            .filter((item) => item.skill === skill)
+            .map((item) => item.family ?? item.id),
+        ).size,
+      ]),
+    ),
+  }),
 );
 
 async function actorFrom(c: Context<Bindings>): Promise<Actor | null> {
@@ -263,6 +282,16 @@ app.use("/api/v1/progress", async (c, next) => {
   await next();
 });
 
+app.use("/api/v1/learning/*", async (c, next) => {
+  const actor = await actorFrom(c);
+  if (!actor)
+    return c.json(
+      fault("AUTH_REQUIRED", "请先登录，再选择你的探险档案。"),
+      401,
+    );
+  c.set("actor", actor);
+  await next();
+});
 interface Assignment {
   id: string;
   lease_id: string;
@@ -270,6 +299,11 @@ interface Assignment {
   item_id: string;
   hint_level: number;
   state: string;
+  cursor: number;
+  total: number;
+  lesson_id: string | null;
+  source: "lesson" | "topic" | "review" | "single";
+  source_ref: string | null;
 }
 async function loadSession(
   db: D1Database,
@@ -278,7 +312,7 @@ async function loadSession(
 ): Promise<Assignment | null> {
   return db
     .prepare(
-      `SELECT s.id,s.lease_id,s.state,si.id AS assignment_id,si.item_id,si.hint_level FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
+      `SELECT s.id,s.lease_id,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.hint_level,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
     )
     .bind(id, actor.householdId, actor.childId)
     .first<Assignment>();
@@ -289,6 +323,10 @@ function sessionPayload(row: Assignment): LearningSession {
     leaseId: row.lease_id,
     assignmentId: row.assignment_id,
     hintLevel: row.hint_level,
+    position: row.cursor + 1,
+    total: row.total,
+    lessonId: row.lesson_id,
+    source: row.source,
     exercise: publicExercise(exercises.find((e) => e.id === row.item_id)!),
   };
 }
@@ -315,49 +353,285 @@ app.get("/api/v1/sessions/current", async (c) => {
       : null,
   });
 });
+async function reviewTargets(db: D1Database, actor: Actor) {
+  const cards = await db
+    .prepare(
+      "SELECT skill_id AS skillId,modality,due_at AS dueAt FROM review_cards WHERE household_id=? AND child_id=? AND due_at<=? ORDER BY due_at LIMIT 40",
+    )
+    .bind(actor.householdId, actor.childId, Date.now())
+    .all<ReviewTarget>();
+  const recent = await db
+    .prepare(
+      "SELECT si.item_id FROM attempts a JOIN session_items si ON si.id=a.assignment_id WHERE a.household_id=? AND a.child_id=? ORDER BY a.received_at DESC LIMIT 100",
+    )
+    .bind(actor.householdId, actor.childId)
+    .all<{ item_id: string }>();
+  const families = new Map<string, string>();
+  for (const row of recent.results) {
+    const item = exerciseById.get(row.item_id);
+    if (item && !families.has(`${item.skill}:${item.modality}`))
+      families.set(`${item.skill}:${item.modality}`, item.family ?? item.id);
+  }
+  return cards.results.map((card) => ({
+    ...card,
+    lastFamily: families.get(`${card.skillId}:${card.modality}`),
+  }));
+}
 app.post("/api/v1/sessions", async (c) => {
-  const actor = c.get("actor");
-  const body = await c.req.json<{
-    exerciseId: string;
-    clientRequestId: string;
-  }>();
-  if (!body || typeof body !== "object" || Array.isArray(body))
+  const actor = c.get("actor"),
+    body = await c.req.json();
+  if (
+    !body ||
+    typeof body !== "object" ||
+    Array.isArray(body) ||
+    !UUID.test(body.clientRequestId ?? "")
+  )
     return c.json(fault("INVALID_SESSION", "练习或请求编号无效。"), 422);
-  const exercise = exercises.find((e) => e.id === body.exerciseId);
-  if (!exercise || !UUID.test(body.clientRequestId ?? ""))
-    return c.json(fault("INVALID_SESSION", "练习或请求编号无效。"), 422);
+  const selectors = [
+    typeof body.exerciseId === "string",
+    typeof body.lessonId === "string",
+    typeof body.topicId === "string",
+    body.mode === "review",
+  ];
+  if (
+    ["exerciseId", "lessonId", "topicId"].some(
+      (key) =>
+        body[key] !== undefined &&
+        (typeof body[key] !== "string" ||
+          body[key].length < 1 ||
+          body[key].length > 160),
+    ) ||
+    (body.mode !== undefined && body.mode !== "review")
+  )
+    return c.json(fault("INVALID_SESSION", "学习任务格式不正确。"), 422);
+  if (selectors.filter(Boolean).length !== 1)
+    return c.json(fault("INVALID_SESSION", "请选择一种有效的学习任务。"), 422);
+  const source: Assignment["source"] = body.lessonId
+    ? "lesson"
+    : body.topicId
+      ? "topic"
+      : body.mode === "review"
+        ? "review"
+        : "single";
+  const reference = String(
+    body.lessonId ?? body.topicId ?? body.exerciseId ?? "due",
+  );
+  const sourceRef = `${source}:${reference}`;
   const existing = await loadSession(c.env.DB, actor, body.clientRequestId);
-  if (existing) return c.json(sessionPayload(existing));
+  if (existing) {
+    if (
+      existing.source_ref !== sourceRef &&
+      !(existing.source_ref === null && existing.item_id === body.exerciseId)
+    )
+      return c.json(
+        fault("IDEMPOTENCY_MISMATCH", "这个请求编号已用于其他学习任务。"),
+        409,
+      );
+    if (existing.state !== "active")
+      return c.json(
+        fault("SESSION_CHANGED", "这次学习已结束或被新任务替换。"),
+        409,
+      );
+    return c.json(sessionPayload(existing));
+  }
+  const lesson = courseRelease.lessons.find(
+    (lesson) => lesson.id === body.lessonId,
+  );
+  let selected =
+    source === "lesson"
+      ? exercises.filter((item) => item.lessonId === lesson?.id)
+      : source === "single"
+        ? exercises.filter((item) => item.id === body.exerciseId)
+        : [];
+  if (source === "lesson" && !lesson) selected = [];
+  if (source === "topic") {
+    const skill = courseRelease.topicSkills[body.topicId];
+    const families = new Map<string, typeof exercises>();
+    for (const item of exercises.filter((item) => item.skill === skill)) {
+      const family = item.family ?? item.id;
+      families.set(family, [...(families.get(family) ?? []), item]);
+    }
+    selected = Array.from(families.values())
+      .slice(0, 6)
+      .map((group, index) => group[index % group.length]);
+  }
+  if (source === "review")
+    selected = selectReviewItems(
+      await reviewTargets(c.env.DB, actor),
+      exercises,
+      Date.now(),
+    );
+  if (!selected.length)
+    return c.json(
+      fault(
+        source === "review" ? "NO_DUE_REVIEWS" : "CONTENT_NOT_AVAILABLE",
+        source === "review"
+          ? "今天还没有到期的复习，去学一点新内容吧。"
+          : "这份学习内容还在准备中。",
+      ),
+      404,
+    );
+  const release = selected.some((item) => item.lessonId)
+    ? courseRelease.id
+    : "dev-samples-v1";
+  const publication = await c.env.DB.prepare(
+    `SELECT status,(SELECT count(*) FROM release_items ri WHERE ri.release_id=content_releases.id AND ri.item_id IN (${selected.map(() => "?").join(",")})) AS itemCount FROM content_releases WHERE id=?`,
+  )
+    .bind(...selected.map((item) => item.id), release)
+    .first<{ status: string; itemCount: number }>();
+  if (
+    publication?.status !== "published" ||
+    publication.itemCount !== selected.length
+  )
+    return c.json(
+      fault("CONTENT_UNAVAILABLE", "这份内容暂时不可用，请换一份任务。"),
+      409,
+    );
   const lease = crypto.randomUUID(),
-    assignment = crypto.randomUUID(),
     now = Date.now();
-  await c.env.DB.batch([
-    c.env.DB.prepare(
-      "UPDATE learning_sessions SET state='paused' WHERE household_id=? AND child_id=? AND state='active'",
-    ).bind(actor.householdId, actor.childId),
-    c.env.DB.prepare(
-      "INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at) VALUES(?,?,?,'dev-samples-v1',?,'active',?)",
-    ).bind(body.clientRequestId, actor.householdId, actor.childId, lease, now),
-    c.env.DB.prepare(
-      "INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version) VALUES(?,?,?,?,0,?,1)",
-    ).bind(
-      assignment,
-      actor.householdId,
-      actor.childId,
-      body.clientRequestId,
-      exercise.id,
-    ),
-  ]);
+  try {
+    await c.env.DB.batch([
+      c.env.DB.prepare(
+        "UPDATE learning_sessions SET state='paused' WHERE household_id=? AND child_id=? AND state='active'",
+      ).bind(actor.householdId, actor.childId),
+      c.env.DB.prepare(
+        "INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref) VALUES(?,?,?,?,?,'active',?,?,?,?)",
+      ).bind(
+        body.clientRequestId,
+        actor.householdId,
+        actor.childId,
+        release,
+        lease,
+        now,
+        lesson?.id ?? null,
+        source,
+        sourceRef,
+      ),
+      ...selected.map((item, index) =>
+        c.env.DB.prepare(
+          "INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version) VALUES(?,?,?,?,?,?,1)",
+        ).bind(
+          crypto.randomUUID(),
+          actor.householdId,
+          actor.childId,
+          body.clientRequestId,
+          index,
+          item.id,
+        ),
+      ),
+    ]);
+  } catch (error) {
+    const concurrent = await loadSession(c.env.DB, actor, body.clientRequestId);
+    if (concurrent?.source_ref === sourceRef && concurrent.state === "active")
+      return c.json(sessionPayload(concurrent));
+    throw error;
+  }
   return c.json(
-    {
-      id: body.clientRequestId,
-      leaseId: lease,
-      assignmentId: assignment,
-      hintLevel: 0,
-      exercise: publicExercise(exercise),
-    },
+    sessionPayload((await loadSession(c.env.DB, actor, body.clientRequestId))!),
     201,
   );
+});
+app.post("/api/v1/sessions/:id/next", async (c) => {
+  const actor = c.get("actor"),
+    row = await loadSession(c.env.DB, actor, c.req.param("id")),
+    body = await c.req.json();
+  if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
+  if (
+    !body ||
+    body.leaseId !== row.lease_id ||
+    typeof body.assignmentId !== "string"
+  )
+    return c.json(
+      fault("LEASE_REPLACED", "学习会话已切换，请重新打开任务。"),
+      409,
+    );
+  const result = () =>
+    c.env.DB.prepare(
+      "SELECT session_id AS sessionId,lesson_id AS lessonId,total,correct,independent,completed_at AS completedAt FROM session_results WHERE session_id=? AND household_id=? AND child_id=?",
+    )
+      .bind(row.id, actor.householdId, actor.childId)
+      .first();
+  if (row.state === "completed")
+    return c.json({ completed: true, session: null, result: await result() });
+  if (row.state !== "active")
+    return c.json(fault("SESSION_CHANGED", "这次学习已被新任务替换。"), 409);
+  const submitted = await c.env.DB.prepare(
+    "SELECT si.position FROM session_items si JOIN attempts a ON a.assignment_id=si.id WHERE si.session_id=? AND si.id=? AND a.household_id=? AND a.child_id=?",
+  )
+    .bind(row.id, body.assignmentId, actor.householdId, actor.childId)
+    .first<{ position: number }>();
+  if (!submitted || submitted.position > row.cursor)
+    return c.json(fault("ANSWER_REQUIRED", "先完成当前这一步，再继续。"), 409);
+  if (submitted.position < row.cursor)
+    return c.json({ session: sessionPayload(row) });
+  const authorization =
+    "EXISTS(SELECT 1 FROM child_grants g WHERE g.id=? AND g.revoked_at IS NULL AND g.expires_at>? AND (g.parent_session_id IS NULL OR EXISTS(SELECT 1 FROM account_sessions p WHERE p.id=g.parent_session_id AND p.revoked_at IS NULL AND p.expires_at>?)))";
+  const now = Date.now();
+  if (row.cursor + 1 < row.total) {
+    await c.env.DB.prepare(
+      `UPDATE learning_sessions SET cursor=cursor+1 WHERE id=? AND household_id=? AND child_id=? AND cursor=? AND state='active' AND ${authorization}`,
+    )
+      .bind(
+        row.id,
+        actor.householdId,
+        actor.childId,
+        row.cursor,
+        actor.grantId,
+        now,
+        now,
+      )
+      .run();
+    const updated = (await loadSession(c.env.DB, actor, row.id))!;
+    if (updated.cursor === row.cursor)
+      return c.json(
+        fault("SESSION_CHANGED", "任务状态有变化，请重新打开。"),
+        409,
+      );
+    return c.json({ session: sessionPayload(updated) });
+  }
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `UPDATE learning_sessions SET state='completed' WHERE id=? AND household_id=? AND child_id=? AND cursor=? AND state='active' AND ${authorization} AND NOT EXISTS(SELECT 1 FROM session_items si LEFT JOIN attempts a ON a.assignment_id=si.id WHERE si.session_id=learning_sessions.id AND a.event_id IS NULL)`,
+    ).bind(
+      row.id,
+      actor.householdId,
+      actor.childId,
+      row.cursor,
+      actor.grantId,
+      now,
+      now,
+    ),
+    c.env.DB.prepare(
+      "INSERT OR IGNORE INTO session_results(session_id,household_id,child_id,lesson_id,total,correct,independent,completed_at) SELECT s.id,s.household_id,s.child_id,s.lesson_id,count(*),sum(CASE WHEN a.outcome IN ('correct','hinted') THEN 1 ELSE 0 END),sum(a.independent_evidence),? FROM learning_sessions s JOIN session_items si ON si.session_id=s.id JOIN attempts a ON a.assignment_id=si.id WHERE s.id=? AND s.household_id=? AND s.child_id=? AND s.state='completed' GROUP BY s.id",
+    ).bind(now, row.id, actor.householdId, actor.childId),
+  ]);
+  const completed = await result();
+  return completed
+    ? c.json({ completed: true, session: null, result: completed })
+    : c.json(fault("SESSION_CHANGED", "这次任务尚未完成，请重新打开。"), 409);
+});
+app.get("/api/v1/learning/summary", async (c) => {
+  const actor = c.get("actor");
+  const completed = await c.env.DB.prepare(
+    "SELECT lesson_id AS lessonId,max(completed_at) AS completedAt,count(*) AS runs,max(independent) AS bestIndependent,max(total) AS total FROM session_results WHERE household_id=? AND child_id=? AND lesson_id IS NOT NULL GROUP BY lesson_id",
+  )
+    .bind(actor.householdId, actor.childId)
+    .all();
+  const due = await c.env.DB.prepare(
+    "SELECT count(*) AS total FROM review_cards WHERE household_id=? AND child_id=? AND due_at<=?",
+  )
+    .bind(actor.householdId, actor.childId, Date.now())
+    .first<{ total: number }>();
+  const recent = await c.env.DB.prepare(
+    "SELECT session_id AS sessionId,lesson_id AS lessonId,total,correct,independent,completed_at AS completedAt FROM session_results WHERE household_id=? AND child_id=? ORDER BY completed_at DESC LIMIT 10",
+  )
+    .bind(actor.householdId, actor.childId)
+    .all();
+  return c.json({
+    completedLessons: completed.results,
+    dueCount: due?.total ?? 0,
+    recent: recent.results,
+  });
 });
 app.get("/api/v1/sessions/:id", async (c) => {
   const row = await loadSession(c.env.DB, c.get("actor"), c.req.param("id"));
@@ -368,6 +642,12 @@ app.post("/api/v1/sessions/:id/hint", async (c) => {
   const actor = c.get("actor"),
     row = await loadSession(c.env.DB, actor, c.req.param("id"));
   if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
+  const body = await c.req.json();
+  if (row.total > 1 && (!body || body.assignmentId !== row.assignment_id))
+    return c.json(
+      fault("SESSION_CHANGED", "题目已经变化，请重新打开当前练习。"),
+      409,
+    );
   const result = await c.env.DB.prepare(
     `UPDATE session_items SET hint_level=1 WHERE id=? AND household_id=? AND child_id=? AND NOT EXISTS(SELECT 1 FROM attempts WHERE assignment_id=session_items.id) AND EXISTS(SELECT 1 FROM learning_sessions WHERE id=session_items.session_id AND state='active')`,
   )

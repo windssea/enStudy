@@ -11,6 +11,8 @@ export default defineConfig({
         "*.{crt,pem}",
         "**/.dev.vars*",
         "**/content/exercises.json",
+        "**/content/course-release*.json",
+        "**/content/courses-*.mjs",
         "**/packages/server/**",
         "**/migrations/**",
         "**/tests/**",

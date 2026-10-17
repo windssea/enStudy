@@ -1,5 +1,6 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { parse } from "csv-parse/sync";
+import "./build-course.mjs";
 const readCSV = async (name) =>
   parse(
     await readFile(

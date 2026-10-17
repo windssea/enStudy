@@ -130,9 +130,11 @@ function Island({
 export default function World({
   quiet,
   greet = 0,
+  completed = 0,
 }: {
   quiet: boolean;
   greet?: number;
+  completed?: number;
 }) {
   return (
     <Canvas
@@ -150,6 +152,18 @@ export default function World({
       <Island position={[0, 0.65, -0.8]} color="#c3e5a7" animate={false} />
       <Island position={[3.1, 0.05, 0.4]} color="#a5d7e4" animate={false} />
       <Balloon quiet={quiet} greet={greet} />
+      {Array.from({ length: Math.min(4, completed) }, (_, i) => (
+        <group key={`flag-${i}`} position={[-3.8 + i * 0.75, 0.7, 1.2]}>
+          <mesh>
+            <cylinderGeometry args={[0.025, 0.025, 0.8, 6]} />
+            <meshStandardMaterial color="#7d6d52" />
+          </mesh>
+          <mesh position={[0.17, 0.28, 0]}>
+            <boxGeometry args={[0.34, 0.23, 0.04]} />
+            <meshStandardMaterial color="#f5ce68" />
+          </mesh>
+        </group>
+      ))}
       <Cloud position={[-4, 2.5, -2]} scale={0.8} />
       <Cloud position={[4.2, 1.9, 1.5]} scale={0.7} />
       {Array.from({ length: 9 }, (_, i) => (

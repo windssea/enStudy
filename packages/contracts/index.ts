@@ -1,4 +1,5 @@
-export type Category = "grammar" | "tense" | "forms" | "patterns";
+export type Category =
+  "grammar" | "tense" | "forms" | "patterns" | "vocabulary" | "reading";
 export type Answer = string | string[];
 export interface Exercise {
   id: string;
@@ -10,6 +11,8 @@ export interface Exercise {
   choices?: string[];
   tokens?: string[];
   gradeMin: number;
+  reading?: string;
+  audioText?: string;
 }
 export interface LearningSession {
   id: string;
@@ -17,6 +20,51 @@ export interface LearningSession {
   assignmentId: string;
   exercise: Exercise;
   hintLevel: number;
+  position?: number;
+  total?: number;
+  lessonId?: string | null;
+  source?: "lesson" | "topic" | "review" | "single";
+}
+export interface TeachingCard {
+  title: string;
+  rule: string;
+  example: string;
+  translation: string;
+}
+export interface CourseLesson {
+  id: string;
+  unitId: string;
+  unitTitle?: string;
+  grade: number;
+  term: string;
+  title: string;
+  subtitle: string;
+  minutes: number;
+  order: number;
+  cards: TeachingCard[];
+  vocabulary: { word: string; meaning: string }[];
+  task: string;
+  topicIds: string[];
+  itemCount: number;
+}
+export interface SessionResult {
+  sessionId: string;
+  lessonId: string | null;
+  total: number;
+  correct: number;
+  independent: number;
+  completedAt: number;
+}
+export interface LearningSummary {
+  completedLessons: {
+    lessonId: string;
+    completedAt: number;
+    runs: number;
+    bestIndependent: number;
+    total: number;
+  }[];
+  dueCount: number;
+  recent: SessionResult[];
 }
 export interface Receipt {
   eventId: string;

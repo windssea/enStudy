@@ -57,4 +57,14 @@ check(
     catalog.patterns?.length === 72,
   "draft curriculum catalog available",
 );
+const lessonResponse = await request("/api/v1/lessons");
+const course = await lessonResponse.json();
+check(
+  lessonResponse.status === 200 &&
+    course.lessons?.length === 24 &&
+    Object.values(course.topicAvailability ?? {}).filter(Boolean).length >=
+      15 &&
+    !JSON.stringify(course).includes('"answers":'),
+  "published lesson metadata and real topic availability delivered without answer keys",
+);
 console.log(`${checks} remote checks passed on ${base.origin}`);

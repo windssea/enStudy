@@ -10,7 +10,9 @@ import {
 import type {
   Answer,
   Catalog,
-  Exercise,
+  CourseLesson,
+  LearningSummary,
+  SessionResult,
   Identity,
   LearningSession,
   Progress,
@@ -18,6 +20,7 @@ import type {
 } from "../packages/contracts/index";
 import { api } from "./api";
 import FamilySpace from "./FamilySpace";
+import LessonView from "./LessonView";
 const World = lazy(() => import("./World"));
 const labels: Record<string, string> = {
   grammar: "语法",
@@ -29,18 +32,30 @@ const labels: Record<string, string> = {
   reading: "阅读",
   expression: "表达",
 };
-const sampleTopics: Record<string, string> = {
-  "grammar.be": "sample.be.1",
-  "grammar.there-be": "sample.there.1",
-  "tense.past-simple": "sample.past.1",
-  "tense.present-simple": "sample.habit.1",
-  "forms.irregular-past": "sample.form.go",
-  "forms.ing": "sample.form.ing",
-  "sentence.patterns.suggestions": "sample.pattern.about",
-  "sentence.order": "sample.pattern.order",
-};
 const journeys = ["萌芽", "探索", "成长", "远航", "发现", "创造"];
-type View = "map" | "topics" | "patterns" | "review" | "parent" | "exercise";
+type View =
+  "map" | "topics" | "patterns" | "review" | "parent" | "exercise" | "lesson";
+const readRoute = (): { view: View; lessonId: string | null } => {
+  const hash = window.location.hash.slice(1);
+  if (hash.startsWith("lesson=")) {
+    try {
+      return { view: "lesson", lessonId: decodeURIComponent(hash.slice(7)) };
+    } catch {
+      return { view: "map", lessonId: null };
+    }
+  }
+  return {
+    view: (["topics", "patterns", "review", "parent", "exercise"].includes(hash)
+      ? hash
+      : "map") as View,
+    lessonId: null,
+  };
+};
+const emptyLearning: LearningSummary = {
+  completedLessons: [],
+  dueCount: 0,
+  recent: [],
+};
 function Icon({ kind = "compass" }: { kind?: string }) {
   const paths: Record<string, ReactNode> = {
     compass: (
@@ -113,9 +128,31 @@ const storedFlag = (key: string) => {
 };
 
 export default function App() {
-  const [view, setView] = useState<View>("map");
+  const [view, setView] = useState<View>(() => readRoute().view);
+  const [lessons, setLessons] = useState<CourseLesson[]>([]);
+  const [lessonId, setLessonId] = useState<string | null>(
+    () => readRoute().lessonId,
+  );
+  const [topicAvailability, setTopicAvailability] = useState<
+    Record<string, number>
+  >({});
+  const [learning, setLearning] = useState<LearningSummary>(emptyLearning);
+  const [lastResult, setLastResult] = useState<SessionResult | null>(null);
+  const selectedLesson = lessons.find((lesson) => lesson.id === lessonId);
+  useEffect(() => {
+    const pop = () => {
+      const route = readRoute();
+      setView(route.view);
+      if (route.lessonId) setLessonId(route.lessonId);
+    };
+    window.addEventListener("popstate", pop);
+    window.addEventListener("hashchange", pop);
+    return () => {
+      window.removeEventListener("popstate", pop);
+      window.removeEventListener("hashchange", pop);
+    };
+  }, []);
   const [catalog, setCatalog] = useState<Catalog | null>(null);
-  const [samples, setSamples] = useState<Exercise[]>([]);
   const [identity, setIdentity] = useState<Identity>({
     authenticated: false,
     developmentIdentityAvailable: false,
@@ -167,7 +204,12 @@ export default function App() {
   const eventId = useRef(crypto.randomUUID());
   const epoch = useRef(0);
   const mainRef = useRef<HTMLElement>(null);
-  const move = (next: View) => {
+  const move = (next: View, targetLessonId?: string) => {
+    const hash =
+      next === "lesson"
+        ? `#lesson=${encodeURIComponent(targetLessonId ?? lessonId ?? "")}`
+        : `#${next}`;
+    if (window.location.hash !== hash) window.history.pushState(null, "", hash);
     setView(next);
     setError("");
     window.scrollTo({ top: 0 });
@@ -176,12 +218,30 @@ export default function App() {
     );
   };
   const refreshProgress = async (currentEpoch = epoch.current) => {
-    const result = await api<Progress>("/progress");
-    if (epoch.current === currentEpoch) setProgress(result);
+    const [result, summary] = await Promise.all([
+      api<Progress>("/progress"),
+      api<LearningSummary>("/learning/summary"),
+    ]);
+    if (epoch.current === currentEpoch) {
+      setProgress(result);
+      setLearning(summary);
+    }
   };
   useEffect(() => {
     let cancelled = false;
     const initialEpoch = epoch.current;
+    api<{ lessons: CourseLesson[]; topicAvailability: Record<string, number> }>(
+      "/lessons",
+    )
+      .then((data) => {
+        if (!cancelled) {
+          setLessons(data.lessons);
+          setTopicAvailability(data.topicAvailability);
+        }
+      })
+      .catch((e) => {
+        if (!cancelled) setError(message(e));
+      });
     fetch("/content/catalog.json")
       .then((r) => {
         if (!r.ok) throw new Error("课程目录暂时没有加载好，请刷新后重试。");
@@ -193,19 +253,15 @@ export default function App() {
       .catch((e) => {
         if (!cancelled) setError(message(e));
       });
-    Promise.all([
-      api<{ items: Exercise[] }>("/exercises"),
-      api<Identity>("/me"),
-    ])
-      .then(async ([exerciseList, me]) => {
+    api<Identity>("/me")
+      .then(async (me) => {
         if (cancelled || epoch.current !== initialEpoch) return;
-        setSamples(exerciseList.items);
         setIdentity(me);
         if (me.child) setGrade(me.child.grade);
         if (me.authenticated) {
           await refreshProgress();
           await restoreSession(epoch.current);
-        }
+        } else if (readRoute().view === "exercise") move("parent");
       })
       .catch((e) => {
         if (!cancelled) setError(message(e));
@@ -227,6 +283,8 @@ export default function App() {
     setHint("");
     setAnswer("");
     setProgress(emptyProgress);
+    setLearning(emptyLearning);
+    setLastResult(null);
     if (me.child) setGrade(me.child.grade);
     if (me.authenticated) {
       await refreshProgress(current);
@@ -239,14 +297,21 @@ export default function App() {
       receipt?: Receipt | null;
       hint?: string | null;
     }>("/sessions/current");
-    if (epoch.current !== current || !saved.session) return;
+    if (epoch.current !== current) return;
+    if (!saved.session) {
+      if (readRoute().view === "exercise") move("map");
+      return;
+    }
     setSession(saved.session);
     setReceipt(saved.receipt ?? null);
     setHint(saved.hint ?? "");
     setAnswer(saved.session.exercise.type === "order" ? [] : "");
     eventId.current = crypto.randomUUID();
   }
-  async function start(exerciseId: string) {
+  async function start(
+    exerciseId: string,
+    task?: { lessonId?: string; topicId?: string; mode?: "review" },
+  ) {
     if (!identity.authenticated) {
       move("parent");
       setError("先请家长登录，再选择你的探险档案。");
@@ -257,10 +322,11 @@ export default function App() {
     const current = epoch.current;
     try {
       const data = await api<LearningSession>("/sessions", {
-        exerciseId,
+        ...(task ?? { exerciseId }),
         clientRequestId: crypto.randomUUID(),
       });
       if (epoch.current !== current) return;
+      setLastResult(null);
       setSession(data);
       setAnswer(data.exercise.type === "order" ? [] : "");
       setReceipt(null);
@@ -308,16 +374,55 @@ export default function App() {
     setError("");
     const current = epoch.current;
     try {
-      const data = await api<{ hint: string }>(
-        `/sessions/${session.id}/hint`,
-        {},
-      );
+      const data = await api<{ hint: string }>(`/sessions/${session.id}/hint`, {
+        assignmentId: session.assignmentId,
+      });
       if (epoch.current === current) setHint(data.hint);
     } catch (e) {
       setError(message(e));
     } finally {
       setBusy(false);
     }
+  }
+  async function nextQuestion() {
+    if (!session) return;
+    setBusy(true);
+    setError("");
+    const current = epoch.current;
+    try {
+      const result = await api<{
+        session: LearningSession | null;
+        completed?: boolean;
+        result?: SessionResult;
+      }>(`/sessions/${session.id}/next`, {
+        assignmentId: session.assignmentId,
+        leaseId: session.leaseId,
+      });
+      if (epoch.current !== current) return;
+      if (result.completed) {
+        setLastResult(result.result ?? null);
+        setSession(null);
+        setReceipt(null);
+        await refreshProgress(current);
+        move("review");
+      } else if (result.session) {
+        setSession(result.session);
+        setReceipt(null);
+        setHint("");
+        setAnswer(result.session.exercise.type === "order" ? [] : "");
+        eventId.current = crypto.randomUUID();
+        window.scrollTo({ top: 0 });
+        requestAnimationFrame(() => mainRef.current?.focus());
+      }
+    } catch (e) {
+      if (epoch.current === current) setError(message(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+  function openLesson(lesson: CourseLesson) {
+    setLessonId(lesson.id);
+    move("lesson", lesson.id);
   }
   const units = (catalog?.units ?? []).filter(
     (u) => u.grade === String(grade) && u.term === term,
@@ -343,7 +448,7 @@ export default function App() {
     ["parent", "家长空间", "person"],
   ];
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-quiet={quiet || reduced}>
       <a className="skip" href="#main">
         跳到主要内容
       </a>
@@ -512,6 +617,15 @@ export default function App() {
                           <World
                             quiet={quiet || reduced || hidden || !worldVisible}
                             greet={greet}
+                            completed={
+                              learning.completedLessons.filter((row) =>
+                                lessons.some(
+                                  (lesson) =>
+                                    lesson.id === row.lessonId &&
+                                    lesson.grade === grade,
+                                ),
+                              ).length
+                            }
                           />
                         </Suspense>
                       </WorldBoundary>
@@ -525,13 +639,23 @@ export default function App() {
                     </div>
                   </div>
                   <div className="unit-path" aria-label="本学期单元">
-                    {units.map((u, i) => (
-                      <div className="unit-node" key={u.unit_id}>
-                        <span>{i + 1}</span>
-                        <strong>{u.title}</strong>
-                        <small>已规划</small>
-                      </div>
-                    ))}
+                    {units.map((u, i) => {
+                      const available = lessons.find(
+                        (lesson) => lesson.unitId === u.unit_id,
+                      );
+                      return (
+                        <button
+                          className="unit-node"
+                          key={u.unit_id}
+                          disabled={!available}
+                          onClick={() => available && openLesson(available)}
+                        >
+                          <span>{i + 1}</span>
+                          <strong>{u.title}</strong>
+                          <small>{available ? "进入课程" : "规划中"}</small>
+                        </button>
+                      );
+                    })}
                   </div>
                   <div className="map-footer">
                     {!twoD && (
@@ -590,6 +714,64 @@ export default function App() {
                   </section>
                 </aside>
               </div>
+              <section className="course-section">
+                <div className="page-head">
+                  <div>
+                    <p className="eyebrow">A SMALL LESSON, A REAL DISCOVERY</p>
+                    <h2>这一站，学会用英语表达</h2>
+                    <p>先读中文小讲解，再试着把英语说完整。</p>
+                  </div>
+                  <span className="badge">
+                    {
+                      lessons.filter(
+                        (l) => l.grade === grade && l.term === term,
+                      ).length
+                    }
+                    节微课可体验 · 其余持续制作
+                  </span>
+                </div>
+                <div className="course-grid">
+                  {lessons
+                    .filter((l) => l.grade === grade && l.term === term)
+                    .map((lesson) => {
+                      const completed = learning.completedLessons.find(
+                        (row) => row.lessonId === lesson.id,
+                      );
+                      return (
+                        <article className="card course-card" key={lesson.id}>
+                          <span className="lesson-index">
+                            {String(lesson.order).padStart(2, "0")}
+                          </span>
+                          <span className="badge">
+                            {completed ? "已完成练习" : "约6分钟"}
+                          </span>
+                          <h3>{lesson.title}</h3>
+                          <p>{lesson.subtitle}</p>
+                          <small>
+                            {lesson.itemCount}个练习任务 ·{" "}
+                            {completed
+                              ? `${completed.runs}次完成`
+                              : "中文讲解与英语例句"}
+                          </small>
+                          <button
+                            className="primary"
+                            onClick={() => openLesson(lesson)}
+                          >
+                            {completed ? "再来看看" : "进入小讲堂"}
+                            <Icon kind="arrow" />
+                          </button>
+                        </article>
+                      );
+                    })}
+                </div>
+                {!lessons.some((l) => l.grade === grade && l.term === term) && (
+                  <div className="card empty-state">
+                    <p>
+                      这一学期的课件正在制作。可以切到上学期体验已开放的微课，或去专题中心练习。
+                    </p>
+                  </div>
+                )}
+              </section>
               <div className="feature-strip">
                 <div>
                   <Icon kind="book" />
@@ -641,7 +823,9 @@ export default function App() {
                   />
                 </label>
                 <span className="badge">
-                  {topics.length}个专题 · {samples.length}道开发样题
+                  {topics.length}个专题 ·{" "}
+                  {Object.values(topicAvailability).filter(Boolean).length}
+                  个专题可练
                 </span>
               </div>
               <div className="topic-grid">
@@ -654,13 +838,13 @@ export default function App() {
                     <p>{t.interaction}</p>
                     <button
                       className={
-                        sampleTopics[t.topic_id] ? "primary" : "secondary"
+                        topicAvailability[t.topic_id] ? "primary" : "secondary"
                       }
-                      disabled={!sampleTopics[t.topic_id] || busy}
-                      onClick={() => start(sampleTopics[t.topic_id])}
+                      disabled={!topicAvailability[t.topic_id] || busy}
+                      onClick={() => start("", { topicId: t.topic_id })}
                     >
-                      {sampleTopics[t.topic_id]
-                        ? "体验一题"
+                      {topicAvailability[t.topic_id]
+                        ? "开始一轮特训"
                         : "内容已规划，待制作"}
                     </button>
                   </article>
@@ -738,9 +922,52 @@ export default function App() {
           )}
           {view === "review" && (
             <>
+              {lastResult && (
+                <section className="completion-card" role="status">
+                  <span className="completion-sun" aria-hidden="true">
+                    ✓
+                  </span>
+                  <div>
+                    <span className="eyebrow">ONE MORE LITTLE DISCOVERY</span>
+                    <h2>这一小轮，完成啦！</h2>
+                    <p>
+                      完成{lastResult.total}步练习 · 独立答对
+                      {lastResult.independent}步 · 包含提示共答对
+                      {lastResult.correct}步
+                    </p>
+                    <p>
+                      休息一下，让记忆慢慢长大。完成练习不等于已经掌握，之后还会再见。
+                    </p>
+                  </div>
+                  <button className="secondary" onClick={() => move("map")}>
+                    回到地图
+                  </button>
+                </section>
+              )}
               <p className="eyebrow">YOUR MEMORY GARDEN</p>
               <h1>让记忆，慢慢长大。</h1>
               <p className="lead">隔几天独立想起来，才是记忆变稳的证据。</p>
+              <div className="review-start card">
+                <div>
+                  <h2>
+                    {learning.dueCount
+                      ? `今天有${learning.dueCount}项记忆可以照顾`
+                      : "今天还没有到期的记忆"}
+                  </h2>
+                  <p>
+                    按到期时间优先安排，每轮最多8题，尽量换一个情景再想一想。
+                  </p>
+                </div>
+                <button
+                  className="primary"
+                  disabled={
+                    busy || !identity.authenticated || !learning.dueCount
+                  }
+                  onClick={() => start("", { mode: "review" })}
+                >
+                  开始今日复习
+                </button>
+              </div>
               <div className="stats">
                 <div className="card">
                   <strong>{progress.answered}</strong>
@@ -783,7 +1010,7 @@ export default function App() {
                     </div>
                   ))}
                   <p className="footnote">
-                    当前验证保存和调度；完整复习选题、离线续学与迁移测验将在后续里程碑完成。
+                    到期后会优先安排这些知识的复习；同一天跨课程和专题反复答对，也不会重复晋级。
                   </p>
                 </div>
               ) : (
@@ -801,18 +1028,53 @@ export default function App() {
               )}
             </>
           )}
+          {view === "lesson" && selectedLesson && (
+            <LessonView
+              lesson={selectedLesson}
+              busy={busy}
+              onStart={() => start("", { lessonId: selectedLesson.id })}
+              onBack={() => move("map")}
+              completed={learning.completedLessons.some(
+                (row) => row.lessonId === selectedLesson.id,
+              )}
+            />
+          )}
+          {view === "lesson" && !selectedLesson && lessons.length > 0 && (
+            <div className="card empty-state">
+              <h1>这节课还在准备中</h1>
+              <button className="primary" onClick={() => move("map")}>
+                回到探险地图
+              </button>
+            </div>
+          )}
           {view === "parent" && (
-            <FamilySpace identity={identity} refresh={refreshIdentity} />
+            <FamilySpace
+              identity={identity}
+              refresh={refreshIdentity}
+              learning={learning}
+              lessons={lessons}
+            />
           )}
           {view === "exercise" && session && (
             <div className="exercise-wrap">
               <div className="exercise-top">
-                <button className="secondary" onClick={() => move("topics")}>
-                  返回专题
+                <button className="secondary" onClick={() => move("map")}>
+                  返回学习地图
                 </button>
-                <span className="badge">启航小练习</span>
+                <span className="badge">
+                  第{session.position ?? 1}步 / 共{session.total ?? 1}步
+                </span>
               </div>
-              <article className="card exercise-card">
+              <progress
+                className="lesson-progress"
+                aria-label="本轮学习进度"
+                max={session.total ?? 1}
+                value={(session.position ?? 1) - (receipt ? 0 : 1)}
+              />
+              <article
+                className="card exercise-card"
+                data-saved={Boolean(receipt)}
+              >
                 <p className="eyebrow">ONE STEP AT A TIME</p>
                 <h1>{session.exercise.title}</h1>
                 <p className="lead">{session.exercise.context}</p>
@@ -881,12 +1143,15 @@ export default function App() {
                     <div className="answer-options">
                       {session.exercise.tokens
                         ?.filter(
-                          (t) => !Array.isArray(answer) || !answer.includes(t),
+                          (t, index, all) =>
+                            !Array.isArray(answer) ||
+                            answer.filter((v) => v === t).length <=
+                              all.slice(0, index).filter((v) => v === t).length,
                         )
-                        .map((t) => (
+                        .map((t, index) => (
                           <button
                             className="token"
-                            key={t}
+                            key={`${t}-${index}`}
                             disabled={busy || Boolean(receipt)}
                             onClick={() =>
                               setAnswer([
@@ -940,16 +1205,31 @@ export default function App() {
                   </div>
                 )}
                 {receipt && (
-                  <button className="primary" onClick={() => move("review")}>
-                    看看复习安排
+                  <button
+                    className="primary"
+                    disabled={busy}
+                    onClick={nextQuestion}
+                  >
+                    {(session.position ?? 1) < (session.total ?? 1)
+                      ? "下一小步"
+                      : "完成这轮，看看收获"}
                     <Icon kind="leaf" />
                   </button>
                 )}
               </article>
               <p className="footnote">
-                同一份答案重试不会重复计分；提示后答对不晋级。8道样题仅用于开发验证，完整课件仍在待办计划中。
+                同一份答案重试不会重复计分；提示后答对不晋级。每轮学完可以休息，完整课程会持续更新。
               </p>
             </div>
+          )}
+          {view === "exercise" && !session && (
+            <section className="card empty-state">
+              <h1>准备好下一次小探索</h1>
+              <p>正在恢复学习记录，也可以回到地图选择课程。</p>
+              <button className="primary" onClick={() => move("map")}>
+                回到学习地图
+              </button>
+            </section>
           )}
           {!catalog && !error && (
             <p className="empty-state" role="status">
