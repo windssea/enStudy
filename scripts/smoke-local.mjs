@@ -48,6 +48,8 @@ for (const path of [
   "/content/topics-v1.mjs",
   "/content/pattern-release.v1.json",
   "/content/patterns-v1.mjs",
+  "/content/vocabulary-release.v1.json",
+  "/content/vocabulary-v1.mjs",
 ]) {
   const privateFile = await fetch(`http://127.0.0.1:5173${path}`, {
     signal: AbortSignal.timeout(5000),

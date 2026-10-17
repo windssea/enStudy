@@ -18,6 +18,8 @@ import {
   exerciseById,
   topicRelease,
   patternRelease,
+  vocabularyRelease,
+  wordThemes,
 } from "./exercises";
 import {
   selectReviewItems,
@@ -141,8 +143,25 @@ app.get("/api/v1/lessons", (c) =>
     topicRelease: topicRelease.id,
     patternStats: patternRelease.stats,
     patternRelease: patternRelease.id,
+    vocabulary: {
+      release: vocabularyRelease.id,
+      totalWords: vocabularyRelease.totalWords,
+      totalItems: vocabularyRelease.totalItems,
+      themes: wordThemes,
+    },
   }),
 );
+
+app.get("/api/v1/vocabulary/:themeId", (c) => {
+  const theme = vocabularyRelease.themes.find(
+    (theme) => theme.id === c.req.param("themeId"),
+  );
+  if (!theme) return c.json(fault("NOT_FOUND", "没有找到这个单词主题。"), 404);
+  return c.json({
+    theme: wordThemes.find((row) => row.id === theme.id),
+    words: theme.words,
+  });
+});
 
 async function actorFrom(c: Context<Bindings>): Promise<Actor | null> {
   const accountActor = await readAccountActor(c);
@@ -309,7 +328,7 @@ interface Assignment {
   cursor: number;
   total: number;
   lesson_id: string | null;
-  source: "lesson" | "topic" | "pattern" | "review" | "single";
+  source: "lesson" | "topic" | "pattern" | "vocabulary" | "review" | "single";
   source_ref: string | null;
   presentation_json: string | null;
 }
@@ -401,10 +420,11 @@ app.post("/api/v1/sessions", async (c) => {
     typeof body.lessonId === "string",
     typeof body.topicId === "string",
     typeof body.patternId === "string",
+    typeof body.wordThemeId === "string",
     body.mode === "review",
   ];
   if (
-    ["exerciseId", "lessonId", "topicId", "patternId"].some(
+    ["exerciseId", "lessonId", "topicId", "patternId", "wordThemeId"].some(
       (key) =>
         body[key] !== undefined &&
         (typeof body[key] !== "string" ||
@@ -418,10 +438,20 @@ app.post("/api/v1/sessions", async (c) => {
     return c.json(fault("INVALID_SESSION", "请选择一种有效的学习任务。"), 422);
   if (
     body.roundSize !== undefined &&
-    (!(body.topicId || body.patternId) || ![5, 10, 20].includes(body.roundSize))
+    (!(body.topicId || body.patternId || body.wordThemeId) ||
+      ![5, 10, 20].includes(body.roundSize))
   )
     return c.json(
-      fault("INVALID_ROUND_SIZE", "专题和句式每轮可选5、10或20题。"),
+      fault("INVALID_ROUND_SIZE", "特训每轮可选5、10或20题。"),
+      422,
+    );
+  if (
+    body.wordMode !== undefined &&
+    (!body.wordThemeId ||
+      !["mixed", "meaning", "spelling", "context"].includes(body.wordMode))
+  )
+    return c.json(
+      fault("INVALID_WORD_MODE", "请选择词义、拼写、语境或混合练习。"),
       422,
     );
   const source: Assignment["source"] = body.lessonId
@@ -430,13 +460,20 @@ app.post("/api/v1/sessions", async (c) => {
       ? "topic"
       : body.patternId
         ? "pattern"
-        : body.mode === "review"
-          ? "review"
-          : "single";
+        : body.wordThemeId
+          ? "vocabulary"
+          : body.mode === "review"
+            ? "review"
+            : "single";
   const reference = String(
-    body.lessonId ?? body.topicId ?? body.patternId ?? body.exerciseId ?? "due",
+    body.lessonId ??
+      body.topicId ??
+      body.patternId ??
+      body.wordThemeId ??
+      body.exerciseId ??
+      "due",
   );
-  const sourceRef = `${source}:${reference}${["topic", "pattern"].includes(source) ? `:${body.roundSize ?? 10}` : ""}`;
+  const sourceRef = `${source}:${reference}${["topic", "pattern", "vocabulary"].includes(source) ? `:${body.roundSize ?? 10}` : ""}${source === "vocabulary" ? `:${body.wordMode ?? "mixed"}` : ""}`;
   const existing = await loadSession(c.env.DB, actor, body.clientRequestId);
   if (existing) {
     if (
@@ -464,7 +501,7 @@ app.post("/api/v1/sessions", async (c) => {
         ? exercises.filter((item) => item.id === body.exerciseId)
         : [];
   if (source === "lesson" && !lesson) selected = [];
-  if (source === "topic" || source === "pattern") {
+  if (["topic", "pattern", "vocabulary"].includes(source)) {
     const recent = await c.env.DB.prepare(
       "SELECT si.item_id FROM session_items si JOIN learning_sessions s ON s.id=si.session_id WHERE si.household_id=? AND si.child_id=? ORDER BY s.created_at DESC,si.position LIMIT 400",
     )
@@ -476,11 +513,18 @@ app.post("/api/v1/sessions", async (c) => {
       ),
     );
     selected = selectTopicItems(
-      source === "pattern"
-        ? patternRelease.items.filter(
-            (item) => item.patternId === body.patternId,
+      source === "vocabulary"
+        ? vocabularyRelease.items.filter(
+            (item) =>
+              item.wordThemeId === body.wordThemeId &&
+              ((body.wordMode ?? "mixed") === "mixed" ||
+                item.wordMode === body.wordMode),
           )
-        : topicRelease.items.filter((item) => item.topicId === body.topicId),
+        : source === "pattern"
+          ? patternRelease.items.filter(
+              (item) => item.patternId === body.patternId,
+            )
+          : topicRelease.items.filter((item) => item.topicId === body.topicId),
       recentFamilies,
       body.roundSize ?? 10,
     );
@@ -501,13 +545,15 @@ app.post("/api/v1/sessions", async (c) => {
       ),
       404,
     );
-  const release = selected.some((item) => item.patternId)
-    ? patternRelease.id
-    : selected.some((item) => item.topicId)
-      ? topicRelease.id
-      : selected.some((item) => item.lessonId)
-        ? courseRelease.id
-        : "dev-samples-v1";
+  const release = selected.some((item) => item.wordThemeId)
+    ? vocabularyRelease.id
+    : selected.some((item) => item.patternId)
+      ? patternRelease.id
+      : selected.some((item) => item.topicId)
+        ? topicRelease.id
+        : selected.some((item) => item.lessonId)
+          ? courseRelease.id
+          : "dev-samples-v1";
   const publication = await c.env.DB.prepare(
     `SELECT status,(SELECT count(*) FROM release_items ri WHERE ri.release_id=content_releases.id AND ri.item_id IN (${selected.map(() => "?").join(",")})) AS itemCount FROM content_releases WHERE id=?`,
   )
@@ -670,6 +716,15 @@ app.get("/api/v1/learning/summary", async (c) => {
     dueCount: due?.total ?? 0,
     recent: recent.results,
   });
+});
+app.get("/api/v1/learning/vocabulary", async (c) => {
+  const actor = c.get("actor");
+  const summary = await c.env.DB.prepare(
+    "SELECT count(DISTINCT skill_id) AS practisedWords,count(DISTINCT CASE WHEN due_at<=? THEN skill_id END) AS dueWords FROM review_cards WHERE household_id=? AND child_id=? AND skill_id LIKE 'lexeme.word.%'",
+  )
+    .bind(Date.now(), actor.householdId, actor.childId)
+    .first();
+  return c.json(summary ?? { practisedWords: 0, dueWords: 0 });
 });
 app.get("/api/v1/sessions/:id", async (c) => {
   const row = await loadSession(c.env.DB, c.get("actor"), c.req.param("id"));

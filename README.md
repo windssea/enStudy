@@ -1,6 +1,6 @@
 # 英语探险岛
 
-面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前v0.8：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。
+面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前v0.9：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。
 
 [开发预览](https://development.english-quest-dev.pages.dev) 通过GitHub Actions发布。M1加入管理员登录（账号admin，密码使用用户指定值）、关闭注册、儿童档案管理与刷新续学；开发测试身份继续只限本机。验证与剩余范围见[M1进展](docs/23-next-phase-progress.md)。
 
@@ -24,6 +24,8 @@ v0.7进一步开放全部60专题的文字练习题库：每专题60组题干、
 
 v0.8为72条固定句式逐条接入独立随机题库，每条40情境×选择/填写/组句3种形式=120变体，新增8640变体。支持5/10/20题、句子去重、近期避重、合法接续与缩写、刷新续练和分句式复习。详见[句式练习与验证](docs/27-random-pattern-banks.md)。
 
+v0.9新增[单词特训](https://enstudy.nanokid.win/#words)：360词条、六个年级段18主题，词卡释义/例句/点按朗读，词义、拼写、语境或混合随机练习；每轮5/10/20题，按词条和模式保存证据与复习，显示真实已练及到期数量。详见[单词特训与验证](docs/28-vocabulary-training.md)。
+
 多家庭账号管理、全专题诊断与迁移、延迟测验、离线队列、AI/BYOK/语音、教材精确映射及完整288课仍在里程碑待办中。当前只需儿童昵称和年级，不需要真实姓名或生日；设备朗读不等同于AI语音对话。
 
 ## 检查和部署
@@ -37,6 +39,7 @@ npm run verify:account
 npm run verify:course
 npm run verify:topics
 npm run verify:patterns
+npm run verify:vocabulary
 npm run cf:plan
 ```
 

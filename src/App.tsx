@@ -13,6 +13,8 @@ import type {
   CourseLesson,
   TopicStats,
   PatternStats,
+  WordTheme,
+  WordMode,
   LearningSummary,
   SessionResult,
   Identity,
@@ -24,6 +26,7 @@ import { api } from "./api";
 import FamilySpace from "./FamilySpace";
 import LessonView from "./LessonView";
 const World = lazy(() => import("./World"));
+const WordTraining = lazy(() => import("./WordTraining"));
 const labels: Record<string, string> = {
   grammar: "语法",
   tense: "时态",
@@ -36,7 +39,14 @@ const labels: Record<string, string> = {
 };
 const journeys = ["萌芽", "探索", "成长", "远航", "发现", "创造"];
 type View =
-  "map" | "topics" | "patterns" | "review" | "parent" | "exercise" | "lesson";
+  | "map"
+  | "topics"
+  | "patterns"
+  | "words"
+  | "review"
+  | "parent"
+  | "exercise"
+  | "lesson";
 const readRoute = (): { view: View; lessonId: string | null } => {
   const hash = window.location.hash.slice(1);
   if (hash.startsWith("lesson=")) {
@@ -47,7 +57,14 @@ const readRoute = (): { view: View; lessonId: string | null } => {
     }
   }
   return {
-    view: (["topics", "patterns", "review", "parent", "exercise"].includes(hash)
+    view: ([
+      "topics",
+      "patterns",
+      "words",
+      "review",
+      "parent",
+      "exercise",
+    ].includes(hash)
       ? hash
       : "map") as View,
     lessonId: null,
@@ -76,6 +93,12 @@ function Icon({ kind = "compass" }: { kind?: string }) {
     leaf: <path d="M20 3C6 2 2 10 7 16s15 1 13-13ZM5 21l11-12" />,
     book: (
       <path d="M12 5C8 2 3 4 3 4v15s5-2 9 1c4-3 9-1 9-1V4s-5-2-9 1Zm0 0v15" />
+    ),
+    words: (
+      <>
+        <rect x="3" y="5" width="15" height="16" rx="3" />
+        <path d="M7 17l3-7 3 7m-5-2h4M7 5V3h14v15h-3" />
+      </>
     ),
     person: (
       <>
@@ -146,6 +169,8 @@ export default function App() {
   const [topicRoundSize, setTopicRoundSize] = useState(10);
   const [learning, setLearning] = useState<LearningSummary>(emptyLearning);
   const [lastResult, setLastResult] = useState<SessionResult | null>(null);
+  const [wordThemes, setWordThemes] = useState<WordTheme[]>([]);
+  const [wordThemeId, setWordThemeId] = useState<string | null>(null);
   const selectedLesson = lessons.find((lesson) => lesson.id === lessonId);
   useEffect(() => {
     const pop = () => {
@@ -243,6 +268,7 @@ export default function App() {
       topicAvailability: Record<string, number>;
       topicStats?: Record<string, TopicStats>;
       patternStats?: Record<string, PatternStats>;
+      vocabulary?: { themes: WordTheme[] };
     }>("/lessons")
       .then((data) => {
         if (!cancelled) {
@@ -250,6 +276,7 @@ export default function App() {
           setTopicAvailability(data.topicAvailability);
           setTopicStats(data.topicStats ?? {});
           setPatternStats(data.patternStats ?? {});
+          setWordThemes(data.vocabulary?.themes ?? []);
         }
       })
       .catch((e) => {
@@ -327,6 +354,8 @@ export default function App() {
       lessonId?: string;
       topicId?: string;
       patternId?: string;
+      wordThemeId?: string;
+      wordMode?: WordMode;
       mode?: "review";
       roundSize?: number;
     },
@@ -461,6 +490,7 @@ export default function App() {
   );
   const nav: [View, string, string][] = [
     ["map", "探险地图", "map"],
+    ["words", "单词特训", "words"],
     ["topics", "专题特训", "blocks"],
     ["patterns", "固定句式", "book"],
     ["review", "复习花园", "leaf"],
@@ -484,6 +514,7 @@ export default function App() {
           {nav.map(([id, label, icon]) => (
             <button
               key={id}
+              data-nav={id}
               aria-current={view === id ? "page" : undefined}
               onClick={() => {
                 setSearch("");
@@ -499,7 +530,7 @@ export default function App() {
           <strong>每天，一小步就很好。</strong>
           <p>学完一小轮，就去生活里试试新学的英语。</p>
         </div>
-        <span className="build-label">M1 · 探险启航</span>
+        <span className="build-label">一起，慢慢进步。</span>
       </aside>
       <div className="workspace">
         <header className="topbar">
@@ -526,7 +557,11 @@ export default function App() {
               <Icon kind="star" />
               {progress.stars}
             </span>
-            <button className="profile-button" onClick={() => move("parent")}>
+            <button
+              className="profile-button"
+              aria-label={`家长空间与档案：${identity.child?.nickname ?? "选择档案"}`}
+              onClick={() => move("parent")}
+            >
               {identity.child?.nickname ?? "选择档案"}
             </button>
           </div>
@@ -808,6 +843,41 @@ export default function App() {
                   <small>先懂场景，再换词块</small>
                 </div>
               </div>
+            </>
+          )}
+          {view === "words" && (
+            <>
+              {session?.source === "vocabulary" && (
+                <div className="notice">
+                  还有一轮单词练习可以继续。
+                  <button
+                    className="text-button"
+                    onClick={() => move("exercise")}
+                  >
+                    继续第{session.position}题 →
+                  </button>
+                </div>
+              )}
+              <Suspense
+                fallback={
+                  <p className="empty-state" role="status">
+                    正在准备单词小课堂…
+                  </p>
+                }
+              >
+                <WordTraining
+                  themes={wordThemes}
+                  grade={grade}
+                  childId={identity.child?.id}
+                  selectedId={wordThemeId}
+                  onSelect={setWordThemeId}
+                  busy={busy}
+                  onStart={(id, wordMode, roundSize) =>
+                    start("", { wordThemeId: id, wordMode, roundSize })
+                  }
+                  onReview={() => move("review")}
+                />
+              </Suspense>
             </>
           )}
           {view === "topics" && (
@@ -1146,8 +1216,28 @@ export default function App() {
           {view === "exercise" && session && (
             <div className="exercise-wrap">
               <div className="exercise-top">
-                <button className="secondary" onClick={() => move("map")}>
-                  返回学习地图
+                <button
+                  className="secondary"
+                  onClick={() =>
+                    move(
+                      session.source === "vocabulary"
+                        ? "words"
+                        : session.source === "pattern"
+                          ? "patterns"
+                          : session.source === "topic"
+                            ? "topics"
+                            : "map",
+                    )
+                  }
+                >
+                  返回
+                  {session.source === "vocabulary"
+                    ? "单词特训"
+                    : session.source === "pattern"
+                      ? "固定句式"
+                      : session.source === "topic"
+                        ? "专题特训"
+                        : "学习地图"}
                 </button>
                 <span className="badge">
                   第{session.position ?? 1}步 / 共{session.total ?? 1}步

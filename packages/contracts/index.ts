@@ -23,7 +23,7 @@ export interface LearningSession {
   position?: number;
   total?: number;
   lessonId?: string | null;
-  source?: "lesson" | "topic" | "pattern" | "review" | "single";
+  source?: "lesson" | "topic" | "pattern" | "vocabulary" | "review" | "single";
 }
 export interface TeachingCard {
   title: string;
@@ -55,6 +55,26 @@ export interface TopicStats {
 }
 export interface PatternStats extends TopicStats {
   contexts: number;
+}
+export type WordMode = "mixed" | "meaning" | "spelling" | "context";
+export interface WordCard {
+  id: string;
+  word: string;
+  meaning: string;
+  example: string;
+}
+export interface WordTheme {
+  id: string;
+  grade: number;
+  title: string;
+  description: string;
+  wordCount: number;
+  items: number;
+  modes: WordMode[];
+}
+export interface VocabularySummary {
+  practisedWords: number;
+  dueWords: number;
 }
 export interface SessionResult {
   sessionId: string;

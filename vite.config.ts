@@ -17,6 +17,8 @@ export default defineConfig({
         "**/content/topics-*.mjs",
         "**/content/pattern-release*.json",
         "**/content/patterns-*.mjs",
+        "**/content/vocabulary-release*.json",
+        "**/content/vocabulary-*.mjs",
         "**/packages/server/**",
         "**/migrations/**",
         "**/tests/**",

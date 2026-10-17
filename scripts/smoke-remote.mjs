@@ -72,6 +72,8 @@ const courseReady = () =>
     (stats) =>
       stats.items >= 120 && stats.contexts >= 40 && stats.families >= 20,
   ) &&
+  course.vocabulary?.totalWords === 360 &&
+  course.vocabulary?.themes?.length === 18 &&
   !JSON.stringify(course).includes('"answers":');
 // Pages may report completion before the branch alias serves the new Functions
 // on every edge. Wait only for release propagation; all security checks above
