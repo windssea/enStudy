@@ -20,6 +20,8 @@ Actions固定到已核验的官方checkout/setup-node提交SHA，只有contents:
 
 Token仅限目标账号的Cloudflare Pages:Edit和D1:Edit；CI需要列资源、执行迁移和部署。不要把本机OAuth凭据复制到仓库，不要在聊天粘贴token。可直接在GitHub Secret页面填写，或通过`gh secret set CLOUDFLARE_API_TOKEN`交互输入。当前尚未配置CI Token，因此不能把首次CLI发布描述为GitHub自动部署已验收。
 
+2026-10-17实际配置记录：本人GitHub设备授权完成；仓库Variable `CLOUDFLARE_ACCOUNT_ID`已设置，`CLOUDFLARE_DEPLOY_ENABLED`暂为`false`，等待Secret创建后开启。GitHub托管运行器已通过[工作流检查39008040271](https://github.com/windssea/enStudy/actions/runs/39008040271)，包括安装、格式、27项检查、生产构建及Functions编译；部署任务按开关跳过。这证明检查链路已运行，不代表CI部署已完成。
+
 ## 创建Token的具体步骤
 
 1. 登录[Cloudflare个人API Tokens](https://dash.cloudflare.com/profile/api-tokens)，选择Create Token → Custom token → Get started。这里使用个人自定义Token。

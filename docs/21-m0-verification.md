@@ -19,6 +19,7 @@
 | 远程数据库 | wrangler d1 execute DB --remote | 26张核心表、0001_core.sql迁移记录已核对；未写入真实儿童数据 |
 | 线上检查 | npm run verify:remote | 8项通过：React入口、CSP、preview健康、身份与AI关闭、DB绑定、开发登录403、匿名进度401和课程目录 |
 | 本地Git | git status、git check-ignore | 依赖/本地数据/凭据/历史zip被忽略；后续推送与CI结果另以GitHub记录为准 |
+| GitHub CI | Actions运行39008040271 | GitHub托管运行器检查成功：安装、格式、27项检查、构建、Functions编译；部署因开关关闭跳过，Token待配置 |
 
 HTTP验证会在虚构测试档案增加少量记录，重跑按前后差值验证，不清空已有学习数据。每次并发提交的同一assignment只产生一次事件与奖励；提示状态来自服务端，不相信客户端声称未用提示。
 
