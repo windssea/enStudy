@@ -16,7 +16,10 @@ export interface Exercise {
 }
 export interface LearningSession {
   id: string;
-  leaseId: string;
+  leaseId: string | null;
+  leaseVersion: number;
+  access: "owner" | "takeover-required" | "ended";
+  state: "active" | "completed" | "paused" | "replaced";
   assignmentId: string;
   exercise: Exercise;
   hintLevel: number;

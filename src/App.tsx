@@ -22,11 +22,13 @@ import type {
   Progress,
   Receipt,
 } from "../packages/contracts/index";
-import { api } from "./api";
+import { api, ApiError, setLearningChild } from "./api";
 import FamilySpace from "./FamilySpace";
 import LessonView from "./LessonView";
 import SceneStage, { MotionShell } from "./SceneStage";
 import FlatMap from "./FlatMap";
+import SessionAccess from "./SessionAccess";
+import { reconcileDraft } from "./sessionDraft";
 const World = lazy(() => import("./World"));
 const WordTraining = lazy(() => import("./WordTraining"));
 const labels: Record<string, string> = {
@@ -240,6 +242,24 @@ export default function App() {
     [answer, setAnswer] = useState<Answer>("");
   const [receipt, setReceipt] = useState<Receipt | null>(null),
     [hint, setHint] = useState("");
+  const [sessionStopped, setSessionStopped] = useState(false);
+  const [draftBackup, setDraftBackup] = useState<string | null>(null);
+  const [sessionNotice, setSessionNotice] = useState("");
+  const [freshReceiptEvent, setFreshReceiptEvent] = useState<string | null>(
+    null,
+  );
+  const mutation = useRef(0);
+  const snapshotRequest = useRef(0);
+  const identityChannel = useRef<BroadcastChannel | null>(null);
+  const pendingClaim = useRef<{
+    id: string;
+    session: string;
+    version: number;
+  } | null>(null);
+  const draftRef = useRef(answer),
+    sessionRef = useRef(session);
+  draftRef.current = answer;
+  sessionRef.current = session;
   const eventId = useRef(crypto.randomUUID());
   const epoch = useRef(0);
   const mainRef = useRef<HTMLElement>(null);
@@ -302,6 +322,7 @@ export default function App() {
     api<Identity>("/me")
       .then(async (me) => {
         if (cancelled || epoch.current !== initialEpoch) return;
+        setLearningChild(me.child?.id ?? null);
         setIdentity(me);
         if (me.child) setGrade(me.child.grade);
         if (me.authenticated) {
@@ -319,10 +340,11 @@ export default function App() {
       document.removeEventListener("visibilitychange", visibility);
     };
   }, []);
-  async function refreshIdentity() {
+  async function refreshIdentity(announce = true) {
     const current = ++epoch.current;
     const me = await api<Identity>("/me");
     if (epoch.current !== current) return;
+    setLearningChild(me.child?.id ?? null);
     setIdentity(me);
     setSession(null);
     setReceipt(null);
@@ -331,12 +353,32 @@ export default function App() {
     setProgress(emptyProgress);
     setLearning(emptyLearning);
     setLastResult(null);
+    setFreshReceiptEvent(null);
+    mutation.current++;
+    pendingClaim.current = null;
+    setSessionStopped(false);
+    setDraftBackup(null);
+    setSessionNotice("");
     if (me.child) setGrade(me.child.grade);
     if (me.authenticated) {
       await refreshProgress(current);
       await restoreSession(current);
-    }
+    } else if (readRoute().view === "exercise") move("parent");
+    if (announce) identityChannel.current?.postMessage("identity-changed");
   }
+  useEffect(() => {
+    if (!("BroadcastChannel" in window)) return;
+    const channel = new BroadcastChannel("eq-family-identity");
+    identityChannel.current = channel;
+    channel.onmessage = (event) => {
+      if (event.data === "identity-changed")
+        void refreshIdentity(false).catch((error) => setError(message(error)));
+    };
+    return () => {
+      identityChannel.current = null;
+      channel.close();
+    };
+  }, []);
   async function restoreSession(current: number) {
     const saved = await api<{
       session: LearningSession | null;
@@ -349,11 +391,157 @@ export default function App() {
       return;
     }
     setSession(saved.session);
+    setFreshReceiptEvent(null);
+    setSessionStopped(false);
     setReceipt(saved.receipt ?? null);
     setHint(saved.hint ?? "");
     setAnswer(saved.session.exercise.type === "order" ? [] : "");
     eventId.current = crypto.randomUUID();
   }
+  type SavedSession = {
+    childId: string;
+    session: LearningSession | null;
+    receipt?: Receipt | null;
+    hint?: string | null;
+  };
+  function applySnapshot(saved: SavedSession) {
+    setFreshReceiptEvent(null);
+    setSessionNotice("");
+    if (!saved.session) {
+      setSessionStopped(true);
+      return;
+    }
+    const draft = reconcileDraft(
+      sessionRef.current,
+      saved.session,
+      draftRef.current,
+    );
+    if (draft.backup) setDraftBackup(draft.backup);
+    setAnswer(draft.answer);
+    setSession(saved.session);
+    setReceipt(saved.receipt ?? null);
+    setHint(saved.hint ?? "");
+    setSessionStopped(false);
+    eventId.current = crypto.randomUUID();
+  }
+  async function syncSession(announce = true) {
+    const current = epoch.current,
+      stamp = mutation.current,
+      ticket = ++snapshotRequest.current;
+    const saved = await api<SavedSession>("/sessions/current");
+    if (
+      epoch.current !== current ||
+      mutation.current !== stamp ||
+      snapshotRequest.current !== ticket
+    )
+      return;
+    if (saved.childId !== identity.child?.id) {
+      await refreshIdentity(false);
+      return;
+    }
+    applySnapshot(saved);
+    if (announce)
+      setSessionNotice(
+        !saved.session
+          ? "这轮学习已结束，可以回地图选择新任务。"
+          : saved.session.access === "owner"
+            ? "最新进度已读取，可以在这台设备继续。"
+            : "最新进度已读取，请选择在哪里接着学。",
+      );
+  }
+  async function refreshSession() {
+    const current = epoch.current;
+    setBusy(true);
+    setError("");
+    try {
+      await syncSession();
+    } catch (error) {
+      await handleSessionError(error, current);
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function handleSessionError(error: unknown, current: number) {
+    if (epoch.current !== current) return;
+    setError(message(error));
+    if (
+      error instanceof ApiError &&
+      (error.status === 401 || error.code === "IDENTITY_CHANGED")
+    ) {
+      await refreshIdentity(false);
+      return;
+    }
+    if (
+      error instanceof ApiError &&
+      ["LEASE_REPLACED", "SESSION_CHANGED", "TAKEOVER_REQUIRED"].includes(
+        error.code,
+      )
+    ) {
+      setSessionStopped(true);
+      try {
+        await syncSession(false);
+      } catch {
+        /* Keep the task blocked until progress can be read. */
+      }
+    }
+  }
+  async function takeOver() {
+    if (!session || session.access !== "takeover-required") return;
+    const current = epoch.current;
+    if (
+      !pendingClaim.current ||
+      pendingClaim.current.session !== session.id ||
+      pendingClaim.current.version !== session.leaseVersion
+    )
+      pendingClaim.current = {
+        id: crypto.randomUUID(),
+        session: session.id,
+        version: session.leaseVersion,
+      };
+    setBusy(true);
+    setError("");
+    mutation.current++;
+    try {
+      const saved = await api<SavedSession>(
+        `/sessions/${session.id}/takeover`,
+        {
+          clientRequestId: pendingClaim.current.id,
+          expectedLeaseVersion: pendingClaim.current.version,
+        },
+      );
+      if (epoch.current !== current) return;
+      applySnapshot(saved);
+      pendingClaim.current = null;
+      setSessionNotice("进度接上啦。现在由这台设备保存作答。");
+      await refreshProgress(current);
+    } catch (error) {
+      await handleSessionError(error, current);
+    } finally {
+      setBusy(false);
+    }
+  }
+  useEffect(() => {
+    if (view !== "exercise" || busy || !session) return;
+    const refresh = () => {
+      if (!document.hidden)
+        void syncSession(false).catch((error) => {
+          if (
+            error instanceof ApiError &&
+            (error.status === 401 || error.code === "IDENTITY_CHANGED")
+          )
+            void refreshIdentity(false).catch(() => {});
+        });
+    };
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [view, busy, session, answer]);
+  const canWriteSession = Boolean(
+    session?.access === "owner" && session.leaseId && !sessionStopped,
+  );
   async function start(
     exerciseId: string,
     task?: {
@@ -371,8 +559,13 @@ export default function App() {
       setError("先请家长登录，再选择你的探险档案。");
       return;
     }
+    if (session?.access === "takeover-required" && !sessionStopped) {
+      move("exercise");
+      return;
+    }
     setBusy(true);
     setError("");
+    mutation.current++;
     const current = epoch.current;
     try {
       const data = await api<LearningSession>("/sessions", {
@@ -381,20 +574,31 @@ export default function App() {
       });
       if (epoch.current !== current) return;
       setLastResult(null);
+      setSessionStopped(false);
+      setDraftBackup(null);
+      setSessionNotice("");
+      pendingClaim.current = null;
       setSession(data);
+      setFreshReceiptEvent(null);
       setAnswer(data.exercise.type === "order" ? [] : "");
       setReceipt(null);
       setHint("");
       eventId.current = crypto.randomUUID();
       move("exercise");
     } catch (e) {
-      setError(message(e));
+      await handleSessionError(e, current);
+      if (
+        epoch.current === current &&
+        e instanceof ApiError &&
+        e.code === "TAKEOVER_REQUIRED"
+      )
+        move("exercise");
     } finally {
       setBusy(false);
     }
   }
   async function check() {
-    if (!session) return;
+    if (!session || !canWriteSession) return;
     if (
       (Array.isArray(answer) && !answer.length) ||
       (typeof answer === "string" && !answer.trim())
@@ -404,6 +608,7 @@ export default function App() {
     }
     setBusy(true);
     setError("");
+    mutation.current++;
     const current = epoch.current;
     try {
       const result = await api<Receipt>("/attempts", {
@@ -415,33 +620,37 @@ export default function App() {
       });
       if (epoch.current !== current) return;
       setReceipt(result);
+      setFreshReceiptEvent(result.eventId);
       await refreshProgress(current);
     } catch (e) {
-      setError(message(e));
+      await handleSessionError(e, current);
     } finally {
       setBusy(false);
     }
   }
   async function askHint() {
-    if (!session) return;
+    if (!session || !canWriteSession) return;
     setBusy(true);
     setError("");
+    mutation.current++;
     const current = epoch.current;
     try {
       const data = await api<{ hint: string }>(`/sessions/${session.id}/hint`, {
         assignmentId: session.assignmentId,
+        leaseId: session.leaseId,
       });
       if (epoch.current === current) setHint(data.hint);
     } catch (e) {
-      setError(message(e));
+      await handleSessionError(e, current);
     } finally {
       setBusy(false);
     }
   }
   async function nextQuestion() {
-    if (!session) return;
+    if (!session || !canWriteSession) return;
     setBusy(true);
     setError("");
+    mutation.current++;
     const current = epoch.current;
     try {
       const result = await api<{
@@ -454,12 +663,14 @@ export default function App() {
       });
       if (epoch.current !== current) return;
       if (result.completed) {
+        setFreshReceiptEvent(null);
         setLastResult(result.result ?? null);
         setSession(null);
         setReceipt(null);
         await refreshProgress(current);
         move("review");
       } else if (result.session) {
+        setFreshReceiptEvent(null);
         setSession(result.session);
         setReceipt(null);
         setHint("");
@@ -469,7 +680,7 @@ export default function App() {
         requestAnimationFrame(() => mainRef.current?.focus());
       }
     } catch (e) {
-      if (epoch.current === current) setError(message(e));
+      await handleSessionError(e, current);
     } finally {
       setBusy(false);
     }
@@ -638,7 +849,13 @@ export default function App() {
                 <section className="resume-banner">
                   <div>
                     <span className="eyebrow">YOUR ADVENTURE CONTINUES</span>
-                    <h2>{receipt ? "看看上次的小收获" : "接着上次的小脚印"}</h2>
+                    <h2>
+                      {session.access === "takeover-required"
+                        ? "换台设备，接着上次的探索"
+                        : receipt
+                          ? "看看上次的小收获"
+                          : "接着上次的小脚印"}
+                    </h2>
                     <p>
                       {session.exercise.title} ·{" "}
                       {receipt ? "作答已保存" : "上次停下的练习还在这里"}
@@ -649,7 +866,11 @@ export default function App() {
                     disabled={busy}
                     onClick={() => move("exercise")}
                   >
-                    {receipt ? "查看上次练习" : "继续练习"}
+                    {session.access === "takeover-required"
+                      ? "查看进度并接续"
+                      : receipt
+                        ? "查看上次练习"
+                        : "继续练习"}
                     <Icon kind="arrow" />
                   </button>
                 </section>
@@ -1247,6 +1468,20 @@ export default function App() {
           )}
           {view === "exercise" && session && (
             <div className="exercise-wrap">
+              <SessionAccess
+                session={session}
+                stopped={sessionStopped}
+                busy={busy}
+                backup={draftBackup}
+                onRefresh={() => void refreshSession()}
+                onTakeover={() => void takeOver()}
+                onLeave={() => move("map")}
+              />
+              {sessionNotice && (
+                <p className="notice" role="status">
+                  {sessionNotice}
+                </p>
+              )}
               <div className="exercise-top">
                 <button
                   className="secondary"
@@ -1292,7 +1527,14 @@ export default function App() {
                   key={session.assignmentId}
                   kind="feedback"
                   compact
-                  reaction={receipt?.outcome ?? "thinking"}
+                  animateReaction={
+                    canWriteSession && receipt?.eventId === freshReceiptEvent
+                  }
+                  reaction={
+                    canWriteSession
+                      ? (receipt?.outcome ?? "thinking")
+                      : "thinking"
+                  }
                 />
                 {session.exercise.reading && (
                   <section
@@ -1303,139 +1545,150 @@ export default function App() {
                     {session.exercise.reading}
                   </section>
                 )}
-                <h2 className="question">{session.exercise.prompt}</h2>
-                {session.exercise.type === "choice" && (
-                  <div className="answer-options">
-                    {session.exercise.choices?.map((o) => (
-                      <button
-                        disabled={busy || Boolean(receipt)}
-                        className="answer-option"
-                        aria-pressed={answer === o}
-                        key={o}
-                        onClick={() => setAnswer(o)}
-                      >
-                        {o}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {session.exercise.type === "input" && (
-                  <label className="field word-answer">
-                    你的答案
-                    <input
-                      lang="en"
-                      spellCheck={false}
-                      autoComplete="off"
-                      autoCapitalize="none"
-                      disabled={busy || Boolean(receipt)}
-                      value={typeof answer === "string" ? answer : ""}
-                      onChange={(e) => setAnswer(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !busy && !receipt) check();
-                      }}
-                    />
-                  </label>
-                )}
-                {session.exercise.type === "order" && (
-                  <>
-                    <div className="sentence-slot" aria-label="已选择的词块">
-                      {Array.isArray(answer) && answer.length ? (
-                        answer.map((t, i) => (
-                          <button
-                            disabled={busy || Boolean(receipt)}
-                            className="token picked"
-                            key={`${t}-${i}`}
-                            aria-label={`移除${t}`}
-                            onClick={() =>
-                              setAnswer(
-                                answer.filter((_, index) => index !== i),
-                              )
-                            }
-                          >
-                            {t}
-                          </button>
-                        ))
-                      ) : (
-                        <span>点击词块，搭出句子。</span>
-                      )}
-                    </div>
+                <fieldset
+                  className="exercise-controls"
+                  disabled={!canWriteSession}
+                >
+                  <legend className="visually-hidden">当前题目作答</legend>
+                  <h2 className="question">{session.exercise.prompt}</h2>
+                  {session.exercise.type === "choice" && (
                     <div className="answer-options">
-                      {session.exercise.tokens
-                        ?.filter(
-                          (t, index, all) =>
-                            !Array.isArray(answer) ||
-                            answer.filter((v) => v === t).length <=
-                              all.slice(0, index).filter((v) => v === t).length,
-                        )
-                        .map((t, index) => (
-                          <button
-                            className="token"
-                            key={`${t}-${index}`}
-                            disabled={busy || Boolean(receipt)}
-                            onClick={() =>
-                              setAnswer([
-                                ...(Array.isArray(answer) ? answer : []),
-                                t,
-                              ])
-                            }
-                          >
-                            {t}
-                          </button>
-                        ))}
+                      {session.exercise.choices?.map((o) => (
+                        <button
+                          disabled={busy || Boolean(receipt)}
+                          className="answer-option"
+                          aria-pressed={answer === o}
+                          key={o}
+                          onClick={() => setAnswer(o)}
+                        >
+                          {o}
+                        </button>
+                      ))}
                     </div>
-                  </>
-                )}
-                {hint && (
-                  <div className="notice" role="status">
-                    提示：{hint} 使用提示后，本题不作独立掌握证据。
-                  </div>
-                )}
-                {receipt ? (
-                  <div
-                    className={`feedback ${receipt.outcome === "correct" ? "success" : ""}`}
-                    data-outcome={receipt.outcome}
-                    role="status"
-                  >
-                    <strong>
-                      {receipt.outcome === "correct"
-                        ? "这一步，想对了！"
-                        : receipt.outcome === "hinted"
-                          ? "跟着提示，完成了这一步。"
-                          : "先看看这个规律，再用新题练习。"}
-                    </strong>
-                    <p>{receipt.feedback}</p>
-                    <small>
-                      学习记录已保存 · 下次复习{receipt.nextReviewDay} ·
-                      完成奖励+{receipt.rewardDelta}
-                    </small>
-                  </div>
-                ) : (
-                  <div className="exercise-actions">
-                    <button
-                      className="secondary"
-                      onClick={askHint}
-                      disabled={busy || Boolean(hint)}
+                  )}
+                  {session.exercise.type === "input" && (
+                    <label className="field word-answer">
+                      你的答案
+                      <input
+                        lang="en"
+                        spellCheck={false}
+                        autoComplete="off"
+                        autoCapitalize="none"
+                        disabled={busy || Boolean(receipt)}
+                        value={typeof answer === "string" ? answer : ""}
+                        onChange={(e) => setAnswer(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !busy && !receipt) check();
+                        }}
+                      />
+                    </label>
+                  )}
+                  {session.exercise.type === "order" && (
+                    <>
+                      <div className="sentence-slot" aria-label="已选择的词块">
+                        {Array.isArray(answer) && answer.length ? (
+                          answer.map((t, i) => (
+                            <button
+                              disabled={busy || Boolean(receipt)}
+                              className="token picked"
+                              key={`${t}-${i}`}
+                              aria-label={`移除${t}`}
+                              onClick={() =>
+                                setAnswer(
+                                  answer.filter((_, index) => index !== i),
+                                )
+                              }
+                            >
+                              {t}
+                            </button>
+                          ))
+                        ) : (
+                          <span>点击词块，搭出句子。</span>
+                        )}
+                      </div>
+                      <div className="answer-options">
+                        {session.exercise.tokens
+                          ?.filter(
+                            (t, index, all) =>
+                              !Array.isArray(answer) ||
+                              answer.filter((v) => v === t).length <=
+                                all.slice(0, index).filter((v) => v === t)
+                                  .length,
+                          )
+                          .map((t, index) => (
+                            <button
+                              className="token"
+                              key={`${t}-${index}`}
+                              disabled={busy || Boolean(receipt)}
+                              onClick={() =>
+                                setAnswer([
+                                  ...(Array.isArray(answer) ? answer : []),
+                                  t,
+                                ])
+                              }
+                            >
+                              {t}
+                            </button>
+                          ))}
+                      </div>
+                    </>
+                  )}
+                  {hint && (
+                    <div className="notice" role="status">
+                      提示：{hint} 使用提示后，本题不作独立掌握证据。
+                    </div>
+                  )}
+                  {receipt ? (
+                    <div
+                      className={`feedback ${receipt.outcome === "correct" ? "success" : ""}`}
+                      data-outcome={receipt.outcome}
+                      role="status"
                     >
-                      给我一个提示
+                      <strong>
+                        {receipt.outcome === "correct"
+                          ? "这一步，想对了！"
+                          : receipt.outcome === "hinted"
+                            ? "跟着提示，完成了这一步。"
+                            : "先看看这个规律，再用新题练习。"}
+                      </strong>
+                      <p>{receipt.feedback}</p>
+                      <small>
+                        学习记录已保存 · 下次复习{receipt.nextReviewDay} ·
+                        完成奖励+{receipt.rewardDelta}
+                      </small>
+                    </div>
+                  ) : (
+                    <div className="exercise-actions">
+                      <button
+                        className="secondary"
+                        onClick={askHint}
+                        disabled={busy || Boolean(hint)}
+                      >
+                        给我一个提示
+                      </button>
+                      <button
+                        className="primary"
+                        onClick={check}
+                        disabled={busy}
+                      >
+                        {busy ? "正在保存…" : "检查并保存"}
+                        <Icon kind="arrow" />
+                      </button>
+                    </div>
+                  )}
+                  {receipt && (
+                    <button
+                      className="primary"
+                      disabled={busy}
+                      onClick={nextQuestion}
+                    >
+                      {(session.position ?? 1) < (session.total ?? 1)
+                        ? "下一小步"
+                        : "完成这轮，看看收获"}
+                      <Icon kind="leaf" />
                     </button>
-                    <button className="primary" onClick={check} disabled={busy}>
-                      {busy ? "正在保存…" : "检查并保存"}
-                      <Icon kind="arrow" />
-                    </button>
-                  </div>
-                )}
-                {receipt && (
-                  <button
-                    className="primary"
-                    disabled={busy}
-                    onClick={nextQuestion}
-                  >
-                    {(session.position ?? 1) < (session.total ?? 1)
-                      ? "下一小步"
-                      : "完成这轮，看看收获"}
-                    <Icon kind="leaf" />
-                  </button>
-                )}
+                  )}
+                </fieldset>
               </article>
               <p className="footnote">
                 同一份答案重试不会重复计分；提示后答对不晋级。每轮学完可以休息，完整课程会持续更新。
@@ -1445,7 +1698,11 @@ export default function App() {
           {view === "exercise" && !session && (
             <section className="card empty-state">
               <h1>准备好下一次小探索</h1>
-              <p>正在恢复学习记录，也可以回到地图选择课程。</p>
+              <p>
+                {sessionStopped
+                  ? "这轮学习已结束或已切换，可以回到地图选择课程。"
+                  : "正在恢复学习记录，也可以回到地图选择课程。"}
+              </p>
               <button className="primary" onClick={() => move("map")}>
                 回到学习地图
               </button>

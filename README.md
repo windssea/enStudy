@@ -1,6 +1,6 @@
 # 英语探险岛
 
-面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.11：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。云端仍为v0.8，单词特训、全站3D动效与受管理家庭账号尚未发布。
+面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.12：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。云端仍为v0.8，单词特训、3D动效、受管理家庭账号及跨设备续学尚未发布。
 
 [开发预览](https://development.english-quest-dev.pages.dev) 通过GitHub Actions发布。M1加入管理员登录（账号admin，密码使用用户指定值）、关闭注册、儿童档案管理与刷新续学；开发测试身份继续只限本机。验证与剩余范围见[M1进展](docs/23-next-phase-progress.md)。
 
@@ -30,6 +30,8 @@ v0.10把3D扩展到单词、句式、专题、微课、复习和答题：共享�
 
 v0.11新增管理员创建家庭账号、停用/恢复、重设临时密码，以及家长自行改密。新账号首次登录须先改密；停用与改密撤销所有旧设备，保留学习记录。注册仍关闭，默认管理员未更改。68项单元检查和本机170项HTTP回归通过，详见[账号管理进展](docs/30-managed-family-accounts.md)。用户已选择保持免费，本地继续开发，已安排北京时间10月18日08:05对最新main重试部署。
 
+v0.12加入显式跨设备续学：其他设备先读取只读进度，点击接续才换发权限；旧设备不能提交新答案、提示或下一步。题目顺序、已保存提示与回执保留，并处理同页草稿、并发接续、档案切换和旧响应。76项单元检查及本机206项HTTP回归通过，详见[续学记录](docs/31-device-session-handover.md)；真机和云端验证待完成。
+
 同家庭多成人邀请、全专题诊断与迁移、延迟测验、离线队列、AI/BYOK/语音、教材精确映射及完整288课仍在里程碑待办中。当前只需儿童昵称和年级，不需要真实姓名或生日；设备朗读不等同于AI语音对话。
 
 ## 检查和部署
@@ -41,6 +43,7 @@ npm run check:functions
 npm run verify:local
 npm run verify:account
 npm run verify:managed-accounts
+npm run verify:ownership
 npm run verify:course
 npm run verify:topics
 npm run verify:patterns

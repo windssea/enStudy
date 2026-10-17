@@ -1,4 +1,4 @@
-import { Hono, type Context } from "hono";
+import { Hono, type Context, type MiddlewareHandler } from "hono";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import { bodyLimit } from "hono/body-limit";
 import {
@@ -277,64 +277,39 @@ app.post("/api/v1/logout", async (c) => {
   return c.json({ saved: true });
 });
 
-app.use("/api/v1/sessions/*", async (c, next) => {
+const learningAccess: MiddlewareHandler<Bindings> = async (c, next) => {
   const actor = await actorFrom(c);
   if (!actor)
     return c.json(
       fault("AUTH_REQUIRED", "请先登录，再选择你的探险档案。"),
       401,
     );
-  c.set("actor", actor);
-  await next();
-});
-app.use("/api/v1/sessions", async (c, next) => {
-  const actor = await actorFrom(c);
-  if (!actor)
+  const expected = c.req.header("X-EQ-Child-ID");
+  if (expected && expected !== actor.childId)
     return c.json(
-      fault("AUTH_REQUIRED", "请先登录，再选择你的探险档案。"),
-      401,
+      fault("IDENTITY_CHANGED", "探险档案已在其他页面切换，请重新读取档案。"),
+      409,
     );
   c.set("actor", actor);
   await next();
-});
-app.use("/api/v1/attempts", async (c, next) => {
-  const actor = await actorFrom(c);
-  if (!actor)
-    return c.json(
-      fault("AUTH_REQUIRED", "请先登录，再选择你的探险档案。"),
-      401,
-    );
-  c.set("actor", actor);
-  await next();
-});
-app.use("/api/v1/progress", async (c, next) => {
-  const actor = await actorFrom(c);
-  if (!actor)
-    return c.json(
-      fault("AUTH_REQUIRED", "请先登录，再选择你的探险档案。"),
-      401,
-    );
-  c.set("actor", actor);
-  await next();
-});
-
-app.use("/api/v1/learning/*", async (c, next) => {
-  const actor = await actorFrom(c);
-  if (!actor)
-    return c.json(
-      fault("AUTH_REQUIRED", "请先登录，再选择你的探险档案。"),
-      401,
-    );
-  c.set("actor", actor);
-  await next();
-});
+};
+for (const path of [
+  "/api/v1/sessions/*",
+  "/api/v1/sessions",
+  "/api/v1/attempts",
+  "/api/v1/progress",
+  "/api/v1/learning/*",
+])
+  app.use(path, learningAccess);
 interface Assignment {
   id: string;
   lease_id: string;
+  lease_grant_id: string | null;
+  lease_version: number;
   assignment_id: string;
   item_id: string;
   hint_level: number;
-  state: string;
+  state: LearningSession["state"];
   cursor: number;
   total: number;
   lesson_id: string | null;
@@ -349,15 +324,23 @@ async function loadSession(
 ): Promise<Assignment | null> {
   return db
     .prepare(
-      `SELECT s.id,s.lease_id,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.hint_level,si.presentation_json,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
+      `SELECT s.id,s.lease_id,s.lease_grant_id,s.lease_version,s.state,s.cursor,s.lesson_id,s.source,s.source_ref,si.id AS assignment_id,si.item_id,si.hint_level,si.presentation_json,(SELECT count(*) FROM session_items all_items WHERE all_items.session_id=s.id) AS total FROM learning_sessions s JOIN session_items si ON si.session_id=s.id AND si.household_id=s.household_id AND si.child_id=s.child_id AND si.position=s.cursor WHERE s.id=? AND s.household_id=? AND s.child_id=?`,
     )
     .bind(id, actor.householdId, actor.childId)
     .first<Assignment>();
 }
-function sessionPayload(row: Assignment): LearningSession {
+function sessionPayload(row: Assignment, actor: Actor): LearningSession {
   return {
     id: row.id,
-    leaseId: row.lease_id,
+    leaseId: row.lease_grant_id === actor.grantId ? row.lease_id : null,
+    leaseVersion: row.lease_version,
+    access:
+      row.state !== "active"
+        ? "ended"
+        : row.lease_grant_id === actor.grantId
+          ? "owner"
+          : "takeover-required",
+    state: row.state,
     assignmentId: row.assignment_id,
     hintLevel: row.hint_level,
     position: row.cursor + 1,
@@ -370,6 +353,22 @@ function sessionPayload(row: Assignment): LearningSession {
     },
   };
 }
+const grantAuthorization =
+  "EXISTS(SELECT 1 FROM child_grants g WHERE g.id=? AND g.revoked_at IS NULL AND g.expires_at>? AND (g.parent_session_id IS NULL OR EXISTS(SELECT 1 FROM account_sessions p WHERE p.id=g.parent_session_id AND p.revoked_at IS NULL AND p.expires_at>?)))";
+async function sessionSnapshot(db: D1Database, actor: Actor, row: Assignment) {
+  const attempt = await db
+    .prepare(
+      "SELECT receipt_json FROM attempts WHERE assignment_id=? AND household_id=? AND child_id=?",
+    )
+    .bind(row.assignment_id, actor.householdId, actor.childId)
+    .first<{ receipt_json: string }>();
+  return {
+    childId: actor.childId,
+    session: sessionPayload(row, actor),
+    receipt: attempt ? JSON.parse(attempt.receipt_json) : null,
+    hint: row.hint_level ? exerciseById.get(row.item_id)?.hint : null,
+  };
+}
 app.get("/api/v1/sessions/current", async (c) => {
   const actor = c.get("actor");
   const active = await c.env.DB.prepare(
@@ -377,19 +376,120 @@ app.get("/api/v1/sessions/current", async (c) => {
   )
     .bind(actor.householdId, actor.childId)
     .first<{ id: string }>();
-  if (!active) return c.json({ session: null });
+  if (!active) return c.json({ childId: actor.childId, session: null });
   const row = await loadSession(c.env.DB, actor, active.id);
-  if (!row) return c.json({ session: null });
-  const attempt = await c.env.DB.prepare(
-    "SELECT receipt_json FROM attempts WHERE assignment_id=? AND household_id=? AND child_id=?",
+  return c.json(
+    row
+      ? await sessionSnapshot(c.env.DB, actor, row)
+      : { childId: actor.childId, session: null },
+  );
+});
+app.post("/api/v1/sessions/:id/takeover", async (c) => {
+  const actor = c.get("actor"),
+    body = await c.req.json(),
+    id = c.req.param("id");
+  if (
+    !body ||
+    typeof body !== "object" ||
+    Array.isArray(body) ||
+    typeof body.clientRequestId !== "string" ||
+    !UUID.test(body.clientRequestId) ||
+    !Number.isSafeInteger(body.expectedLeaseVersion) ||
+    body.expectedLeaseVersion < 0
   )
-    .bind(row.assignment_id, actor.householdId, actor.childId)
-    .first<{ receipt_json: string }>();
-  return c.json({
-    session: sessionPayload(row),
-    receipt: attempt ? JSON.parse(attempt.receipt_json) : null,
-    hint: row.hint_level ? exerciseById.get(row.item_id)?.hint : null,
-  });
+    return c.json(
+      fault("INVALID_TAKEOVER", "请先读取最新进度，再选择在本设备接着学。"),
+      422,
+    );
+  const row = await loadSession(c.env.DB, actor, id);
+  if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
+  type Claim = {
+    session_id: string;
+    grant_id: string;
+    expected_version: number;
+    lease_id: string;
+  };
+  const prior = () =>
+    c.env.DB.prepare(
+      "SELECT session_id,grant_id,expected_version,lease_id FROM session_claims WHERE household_id=? AND child_id=? AND request_id=?",
+    )
+      .bind(actor.householdId, actor.childId, body.clientRequestId)
+      .first<Claim>();
+  const replay = async (claim: Claim) => {
+    if (
+      claim.session_id !== id ||
+      claim.grant_id !== actor.grantId ||
+      claim.expected_version !== body.expectedLeaseVersion
+    )
+      return c.json(
+        fault("IDEMPOTENCY_MISMATCH", "这个接续编号已用于其他设备或任务。"),
+        409,
+      );
+    const current = await loadSession(c.env.DB, actor, id);
+    if (
+      !current ||
+      current.state !== "active" ||
+      current.lease_id !== claim.lease_id ||
+      current.lease_grant_id !== actor.grantId
+    )
+      return c.json(
+        fault("LEASE_REPLACED", "这轮学习又换了设备，请先刷新进度。"),
+        409,
+      );
+    return c.json(await sessionSnapshot(c.env.DB, actor, current));
+  };
+  const saved = await prior();
+  if (saved) return replay(saved);
+  if (row.state !== "active" || row.lease_version !== body.expectedLeaseVersion)
+    return c.json(
+      fault("LEASE_REPLACED", "进度已变化，请刷新后再选择接着学。"),
+      409,
+    );
+  const lease = crypto.randomUUID(),
+    now = Date.now();
+  try {
+    await c.env.DB.batch([
+      c.env.DB.prepare(
+        `UPDATE learning_sessions SET lease_id=?,lease_grant_id=?,lease_version=lease_version+1 WHERE id=? AND household_id=? AND child_id=? AND state='active' AND lease_version=? AND ${grantAuthorization}`,
+      ).bind(
+        lease,
+        actor.grantId,
+        id,
+        actor.householdId,
+        actor.childId,
+        body.expectedLeaseVersion,
+        actor.grantId,
+        now,
+        now,
+      ),
+      c.env.DB.prepare(
+        "INSERT INTO session_claims(household_id,child_id,request_id,session_id,grant_id,expected_version,lease_id,created_at) SELECT ?,?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM learning_sessions WHERE id=? AND lease_id=? AND lease_grant_id=?)",
+      ).bind(
+        actor.householdId,
+        actor.childId,
+        body.clientRequestId,
+        id,
+        actor.grantId,
+        body.expectedLeaseVersion,
+        lease,
+        now,
+        id,
+        lease,
+        actor.grantId,
+      ),
+    ]);
+  } catch (error) {
+    const concurrent = await prior();
+    if (concurrent) return replay(concurrent);
+    throw error;
+  }
+  const committed = await prior();
+  return committed
+    ? replay(committed)
+    : c.json(
+        fault("LEASE_REPLACED", "其他设备先接上了进度，请刷新后再试。"),
+        409,
+      );
 });
 async function reviewTargets(db: D1Database, actor: Actor) {
   const cards = await db
@@ -499,7 +599,7 @@ app.post("/api/v1/sessions", async (c) => {
         fault("SESSION_CHANGED", "这次学习已结束或被新任务替换。"),
         409,
       );
-    return c.json(sessionPayload(existing));
+    return c.json(sessionPayload(existing, actor));
   }
   const lesson = courseRelease.lessons.find(
     (lesson) => lesson.id === body.lessonId,
@@ -579,13 +679,22 @@ app.post("/api/v1/sessions", async (c) => {
     );
   const lease = crypto.randomUUID(),
     now = Date.now();
+  const createdHere =
+    "EXISTS(SELECT 1 FROM learning_sessions s WHERE s.id=? AND s.lease_id=? AND s.lease_grant_id=?)";
   try {
     await c.env.DB.batch([
       c.env.DB.prepare(
-        "UPDATE learning_sessions SET state='paused' WHERE household_id=? AND child_id=? AND state='active'",
-      ).bind(actor.householdId, actor.childId),
+        `UPDATE learning_sessions SET state='paused' WHERE household_id=? AND child_id=? AND state='active' AND lease_grant_id=? AND ${grantAuthorization}`,
+      ).bind(
+        actor.householdId,
+        actor.childId,
+        actor.grantId,
+        actor.grantId,
+        now,
+        now,
+      ),
       c.env.DB.prepare(
-        "INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref) VALUES(?,?,?,?,?,'active',?,?,?,?)",
+        `INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref,lease_grant_id) SELECT ?,?,?,?,?,'active',?,?,?,?,? WHERE ${grantAuthorization} AND NOT EXISTS(SELECT 1 FROM learning_sessions s WHERE s.household_id=? AND s.child_id=? AND s.state='active' AND (s.lease_grant_id IS NULL OR s.lease_grant_id<>?))`,
       ).bind(
         body.clientRequestId,
         actor.householdId,
@@ -596,10 +705,17 @@ app.post("/api/v1/sessions", async (c) => {
         lesson?.id ?? null,
         source,
         sourceRef,
+        actor.grantId,
+        actor.grantId,
+        now,
+        now,
+        actor.householdId,
+        actor.childId,
+        actor.grantId,
       ),
       ...selected.map((item, index) =>
         c.env.DB.prepare(
-          "INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version,presentation_json) VALUES(?,?,?,?,?,?,1,?)",
+          `INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version,presentation_json) SELECT ?,?,?,?,?,?,1,? WHERE ${createdHere}`,
         ).bind(
           crypto.randomUUID(),
           actor.householdId,
@@ -611,19 +727,28 @@ app.post("/api/v1/sessions", async (c) => {
             ...(item.choices ? { choices: shuffle(item.choices) } : {}),
             ...(item.tokens ? { tokens: shuffle(item.tokens) } : {}),
           }),
+          body.clientRequestId,
+          lease,
+          actor.grantId,
         ),
       ),
     ]);
   } catch (error) {
     const concurrent = await loadSession(c.env.DB, actor, body.clientRequestId);
     if (concurrent?.source_ref === sourceRef && concurrent.state === "active")
-      return c.json(sessionPayload(concurrent));
+      return c.json(sessionPayload(concurrent, actor));
     throw error;
   }
-  return c.json(
-    sessionPayload((await loadSession(c.env.DB, actor, body.clientRequestId))!),
-    201,
-  );
+  const created = await loadSession(c.env.DB, actor, body.clientRequestId);
+  return created
+    ? c.json(sessionPayload(created, actor), 201)
+    : c.json(
+        fault(
+          "TAKEOVER_REQUIRED",
+          "另一台设备还有正在学习的任务，请先选择在本设备接着学。",
+        ),
+        409,
+      );
 });
 app.post("/api/v1/sessions/:id/next", async (c) => {
   const actor = c.get("actor"),
@@ -633,6 +758,7 @@ app.post("/api/v1/sessions/:id/next", async (c) => {
   if (
     !body ||
     body.leaseId !== row.lease_id ||
+    row.lease_grant_id !== actor.grantId ||
     typeof body.assignmentId !== "string"
   )
     return c.json(
@@ -657,40 +783,48 @@ app.post("/api/v1/sessions/:id/next", async (c) => {
   if (!submitted || submitted.position > row.cursor)
     return c.json(fault("ANSWER_REQUIRED", "先完成当前这一步，再继续。"), 409);
   if (submitted.position < row.cursor)
-    return c.json({ session: sessionPayload(row) });
-  const authorization =
-    "EXISTS(SELECT 1 FROM child_grants g WHERE g.id=? AND g.revoked_at IS NULL AND g.expires_at>? AND (g.parent_session_id IS NULL OR EXISTS(SELECT 1 FROM account_sessions p WHERE p.id=g.parent_session_id AND p.revoked_at IS NULL AND p.expires_at>?)))";
+    return c.json({ session: sessionPayload(row, actor) });
+  const authorization = grantAuthorization;
   const now = Date.now();
   if (row.cursor + 1 < row.total) {
     await c.env.DB.prepare(
-      `UPDATE learning_sessions SET cursor=cursor+1 WHERE id=? AND household_id=? AND child_id=? AND cursor=? AND state='active' AND ${authorization}`,
+      `UPDATE learning_sessions SET cursor=cursor+1 WHERE id=? AND household_id=? AND child_id=? AND cursor=? AND state='active' AND lease_id=? AND lease_grant_id=? AND ${authorization}`,
     )
       .bind(
         row.id,
         actor.householdId,
         actor.childId,
         row.cursor,
+        body.leaseId,
+        actor.grantId,
         actor.grantId,
         now,
         now,
       )
       .run();
     const updated = (await loadSession(c.env.DB, actor, row.id))!;
-    if (updated.cursor === row.cursor)
+    if (
+      updated.cursor === row.cursor ||
+      updated.lease_id !== body.leaseId ||
+      updated.lease_grant_id !== actor.grantId ||
+      updated.state !== "active"
+    )
       return c.json(
         fault("SESSION_CHANGED", "任务状态有变化，请重新打开。"),
         409,
       );
-    return c.json({ session: sessionPayload(updated) });
+    return c.json({ session: sessionPayload(updated, actor) });
   }
   await c.env.DB.batch([
     c.env.DB.prepare(
-      `UPDATE learning_sessions SET state='completed' WHERE id=? AND household_id=? AND child_id=? AND cursor=? AND state='active' AND ${authorization} AND NOT EXISTS(SELECT 1 FROM session_items si LEFT JOIN attempts a ON a.assignment_id=si.id WHERE si.session_id=learning_sessions.id AND a.event_id IS NULL)`,
+      `UPDATE learning_sessions SET state='completed' WHERE id=? AND household_id=? AND child_id=? AND cursor=? AND state='active' AND lease_id=? AND lease_grant_id=? AND ${authorization} AND NOT EXISTS(SELECT 1 FROM session_items si LEFT JOIN attempts a ON a.assignment_id=si.id WHERE si.session_id=learning_sessions.id AND a.event_id IS NULL)`,
     ).bind(
       row.id,
       actor.householdId,
       actor.childId,
       row.cursor,
+      body.leaseId,
+      actor.grantId,
       actor.grantId,
       now,
       now,
@@ -737,24 +871,42 @@ app.get("/api/v1/learning/vocabulary", async (c) => {
   return c.json(summary ?? { practisedWords: 0, dueWords: 0 });
 });
 app.get("/api/v1/sessions/:id", async (c) => {
-  const row = await loadSession(c.env.DB, c.get("actor"), c.req.param("id"));
+  const actor = c.get("actor");
+  const row = await loadSession(c.env.DB, actor, c.req.param("id"));
   if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
-  return c.json(sessionPayload(row));
+  return c.json(sessionPayload(row, actor));
 });
 app.post("/api/v1/sessions/:id/hint", async (c) => {
   const actor = c.get("actor"),
     row = await loadSession(c.env.DB, actor, c.req.param("id"));
   if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
   const body = await c.req.json();
+  if (
+    row.lease_grant_id !== actor.grantId ||
+    (body?.leaseId !== undefined && body.leaseId !== row.lease_id)
+  )
+    return c.json(
+      fault("LEASE_REPLACED", "这轮学习已换了设备，请先读取最新进度。"),
+      409,
+    );
   if (row.total > 1 && (!body || body.assignmentId !== row.assignment_id))
     return c.json(
       fault("SESSION_CHANGED", "题目已经变化，请重新打开当前练习。"),
       409,
     );
   const result = await c.env.DB.prepare(
-    `UPDATE session_items SET hint_level=1 WHERE id=? AND household_id=? AND child_id=? AND NOT EXISTS(SELECT 1 FROM attempts WHERE assignment_id=session_items.id) AND EXISTS(SELECT 1 FROM learning_sessions WHERE id=session_items.session_id AND state='active')`,
+    `UPDATE session_items SET hint_level=1 WHERE id=? AND household_id=? AND child_id=? AND NOT EXISTS(SELECT 1 FROM attempts WHERE assignment_id=session_items.id) AND EXISTS(SELECT 1 FROM learning_sessions WHERE id=session_items.session_id AND state='active' AND lease_id=? AND lease_grant_id=?) AND ${grantAuthorization}`,
   )
-    .bind(row.assignment_id, actor.householdId, actor.childId)
+    .bind(
+      row.assignment_id,
+      actor.householdId,
+      actor.childId,
+      row.lease_id,
+      actor.grantId,
+      actor.grantId,
+      Date.now(),
+      Date.now(),
+    )
     .run();
   if (!result.meta.changes)
     return c.json(fault("SESSION_CHANGED", "这次作答已完成或已切换。"), 409);
@@ -823,6 +975,7 @@ app.post("/api/v1/attempts", async (c) => {
     if (
       row.assignment_id !== body.assignmentId ||
       row.lease_id !== body.leaseId ||
+      row.lease_grant_id !== actor.grantId ||
       row.state !== "active"
     )
       return c.json(
@@ -872,7 +1025,7 @@ app.post("/api/v1/attempts", async (c) => {
     try {
       await c.env.DB.batch([
         c.env.DB.prepare(
-          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND EXISTS(SELECT 1 FROM child_grants g WHERE g.id=? AND g.revoked_at IS NULL AND g.expires_at>? AND (g.parent_session_id IS NULL OR EXISTS(SELECT 1 FROM account_sessions p WHERE p.id=g.parent_session_id AND p.revoked_at IS NULL AND p.expires_at>?))) AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.state='active' AND si.id=? AND si.hint_level=?)`,
+          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND ${grantAuthorization} AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.lease_grant_id=? AND s.state='active' AND si.id=? AND si.hint_level=?)`,
         ).bind(
           actor.childId,
           actor.householdId,
@@ -882,6 +1035,7 @@ app.post("/api/v1/attempts", async (c) => {
           now,
           body.sessionId,
           body.leaseId,
+          actor.grantId,
           body.assignmentId,
           row.hint_level,
         ),

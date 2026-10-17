@@ -101,6 +101,19 @@ const b = await request("/dev/session", {
 assert.ok(b.cookie);
 assert.equal(b.status, 200);
 const before = (await request("/progress", { cookie: a.cookie })).data;
+const resumable = (await request("/sessions/current", { cookie: a.cookie }))
+  .data.session;
+if (resumable?.access === "takeover-required") {
+  const claimed = await request(`/sessions/${resumable.id}/takeover`, {
+    method: "POST",
+    cookie: a.cookie,
+    body: {
+      clientRequestId: crypto.randomUUID(),
+      expectedLeaseVersion: resumable.leaseVersion,
+    },
+  });
+  assert.equal(claimed.status, 200);
+}
 const creation = await request("/sessions", {
   method: "POST",
   cookie: a.cookie,

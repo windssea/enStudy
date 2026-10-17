@@ -188,10 +188,12 @@ export default function SceneStage({
   kind,
   reaction = "thinking",
   compact = false,
+  animateReaction = true,
 }: {
   kind: SceneKind;
   reaction?: Reaction;
   compact?: boolean;
+  animateReaction?: boolean;
 }) {
   const { quiet, flat } = useContext(MotionContext);
   const host = useRef<HTMLDivElement>(null);
@@ -236,6 +238,7 @@ export default function SceneStage({
     lastReaction.current = reaction;
     if (
       !changed ||
+      !animateReaction ||
       kind !== "feedback" ||
       reaction === "thinking" ||
       quiet ||
@@ -248,7 +251,7 @@ export default function SceneStage({
     setReacting(true);
     const timer = setTimeout(() => setReacting(false), 900);
     return () => clearTimeout(timer);
-  }, [kind, reaction, quiet, visible, hidden, speaking]);
+  }, [kind, reaction, animateReaction, quiet, visible, hidden, speaking]);
   const paused = quiet || hidden || !visible || speaking;
   const fallback = <FlatScene kind={kind} reaction={reaction} />;
   const script = kind === "feedback" ? null : scripts[kind];
