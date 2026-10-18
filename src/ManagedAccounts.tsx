@@ -144,7 +144,14 @@ export default function ManagedAccounts() {
               <div>
                 <strong>{account.username}</strong>
                 <p>
-                  {account.householdName} · {account.childCount}位探险家
+                  {account.householdCount === 0
+                    ? "尚未加入家庭"
+                    : account.householdName}
+                  {(account.householdCount ?? 1) > 1
+                    ? `等${account.householdCount}个家庭`
+                    : ""}
+                  {" · "}
+                  {account.childCount}位可访问的探险家
                 </p>
                 <span className="account-state">
                   {account.isAdmin
@@ -240,7 +247,7 @@ export default function ManagedAccounts() {
         {selection ? (
           <p>
             {selection.operation === "disable"
-              ? "此家庭将退出所有设备，暂时不能登录，学习记录会保留，之后可以恢复。"
+              ? "此账号在全部家庭的设备会退出并暂时不能登录。其他家长仍可使用自己的账号，儿童学习记录保留，之后可恢复此账号。"
               : selection.operation === "enable"
                 ? "恢复后家长需要重新登录；临时密码仍需由家长修改。"
                 : "设置新的临时密码，退出此账号的所有设备。家长下次登录时必须先修改密码。"}

@@ -69,3 +69,9 @@ CAS 的 WHERE 条件同时验证家庭、预期版本、当前有效lease、未�
 常用索引：`children(household_id)`、`attempts(household_id, child_id, received_at)`、`review_cards(household_id, child_id, due_at)`、`ai_usage(household_id, created_at)`。统计按日汇总，不能首页全扫 attempt。索引也增加写量，按实际 `rows_read/rows_written` 调整。[D1 计费定义](https://developers.cloudflare.com/d1/platform/pricing/)
 
 建议原始答题记录保留 12 个月，之后只留家庭内聚合；AI 文本默认不留原文，用量 90 天；原音默认仅请求内处理；撤销会话与审计保留 90 天。家长可提前删除，精确保留与法定要求需在选定运营地区后核对，详见隐私设计。
+
+## v0.31已实现的家庭协作
+
+0032在account_sessions增加当前家庭、上下文版本与切换命令；家庭成员继续使用原复合键，不复制儿童或学习数据。household_access保存全家庭权限版本与事务许可；household_invitations保存接收者、邀请人、角色、令牌摘要、到期及接受/撤销状态；household_membership_audit仅记账号引用、操作和时间。0033增加`household_members(adult_id,household_id)`覆盖索引，限制认证与成员计数读量。
+
+权限变更与审计在同一batch提交，角色调整/移除同时撤销目标账号所有会话和grant；成员与版本读取也使用一致batch。无家庭成人的当前上下文显式为空，保留登录与重新受邀能力。邀请码只以摘要存储，原码不进日志、URL或公共缓存。此阶段不实现账户删除、保留期清理或备份恢复，不能把成员移除等同于成人数据删除。实际字段、接口与检查见[家庭协作记录](52-household-invitations-and-roles.md)。

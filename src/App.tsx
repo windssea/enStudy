@@ -23,7 +23,7 @@ import type {
   Receipt,
   TrainingCycle,
 } from "../packages/contracts/index";
-import { api, ApiError, setLearningChild } from "./api";
+import { api, setHouseholdContext, ApiError, setLearningChild } from "./api";
 import { parseRoute, mapFragment, type View } from "./routes";
 import { courseStep } from "./courseNavigation";
 import CompanionPicker from "./CompanionPicker";
@@ -372,6 +372,7 @@ export default function App() {
       .then(async (me) => {
         if (cancelled || epoch.current !== initialEpoch) return;
         setLearningChild(me.child?.id ?? null);
+        setHouseholdContext(me.adult);
         setIdentity(me);
         setOfflineIdentity(me);
         if (me.child) setGrade(readRoute().mapScope?.grade ?? me.child.grade);
@@ -395,6 +396,7 @@ export default function App() {
     const me = await api<Identity>("/me");
     if (epoch.current !== current) return;
     setLearningChild(me.child?.id ?? null);
+    setHouseholdContext(me.adult);
     setIdentity(me);
     setOfflineIdentity(me);
     setSession(null);
@@ -519,7 +521,9 @@ export default function App() {
     setError(message(error));
     if (
       error instanceof ApiError &&
-      (error.status === 401 || error.code === "IDENTITY_CHANGED")
+      (error.status === 401 ||
+        error.code === "IDENTITY_CHANGED" ||
+        error.code === "HOUSEHOLD_CONTEXT_CHANGED")
     ) {
       await refreshIdentity(false);
       return;
@@ -580,7 +584,9 @@ export default function App() {
         void syncSession(false).catch((error) => {
           if (
             error instanceof ApiError &&
-            (error.status === 401 || error.code === "IDENTITY_CHANGED")
+            (error.status === 401 ||
+              error.code === "IDENTITY_CHANGED" ||
+              error.code === "HOUSEHOLD_CONTEXT_CHANGED")
           )
             void refreshIdentity(false).catch(() => {});
         });
@@ -1651,6 +1657,7 @@ export default function App() {
           )}
           {view === "parent" && (
             <FamilySpace
+              key={`${identity.adult?.username}:${identity.adult?.householdId}:${identity.adult?.contextVersion}`}
               onOpenTraining={openTraining}
               onReview={() => move("review")}
               identity={identity}

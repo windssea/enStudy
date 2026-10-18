@@ -10,6 +10,13 @@ export class ApiError extends Error {
   }
 }
 let learningChild: string | null = null;
+let householdContext: { id: string; version: number } | null = null;
+export const setHouseholdContext = (adult: Identity["adult"]) => {
+  householdContext =
+    adult && Number.isSafeInteger(adult.contextVersion)
+      ? { id: adult.householdId, version: adult.contextVersion! }
+      : null;
+};
 export const setLearningChild = (id: string | null) => {
   learningChild = id;
 };
@@ -23,7 +30,9 @@ export async function api<T>(
     (["/auth/login", "/logout", "/auth/password", "/dev/session"].includes(
       path,
     ) ||
-      /^\/children\/[^/]+\/(select|remove)$/.test(path))
+      /^\/children\/[^/]+\/(select|remove)$/.test(path) ||
+      path === "/households/switch" ||
+      /^\/households\/members\//.test(path))
   )
     lockOffline();
   const controller = new AbortController();
@@ -39,6 +48,12 @@ export async function api<T>(
         "X-EQ-Player-Version": "3",
         ...(body === undefined ? {} : { "Content-Type": "application/json" }),
         ...(learningChild ? { "X-EQ-Child-ID": learningChild } : {}),
+        ...(householdContext && path !== "/me"
+          ? {
+              "X-EQ-Household-ID": householdContext.id,
+              "X-EQ-Household-Version": String(householdContext.version),
+            }
+          : {}),
       },
       body: body === undefined ? undefined : JSON.stringify(body),
       signal: controller.signal,
@@ -54,7 +69,11 @@ export async function api<T>(
       );
     }
     if (!response.ok) {
-      if (response.status === 401 || result.error?.code === "IDENTITY_CHANGED")
+      if (
+        response.status === 401 ||
+        result.error?.code === "IDENTITY_CHANGED" ||
+        result.error?.code === "HOUSEHOLD_CONTEXT_CHANGED"
+      )
         lockOffline();
       throw new ApiError(
         result.error?.message ?? "请求失败，请重试。",

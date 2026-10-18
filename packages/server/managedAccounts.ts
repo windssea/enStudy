@@ -107,7 +107,7 @@ managedAccountRoutes.get("/admin/accounts", async (c) => {
       return c.json(fault("INVALID_CURSOR", "列表页码无效，请刷新列表。"), 422);
   }
   const rows = await c.env.DB.prepare(
-    `SELECT a.adult_id AS id,a.username,a.disabled_at IS NOT NULL AS disabled,a.must_change_password AS mustChangePassword,a.credential_version AS version,ad.created_at AS createdAt,EXISTS(SELECT 1 FROM site_admins sa WHERE sa.adult_id=a.adult_id) AS isAdmin,COALESCE((SELECT h.name FROM household_members m JOIN households h ON h.id=m.household_id WHERE m.adult_id=a.adult_id ORDER BY h.id LIMIT 1),'') AS householdName,(SELECT count(*) FROM children ch JOIN household_members m ON m.household_id=ch.household_id WHERE m.adult_id=a.adult_id) AS childCount FROM account_credentials a JOIN adults ad ON ad.id=a.adult_id WHERE ad.created_at>? OR(ad.created_at=? AND ad.id>?) ORDER BY ad.created_at,ad.id LIMIT 51`,
+    `SELECT a.adult_id AS id,a.username,a.disabled_at IS NOT NULL AS disabled,a.must_change_password AS mustChangePassword,a.credential_version AS version,ad.created_at AS createdAt,EXISTS(SELECT 1 FROM site_admins sa WHERE sa.adult_id=a.adult_id) AS isAdmin,COALESCE((SELECT h.name FROM household_members m JOIN households h ON h.id=m.household_id WHERE m.adult_id=a.adult_id ORDER BY h.id LIMIT 1),'') AS householdName,(SELECT count(*) FROM children ch JOIN household_members m ON m.household_id=ch.household_id WHERE m.adult_id=a.adult_id) AS childCount,(SELECT count(*) FROM household_members hm WHERE hm.adult_id=a.adult_id) AS householdCount FROM account_credentials a JOIN adults ad ON ad.id=a.adult_id WHERE ad.created_at>? OR(ad.created_at=? AND ad.id>?) ORDER BY ad.created_at,ad.id LIMIT 51`,
   )
     .bind(time, time, after)
     .all();

@@ -11,6 +11,7 @@ const ManagedAccounts = lazy(() => import("./ManagedAccounts"));
 const AiSettings = lazy(() => import("./AiSettings"));
 const TrainingFollowUps = lazy(() => import("./TrainingFollowUps"));
 const LearningReport = lazy(() => import("./LearningReport"));
+const HouseholdAccess = lazy(() => import("./HouseholdAccess"));
 
 export default function FamilySpace({
   identity,
@@ -38,6 +39,7 @@ export default function FamilySpace({
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [aiOpen, setAiOpen] = useState(false);
+  const canManage = identity.adult?.role === "owner";
   const loadChildren = async () =>
     setChildren((await api<{ items: ChildProfile[] }>("/children")).items);
   useEffect(() => {
@@ -96,6 +98,21 @@ export default function FamilySpace({
       <p className="eyebrow">A LITTLE HELP, A BIG ADVENTURE</p>
       <h1>陪孩子，把每一步走扎实。</h1>
       <p className="lead">先选好探险家，再把今天的小进步留在这里。</p>
+      {identity.adult && !identity.adult.mustChangePassword && (
+        <>
+          <p className="notice">
+            当前家庭：{identity.adult.householdName || "尚未选择家庭"} ·{" "}
+            {identity.adult.role === "owner"
+              ? "管理家长"
+              : identity.adult.role === "guardian"
+                ? "协助家长"
+                : "请先选择家庭"}
+          </p>
+          <Suspense fallback={<p role="status">正在准备共同陪伴设置…</p>}>
+            <HouseholdAccess refresh={refresh} />
+          </Suspense>
+        </>
+      )}
       {error && (
         <div className="notice error" role="alert">
           {error}
@@ -189,7 +206,11 @@ export default function FamilySpace({
                 <span className="badge">
                   已登录 · {identity.adult.username}
                 </span>
-                <h2>谁来开始今天的探索？</h2>
+                <h2>
+                  {identity.adult.householdId
+                    ? "谁来开始今天的探索？"
+                    : "请先选择要进入的家庭"}
+                </h2>
               </div>
               <button
                 className="secondary"
@@ -241,19 +262,21 @@ export default function FamilySpace({
                       ? "正在使用"
                       : "选这位探险家"}
                   </button>
-                  <button
-                    className="text-button"
-                    disabled={busy}
-                    onClick={() => {
-                      setEditing(child.id);
-                      setNickname(child.nickname);
-                      setGrade(child.grade);
-                      setError("");
-                    }}
-                  >
-                    编辑昵称与年级
-                  </button>
-                  {children.length > 1 && (
+                  {canManage && (
+                    <button
+                      className="text-button"
+                      disabled={busy}
+                      onClick={() => {
+                        setEditing(child.id);
+                        setNickname(child.nickname);
+                        setGrade(child.grade);
+                        setError("");
+                      }}
+                    >
+                      编辑昵称与年级
+                    </button>
+                  )}
+                  {canManage && children.length > 1 && (
                     <button
                       className="text-button"
                       disabled={busy}
@@ -280,57 +303,63 @@ export default function FamilySpace({
                 </article>
               ))}
             </div>
-            <form onSubmit={saveChild} className="profile-form child-form">
-              <h3>{editing ? "编辑探险档案" : "添加一位小探险家"}</h3>
-              <p className="footnote">
-                用昵称就好，不需要孩子的真实姓名或生日。
-              </p>
-              <div className="profile-fields">
-                <label className="field">
-                  昵称
-                  <input
-                    required
-                    maxLength={24}
-                    value={nickname}
-                    disabled={busy}
-                    onChange={(e) => setNickname(e.target.value)}
-                    placeholder="例如：小星星"
-                  />
-                </label>
-                <label className="field">
-                  年级
-                  <select
-                    value={grade}
-                    disabled={busy}
-                    onChange={(e) => setGrade(Number(e.target.value))}
-                  >
-                    {["一", "二", "三", "四", "五", "六"].map((n, i) => (
-                      <option key={n} value={i + 1}>
-                        {n}年级
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <div className="profile-fields">
-                <button type="submit" className="primary" disabled={busy}>
-                  {busy ? "正在保存…" : editing ? "保存修改" : "添加并开始学习"}
-                </button>
-                {editing && (
-                  <button
-                    type="button"
-                    className="secondary"
-                    disabled={busy}
-                    onClick={() => {
-                      setEditing(null);
-                      setNickname("");
-                    }}
-                  >
-                    取消编辑
+            {canManage && (
+              <form onSubmit={saveChild} className="profile-form child-form">
+                <h3>{editing ? "编辑探险档案" : "添加一位小探险家"}</h3>
+                <p className="footnote">
+                  用昵称就好，不需要孩子的真实姓名或生日。
+                </p>
+                <div className="profile-fields">
+                  <label className="field">
+                    昵称
+                    <input
+                      required
+                      maxLength={24}
+                      value={nickname}
+                      disabled={busy}
+                      onChange={(e) => setNickname(e.target.value)}
+                      placeholder="例如：小星星"
+                    />
+                  </label>
+                  <label className="field">
+                    年级
+                    <select
+                      value={grade}
+                      disabled={busy}
+                      onChange={(e) => setGrade(Number(e.target.value))}
+                    >
+                      {["一", "二", "三", "四", "五", "六"].map((n, i) => (
+                        <option key={n} value={i + 1}>
+                          {n}年级
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                <div className="profile-fields">
+                  <button type="submit" className="primary" disabled={busy}>
+                    {busy
+                      ? "正在保存…"
+                      : editing
+                        ? "保存修改"
+                        : "添加并开始学习"}
                   </button>
-                )}
-              </div>
-            </form>
+                  {editing && (
+                    <button
+                      type="button"
+                      className="secondary"
+                      disabled={busy}
+                      onClick={() => {
+                        setEditing(null);
+                        setNickname("");
+                      }}
+                    >
+                      取消编辑
+                    </button>
+                  )}
+                </div>
+              </form>
+            )}
           </section>
         )}
         <aside className="card parent-guide">
@@ -389,7 +418,7 @@ export default function FamilySpace({
           <ManagedAccounts />
         </Suspense>
       )}
-      {identity.adult && !identity.adult.mustChangePassword && (
+      {identity.adult && canManage && !identity.adult.mustChangePassword && (
         <details
           className="card ai-settings-disclosure"
           onToggle={(event) => setAiOpen(event.currentTarget.open)}

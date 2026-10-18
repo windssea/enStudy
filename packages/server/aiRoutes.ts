@@ -1,5 +1,10 @@
 import { Hono, type Context } from "hono";
-import { readAdult, tokenHash, type AdultSession } from "./auth";
+import {
+  readAdult,
+  tokenHash,
+  sessionHouseholdSql,
+  type AdultSession,
+} from "./auth";
 import { verifyAdultPassword, type Credential } from "./adultVerification";
 import { sealKey, unsealKey, keyStoreReady } from "./aiCrypto";
 import {
@@ -75,8 +80,7 @@ function publicConnection(row: Connection, env: AiConfig) {
     tested: row.tested_version === row.version && row.state === "enabled",
   };
 }
-const ownerSql =
-  "EXISTS(SELECT 1 FROM account_sessions s JOIN account_credentials a ON a.adult_id=s.adult_id JOIN household_members m ON m.adult_id=s.adult_id WHERE s.id=? AND s.adult_id=? AND m.household_id=? AND m.role='owner' AND s.revoked_at IS NULL AND s.expires_at>? AND a.disabled_at IS NULL AND a.must_change_password=0 AND a.password_hash=? AND a.credential_version=?)";
+const ownerSql = `EXISTS(SELECT 1 FROM account_sessions s JOIN account_credentials a ON a.adult_id=s.adult_id JOIN household_members m ON m.adult_id=s.adult_id WHERE s.id=? AND s.adult_id=? AND m.household_id=? AND m.role='owner' AND s.revoked_at IS NULL AND s.expires_at>? AND a.disabled_at IS NULL AND a.must_change_password=0 AND a.password_hash=? AND a.credential_version=? AND s.context_version=? AND m.household_id=${sessionHouseholdSql})`;
 const ownerParams = (adult: AdultSession, credential: Credential) => [
   adult.id,
   adult.adultId,
@@ -84,6 +88,7 @@ const ownerParams = (adult: AdultSession, credential: Credential) => [
   Date.now(),
   credential.password_hash,
   credential.credential_version,
+  adult.contextVersion,
 ];
 const audit = (c: Ctx, adult: AdultSession, action: string) =>
   c.env.DB.prepare(

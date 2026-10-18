@@ -37,6 +37,8 @@ import { companionRoutes, readCompanion } from "./companions";
 import conceptExposure from "../../content/concept-exposure-map.json";
 import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 import { managedAccountRoutes } from "./managedAccounts";
+import { householdRoutes } from "./households";
+import platformFeatures from "../domain/platformFeatures.json";
 import { reportRoutes } from "./reports";
 import { createAiRoutes } from "./aiRoutes";
 import type { AiConfig } from "./aiPolicy";
@@ -175,6 +177,30 @@ app.onError((error, c) => {
     500,
   );
 });
+app.use("/api/v1/*", async (c, next) => {
+  const expected = c.req.header("X-EQ-Household-ID");
+  if (
+    /^\/api\/v1\/(?:children|family|ai|households)(?:\/|$)/.test(c.req.path)
+  ) {
+    const adult = await readAdult(c);
+    if (
+      adult &&
+      ((expected === undefined && adult.contextVersion > 0) ||
+        (expected !== undefined &&
+          (adult.householdId !== expected ||
+            String(adult.contextVersion) !==
+              c.req.header("X-EQ-Household-Version"))))
+    )
+      return c.json(
+        fault(
+          "HOUSEHOLD_CONTEXT_CHANGED",
+          "当前家庭已切换，请刷新页面并核对家庭后再操作。已保存记录保留。",
+        ),
+        409,
+      );
+  }
+  await next();
+});
 app.get("/api/v1/health", (c) =>
   c.json({
     status: "ok",
@@ -186,6 +212,9 @@ app.get("/api/v1/health", (c) =>
     offlineProtocol: 1,
     databaseBinding: Boolean(c.env.DB),
     companionProtocol: 1,
+    householdProtocol: 1,
+    householdSharingEnabled:
+      c.env.APP_STAGE === "local" || platformFeatures.householdSharingEnabled,
   }),
 );
 app.get("/api/v1/exercises", (c) =>
@@ -256,6 +285,9 @@ app.get("/api/v1/me", async (c) => {
             householdId: adult.householdId,
             isAdmin: adult.isAdmin,
             mustChangePassword: adult.mustChangePassword,
+            role: adult.role,
+            householdName: adult.householdName,
+            contextVersion: adult.contextVersion,
           },
         }
       : {}),
@@ -275,6 +307,7 @@ app.get("/api/v1/me", async (c) => {
 });
 app.route("/api/v1", authRoutes);
 app.route("/api/v1", managedAccountRoutes);
+app.route("/api/v1", householdRoutes);
 app.route("/api/v1", reportRoutes);
 app.post("/api/v1/dev/session", async (c) => {
   if (!devAllowed(c.env, c.req.url))

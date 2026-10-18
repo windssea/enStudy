@@ -142,3 +142,21 @@ v0.20新增实际端点`POST /learning/concepts/:id/view`，body为`{caseId}`。
 ## v0.23已实现的当前轮离线同步
 
 `GET /me`返回`offlineProtocol=1`；旧服务缺少该能力时客户端保留队列并停止提交。`POST /sessions/:id/offline-pack`用当前`assignmentId, leaseId`准备最多20个公开任务，要求owner和有效grant，排除分步测验，不返回答案。服务端同时标记准备状态。`POST /attempts`可传`evidenceSource=offline_unverified, clientOccurredAt`，准备过的任务省略标记也不会变成独立证据。回执`support=offline`、零独立/零星星，客户端保存回执后才幂等推进下一步；冲突保留队列，重新授权必须显式操作。完整口径、0025迁移与设备待验项见[离线练习](42-offline-practice-and-confirmation.md)。
+
+## v0.31家庭协作接口
+
+下列路径均以`/api/v1`为前缀。公开注册继续关闭，受邀者使用已有账号且先完成临时密码更换。准备阶段GET可读、变更返回503；启用后按下表执行。
+
+| 方法与路径 | 输入 | 权限与行为 |
+| --- | --- | --- |
+| GET `/households/current` | 无 | 返回开关、当前家庭或null、本人会话上下文版本、家庭权限版本、已加入家庭、成员与仅管理家长可读的待接受邀请 |
+| POST `/households/switch` | householdId、expectedContextVersion、requestId | 有效成员主动选择；会话CAS、撤销当前设备旧儿童grant，不改学习结果 |
+| POST `/households/invitations` | username、role、expectedVersion、requestId、currentPassword | 管理家长复核密码，绑定已有接收账号，24小时有效；原码只返回一次 |
+| POST `/households/invitations/preview` | token | 仅绑定收件人可读邀请账号、家庭、角色、到期和目标家庭版本，不返回儿童数据 |
+| POST `/households/invitations/accept` | token、expectedVersion、requestId、currentPassword | 收件人核对后复核本人密码，原子加入；重复命令确认一次，不自动换家庭 |
+| POST `/households/invitations/:id/revoke` | expectedVersion、currentPassword | 管理家长撤销尚未接受的邀请 |
+| POST `/households/members/:id` | operation、role（调整角色时）、expectedVersion、currentPassword | operation为change_role/remove_member/leave；管理或本人退出，保留最后可用管理家长 |
+
+`expectedVersion`为目标家庭权限版本；`expectedContextVersion`为当前成人登录会话的家庭切换版本，两者不能混用。前端家长请求发送`X-EQ-Household-ID`与`X-EQ-Household-Version`，不匹配返回409 `HOUSEHOLD_CONTEXT_CHANGED`；发生过切换的会话缺少头也拒绝。`/me`仍可读取实际身份供页面恢复。事务再次校验角色、账号、会话与上下文，避免检查后发生切换的在途写入。
+
+`/me.adult`增加role（无家庭时null）、householdName与contextVersion。协助家长可选择孩子和看报告，档案写入与AI设置仅管理家长可做。空家庭成人仍能登录、改密、接受邀请。成员角色变更或移除撤销目标账号全部会话与grant；儿童记录留在原家庭。详见[完整契约与发布](52-household-invitations-and-roles.md)。

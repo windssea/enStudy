@@ -57,6 +57,7 @@
 | 51 | [v0.28粘土词语角与B第二单元](49-word-study-and-b-term-unit-two.md) | 192课、词义匹配的六种模型、词卡示范与独立记忆衔接 |
 | 52 | [v0.29皮卡丘与档案伙伴](50-pikachu-and-saved-companions.md) | 皮卡丘GLB、可编辑模型、双角色降级与儿童偏好保存 |
 | 53 | [v0.30位置实验与第三单元](51-position-lab-and-third-term-unit.md) | 216课、粘土位置关系、中文语法对照与示范证据 |
+| 54 | [v0.31家庭邀请与权限](52-household-invitations-and-roles.md) | 已有账号邀请、成员管理、家庭上下文与两步兼容发布 |
 
 配套资料：
 

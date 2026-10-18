@@ -4686,3 +4686,90 @@ button.unit-node:not(:disabled) {
     scroll-behavior: auto !important;
   }
 }
+.household-access > summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  cursor: pointer;
+  min-height: 52px;
+  align-items: center;
+}
+.household-access > summary span {
+  color: var(--muted);
+  font-size: 16px;
+}
+.household-access-body {
+  display: grid;
+  gap: 24px;
+  margin-top: 20px;
+}
+.household-access-body > section {
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+.household-members {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.household-members > li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--bg);
+}
+.household-members p {
+  margin: 6px 0;
+}
+.household-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.household-role {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  margin-block: 12px;
+  padding: 12px;
+  border: 1px solid var(--control-border);
+  border-radius: 16px;
+  cursor: pointer;
+}
+.household-role:has(input:checked) {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+}
+.household-role input {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+.household-role small {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.household-confirm {
+  padding: 20px;
+  border: 2px solid var(--primary);
+  border-radius: 20px;
+  background: var(--primary-soft);
+}
+.household-share textarea {
+  font-family: ui-monospace, monospace;
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.household-confirm:focus {
+  outline: 3px solid var(--primary);
+  outline-offset: 4px;
+}

@@ -16,7 +16,7 @@ M1-01,M1,关闭注册与管理员身份,指定admin密码哈希和登录撤销�
 M1-02,M1,儿童档案与设备授权,增改删切换及旧授权撤销通过,done,CI接口验证与线上23项账号检查
 M1-03,M1,会话重载与设备接管,重载恢复且旧lease不能重复写入,local-verified-remote-and-device-pending,docs/31-device-session-handover.md及36项续学检查和206项本机HTTP回归
 M1-04,M1,更多受管理账号与家庭,保持注册关闭且账号管理权限隔离,deployed-admin-listing-verified-crud-and-device-pending,docs/30-managed-family-accounts.md及46项本地管理账号检查与docs/47-20261018-synchronized-release.md线上管理员登录列表通过而远程完整CRUD与真机待验
-M1-05,M1,同家庭多成人邀请与成人生命周期,一次性邀请角色变更与删除保留期核验,todo,
+M1-05,M1,同家庭多成人邀请与成人生命周期,一次性邀请角色变更与删除保留期核验,partial-local-invitations-and-roles,docs/52-household-invitations-and-roles.md及62项本机家庭协作通过而两步兼容发布与远程完整邀请及浏览器和账户删除保留期仍待做
 M2-01,M2,不可变内容release和审核流水线,发布审核撤题与版本兼容通过,partial-versioned-release-snapshot,docs/34-course-expansion-and-exposure.md及追加v2和历史恢复与混合来源已验证而编辑审核撤题运营待做
 M2-02,M2,全年级课程与媒体,288微课与各年级综合能力覆盖审核,partial-216-of-288,docs/51-position-lab-and-third-term-unit.md及已发布下学期第三单元24课216任务保留原192课而剩余72课与完整媒体教研审核待做
 M2-03,M2,完整互动题型与可访问替代,听读分类纠错与引导表达可用,partial-seven-type-mixed-course,docs/40-fourth-unit-and-clearer-navigation.md及第四单元课内组合七种题型和独立证据而真机发声丰富媒体表达及PC平板验收待做

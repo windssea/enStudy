@@ -236,6 +236,9 @@ export interface Identity {
     householdId: string;
     isAdmin: boolean;
     mustChangePassword: boolean;
+    role?: import("../domain/households").HouseholdRole | null;
+    householdName?: string;
+    contextVersion?: number;
   };
   child?: {
     id: string;
@@ -250,6 +253,7 @@ export interface ManagedAccount {
   id: string;
   username: string;
   householdName: string;
+  householdCount?: number;
   childCount: number;
   disabled: boolean;
   mustChangePassword: boolean;

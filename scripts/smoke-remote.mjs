@@ -16,6 +16,12 @@ const expectedShell = JSON.parse(
     "utf8",
   ),
 );
+const expectedFeatures = JSON.parse(
+  await readFile(
+    new URL("../packages/domain/platformFeatures.json", import.meta.url),
+    "utf8",
+  ),
+);
 
 const base = new URL(
   process.argv[2] ?? "https://development.english-quest-dev.pages.dev",
@@ -79,6 +85,9 @@ let course = await lessonResponse.json();
 let featureHealth = await (await request("/api/v1/health")).json();
 const courseReady = () =>
   featureHealth.companionProtocol === 1 &&
+  featureHealth.householdProtocol === 1 &&
+  featureHealth.householdSharingEnabled ===
+    expectedFeatures.householdSharingEnabled &&
   lessonResponse.status === 200 &&
   sameLessonRelease(course, expectedCourse) &&
   Object.keys(course.topicStats ?? {}).length === 60 &&
@@ -179,7 +188,7 @@ const login = await request("/api/v1/auth/login", {
 });
 let cookie = responseCookieHeader(login.headers.getSetCookie());
 let temporaryChild;
-async function authenticated(path, body) {
+async function authenticated(path, body, extraHeaders = {}) {
   const response = await request(`/api/v1${path}`, {
     method: body === undefined ? "GET" : "POST",
     headers: {
@@ -188,6 +197,7 @@ async function authenticated(path, body) {
       ...(body === undefined
         ? {}
         : { "Content-Type": "application/json", Origin: base.origin }),
+      ...extraHeaders,
     },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
@@ -212,9 +222,41 @@ try {
   check(
     response.status === 200 &&
       Array.isArray(data.items) &&
+      data.items.every(
+        (row) =>
+          Number.isSafeInteger(row.householdCount) && row.householdCount >= 0,
+      ) &&
       identity.adult?.username === "admin" &&
       identity.adult?.isAdmin === true,
     "administrator account listing available",
+  );
+  const household = await authenticated("/households/current");
+  check(
+    household.status === 200 &&
+      household.data.current?.id === identity.adult.householdId &&
+      household.data.current?.role === identity.adult.role &&
+      Number.isSafeInteger(household.data.contextVersion) &&
+      household.data.sharingEnabled ===
+        expectedFeatures.householdSharingEnabled &&
+      !JSON.stringify(household.data).includes("token_hash"),
+    "household membership protocol and release feature state are available",
+  );
+  check(
+    (
+      await authenticated("/children", undefined, {
+        "X-EQ-Household-ID": "stale-release-family",
+        "X-EQ-Household-Version": "0",
+      })
+    ).data.error?.code === "HOUSEHOLD_CONTEXT_CHANGED",
+    "a stale family context cannot read the current family",
+  );
+  const dummyPreview = await authenticated("/households/invitations/preview", {
+    token: "0".repeat(64),
+  });
+  check(
+    dummyPreview.status ===
+      (expectedFeatures.householdSharingEnabled ? 404 : 503),
+    "invitation availability follows the release gate without creating accounts",
   );
   const made = await authenticated("/children", {
     nickname: `伙伴发布核验${crypto.randomUUID().slice(0, 6)}`,
