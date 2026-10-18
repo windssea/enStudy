@@ -49,6 +49,8 @@ import {
   structuredCanonical,
   joinParts,
 } from "../packages/domain/structured";
+const PhonicsCentre = lazy(() => import("./PhonicsCentre"));
+const WordAudioButton = lazy(() => import("./WordAudioButton"));
 const WritingWorkshop = lazy(() => import("./WritingWorkshop"));
 const World = lazy(() => import("./World"));
 const WordTraining = lazy(() => import("./WordTraining"));
@@ -153,6 +155,9 @@ const storedFlag = (key: string) => {
 
 export default function App() {
   const [view, setView] = useState<View>(() => readRoute().view);
+  const [phonicsStageId, setPhonicsStageId] = useState<string | null>(
+    () => readRoute().phonicsStageId ?? null,
+  );
   const [writingPromptId, setWritingPromptId] = useState<string | null>(
     () => readRoute().writingPrompt ?? null,
   );
@@ -210,6 +215,7 @@ export default function App() {
       // A hash navigation can emit both events; an accepted exit is confirmed once.
       if (currentView.current === "writing" && route.view !== "writing")
         writingDirty.current = false;
+      setPhonicsStageId(route.phonicsStageId ?? null);
       setWritingPromptId(route.writingPrompt ?? null);
       setView(route.view);
       if (route.lessonId) setLessonId(route.lessonId);
@@ -315,6 +321,10 @@ export default function App() {
     )
       return;
     if (view === "writing" && next !== "writing") writingDirty.current = false;
+    if (next === "phonics")
+      setPhonicsStageId(
+        targetLessonId ?? phonicsStageId ?? session?.phonicsStageId ?? null,
+      );
     if (next === "writing") setWritingPromptId(targetLessonId ?? null);
     let mapGrade = grade,
       mapTerm = term;
@@ -340,13 +350,16 @@ export default function App() {
       setPatternId(null);
     }
     const hash =
-      next === "writing" && targetLessonId
-        ? `#writing=${encodeURIComponent(targetLessonId)}`
-        : next === "lesson"
-          ? `#lesson=${encodeURIComponent(targetLessonId ?? lessonId ?? "")}`
-          : next === "map"
-            ? mapFragment(mapGrade, mapTerm)
-            : `#${next}`;
+      next === "phonics" &&
+      (targetLessonId || phonicsStageId || session?.phonicsStageId)
+        ? `#phonics=${encodeURIComponent(targetLessonId ?? phonicsStageId ?? session?.phonicsStageId ?? "")}`
+        : next === "writing" && targetLessonId
+          ? `#writing=${encodeURIComponent(targetLessonId)}`
+          : next === "lesson"
+            ? `#lesson=${encodeURIComponent(targetLessonId ?? lessonId ?? "")}`
+            : next === "map"
+              ? mapFragment(mapGrade, mapTerm)
+              : `#${next}`;
     if (window.location.hash !== hash) window.history.pushState(null, "", hash);
     setView(next);
     setError("");
@@ -647,6 +660,7 @@ export default function App() {
       patternId?: string;
       wordThemeId?: string;
       workshopId?: string;
+      phonicsStageId?: string;
       wordMode?: WordMode;
       mode?: "review";
       roundSize?: number;
@@ -709,9 +723,11 @@ export default function App() {
     }
     if (structuredCanonical(session.exercise, answer) === null) {
       setError(
-        session.exercise.type === "evidence"
-          ? "先选支持答案的原文句，再选问题答案，一起检查吧。"
-          : "请放好全部卡片，或选好词块并填写修改，再检查吧。",
+        session.exercise.graphemeTokens
+          ? "把下方字母块都用上，排成一个词，再检查吧。"
+          : session.exercise.type === "evidence"
+            ? "先选支持答案的原文句，再选问题答案，一起检查吧。"
+            : "请放好全部卡片，或选好词块并填写修改，再检查吧。",
       );
       return;
     }
@@ -897,6 +913,7 @@ export default function App() {
         topic: "topics",
         pattern: "patterns",
         workshop: "workshops",
+        phonics: "phonics",
         review: "review",
       } as Record<string, View>
     )[session?.source ?? ""] ?? "map";
@@ -906,7 +923,12 @@ export default function App() {
       : view === "lesson" || view === "talk" || view === "writing"
         ? "map"
         : view;
-  const activeNav = currentSection === "workshops" ? "topics" : currentSection;
+  const activeNav =
+    currentSection === "workshops"
+      ? "topics"
+      : currentSection === "phonics"
+        ? "words"
+        : currentSection;
   return (
     <MotionShell quiet={quiet || reduced} flat={twoD} companion={partner.id}>
       <a className="skip" href="#main">
@@ -963,16 +985,18 @@ export default function App() {
           <div>
             <small>你在这里</small>
             <strong>
-              {view === "writing"
-                ? "写作小工坊"
-                : view === "offline"
-                  ? "本机离线练习"
-                  : view === "workshops"
-                    ? "英语互动工坊"
-                    : view === "talk"
-                      ? "英语小剧场"
-                      : (nav.find((n) => n[0] === activeNav)?.[1] ??
-                        "今天的小练习")}
+              {view === "phonics"
+                ? "拼读小路"
+                : view === "writing"
+                  ? "写作小工坊"
+                  : view === "offline"
+                    ? "本机离线练习"
+                    : view === "workshops"
+                      ? "英语互动工坊"
+                      : view === "talk"
+                        ? "英语小剧场"
+                        : (nav.find((n) => n[0] === activeNav)?.[1] ??
+                          "今天的小练习")}
               {view === "exercise" && " · 练习中"}
             </strong>
           </div>
@@ -1414,6 +1438,7 @@ export default function App() {
               >
                 <WordTraining
                   themes={wordThemes}
+                  onPhonics={() => move("phonics")}
                   grade={grade}
                   childId={identity.child?.id}
                   resume={
@@ -1685,6 +1710,23 @@ export default function App() {
               />
             </Suspense>
           )}
+          {view === "phonics" && (
+            <Suspense fallback={<p role="status">正在准备拼读小路…</p>}>
+              <PhonicsCentre
+                key={`${identity.child?.id ?? "none"}`}
+                childId={identity.child?.id}
+                busy={busy}
+                initialStageId={phonicsStageId ?? session?.phonicsStageId}
+                onBrowse={(id) => move("phonics", id)}
+                onStart={(id, roundSize) => {
+                  setPhonicsStageId(id);
+                  void start("", { phonicsStageId: id, roundSize });
+                }}
+                onBack={() => move("words")}
+                onParent={() => move("parent")}
+              />
+            </Suspense>
+          )}
           {view === "writing" && (
             <Suspense fallback={<p role="status">正在准备写作小工坊…</p>}>
               <WritingWorkshop
@@ -1766,7 +1808,7 @@ export default function App() {
                 backup={draftBackup}
                 onRefresh={() => void refreshSession()}
                 onTakeover={() => void takeOver()}
-                leaveLabel={`返回${sessionHome === "workshops" ? "互动工坊" : (nav.find((n) => n[0] === sessionHome)?.[1] ?? "学习地图")}`}
+                leaveLabel={`返回${sessionHome === "phonics" ? "拼读小路" : sessionHome === "workshops" ? "互动工坊" : (nav.find((n) => n[0] === sessionHome)?.[1] ?? "学习地图")}`}
                 onLeave={() => move(sessionHome)}
               />
               {sessionNotice && (
@@ -1807,17 +1849,19 @@ export default function App() {
                   }
                 >
                   返回
-                  {session.source === "workshop"
-                    ? "互动工坊"
-                    : session.source === "vocabulary"
-                      ? "单词特训"
-                      : session.source === "pattern"
-                        ? "固定句式"
-                        : session.source === "topic"
-                          ? "专题特训"
-                          : session.source === "review"
-                            ? "复习花园"
-                            : "学习地图"}
+                  {session.source === "phonics"
+                    ? "拼读小路"
+                    : session.source === "workshop"
+                      ? "互动工坊"
+                      : session.source === "vocabulary"
+                        ? "单词特训"
+                        : session.source === "pattern"
+                          ? "固定句式"
+                          : session.source === "topic"
+                            ? "专题特训"
+                            : session.source === "review"
+                              ? "复习花园"
+                              : "学习地图"}
                 </button>
                 <span className="badge">
                   第{session.position ?? 1}步 / 共{session.total ?? 1}步
@@ -1966,6 +2010,15 @@ export default function App() {
                       />
                     </label>
                   )}
+                  {session.exercise.audioUrl &&
+                    session.exercise.type !== "listen" && (
+                      <Suspense fallback={<p>声音按钮准备中…</p>}>
+                        <WordAudioButton
+                          key={session.assignmentId}
+                          url={session.exercise.audioUrl}
+                        />
+                      </Suspense>
+                    )}
                   {session.exercise.type === "order" && (
                     <>
                       <div className="sentence-slot" aria-label="已选择的词块">
@@ -1986,7 +2039,11 @@ export default function App() {
                             </button>
                           ))
                         ) : (
-                          <span>点击词块，搭出句子。</span>
+                          <span>
+                            {session.exercise.graphemeTokens
+                              ? "点击字母块，拼成一个词。"
+                              : "点击词块，搭出句子。"}
+                          </span>
                         )}
                       </div>
                       <div className="answer-options">
@@ -2014,10 +2071,15 @@ export default function App() {
                             </button>
                           ))}
                       </div>
-                      {session.exercise.punctuationTokens &&
+                      {(session.exercise.punctuationTokens ||
+                        session.exercise.graphemeTokens) &&
                         Array.isArray(answer) && (
                           <p className="order-preview" lang="en">
-                            {answer.length ? joinParts(answer) : "…"}
+                            {answer.length
+                              ? session.exercise.graphemeTokens
+                                ? answer.join("")
+                                : joinParts(answer)
+                              : "…"}
                           </p>
                         )}
                     </>

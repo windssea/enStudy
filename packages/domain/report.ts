@@ -7,14 +7,15 @@ export const sourceLabels: Record<string, string> = {
   pattern: "固定句式",
   vocabulary: "单词特训",
   workshop: "互动工坊",
+  phonics: "拼读小路",
   review: "到期复习",
   single: "单题练习",
 };
 export const interactionLabels: Record<string, string> = {
   choice: "选择",
   input: "填写与拼写",
-  order: "组句",
-  listen: "听音辨义",
+  order: "组句与字母块拼合",
+  listen: "听音选择",
   evidence: "阅读找依据",
   repair: "句子修正",
   sort: "分类",
@@ -22,6 +23,10 @@ export const interactionLabels: Record<string, string> = {
 export const modalityLabels: Record<string, string> = {
   recognition: "词义与结构辨认",
   spelling: "拼写与填写",
+  "phonics-listening": "听词辨拼写",
+  "phonics-spelling": "字母对应与拼写",
+  "grapheme-recognition": "音与字母分组",
+  "word-part-recognition": "有意义的词块",
   "controlled-production": "受控组句",
   "context-recognition": "词语语境",
   "listening-choice": "听音辨义",

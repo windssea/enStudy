@@ -58,6 +58,7 @@ try {
   await run("smoke-patterns.mjs");
   await run("smoke-vocabulary.mjs");
   await run("smoke-word-study.mjs");
+  await run("smoke-phonics.mjs");
   await run("smoke-workshops.mjs");
   await run("smoke-listening-reading.mjs");
   await run("smoke-action-courses.mjs");

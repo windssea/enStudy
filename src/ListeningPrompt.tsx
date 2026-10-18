@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { LearningSession } from "../packages/contracts/index";
 import { api } from "./api";
 import { playLocalEnglish } from "./deviceSpeech";
+import { playWordAudio } from "./wordAudio";
 type InputState = NonNullable<LearningSession["listening"]>;
 export default function ListeningPrompt({
   session,
@@ -49,20 +50,28 @@ export default function ListeningPrompt({
       return;
     }
     try {
-      speech.current = playLocalEnglish(session.exercise.audioText!, {
-        ended: () => {
-          if (live.current && current === generation.current) setPhase("ended");
+      const playAudio = session.exercise.audioUrl
+        ? playWordAudio
+        : playLocalEnglish;
+      speech.current = playAudio(
+        session.exercise.audioUrl ?? session.exercise.audioText!,
+        {
+          ended: () => {
+            if (live.current && current === generation.current)
+              setPhase("ended");
+          },
+          failed: (message) => {
+            if (live.current && current === generation.current) {
+              setPhase("idle");
+              setError(message);
+            }
+          },
+          stopped: () => {
+            if (live.current && current === generation.current)
+              setPhase("idle");
+          },
         },
-        failed: (message) => {
-          if (live.current && current === generation.current) {
-            setPhase("idle");
-            setError(message);
-          }
-        },
-        stopped: () => {
-          if (live.current && current === generation.current) setPhase("idle");
-        },
-      });
+      );
       setPhase("playing");
     } catch (e) {
       setPhase("idle");
@@ -124,8 +133,15 @@ export default function ListeningPrompt({
           </svg>
         </span>
         <div>
-          <strong>先听一句，再想一想</strong>
-          <p>本机合成语音 · 可重播，不计速度</p>
+          <strong>
+            {session.exercise.audioUrl
+              ? "先听整词，再想一想"
+              : "先听一句，再想一想"}
+          </strong>
+          <p>
+            {session.exercise.audioUrl ? "英式合成整词" : "本机合成语音"} ·
+            可重播，不计速度
+          </p>
         </div>
       </div>
       <div className="voice-actions">

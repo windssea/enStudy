@@ -1,0 +1,8 @@
+English Quest synthetic whole-word audio
+Generated locally with Piper 1.3.0 (GPL-3.0 tool; tool/model not distributed here).
+Voice: en_GB-cori-high, Bryce Beattie / rhasspy Piper voices.
+Voice model card describes a UK English female model trained from LibriVox public-domain recordings.
+Source: https://huggingface.co/rhasspy/piper-voices/tree/c10ece1aade47bb51c153c893d14e5bf8e5b7117/en/en_GB/cori/high
+Dataset/training information: https://brycebeattie.com/files/tts/ and https://librivox.org
+These clips are whole words, not recordings of isolated pure phonemes or a child's own speech.
+No pronunciation-scoring or validated-phonics-programme claim is made.

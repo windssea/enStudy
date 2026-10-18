@@ -35,6 +35,19 @@ export function structuredCanonical(
   exercise: Exercise,
   answer: Answer,
 ): string | null {
+  if (exercise.type === "order" && exercise.graphemeTokens) {
+    if (
+      !Array.isArray(answer) ||
+      !exercise.tokens ||
+      !answer.every((token) => typeof token === "string") ||
+      answer.length !== exercise.tokens.length
+    )
+      return null;
+    const expected = exercise.tokens.map(normalizeText).sort(),
+      given = answer.map(normalizeText).sort();
+    if (JSON.stringify(expected) !== JSON.stringify(given)) return null;
+    return JSON.stringify(answer.map(normalizeText).join(""));
+  }
   if (exercise.type === "evidence") {
     if (
       !Array.isArray(answer) ||

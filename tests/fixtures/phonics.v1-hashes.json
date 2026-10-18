@@ -1,0 +1,8 @@
+{
+  "migrations/0037_term_b_portfolio.sql": "edafa611a2d3412d7f4bda2c8ea58fc95ce13bad484f86f136f71a43a00b4f5f",
+  "migrations/0038_writing_drafts.sql": "29bc111fb1cc8d74e1ab5b00dc1f1aac0d6fe1a87da8524a9e80fd367838bccf",
+  "migrations/0039_phonics_core_v1.sql": "184dbdac6dcbaf3fb5e1615d65eb51ca7b1fcb9782bc9e5f96c1f9bfc9c81593",
+  "content/phonics-release.v1.json": "f2eb7aa4b2322e58f17ec73489db1d5c6d0b8aebb1a14aae3306488987547330",
+  "public/content/phonics.json": "69ae1827d738e66193dffc955c5db617e11a49542409950b9ad72dfe3d954146",
+  "public/content/phonics-audio.v1.json": "438ded986337803eeae49e7ae64ef29d68d14166e226b517876bbaaf0b12e214"
+}

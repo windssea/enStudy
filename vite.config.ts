@@ -77,6 +77,8 @@ export default defineConfig({
         "**/content/practical-term-course-release*.json",
         "**/content/portfolio-term-courses*.mjs",
         "**/content/portfolio-term-course-release*.json",
+        "**/content/phonics-v*.mjs",
+        "**/content/phonics-release*.json",
         "**/.wrangler/**",
         "**/.cloudflare/**",
         "**/.git/**",

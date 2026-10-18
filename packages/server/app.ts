@@ -22,6 +22,7 @@ import {
   vocabularyRelease,
   wordThemes,
   workshopRelease,
+  phonicsRelease,
   structuredFeedback,
 } from "./exercises";
 import { structuredCanonical } from "../domain/structured";
@@ -35,6 +36,7 @@ import type { Answer, LearningSession, Receipt } from "../contracts/index";
 import { conceptLab } from "../domain/concepts";
 import { companionRoutes, readCompanion } from "./companions";
 import { writingRoutes } from "./writing";
+import { phonicsRoutes } from "./phonics";
 import conceptExposure from "../../content/concept-exposure-map.json";
 import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 import { managedAccountRoutes } from "./managedAccounts";
@@ -79,12 +81,17 @@ type Bindings = {
 };
 export const app = new Hono<Bindings>();
 class PlayerUpdateRequired extends Error {}
-const supportsExercise = (type: string, version?: string) =>
-  ["listen", "evidence"].includes(type)
-    ? version === "3"
-    : ["sort", "repair"].includes(type)
-      ? ["2", "3"].includes(version ?? "")
-      : true;
+const supportsExercise = (
+  exercise: import("../contracts/index").Exercise,
+  version?: string,
+) =>
+  exercise.graphemeTokens || exercise.audioUrl
+    ? version === "4"
+    : ["listen", "evidence"].includes(exercise.type)
+      ? ["3", "4"].includes(version ?? "")
+      : ["sort", "repair"].includes(exercise.type)
+        ? ["2", "3", "4"].includes(version ?? "")
+        : true;
 const UUID =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 // Old foundation lessons displayed every practice sentence before starting.
@@ -214,6 +221,7 @@ app.get("/api/v1/health", (c) =>
     databaseBinding: Boolean(c.env.DB),
     companionProtocol: 1,
     writingProtocol: 1,
+    phonicsProtocol: 1,
     householdProtocol: 1,
     householdSharingEnabled:
       c.env.APP_STAGE === "local" || platformFeatures.householdSharingEnabled,
@@ -409,6 +417,7 @@ for (const path of [
 app.route("/api/v1", createAiRoutes(actorFrom));
 app.route("/api/v1", companionRoutes);
 app.route("/api/v1", writingRoutes);
+app.route("/api/v1", phonicsRoutes);
 app.route("/api/v1", trainingRoutes);
 interface Assignment {
   offline_prepared_at: number | null;
@@ -430,6 +439,7 @@ interface Assignment {
     | "pattern"
     | "vocabulary"
     | "workshop"
+    | "phonics"
     | "review"
     | "single";
   source_ref: string | null;
@@ -459,7 +469,7 @@ function sessionPayload(
   playerVersion?: string,
 ): LearningSession {
   const exercise = exerciseVersion(row.item_id, row.item_version)!;
-  if (!supportsExercise(exercise.type, playerVersion))
+  if (!supportsExercise(exercise, playerVersion))
     throw new PlayerUpdateRequired();
   return {
     id: row.id,
@@ -487,6 +497,9 @@ function sessionPayload(
     total: row.total,
     lessonId: row.lesson_id,
     source: row.source,
+    ...(exercise.phonicsStageId
+      ? { phonicsStageId: exercise.phonicsStageId }
+      : {}),
     ...(row.cycle_id
       ? {
           training: {
@@ -561,7 +574,7 @@ app.post("/api/v1/sessions/:id/offline-pack", async (c) => {
     );
   const items = pending.results.map((item) => {
     const version = exerciseVersion(item.item_id, item.item_version)!;
-    if (!supportsExercise(version.type, c.req.header("X-EQ-Player-Version")))
+    if (!supportsExercise(version, c.req.header("X-EQ-Player-Version")))
       throw new PlayerUpdateRequired();
     return {
       assignmentId: item.id,
@@ -657,7 +670,7 @@ app.post("/api/v1/sessions/:id/listening", async (c) => {
       fault("INVALID_LISTENING_INPUT", "这道题不需要听音状态。"),
       422,
     );
-  if (!supportsExercise(item.type, c.req.header("X-EQ-Player-Version")))
+  if (!supportsExercise(item, c.req.header("X-EQ-Player-Version")))
     throw new PlayerUpdateRequired();
   if (
     (body.mode === "heard" && row.heard_at) ||
@@ -791,6 +804,13 @@ app.post("/api/v1/sessions/:id/takeover", async (c) => {
     );
   const row = await loadSession(c.env.DB, actor, id);
   if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
+  if (
+    !supportsExercise(
+      exerciseVersion(row.item_id, row.item_version)!,
+      c.req.header("X-EQ-Player-Version"),
+    )
+  )
+    throw new PlayerUpdateRequired();
   type Claim = {
     session_id: string;
     grant_id: string;
@@ -961,6 +981,7 @@ app.post("/api/v1/sessions", async (c) => {
     typeof body.patternId === "string",
     typeof body.wordThemeId === "string",
     typeof body.workshopId === "string",
+    typeof body.phonicsStageId === "string",
     body.mode === "review",
   ];
   if (
@@ -971,6 +992,7 @@ app.post("/api/v1/sessions", async (c) => {
       "patternId",
       "wordThemeId",
       "workshopId",
+      "phonicsStageId",
     ].some(
       (key) =>
         body[key] !== undefined &&
@@ -985,7 +1007,13 @@ app.post("/api/v1/sessions", async (c) => {
     return c.json(fault("INVALID_SESSION", "请选择一种有效的学习任务。"), 422);
   if (
     body.roundSize !== undefined &&
-    (!(body.topicId || body.patternId || body.wordThemeId || body.workshopId) ||
+    (!(
+      body.topicId ||
+      body.patternId ||
+      body.wordThemeId ||
+      body.workshopId ||
+      body.phonicsStageId
+    ) ||
       ![5, 10, 20].includes(body.roundSize))
   )
     return c.json(
@@ -1015,29 +1043,32 @@ app.post("/api/v1/sessions", async (c) => {
       fault("INVALID_TRAINING", "请从专题计划中继续，步骤与题量由服务端决定。"),
       422,
     );
-  const source: Assignment["source"] = body.lessonId
-    ? "lesson"
-    : body.topicId
-      ? "topic"
-      : body.patternId
-        ? "pattern"
-        : body.wordThemeId
-          ? "vocabulary"
-          : body.workshopId
-            ? "workshop"
-            : body.mode === "review"
-              ? "review"
-              : "single";
+  const source: Assignment["source"] = body.phonicsStageId
+    ? "phonics"
+    : body.lessonId
+      ? "lesson"
+      : body.topicId
+        ? "topic"
+        : body.patternId
+          ? "pattern"
+          : body.wordThemeId
+            ? "vocabulary"
+            : body.workshopId
+              ? "workshop"
+              : body.mode === "review"
+                ? "review"
+                : "single";
   const reference = String(
     body.lessonId ??
       body.topicId ??
       body.patternId ??
       body.wordThemeId ??
       body.workshopId ??
+      body.phonicsStageId ??
       body.exerciseId ??
       "due",
   );
-  const sourceRef = `${source}:${reference}${["topic", "pattern", "vocabulary", "workshop"].includes(source) ? `:${body.roundSize ?? 10}` : ""}${source === "vocabulary" ? `:${body.wordMode ?? "mixed"}` : ""}${body.trainingCycleId ? `:training:${body.trainingCycleId}:${body.trainingVersion}` : ""}`;
+  const sourceRef = `${source}:${reference}${["topic", "pattern", "vocabulary", "workshop", "phonics"].includes(source) ? `:${body.roundSize ?? 10}` : ""}${source === "vocabulary" ? `:${body.wordMode ?? "mixed"}` : ""}${body.trainingCycleId ? `:training:${body.trainingCycleId}:${body.trainingVersion}` : ""}`;
   const existing = await loadSession(c.env.DB, actor, body.clientRequestId);
   if (existing) {
     if (
@@ -1077,7 +1108,9 @@ app.post("/api/v1/sessions", async (c) => {
         : [];
   if (source === "lesson" && !lesson) selected = [];
   if (training) selected = training.items;
-  else if (["topic", "pattern", "vocabulary", "workshop"].includes(source)) {
+  else if (
+    ["topic", "pattern", "vocabulary", "workshop", "phonics"].includes(source)
+  ) {
     const recent = await c.env.DB.prepare(
       "SELECT si.item_id FROM session_items si JOIN learning_sessions s ON s.id=si.session_id WHERE si.household_id=? AND si.child_id=? ORDER BY s.created_at DESC,si.position LIMIT 400",
     )
@@ -1089,24 +1122,28 @@ app.post("/api/v1/sessions", async (c) => {
       ),
     );
     selected = selectTopicItems(
-      source === "workshop"
-        ? workshopRelease.items
-            .filter((item) => item.workshopId === body.workshopId)
-            .map((item) => ({ ...item, pattern: item.type }))
-        : source === "vocabulary"
-          ? vocabularyRelease.items.filter(
-              (item) =>
-                item.wordThemeId === body.wordThemeId &&
-                ((body.wordMode ?? "mixed") === "mixed" ||
-                  item.wordMode === body.wordMode),
-            )
-          : source === "pattern"
-            ? patternRelease.items.filter(
-                (item) => item.patternId === body.patternId,
+      source === "phonics"
+        ? phonicsRelease.items.filter(
+            (item) => item.phonicsStageId === body.phonicsStageId,
+          )
+        : source === "workshop"
+          ? workshopRelease.items
+              .filter((item) => item.workshopId === body.workshopId)
+              .map((item) => ({ ...item, pattern: item.type }))
+          : source === "vocabulary"
+            ? vocabularyRelease.items.filter(
+                (item) =>
+                  item.wordThemeId === body.wordThemeId &&
+                  ((body.wordMode ?? "mixed") === "mixed" ||
+                    item.wordMode === body.wordMode),
               )
-            : topicRelease.items.filter(
-                (item) => item.topicId === body.topicId,
-              ),
+            : source === "pattern"
+              ? patternRelease.items.filter(
+                  (item) => item.patternId === body.patternId,
+                )
+              : topicRelease.items.filter(
+                  (item) => item.topicId === body.topicId,
+                ),
       recentFamilies,
       body.roundSize ?? 10,
     );
@@ -1129,8 +1166,7 @@ app.post("/api/v1/sessions", async (c) => {
     );
   if (
     selected.some(
-      (item) =>
-        !supportsExercise(item.type, c.req.header("X-EQ-Player-Version")),
+      (item) => !supportsExercise(item, c.req.header("X-EQ-Player-Version")),
     )
   )
     throw new PlayerUpdateRequired();
@@ -1292,6 +1328,13 @@ app.post("/api/v1/sessions/:id/next", async (c) => {
     body = await c.req.json();
   if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
   if (
+    !supportsExercise(
+      exerciseVersion(row.item_id, row.item_version)!,
+      c.req.header("X-EQ-Player-Version"),
+    )
+  )
+    throw new PlayerUpdateRequired();
+  if (
     !body ||
     body.leaseId !== row.lease_id ||
     row.lease_grant_id !== actor.grantId ||
@@ -1325,6 +1368,21 @@ app.post("/api/v1/sessions/:id/next", async (c) => {
   const authorization = grantAuthorization;
   const now = Date.now();
   if (row.cursor + 1 < row.total) {
+    if (c.req.header("X-EQ-Player-Version") !== "4") {
+      const next = await c.env.DB.prepare(
+        "SELECT item_id,item_version FROM session_items WHERE session_id=? AND position=?",
+      )
+        .bind(row.id, row.cursor + 1)
+        .first<{ item_id: string; item_version: number }>();
+      if (
+        next &&
+        !supportsExercise(
+          exerciseVersion(next.item_id, next.item_version)!,
+          c.req.header("X-EQ-Player-Version"),
+        )
+      )
+        throw new PlayerUpdateRequired();
+    }
     await c.env.DB.prepare(
       `UPDATE learning_sessions SET cursor=cursor+1 WHERE id=? AND household_id=? AND child_id=? AND cursor=? AND state='active' AND lease_id=? AND lease_grant_id=? AND ${authorization}`,
     )
@@ -1548,6 +1606,13 @@ app.post("/api/v1/sessions/:id/hint", async (c) => {
   const actor = c.get("actor"),
     row = await loadSession(c.env.DB, actor, c.req.param("id"));
   if (!row) return c.json(fault("NOT_FOUND", "找不到这次学习。"), 404);
+  if (
+    !supportsExercise(
+      exerciseVersion(row.item_id, row.item_version)!,
+      c.req.header("X-EQ-Player-Version"),
+    )
+  )
+    throw new PlayerUpdateRequired();
   const body = await c.req.json();
   if (
     row.lease_grant_id !== actor.grantId ||
@@ -1651,6 +1716,13 @@ app.post("/api/v1/attempts", async (c) => {
       .bind(actor.householdId, actor.childId, body.eventId, body.assignmentId)
       .first<StoredAttempt>();
   const respondPrior = async (stored: StoredAttempt) => {
+    if (
+      !supportsExercise(
+        exerciseVersion(stored.item_id, stored.item_version)!,
+        c.req.header("X-EQ-Player-Version"),
+      )
+    )
+      throw new PlayerUpdateRequired();
     const canonical = structuredCanonical(
       exerciseVersion(stored.item_id, stored.item_version)!,
       body.answer,
@@ -1705,6 +1777,8 @@ app.post("/api/v1/attempts", async (c) => {
         409,
       );
     const exercise = exerciseVersion(row.item_id, row.item_version)!;
+    if (!supportsExercise(exercise, c.req.header("X-EQ-Player-Version")))
+      throw new PlayerUpdateRequired();
     if (exercise.type === "listen" && !row.heard_at && !row.transcript_at)
       return c.json(
         fault(

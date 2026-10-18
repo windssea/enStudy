@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.37.0",
+  "version": "0.38.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -59,7 +59,8 @@
     "verify:cooperation-courses": "node scripts/smoke-cooperation-term-courses.mjs",
     "verify:practical-courses": "node scripts/smoke-practical-term-courses.mjs",
     "verify:portfolio-courses": "node scripts/smoke-portfolio-term-courses.mjs",
-    "verify:writing": "node scripts/smoke-writing.mjs"
+    "verify:writing": "node scripts/smoke-writing.mjs",
+    "verify:phonics": "node scripts/smoke-phonics.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.2",

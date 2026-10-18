@@ -1,5 +1,11 @@
 export type Category =
-  "grammar" | "tense" | "forms" | "patterns" | "vocabulary" | "reading";
+  | "grammar"
+  | "tense"
+  | "forms"
+  | "patterns"
+  | "vocabulary"
+  | "reading"
+  | "phonics";
 export type Answer = string | string[];
 export interface Workshop {
   id: string;
@@ -23,6 +29,8 @@ export interface Exercise {
   gradeMin: number;
   reading?: string;
   audioText?: string;
+  audioUrl?: string;
+  graphemeTokens?: boolean;
   passage?: { id: string; text: string }[];
   punctuationTokens?: boolean;
   sorting?: {
@@ -45,12 +53,14 @@ export interface LearningSession {
   position?: number;
   total?: number;
   lessonId?: string | null;
+  phonicsStageId?: string;
   source?:
     | "lesson"
     | "topic"
     | "pattern"
     | "vocabulary"
     | "workshop"
+    | "phonics"
     | "review"
     | "single";
   training?: {

@@ -137,7 +137,8 @@ const currentHealth = await (await request("/api/v1/health")).json();
 check(
   currentHealth.offlineProtocol === 1 &&
     currentHealth.companionProtocol === 1 &&
-    currentHealth.writingProtocol === 1,
+    currentHealth.writingProtocol === 1 &&
+    currentHealth.phonicsProtocol === 1,
   "current offline confirmation and companion protocols delivered",
 );
 const shell = await shellResponse.json();
@@ -190,6 +191,50 @@ for (const path of writingAssets) {
   );
 }
 const models = expectedShell.assets.filter((path) => path.endsWith(".glb"));
+const phonicsModules = expectedShell.assets.filter((path) =>
+  /\/(?:PhonicsCentre|PhonicsCanvas)-.*\.js$/.test(path),
+);
+assert.equal(phonicsModules.length, 2);
+for (const path of phonicsModules) {
+  const r = await request(path),
+    actual = Buffer.from(await r.arrayBuffer()),
+    expected = await readFile(new URL("../dist" + path, import.meta.url));
+  check(
+    r.status === 200 &&
+      /javascript/.test(r.headers.get("content-type") ?? "") &&
+      createHash("sha256").update(actual).digest("hex") ===
+        createHash("sha256").update(expected).digest("hex"),
+    `phonics module matches build: ${path.split("/").pop()}`,
+  );
+}
+const expectedAudio = await readFile(
+    new URL("../public/content/phonics-audio.v1.json", import.meta.url),
+  ),
+  audioResponse = await request("/content/phonics-audio.v1.json");
+check(
+  audioResponse.status === 200 &&
+    createHash("sha256")
+      .update(await audioResponse.text())
+      .digest("hex") ===
+      createHash("sha256").update(expectedAudio).digest("hex"),
+  "whole-word audio manifest matches the published provenance",
+);
+const clip = JSON.parse(expectedAudio).items.find((i) => i.word === "cat"),
+  clipResponse = await request(clip.url),
+  clipBytes = Buffer.from(await clipResponse.arrayBuffer());
+check(
+  clipResponse.status === 200 &&
+    /^audio\/(?:x-)?wav(?:e)?\b/i.test(
+      clipResponse.headers.get("content-type") ?? "",
+    ) &&
+    clipBytes.toString("ascii", 0, 4) === "RIFF" &&
+    createHash("sha256").update(clipBytes).digest("hex") === clip.sha256,
+  "static whole-word audio matches its source hash",
+);
+check(
+  (await request("/api/v1/learning/phonics")).status === 401,
+  "anonymous phonics progress rejected",
+);
 assert.equal(
   models.length,
   2,
@@ -232,7 +277,7 @@ async function authenticated(path, body, extraHeaders = {}) {
     method: body === undefined ? "GET" : "POST",
     headers: {
       Cookie: cookie,
-      "X-EQ-Player-Version": "3",
+      "X-EQ-Player-Version": "4",
       ...(body === undefined
         ? {}
         : { "Content-Type": "application/json", Origin: base.origin }),
@@ -417,6 +462,18 @@ try {
       courseStart.data.exercise?.id === "P6B-U06-L1.p1.listen" &&
       courseStart.data.total === 9,
     "latest B-term unit six is assignable from remote D1",
+  );
+  const phonicsStart = await authenticated("/sessions", {
+    phonicsStageId: "split-vowels",
+    roundSize: 5,
+    clientRequestId: crypto.randomUUID(),
+  });
+  check(
+    phonicsStart.status === 201 &&
+      phonicsStart.data.source === "phonics" &&
+      phonicsStart.data.total === 5 &&
+      phonicsStart.data.exercise.audioUrl,
+    "phonics stage is assignable from the remote publication",
   );
   const positionTask = await authenticated("/sessions", {
     exerciseId: "P1B-U03-L1.p8.input",

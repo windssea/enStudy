@@ -18,7 +18,7 @@ export function offlineAnswerText(exercise: Exercise, answer: Answer) {
     return `${exercise.editing?.parts.find((p) => p.id === answer[0])?.text ?? "词块"} → ${answer[1] ?? "未填写"}`;
   if (exercise.type === "evidence")
     return `原文：${exercise.passage?.find((p) => p.id === answer[0])?.text ?? "未选择"}；答案：${answer[1] ?? "未选择"}`;
-  return answer.join(" ");
+  return answer.join(exercise.graphemeTokens ? "" : " ");
 }
 import {
   emptyAnswer,

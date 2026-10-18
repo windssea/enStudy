@@ -10,12 +10,14 @@ export type View =
   | "exercise"
   | "lesson"
   | "offline"
-  | "writing";
+  | "writing"
+  | "phonics";
 export type Route = {
   view: View;
   lessonId: string | null;
   trainingTopic?: string;
   writingPrompt?: string;
+  phonicsStageId?: string;
   patternId?: string;
   mapScope?: { grade: number; term: "A" | "B" };
 };
@@ -44,6 +46,7 @@ export function parseRoute(fragment: string): Route {
     };
   }
   for (const [prefix, view, field] of [
+    ["phonics=", "phonics", "phonicsStageId"],
     ["writing=", "writing", "writingPrompt"],
     ["training=", "topics", "trainingTopic"],
     ["pattern=", "patterns", "patternId"],
@@ -70,6 +73,7 @@ export function parseRoute(fragment: string): Route {
     "exercise",
     "offline",
     "writing",
+    "phonics",
   ];
   return {
     view: views.includes(hash as View) ? (hash as View) : "map",

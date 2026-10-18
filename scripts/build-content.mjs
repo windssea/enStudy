@@ -22,6 +22,7 @@ await import("./build-cooperation-term-courses.mjs");
 await import("./build-practical-term-courses.mjs");
 await import("./build-practical-order-review.mjs");
 await import("./build-portfolio-term-courses.mjs");
+await import("./build-phonics.mjs");
 await import("./build-concept-labs.mjs");
 const readCSV = async (name) =>
   parse(

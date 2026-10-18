@@ -20,6 +20,7 @@ import cooperationTerm from "../../content/cooperation-term-course-release.v1.js
 import practicalOriginal from "../../content/practical-term-course-release.v1.json";
 import practicalTerm from "../../content/practical-term-course-release.latest.json";
 import portfolioTerm from "../../content/portfolio-term-course-release.v1.json";
+import phonics from "../../content/phonics-release.v1.json";
 import { structuredCanonical, sortPlacements } from "../domain/structured";
 import type {
   Answer,
@@ -31,6 +32,9 @@ import type {
   WordMode,
 } from "../contracts/index";
 export interface PrivateExercise extends Exercise {
+  phonicsStageId?: string;
+  phonicsWordId?: string;
+  orderedTokens?: string[];
   version?: number;
   answers: string[];
   skill: string;
@@ -200,6 +204,7 @@ export const exercises = [
   ...cooperationTerm.items,
   ...practicalTerm.items,
   ...portfolioTerm.items,
+  ...phonics.items,
 ] as PrivateExercise[];
 export const workshopRelease = workshopLatest as unknown as {
   id: string;
@@ -233,6 +238,12 @@ export const wordThemes: WordTheme[] = vocabularyRelease.themes.map(
   ({ words, ...theme }) => theme,
 );
 export const exerciseById = new Map(exercises.map((item) => [item.id, item]));
+export const phonicsRelease = phonics as unknown as {
+  id: string;
+  manifestHash: string;
+  stages: import("../contracts/phonics").PhonicsStage[];
+  items: PrivateExercise[];
+};
 const versionedExercises = new Map(
   [
     ...expansion.items,
@@ -260,6 +271,8 @@ export function publicExercise(exercise: PrivateExercise): Exercise {
     gradeMin,
     reading,
     audioText,
+    audioUrl,
+    graphemeTokens,
     sorting,
     editing,
     passage,
@@ -277,6 +290,8 @@ export function publicExercise(exercise: PrivateExercise): Exercise {
     gradeMin,
     reading,
     audioText,
+    audioUrl,
+    graphemeTokens,
     sorting,
     editing,
     passage,
@@ -295,6 +310,13 @@ export function gradeAnswer(
   exercise: PrivateExercise,
   answer: Answer,
 ): boolean {
+  if (exercise.type === "order" && exercise.graphemeTokens) {
+    const value = structuredCanonical(exercise, answer);
+    return (
+      value !== null &&
+      exercise.answers.some((a) => value === JSON.stringify(normalise(a)))
+    );
+  }
   if (
     exercise.type === "sort" ||
     exercise.type === "repair" ||

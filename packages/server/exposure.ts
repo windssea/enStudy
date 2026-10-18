@@ -25,9 +25,24 @@ for (const lab of conceptLabs)
   }
 export function disclosureCheckKeys(item: PrivateExercise) {
   const primary = answerExposureKeys(item);
+  const word =
+    item.phonicsWordId ??
+    (item.wordId ? wordPreview(item.wordId)?.word : undefined);
+  // Read old vocabulary demonstrations as aliases, without writing an example
+  // sentence the learner did not actually see in the phonics studio.
+  const aliases = item.phonicsWordId
+    ? vocabularyRelease.themes
+        .flatMap((t) => t.words)
+        .filter(
+          (w) => w.word.toLowerCase() === item.phonicsWordId!.toLowerCase(),
+        )
+        .flatMap((w) => wordExampleKeys(w.id))
+    : [];
   return [
     ...new Set([
       ...primary,
+      ...(word ? [sentenceKey(word)] : []),
+      ...aliases,
       ...primary.flatMap((key) => [...(historicalConceptKeys.get(key) ?? [])]),
     ]),
   ];

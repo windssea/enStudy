@@ -623,7 +623,11 @@ export default function OfflinePractice({
               ) : (
                 <div className="offline-order">
                   <p lang="en">
-                    {Array.isArray(draft.answer) ? draft.answer.join(" ") : ""}
+                    {Array.isArray(draft.answer)
+                      ? draft.answer.join(
+                          item.exercise.graphemeTokens ? "" : " ",
+                        )
+                      : ""}
                   </p>
                   <div className="token-bank">
                     {item.exercise.tokens?.map((token, index) => (

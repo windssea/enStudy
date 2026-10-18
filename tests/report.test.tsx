@@ -69,7 +69,9 @@ describe("guardian learning reports", () => {
       expect(interactionLabels[item.type]).toBeTruthy();
       expect(modalityLabels[item.modality]).toBeTruthy();
     }
-    expect(Object.keys(sourceLabels)).toHaveLength(7);
+    expect(Object.keys(sourceLabels)).toHaveLength(8);
+    expect(sourceLabels.phonics).toBe("拼读小路");
+    expect(interactionLabels.listen).toBe("听音选择");
   });
   const report = (): LearningReport => {
     const window = reportWindow(

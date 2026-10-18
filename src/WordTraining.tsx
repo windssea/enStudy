@@ -70,6 +70,7 @@ export default function WordTraining({
   onReview,
   resume,
   onResume,
+  onPhonics,
 }: {
   themes: WordTheme[];
   grade: number;
@@ -86,6 +87,7 @@ export default function WordTraining({
     takeover: boolean;
   };
   onResume: () => void;
+  onPhonics?: () => void;
 }) {
   const [year, setYear] = useState(grade),
     [query, setQuery] = useState(""),
@@ -255,6 +257,15 @@ export default function WordTraining({
           </div>
           <SceneStage kind="words" />
         </div>
+      )}
+      {onPhonics && !selected && (
+        <section className="card phonics-entry">
+          <h2>想把声音和字母连起来？</h2>
+          <p>到拼读小路听整词、看粘土标记，再练字母块拼合。</p>
+          <button className="secondary" disabled={busy} onClick={onPhonics}>
+            进入拼读小路
+          </button>
+        </section>
       )}
       {selected && (
         <ol className="word-path" aria-label="单词探险步骤">
