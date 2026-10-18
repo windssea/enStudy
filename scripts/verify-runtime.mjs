@@ -50,6 +50,7 @@ try {
   await run("smoke-households.mjs");
   await run("smoke-session-ownership.mjs");
   await run("smoke-companions.mjs");
+  await run("smoke-writing.mjs");
   await run("smoke-course.mjs");
   await run("smoke-course-expansion.mjs");
   await run("smoke-topics.mjs");

@@ -49,6 +49,7 @@ import {
   structuredCanonical,
   joinParts,
 } from "../packages/domain/structured";
+const WritingWorkshop = lazy(() => import("./WritingWorkshop"));
 const World = lazy(() => import("./World"));
 const WordTraining = lazy(() => import("./WordTraining"));
 const PracticeLibrary = lazy(() => import("./PracticeLibrary"));
@@ -152,6 +153,14 @@ const storedFlag = (key: string) => {
 
 export default function App() {
   const [view, setView] = useState<View>(() => readRoute().view);
+  const [writingPromptId, setWritingPromptId] = useState<string | null>(
+    () => readRoute().writingPrompt ?? null,
+  );
+  const writingDirty = useRef(false),
+    currentView = useRef(view),
+    writingLocation = useRef(window.location.hash);
+  currentView.current = view;
+  if (view === "writing") writingLocation.current = window.location.hash;
   const [trainingTopic, setTrainingTopic] = useState<string | null>(
     () => readRoute().trainingTopic ?? null,
   );
@@ -187,6 +196,21 @@ export default function App() {
   useEffect(() => {
     const pop = () => {
       const route = readRoute();
+      if (
+        currentView.current === "writing" &&
+        writingDirty.current &&
+        route.view !== "writing" &&
+        !window.confirm(
+          "还有文字未确认保存。可以先下载保留；现在仍要离开写作小工坊吗？",
+        )
+      ) {
+        window.history.pushState(null, "", writingLocation.current);
+        return;
+      }
+      // A hash navigation can emit both events; an accepted exit is confirmed once.
+      if (currentView.current === "writing" && route.view !== "writing")
+        writingDirty.current = false;
+      setWritingPromptId(route.writingPrompt ?? null);
       setView(route.view);
       if (route.lessonId) setLessonId(route.lessonId);
       setTrainingTopic(route.trainingTopic ?? null);
@@ -281,6 +305,17 @@ export default function App() {
     targetLessonId?: string,
     restoreLibrary = false,
   ) => {
+    if (
+      view === "writing" &&
+      next !== "writing" &&
+      writingDirty.current &&
+      !window.confirm(
+        "还有文字未确认保存。可以先下载保留；现在仍要离开写作小工坊吗？",
+      )
+    )
+      return;
+    if (view === "writing" && next !== "writing") writingDirty.current = false;
+    if (next === "writing") setWritingPromptId(targetLessonId ?? null);
     let mapGrade = grade,
       mapTerm = term;
     if (next === "map") {
@@ -305,11 +340,13 @@ export default function App() {
       setPatternId(null);
     }
     const hash =
-      next === "lesson"
-        ? `#lesson=${encodeURIComponent(targetLessonId ?? lessonId ?? "")}`
-        : next === "map"
-          ? mapFragment(mapGrade, mapTerm)
-          : `#${next}`;
+      next === "writing" && targetLessonId
+        ? `#writing=${encodeURIComponent(targetLessonId)}`
+        : next === "lesson"
+          ? `#lesson=${encodeURIComponent(targetLessonId ?? lessonId ?? "")}`
+          : next === "map"
+            ? mapFragment(mapGrade, mapTerm)
+            : `#${next}`;
     if (window.location.hash !== hash) window.history.pushState(null, "", hash);
     setView(next);
     setError("");
@@ -866,7 +903,7 @@ export default function App() {
   const currentSection =
     view === "exercise"
       ? sessionHome
-      : view === "lesson" || view === "talk"
+      : view === "lesson" || view === "talk" || view === "writing"
         ? "map"
         : view;
   const activeNav = currentSection === "workshops" ? "topics" : currentSection;
@@ -926,14 +963,16 @@ export default function App() {
           <div>
             <small>你在这里</small>
             <strong>
-              {view === "offline"
-                ? "本机离线练习"
-                : view === "workshops"
-                  ? "英语互动工坊"
-                  : view === "talk"
-                    ? "英语小剧场"
-                    : (nav.find((n) => n[0] === activeNav)?.[1] ??
-                      "今天的小练习")}
+              {view === "writing"
+                ? "写作小工坊"
+                : view === "offline"
+                  ? "本机离线练习"
+                  : view === "workshops"
+                    ? "英语互动工坊"
+                    : view === "talk"
+                      ? "英语小剧场"
+                      : (nav.find((n) => n[0] === activeNav)?.[1] ??
+                        "今天的小练习")}
               {view === "exercise" && " · 练习中"}
             </strong>
           </div>
@@ -1223,6 +1262,17 @@ export default function App() {
                   </div>
                 </section>
                 <aside className="right-rail">
+                  <section className="card writing-entry">
+                    <span className="eyebrow">MAKE IT YOURS</span>
+                    <h2>写下自己的小作品</h2>
+                    <p>从一句配文到三段短文，保存草稿，换设备继续。</p>
+                    <button
+                      className="secondary"
+                      onClick={() => move("writing")}
+                    >
+                      进入写作小工坊
+                    </button>
+                  </section>
                   <section className="card mint talk-entry">
                     <span className="eyebrow">SAY A LITTLE</span>
                     <h2>英语小剧场</h2>
@@ -1635,6 +1685,20 @@ export default function App() {
               />
             </Suspense>
           )}
+          {view === "writing" && (
+            <Suspense fallback={<p role="status">正在准备写作小工坊…</p>}>
+              <WritingWorkshop
+                key={`${identity.adult?.householdId ?? "none"}:${identity.child?.id ?? "none"}`}
+                childId={identity.child?.id}
+                grade={identity.child?.grade ?? grade}
+                initialPromptId={writingPromptId}
+                onBack={() => move("map")}
+                onDirtyChange={(dirty) => {
+                  writingDirty.current = dirty;
+                }}
+              />
+            </Suspense>
+          )}
           {view === "workshops" && (
             <Suspense fallback={<p role="status">正在准备分类和修正工坊…</p>}>
               <Workshops
@@ -1650,6 +1714,7 @@ export default function App() {
             <LessonView
               childId={identity.child?.id}
               lesson={selectedLesson}
+              onWriting={(id) => move("writing", id)}
               busy={busy}
               onStart={() => start("", { lessonId: selectedLesson.id })}
               onBack={() => move("map")}

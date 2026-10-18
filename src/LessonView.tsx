@@ -1,4 +1,5 @@
 import type { CourseLesson } from "../packages/contracts/index";
+import { writingForLesson } from "../packages/domain/writing";
 import SpeechButton from "./SpeechButton";
 import SceneStage from "./SceneStage";
 import { useEffect } from "react";
@@ -12,6 +13,7 @@ export default function LessonView({
   onBack,
   completed,
   childId,
+  onWriting,
 }: {
   lesson: CourseLesson;
   busy: boolean;
@@ -19,11 +21,13 @@ export default function LessonView({
   onBack: () => void;
   completed: boolean;
   childId?: string;
+  onWriting?: (promptId: string) => void;
 }) {
   useEffect(() => {
     if (childId)
       void api(`/learning/lessons/${lesson.id}/view`, {}).catch(() => {});
   }, [childId, lesson.id]);
+  const writing = writingForLesson(lesson.id);
   return (
     <div className="lesson-view">
       <button className="secondary" onClick={onBack}>
@@ -102,6 +106,18 @@ export default function LessonView({
           <span aria-hidden="true">→</span>
         </button>
       </section>
+      {writing && onWriting && (
+        <section className="card writing-entry">
+          <h2>把想法写成自己的作品</h2>
+          <p>
+            进入“{writing.title}
+            ”，填写并保存自己的文字；它与本课九题进度分开，不自动评分。
+          </p>
+          <button className="secondary" onClick={() => onWriting(writing.id)}>
+            去写一写，保存草稿
+          </button>
+        </section>
+      )}
       {lesson.homeActivity && (
         <details className="card lesson-home-activity" key={lesson.id}>
           <summary>练完后，和家人用一用（可选）</summary>

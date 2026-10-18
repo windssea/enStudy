@@ -135,7 +135,9 @@ check(
 const shellResponse = await request("/offline-shell.json");
 const currentHealth = await (await request("/api/v1/health")).json();
 check(
-  currentHealth.offlineProtocol === 1 && currentHealth.companionProtocol === 1,
+  currentHealth.offlineProtocol === 1 &&
+    currentHealth.companionProtocol === 1 &&
+    currentHealth.writingProtocol === 1,
   "current offline confirmation and companion protocols delivered",
 );
 const shell = await shellResponse.json();
@@ -167,6 +169,26 @@ for (const path of sceneAssets) {
     `3D module matches build: ${path.split("/").pop()}`,
   );
 }
+const writingAssets = expectedShell.assets.filter((path) =>
+  /\/WritingWorkshop-.*\.js$/.test(path),
+);
+assert.equal(
+  writingAssets.length,
+  1,
+  "writing studio has one lazy editor module",
+);
+for (const path of writingAssets) {
+  const r = await request(path);
+  const actual = Buffer.from(await r.arrayBuffer()),
+    expected = await readFile(new URL("../dist" + path, import.meta.url));
+  check(
+    r.status === 200 &&
+      /javascript/.test(r.headers.get("content-type") ?? "") &&
+      createHash("sha256").update(actual).digest("hex") ===
+        createHash("sha256").update(expected).digest("hex"),
+    "writing editor module matches this build",
+  );
+}
 const models = expectedShell.assets.filter((path) => path.endsWith(".glb"));
 assert.equal(
   models.length,
@@ -190,6 +212,10 @@ for (const path of models) {
 check(
   (await request("/api/v1/admin/accounts")).status === 401,
   "anonymous account administration rejected",
+);
+check(
+  (await request("/api/v1/learning/writing/drafts")).status === 401,
+  "anonymous writing work is protected",
 );
 const login = await request("/api/v1/auth/login", {
   method: "POST",
@@ -284,6 +310,46 @@ try {
   check(
     made.status === 201 && selected.status === 200,
     "disposable release profile selected",
+  );
+  const writing = await authenticated("/learning/writing/drafts", {
+    childId: temporaryChild,
+    promptId: "writing.p6.project",
+    requestId: crypto.randomUUID(),
+  });
+  check(
+    writing.status === 201 && writing.data.revision === 1,
+    "private writing draft can be created on the deployed schema",
+  );
+  const writingSaved = await authenticated(
+    "/learning/writing/drafts/" + writing.data.draftId + "/save",
+    {
+      childId: temporaryChild,
+      requestId: crypto.randomUUID(),
+      expectedRevision: 1,
+      content: {
+        title: "Release writing check",
+        plan: "虚构发布检查",
+        paragraphs: [
+          "This is a paper project.",
+          "It has two model bridges.",
+          "We could check the labels.",
+        ],
+        checks: [],
+      },
+    },
+  );
+  check(
+    writingSaved.status === 200 && writingSaved.data.revision === 2,
+    "authored text saves independently of graded practice",
+  );
+  check(
+    (
+      await authenticated(
+        "/learning/writing/drafts/" + writing.data.draftId + "/remove",
+        { childId: temporaryChild, expectedRevision: 2 },
+      )
+    ).status === 200,
+    "temporary writing and receipts are removed",
   );
   const initial = await authenticated("/learning/companion");
   check(

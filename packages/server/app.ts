@@ -34,6 +34,7 @@ import {
 import type { Answer, LearningSession, Receipt } from "../contracts/index";
 import { conceptLab } from "../domain/concepts";
 import { companionRoutes, readCompanion } from "./companions";
+import { writingRoutes } from "./writing";
 import conceptExposure from "../../content/concept-exposure-map.json";
 import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 import { managedAccountRoutes } from "./managedAccounts";
@@ -212,6 +213,7 @@ app.get("/api/v1/health", (c) =>
     offlineProtocol: 1,
     databaseBinding: Boolean(c.env.DB),
     companionProtocol: 1,
+    writingProtocol: 1,
     householdProtocol: 1,
     householdSharingEnabled:
       c.env.APP_STAGE === "local" || platformFeatures.householdSharingEnabled,
@@ -406,6 +408,7 @@ for (const path of [
   app.use(path, learningAccess);
 app.route("/api/v1", createAiRoutes(actorFrom));
 app.route("/api/v1", companionRoutes);
+app.route("/api/v1", writingRoutes);
 app.route("/api/v1", trainingRoutes);
 interface Assignment {
   offline_prepared_at: number | null;
