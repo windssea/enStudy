@@ -1,10 +1,8 @@
 # 英语探险岛
 
-本地v0.30正在验收：新增P1–P6下学期第三单元，核心练习达到216/288课，并新增可逐步摆放小球的粘土位置实验。当前线上仍为下述v0.29，发布结果将记录在[本阶段说明](docs/51-position-lab-and-third-term-unit.md)。
+面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前v0.30.0采用React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1，免费优先。2026年10月18日14:09通过[GitHub Actions](https://github.com/windssea/enStudy/actions/runs/39102672390)将应用提交`9023730`同步发布至Preview与Production，两站独立D1均至0031。322项单元、895项CI运行、两站和正式域名各33项线上、22项补充功能及6项隔离检查通过，见[最新阶段与发布记录](docs/51-position-lab-and-third-term-unit.md)。
 
-面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前v0.29.0采用React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1，免费优先。2026年10月18日13:36通过[GitHub Actions](https://github.com/windssea/enStudy/actions/runs/39100728585)将应用提交`1922676`同步发布至Preview与Production，两站独立D1均至0030。309项单元、845项CI运行、两站和正式域名各30项线上、22项补充功能及6项隔离检查通过，见[最新阶段与发布记录](docs/50-pikachu-and-saved-companions.md)。
-
-当前192/288课，覆盖各年级A学期六单元与B学期前两单元；组合听句、阅读、受控语法、分类和修正，部分微课接入可选3D规律入口。新增Blender粘土皮卡丘，与小狐狸组成可按儿童档案保存的双伙伴；地图下方可展开“换个伙伴：橙橙 / 皮卡丘”，先在独立3D舞台试选、挥手和转身，再保存。保留棚灯、三种岛屿、6种词义匹配的可旋转粘土实物，以及词卡示范与四种练习模式的独立回忆证据衔接。剩余96课、完整媒体与教研审核，以及PC/iPad实际视觉、触控和帧率待验。注册保持关闭，指定管理员不变，历史定时自动化仍停用。
+当前216/288课，覆盖各年级A学期六单元与B学期前三单元；组合听句、阅读、受控语法、分类和修正，部分微课接入可选3D规律入口。17个实验台提供54个示范，新增in/on/under位置实验，用圆角桌子、开口盒和小球逐步说明关系，保留中文步骤、2D和示范证据。新增Blender粘土皮卡丘，与小狐狸组成可按儿童档案保存的双伙伴；地图下方可展开“换个伙伴：橙橙 / 皮卡丘”，先在独立3D舞台试选、挥手和转身，再保存。保留棚灯、三种岛屿、6种词义匹配的可旋转粘土实物，以及词卡示范与四种练习模式的独立回忆证据衔接。剩余72课、完整媒体与教研审核，以及PC/iPad实际视觉、触控和帧率待验。注册保持关闭，指定管理员不变，历史定时自动化仍停用。
 
 [开发预览](https://development.english-quest-dev.pages.dev) 通过GitHub Actions发布。M1加入管理员登录（账号admin，密码使用用户指定值）、关闭注册、儿童档案管理与刷新续学；开发测试身份继续只限本机。验证与剩余范围见[M1进展](docs/23-next-phase-progress.md)。
 
