@@ -71,6 +71,7 @@
 | 61 | [10月18日v0.37同步核验](59-20261018-v037-deployment-attempt.md) | 最新main的CI通过、D1额度拒绝及两站实际状态 |
 | 62 | [v0.38拼读与整词声音](60-phonics-word-audio-and-clay-workbench.md) | 六站240任务、粘土字母标记、真实静态音频、共用证据与复习 |
 | 63 | [v0.39家庭私有资料导出](61-private-family-data-export.md) | 25类固定快照、密码复验、分卷下载、失效清理和内置浏览器检查 |
+| 64 | [v0.40分步拼读与粘土词块](62-guided-clay-phonics-workbench.md) | 三步中文引导、直接点实物、长词块加宽、2D示意与浏览器实测 |
 
 配套资料：
 

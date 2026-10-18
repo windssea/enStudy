@@ -28,35 +28,39 @@ export function Tile({
   color,
   position,
   rotation = 0,
+  width = 1.06,
+  fontSize = 60,
 }: {
   word: string;
   color: string;
   position: [number, number, number];
   rotation?: number;
+  width?: number;
+  fontSize?: number;
 }) {
-  const geometry = useMemo(() => roundedPanel(1.06, 0.83, 0.23, 0.1), []);
+  const geometry = useMemo(() => roundedPanel(width, 0.83, 0.23, 0.1), [width]);
   useEffect(() => () => geometry.dispose(), [geometry]);
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
-    canvas.width = 256;
+    canvas.width = Math.round((256 * width) / 1.06);
     canvas.height = 192;
     const ctx = canvas.getContext("2d");
     if (ctx) {
       ctx.fillStyle = "#172b4d";
-      let size = 60;
+      let size = fontSize;
       ctx.font = `700 ${size}px sans-serif`;
-      while (size > 18 && ctx.measureText(word).width > 228) {
+      while (size > 18 && ctx.measureText(word).width > canvas.width - 28) {
         size -= 2;
         ctx.font = `700 ${size}px sans-serif`;
       }
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(word, 128, 96);
+      ctx.fillText(word, canvas.width / 2, 96);
     }
     const map = new CanvasTexture(canvas);
     map.colorSpace = SRGBColorSpace;
     return map;
-  }, [word]);
+  }, [word, width, fontSize]);
   useEffect(() => () => texture.dispose(), [texture]);
   return (
     <group position={position} rotation={[0, 0, rotation]}>
@@ -64,7 +68,7 @@ export function Tile({
         <meshStandardMaterial color={color} roughness={0.88} />
       </mesh>
       <mesh position={[0, 0, 0.12]}>
-        <planeGeometry args={[1.02, 0.76]} />
+        <planeGeometry args={[width - 0.04, 0.76]} />
         <meshBasicMaterial map={texture} transparent />
       </mesh>
     </group>

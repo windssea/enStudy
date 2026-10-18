@@ -3,9 +3,11 @@ import { playWordAudio } from "./wordAudio";
 export default function WordAudioButton({
   url,
   label = "听完整单词",
+  onComplete,
 }: {
   url: string;
   label?: string;
+  onComplete?: () => void;
 }) {
   const [playing, setPlaying] = useState(false),
     [error, setError] = useState("");
@@ -31,7 +33,10 @@ export default function WordAudioButton({
       setPlaying(true);
       player.current = playWordAudio(url, {
         ended: () => {
-          if (n === epoch.current) setPlaying(false);
+          if (n === epoch.current) {
+            setPlaying(false);
+            onComplete?.();
+          }
         },
         stopped: () => {
           if (n === epoch.current) setPlaying(false);
