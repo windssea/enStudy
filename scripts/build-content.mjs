@@ -18,6 +18,7 @@ await import("./build-journey-courses.mjs");
 await import("./build-next-term-courses.mjs");
 await import("./build-explorer-term-courses.mjs");
 await import("./build-neighbourhood-term-courses.mjs");
+await import("./build-cooperation-term-courses.mjs");
 await import("./build-concept-labs.mjs");
 const readCSV = async (name) =>
   parse(

@@ -93,8 +93,8 @@ export default function LessonView({
       </section>
       <section className="lesson-mission">
         <div>
-          <span className="eyebrow">把英语带到生活里</span>
-          <h2>学完后，去试一试</h2>
+          <span className="eyebrow">试着运用今天的小发现</span>
+          <h2>准备好，开始小练习</h2>
           <p>{lesson.task}</p>
         </div>
         <button className="primary" disabled={busy} onClick={onStart}>
@@ -102,6 +102,15 @@ export default function LessonView({
           <span aria-hidden="true">→</span>
         </button>
       </section>
+      {lesson.homeActivity && (
+        <details className="card lesson-home-activity" key={lesson.id}>
+          <summary>练完后，和家人用一用（可选）</summary>
+          <p>{lesson.homeActivity}</p>
+          <p className="footnote">
+            这项生活小活动不用提交，不计分，也不影响课程进度。可以休息后再试。
+          </p>
+        </details>
+      )}
       <p className="footnote">
         先看例句理解规律，再用{lesson.itemCount}
         个练习任务试一试。练完可以休息，系统会安排之后的复习。设备朗读不做口语评分。

@@ -10,7 +10,7 @@ import { answerExposureKeys, sentenceKey } from "../packages/domain/exposure";
 import { hashedExposureKeys } from "../packages/server/exposure";
 describe("second-unit course expansion", () => {
   it("contains four second-unit lessons in every grade and preserves the first 24", () => {
-    expect(courseCatalog.lessons).toHaveLength(216);
+    expect(courseCatalog.lessons).toHaveLength(240);
     expect(courseExpansion.items).toHaveLength(216);
     for (let grade = 1; grade <= 6; grade++) {
       const lessons = courseExpansion.lessons.filter((l) => l.grade === grade);

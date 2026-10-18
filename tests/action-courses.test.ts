@@ -35,7 +35,7 @@ describe("fourth-unit mixed learning courses", () => {
     expect(actionRelease.items.find((item) => item.id === id)?.version).toBe(2);
   });
   it("adds four lessons per grade to the real catalog without replacing older units", () => {
-    expect(courseCatalog.lessons).toHaveLength(216);
+    expect(courseCatalog.lessons).toHaveLength(240);
     expect(actionRelease.lessons).toHaveLength(24);
     expect(actionRelease.items).toHaveLength(216);
     for (let grade = 1; grade <= 6; grade++) {
@@ -46,9 +46,9 @@ describe("fourth-unit mixed learning courses", () => {
       ).toEqual([13, 14, 15, 16]);
       expect(
         courseCatalog.lessons.filter((l) => l.grade === grade),
-      ).toHaveLength(36);
+      ).toHaveLength(40);
     }
-    expect(new Set(courseCatalog.lessons.map((l) => l.id)).size).toBe(216);
+    expect(new Set(courseCatalog.lessons.map((l) => l.id)).size).toBe(240);
     for (const lesson of actionRelease.lessons) {
       expect(lesson.itemCount).toBe(9);
       expect(

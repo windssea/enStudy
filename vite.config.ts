@@ -71,6 +71,8 @@ export default defineConfig({
         "**/content/explorer-term-course-release*.json",
         "**/content/neighbourhood-term-courses*.mjs",
         "**/content/neighbourhood-term-course-release*.json",
+        "**/content/cooperation-term-courses*.mjs",
+        "**/content/cooperation-term-course-release*.json",
         "**/.wrangler/**",
         "**/.cloudflare/**",
         "**/.git/**",

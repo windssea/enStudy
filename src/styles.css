@@ -2079,6 +2079,34 @@ button.unit-node:not(:disabled) {
 .lesson-mission .primary {
   flex-shrink: 0;
 }
+.lesson-home-activity {
+  background: var(--mint-play);
+  color: var(--ink);
+}
+.lesson-home-activity summary {
+  cursor: pointer;
+  min-height: 52px;
+  padding: 12px 4px;
+  font-weight: 800;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.lesson-home-activity summary:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.lesson-home-activity p {
+  max-inline-size: 62ch;
+  line-height: 1.8;
+}
+.lesson-home-activity .footnote {
+  font-size: 14px;
+}
+.lesson-home-activity summary:active {
+  background: var(--mint);
+  border-radius: 8px;
+}
 .lesson-progress {
   width: 100%;
   display: block;

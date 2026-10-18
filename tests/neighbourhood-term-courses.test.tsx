@@ -40,8 +40,8 @@ describe("third B-term neighbourhood and planning courses", () => {
       ).toBe(hash);
   });
   it("adds the scoped third unit in every grade with real tasks and distinct semester identities", () => {
-    expect(courseCatalog.lessons).toHaveLength(216);
-    expect(new Set(courseCatalog.lessons.map((l) => l.id)).size).toBe(216);
+    expect(courseCatalog.lessons).toHaveLength(240);
+    expect(new Set(courseCatalog.lessons.map((l) => l.id)).size).toBe(240);
     expect(release.lessons).toHaveLength(24);
     for (let grade = 1; grade <= 6; grade++) {
       const lessons = release.lessons.filter((l) => l.grade === grade);
@@ -53,7 +53,7 @@ describe("third B-term neighbourhood and planning courses", () => {
         courseCatalog.lessons.filter(
           (l) => l.grade === grade && l.term === "B",
         ),
-      ).toHaveLength(12);
+      ).toHaveLength(16);
     }
     expect(courseCatalog.lessons.filter((l) => l.term === "A")).toHaveLength(
       144,

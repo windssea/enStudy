@@ -1,5 +1,7 @@
 # 英语探险岛
 
+v0.32.0已完成24课与可选家庭小活动，累计240/288课，339单元及1004本地运行检查通过，正在执行发布验收；线上当前仍为下述v0.31.1。见[第四单元阶段记录](docs/53-cooperation-term-unit-and-home-activities.md)。
+
 面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。v0.31.1采用React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1，免费优先。2026年10月18日15:20通过[GitHub Actions](https://github.com/windssea/enStudy/actions/runs/39106806497)将应用提交`fe2ffd5`同步发布至Preview与Production，两站独立D1均至0033。330项单元、957项CI运行、两站和正式域名各36项线上、22项补充功能及6项隔离检查通过，见[最新阶段与发布记录](docs/52-household-invitations-and-roles.md)。
 
 v0.31新增已有成人账号之间的定向家庭邀请、管理/协助家长权限和显式切换家庭。家庭记录保持隔离，退出或移除成员保留学习数据；无家庭账号可接受新邀请。公开注册仍关闭，指定管理员不变。完整远程邀请接受、浏览器操作、成人账户删除和保留期仍待验收或开发。

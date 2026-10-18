@@ -103,6 +103,7 @@ export interface CourseLesson {
   cards: TeachingCard[];
   vocabulary: { word: string; meaning: string }[];
   task: string;
+  homeActivity?: string;
   topicIds: string[];
   conceptLabIds?: string[];
   itemCount: number;

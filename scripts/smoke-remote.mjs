@@ -119,6 +119,19 @@ check(
   courseReady(),
   "published lesson metadata and real topic availability delivered without answer keys",
 );
+const homeLessons = course.lessons.filter(
+  (lesson) => lesson.releaseId === "term-b-cooperation-v1",
+);
+check(
+  homeLessons.length === 24 &&
+    homeLessons.every(
+      (lesson) =>
+        lesson.homeActivity ===
+        expectedCourse.lessons.find((row) => row.id === lesson.id)
+          ?.homeActivity,
+    ),
+  "all twenty-four optional Chinese home activities match the current release",
+);
 const shellResponse = await request("/offline-shell.json");
 const currentHealth = await (await request("/api/v1/health")).json();
 check(
@@ -330,14 +343,14 @@ try {
     "position lab returns its authored scene without creating a score",
   );
   const courseStart = await authenticated("/sessions", {
-    lessonId: "P6B-U03-L1",
+    lessonId: "P6B-U04-L1",
     clientRequestId: crypto.randomUUID(),
   });
   check(
     courseStart.status === 201 &&
-      courseStart.data.exercise?.id === "P6B-U03-L1.p1.listen" &&
+      courseStart.data.exercise?.id === "P6B-U04-L1.p1.listen" &&
       courseStart.data.total === 9,
-    "latest B-term unit three is assignable from remote D1",
+    "latest B-term unit four is assignable from remote D1",
   );
   const positionTask = await authenticated("/sessions", {
     exerciseId: "P1B-U03-L1.p8.input",

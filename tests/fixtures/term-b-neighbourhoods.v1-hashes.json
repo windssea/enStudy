@@ -1,0 +1,6 @@
+{
+  "content/neighbourhood-term-course-release.v1.json": "15bef61e20b3d0e666cda5a5d1c2932cc7393d5222568565575ad39fdbc9a960",
+  "migrations/0031_term_b_neighbourhoods.sql": "4ea130cabd666940a7f5e8bac5121c4133d9bde94e37f5402c91aefe5cab74d9",
+  "migrations/0032_household_membership.sql": "1470612d76cea2b9aaabf220005bebac96bfd75d462d7169866ceba006bc24b4",
+  "migrations/0033_household_member_lookup.sql": "dfbad77470f8f8ec9551d81467b0cb44acb6735b8483b4ac90114ff243f49d3d"
+}

@@ -1,6 +1,6 @@
 # 开发执行计划
 
-本项目在M1–M4之间分阶段推进，当前代码与线上均为已核验的v0.31.1（家庭协作已开启）；完整交付门槛M5尚未通过。注册暂时关闭，默认admin采用用户指定密码。公开首发范围仍是P1–P6、288课、72单元、60专题和72条句式；当前216课、互动工坊与54个教学演示不替代完整课程目标。最新记录见[家庭邀请与权限](52-household-invitations-and-roles.md)、[位置实验与第三单元](51-position-lab-and-third-term-unit.md)、[皮卡丘与档案伙伴](50-pikachu-and-saved-companions.md)、[粘土词卡与B第二单元](49-word-study-and-b-term-unit-two.md)、[粘土伙伴与B学期](48-clay-guide-and-next-term.md)、[同步发布](47-20261018-synchronized-release.md)、[第六单元与历史示范记录](46-sixth-unit-and-historical-demonstrations.md)、[实物比较场景](45-measured-comparison-scenes.md)、[第五单元与课内3D入口](43-fifth-unit-scenarios-and-lesson-labs.md)、[本机离线练习](42-offline-practice-and-confirmation.md)及[开发待办](development/backlog.csv)。
+本项目在M1–M4之间分阶段推进，当前代码v0.32.0（本地240课）、线上仍为已核验的v0.31.1（216课及家庭协作已开启）；完整交付门槛M5尚未通过。注册暂时关闭，默认admin采用用户指定密码。公开首发范围仍是P1–P6、288课、72单元、60专题和72条句式；当前216课、互动工坊与54个教学演示不替代完整课程目标。最新记录见[家庭邀请与权限](52-household-invitations-and-roles.md)、[位置实验与第三单元](51-position-lab-and-third-term-unit.md)、[皮卡丘与档案伙伴](50-pikachu-and-saved-companions.md)、[粘土词卡与B第二单元](49-word-study-and-b-term-unit-two.md)、[粘土伙伴与B学期](48-clay-guide-and-next-term.md)、[同步发布](47-20261018-synchronized-release.md)、[第六单元与历史示范记录](46-sixth-unit-and-historical-demonstrations.md)、[实物比较场景](45-measured-comparison-scenes.md)、[第五单元与课内3D入口](43-fifth-unit-scenarios-and-lesson-labs.md)、[本机离线练习](42-offline-practice-and-confirmation.md)及[开发待办](development/backlog.csv)。
 
 ## 当前工程基线
 
