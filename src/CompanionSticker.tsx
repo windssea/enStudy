@@ -3,20 +3,39 @@ import { CompanionContext } from "./CompanionContext";
 import type { CompanionId } from "../packages/domain/companions";
 import type { Reaction } from "./SceneStage";
 import FoxSticker from "./FoxSticker";
+import type { CompanionGesture } from "./scene/companionGestures";
 export default function CompanionSticker({
   kind,
   turned = false,
   reaction = "thinking",
+  gesture,
 }: {
   kind?: CompanionId;
   turned?: boolean;
   reaction?: Reaction;
+  gesture?: CompanionGesture;
 }) {
   const current = useContext(CompanionContext);
   if ((kind ?? current) === "fox")
-    return <FoxSticker turned={turned} reaction={reaction} />;
+    return (
+      <g
+        data-gesture={gesture}
+        transform={
+          gesture === "stretch" ? "translate(-2 -5) scale(1.025)" : undefined
+        }
+      >
+        <FoxSticker turned={turned} reaction={reaction} />
+      </g>
+    );
   return (
-    <g data-companion="pikachu" data-view={turned ? "back" : "front"}>
+    <g
+      data-companion="pikachu"
+      data-view={turned ? "back" : "front"}
+      data-gesture={gesture}
+      transform={
+        gesture === "stretch" ? "translate(-2 -5) scale(1.025)" : undefined
+      }
+    >
       <ellipse cx="80" cy="191" rx="57" ry="8" fill="#27313c" opacity=".12" />
       <path
         d="m106 156 13-20-8-17 30-19-11-13 35-23 17 24-31 17 10 16-28 16 10 17-25 15Z"
@@ -46,10 +65,19 @@ export default function CompanionSticker({
         <path d="M41 26q2-14 7-22 6 9 9 22Z" fill="#393744" />
       </g>
       <g transform="rotate(18 109 61)">
-        <path d="M99 63q-3-40 9-59 13 19 11 59Z" fill="#ffda50" />
-        <path d="M101 26q2-14 7-22 9 9 9 22Z" fill="#393744" />
+        <path d="M99 63q-3-34 13-51 10-7 16-3-13 19-9 54Z" fill="#ffda50" />
+        <path d="M103 28q4-13 9-16 10-7 16-3-8 11-12 24Z" fill="#393744" />
       </g>
       <ellipse cx="80" cy="82" rx="52" ry="43" fill="#ffda50" />
+      <path d="M48 119q32 12 64 0l-2 8q-30 10-60-1Z" fill="#4ba99a" />
+      {!turned ? (
+        <g>
+          <path d="M58 125q22 6 44 0L83 146q-3 3-6 0Z" fill="#4ba99a" />
+          <circle cx="80" cy="133" r="3" fill="#fffaf0" />
+        </g>
+      ) : (
+        <path d="m103 125 8 19-14-2 1-17Z" fill="#4ba99a" />
+      )}
       {!turned && (
         <>
           <ellipse cx="44" cy="91" rx="10" ry="8" fill="#ef6b5e" />

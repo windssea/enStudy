@@ -14,6 +14,11 @@ import CompanionSticker from "./CompanionSticker";
 import { CompanionContext } from "./CompanionContext";
 import { companionInfo, type CompanionId } from "../packages/domain/companions";
 import { isSpeechActive } from "./speechActivity";
+import CompanionActions from "./CompanionActions";
+import {
+  companionGesture,
+  type CompanionGesture,
+} from "./scene/companionGestures";
 
 const SceneCanvas = lazy(() => import("./SceneCanvas"));
 export const MotionContext = createContext({ quiet: false, flat: false });
@@ -106,10 +111,12 @@ function FlatScene({
   kind,
   reaction,
   turned,
+  gesture,
 }: {
   kind: SceneKind;
   reaction: Reaction;
   turned: boolean;
+  gesture?: CompanionGesture;
 }) {
   return (
     <svg className="scene-flat" viewBox="0 0 320 230" aria-hidden="true">
@@ -122,7 +129,11 @@ function FlatScene({
             : "translate(38 25) scale(.86)"
         }
       >
-        <CompanionSticker reaction={reaction} turned={turned} />
+        <CompanionSticker
+          reaction={reaction}
+          turned={turned}
+          gesture={gesture}
+        />
       </g>
       {kind === "sorting" ? (
         <g>
@@ -241,6 +252,10 @@ export default function SceneStage({
   const [lost, setLost] = useState(false);
   const [pulse, setPulse] = useState(0);
   const [turned, setTurned] = useState(false);
+  const [gesture, setGesture] = useState<CompanionGesture>("wave");
+  const [playing, setPlaying] = useState(false);
+  const [activity, setActivity] = useState(0);
+  const seenActivity = useRef(0);
   const [reacting, setReacting] = useState(false);
   const lastReaction = useRef(reaction);
   useEffect(() => {
@@ -291,8 +306,34 @@ export default function SceneStage({
     return () => clearTimeout(timer);
   }, [kind, reaction, animateReaction, quiet, visible, hidden, speaking]);
   const paused = quiet || hidden || !visible || speaking;
+  useEffect(() => {
+    if (kind !== "partner" || paused) {
+      seenActivity.current = activity;
+      setPlaying(false);
+      return;
+    }
+    if (activity === seenActivity.current) return;
+    seenActivity.current = activity;
+    setPlaying(true);
+    const timer = setTimeout(
+      () => setPlaying(false),
+      Math.max(900, companionGesture(gesture).duration) + 120,
+    );
+    return () => clearTimeout(timer);
+  }, [kind, activity, gesture, paused]);
+  const play = (next: CompanionGesture) => {
+    setTurned(false);
+    setGesture(next);
+    setPulse((n) => n + 1);
+    setActivity((n) => n + 1);
+  };
   const fallback = (
-    <FlatScene kind={kind} reaction={reaction} turned={turned} />
+    <FlatScene
+      kind={kind}
+      reaction={reaction}
+      turned={turned}
+      gesture={kind === "partner" ? gesture : undefined}
+    />
   );
   const script = kind === "feedback" ? null : scripts[kind];
   return (
@@ -314,7 +355,10 @@ export default function SceneStage({
                 pulse={pulse}
                 turned={turned}
                 paused={paused}
-                moving={kind !== "feedback" || reacting}
+                moving={
+                  kind === "partner" ? playing : kind !== "feedback" || reacting
+                }
+                gesture={kind === "partner" ? gesture : undefined}
                 onLost={() => setLost(true)}
               />
             </Suspense>
@@ -328,8 +372,7 @@ export default function SceneStage({
               type="button"
               className="scene-play"
               onClick={() => {
-                setTurned(false);
-                setPulse((n) => n + 1);
+                play("wave");
               }}
             >
               {kind === "words" || kind === "partner"
@@ -341,19 +384,33 @@ export default function SceneStage({
               type="button"
               className="scene-play"
               aria-pressed={turned}
-              onClick={() => setTurned((value) => !value)}
+              onClick={() => {
+                setTurned((value) => !value);
+                setActivity((n) => n + 1);
+              }}
             >
               {turned ? "转回正面" : info.backAction}
             </button>
           </div>
+          {kind === "partner" && <CompanionActions onPlay={play} />}
           <p role="status">
-            {turned
-              ? info.backLine
-              : (kind === "words" || kind === "partner") &&
-                  pulse % script.lines.length === 0
-                ? `${info.name}准备好啦。`
-                : script.lines[pulse % script.lines.length]}
+            {kind === "partner" && !turned && pulse > 0
+              ? `${info.name}${companionGesture(gesture).label}。${companionGesture(gesture).line}`
+              : turned
+                ? info.backLine
+                : (kind === "words" || kind === "partner") &&
+                    pulse % script.lines.length === 0
+                  ? `${info.name}准备好啦。`
+                  : script.lines[pulse % script.lines.length]}
           </p>
+          {kind === "partner" && (
+            <p className="companion-play-note">
+              {quiet || flat || lost
+                ? "静态小伙伴也能陪你一起想一想。"
+                : "点一次，伙伴做一个小动作。"}
+              只是小互动，不会判题或增加学习进度。
+            </p>
+          )}
         </div>
       )}
       {lost && <span className="scene-mode-note">已切换为 2D 小伙伴</span>}

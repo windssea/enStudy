@@ -23,14 +23,20 @@ globalThis.FileReader = class {
     });
   }
 };
-const model = createPikachuModel({ authoring: true });
+const adventure = process.argv.includes("--adventure");
+const model = createPikachuModel({ authoring: true, adventure });
 try {
   model.root.updateMatrixWorld(true);
   const bytes = await new GLTFExporter().parseAsync(model.root, {
     binary: true,
     trs: true,
   });
-  await writeFile("artifacts/pikachu-base.glb", Buffer.from(bytes));
+  await writeFile(
+    adventure
+      ? "artifacts/pikachu-adventure-base.glb"
+      : "artifacts/pikachu-base.glb",
+    Buffer.from(bytes),
+  );
 } finally {
   model.dispose();
 }

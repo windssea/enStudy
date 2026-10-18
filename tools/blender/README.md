@@ -1,5 +1,18 @@
 # Clay fox authoring
 
+## v0.33 adventure Pikachu and expressive poses
+
+```powershell
+node scripts/export-pikachu-base.mjs --adventure
+& 'D:/Program Files/Blender Foundation/Blender 5.2/blender.exe' --background --factory-startup --python tools/blender/build_clay_pikachu_v2.py
+node scripts/export-companion-gestures.mjs
+& 'D:/Program Files/Blender Foundation/Blender 5.2/blender.exe' --background --factory-startup --python tools/blender/preview_companion_gestures.py
+```
+
+The v2 model has a bent ear and closed scarf pieces, 30 meshes / 26,680 triangles / 1,279,276 bytes. Its 13 attachments and closed-solid QA are bound to the real GLB SHA-256. The old v1 source and assets remain reproducible by the commands below. Only v2 is imported into the current app bundle.
+
+The eight new pose renders use the same absolute pose function as the browser, with both actual shipped GLBs. Clay runtime materials cap the source's full white sheen; since GLTFExporter omits Three's separate sheen intensity, inspection export bakes intensity into sheenColorFactor before Blender imports it. This preserves the intended material rather than reintroducing a white fabric layer. Fine browser bump is omitted in the pose export, without replacing any geometry. These are offline model inspections; browser rendering and device interaction remain separate gates. See [v0.33 scope and evidence](../../docs/54-expressive-clay-partners.md).
+
 ## Pikachu partner
 
 The Pikachu character is from Pokémon; the clay model in this project is built from `src/scene/pikachuModel.ts`, not a downloaded character asset. Character-name reference: [official Pokémon parents page](https://parents.pokemon.com/en-us/video-games-and-apps/).

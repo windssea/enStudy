@@ -7,14 +7,15 @@ import { applyCompanionPose } from "./scene/companionPose";
 import type { CompanionId } from "../packages/domain/companions";
 import type { Reaction } from "./SceneStage";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { prepareClayPartner } from "./scene/loadClayFox";
+import { groundClayPartner, prepareClayPartner } from "./scene/loadClayFox";
 import { foxTurnAngle } from "./scene/foxTurn";
 import { Mesh, type Object3D } from "three";
+import type { CompanionGesture } from "./scene/companionGestures";
 
 const clayFoxUrl = new URL("./assets/models/clay-fox-v1.glb", import.meta.url)
   .href;
 const clayPikachuUrl = new URL(
-  "./assets/models/clay-pikachu-v1.glb",
+  "./assets/models/clay-pikachu-v2.glb",
   import.meta.url,
 ).href;
 function usePartnerShadow(root: Object3D) {
@@ -59,6 +60,7 @@ function ProceduralGuide({
   idle = true,
   turned = false,
   companion,
+  gesture,
 }: {
   paused: boolean;
   pulse?: number;
@@ -66,29 +68,36 @@ function ProceduralGuide({
   idle?: boolean;
   turned?: boolean;
   companion: CompanionId;
+  gesture?: CompanionGesture;
 }) {
-  const model = useMemo(
-    () => (companion === "fox" ? createFoxModel() : createPikachuModel()),
-    [companion],
-  );
+  const model = useMemo(() => {
+    const instance =
+      companion === "fox"
+        ? createFoxModel()
+        : createPikachuModel({ adventure: true });
+    groundClayPartner(instance.root);
+    return instance;
+  }, [companion]);
   useFoxTurn(model.root, turned, paused);
   usePartnerShadow(model.root);
-  const changed = useRef({ pulse, reaction, start: -100 });
+  const changed = useRef({ pulse, reaction, gesture, start: -100 });
   useEffect(() => () => model.dispose(), [model]);
   useFrame(({ clock }) => {
     const time = clock.elapsedTime;
-    if (paused) changed.current = { pulse, reaction, start: -100 };
+    if (paused) changed.current = { pulse, reaction, gesture, start: -100 };
     else if (
       changed.current.pulse !== pulse ||
-      changed.current.reaction !== reaction
+      changed.current.reaction !== reaction ||
+      changed.current.gesture !== gesture
     )
-      changed.current = { pulse, reaction, start: time };
+      changed.current = { pulse, reaction, gesture, start: time };
     applyCompanionPose(model, companion, {
       time,
       age: time - changed.current.start,
       paused,
       idle,
       reaction,
+      gesture,
     });
   });
   return <primitive object={model.root} />;
@@ -101,6 +110,7 @@ function LoadedGuide({
   idle = true,
   turned = false,
   companion,
+  gesture,
 }: Props) {
   const gltf = useLoader(
     GLTFLoader,
@@ -112,22 +122,24 @@ function LoadedGuide({
   );
   useFoxTurn(model.root, turned, paused);
   usePartnerShadow(model.root);
-  const changed = useRef({ pulse, reaction, start: -100 });
+  const changed = useRef({ pulse, reaction, gesture, start: -100 });
   useEffect(() => () => model.dispose(), [model]);
   useFrame(({ clock }) => {
     const time = clock.elapsedTime;
-    if (paused) changed.current = { pulse, reaction, start: -100 };
+    if (paused) changed.current = { pulse, reaction, gesture, start: -100 };
     else if (
       changed.current.pulse !== pulse ||
-      changed.current.reaction !== reaction
+      changed.current.reaction !== reaction ||
+      changed.current.gesture !== gesture
     )
-      changed.current = { pulse, reaction, start: time };
+      changed.current = { pulse, reaction, gesture, start: time };
     applyCompanionPose(model, companion, {
       time,
       age: time - changed.current.start,
       paused,
       idle,
       reaction,
+      gesture,
     });
   });
   return <primitive object={model.root} />;

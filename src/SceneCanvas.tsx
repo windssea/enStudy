@@ -5,6 +5,7 @@ import type { Group, OrthographicCamera } from "three";
 import { Explorer, Pebble, StageProp, Tile } from "./SceneModels";
 import type { Reaction, SceneKind } from "./SceneStage";
 import { RenderActivity } from "./SceneRuntime";
+import type { CompanionGesture } from "./scene/companionGestures";
 
 function Setup({ onLost, partner }: { onLost: () => void; partner: boolean }) {
   const { camera, size, gl, invalidate } = useThree();
@@ -74,6 +75,7 @@ export default function SceneCanvas({
   paused,
   moving,
   onLost,
+  gesture,
 }: {
   kind: SceneKind;
   reaction: Reaction;
@@ -82,6 +84,7 @@ export default function SceneCanvas({
   paused: boolean;
   moving: boolean;
   onLost: () => void;
+  gesture?: CompanionGesture;
 }) {
   const active = !paused && moving;
   return (
@@ -102,11 +105,12 @@ export default function SceneCanvas({
       />
       <group position={[kind === "partner" ? 0 : -0.85, 0.1, 0]}>
         <Explorer
-          paused={!active}
+          paused={kind === "partner" ? paused : !active}
           pulse={pulse}
           turned={turned}
           reaction={reaction}
-          idle={kind !== "feedback"}
+          idle={kind !== "feedback" && kind !== "partner"}
+          gesture={gesture}
         />
       </group>
       <Pebble
@@ -114,7 +118,10 @@ export default function SceneCanvas({
         scale={[2.2, 0.13, 1.05]}
         color="#bde4cf"
       />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.78, 0.1, 0.15]}>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[kind === "partner" ? 0 : -0.78, 0.095, 0.15]}
+      >
         <circleGeometry args={[0.57, 32]} />
         <meshBasicMaterial
           color="#24584b"

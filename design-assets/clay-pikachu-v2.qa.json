@@ -1,0 +1,331 @@
+{
+  "blender": "5.2.1 LTS",
+  "meshes": 30,
+  "triangles": 26680,
+  "glb_bytes": 1279276,
+  "vertex_ao": true,
+  "glb_sha256": "4688aab20cbeaf5e92405fe8984dd47151788b2e1c8237b2b0c7c196f945390a",
+  "closed_solids": true,
+  "surface_attachments": [
+    {
+      "detail": "pikachu-eye--1",
+      "surface": "pikachu-round-head",
+      "vertices": 423,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-eye-glint--1",
+      "surface": "pikachu-eye--1",
+      "vertices": 423,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-red-cheek--1",
+      "surface": "pikachu-round-head",
+      "vertices": 423,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-smile--1",
+      "surface": "pikachu-round-head",
+      "vertices": 173,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-eye-1",
+      "surface": "pikachu-round-head",
+      "vertices": 423,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-eye-glint-1",
+      "surface": "pikachu-eye-1",
+      "vertices": 423,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-red-cheek-1",
+      "surface": "pikachu-round-head",
+      "vertices": 423,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-smile-1",
+      "surface": "pikachu-round-head",
+      "vertices": 173,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-tiny-nose",
+      "surface": "pikachu-round-head",
+      "vertices": 423,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-back-stripe-0",
+      "surface": "pikachu-yellow-body",
+      "vertices": 423,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-back-stripe-1",
+      "surface": "pikachu-yellow-body",
+      "vertices": 423,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-scarf-bib",
+      "surface": "head/body envelope",
+      "vertices": 1908,
+      "misses": 0
+    },
+    {
+      "detail": "pikachu-scarf-button",
+      "surface": "pikachu-scarf-bib",
+      "vertices": 423,
+      "misses": 0
+    }
+  ],
+  "objects": [
+    {
+      "name": "pikachu-yellow-body",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.158780417057044
+    },
+    {
+      "name": "pikachu-foot--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.1584744402758576
+    },
+    {
+      "name": "pikachu-foot-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.158474440275855
+    },
+    {
+      "name": "pikachu-round-head",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.158780417057044
+    },
+    {
+      "name": "yellow-ear--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.014770157571406775
+    },
+    {
+      "name": "black-ear-tip--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.0032059660045536714
+    },
+    {
+      "name": "yellow-ear-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.014490469346076692
+    },
+    {
+      "name": "black-ear-tip-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.0023147829550200986
+    },
+    {
+      "name": "pikachu-eye--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.6401199576342302
+    },
+    {
+      "name": "pikachu-eye-glint--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.6829295789015454
+    },
+    {
+      "name": "pikachu-eye-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.6411355284104834
+    },
+    {
+      "name": "pikachu-eye-glint-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.6834058002784672
+    },
+    {
+      "name": "pikachu-red-cheek--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.8729530846913249
+    },
+    {
+      "name": "pikachu-smile--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 2.9173073648589634e-05
+    },
+    {
+      "name": "pikachu-red-cheek-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.8699911285270517
+    },
+    {
+      "name": "pikachu-smile-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 2.9173824480548826e-05
+    },
+    {
+      "name": "pikachu-tiny-nose",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.7430260700836073
+    },
+    {
+      "name": "pikachu-right-arm",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.015055841404288742
+    },
+    {
+      "name": "pikachu-right-paw",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.158474440275856
+    },
+    {
+      "name": "pikachu-left-arm",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.015055841404288742
+    },
+    {
+      "name": "pikachu-left-paw",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.158474440275857
+    },
+    {
+      "name": "pikachu-back-stripe-0",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.0544940132082454
+    },
+    {
+      "name": "pikachu-back-stripe-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.0546305680404517
+    },
+    {
+      "name": "pikachu-brown-tail-root",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.101319508040269
+    },
+    {
+      "name": "pikachu-lightning-tail",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.05751529303618209
+    },
+    {
+      "name": "pikachu-scarf-collar",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.011693075083275014
+    },
+    {
+      "name": "pikachu-scarf-bib",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.002823554558023534
+    },
+    {
+      "name": "pikachu-scarf-knot",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.101319508040269
+    },
+    {
+      "name": "pikachu-scarf-fold",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.101319508040269
+    },
+    {
+      "name": "pikachu-scarf-button",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 2.0506626709080766
+    }
+  ]
+}

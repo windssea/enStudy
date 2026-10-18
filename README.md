@@ -1,5 +1,7 @@
 # 英语探险岛
 
+开发v0.33.0：本地升级弯耳/领巾皮卡丘与伙伴短动作，修正材质发白、脚底原点与试选阴影位置。346项单元、31项伙伴及37项离线检查通过；按`[skip ci]`提交，不重试受限部署。模型实渲不代表网页或iPad已验收，详见[粘土伙伴阶段记录](docs/54-expressive-clay-partners.md)。
+
 v0.32.0已提交新增24课与可选家庭小活动，累计240/288课；339单元及1004本地/CI运行检查通过，但0034预览迁移被D1每日免费写入额度阻止（运行39108621475），尚未发布。两站及正式域名仍为下述v0.31.1、216课、D1至0033。额度恢复前继续本地开发，提交使用`[skip ci]`，不反复部署。见[第四单元阶段记录](docs/53-cooperation-term-unit-and-home-activities.md)。
 
 面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。v0.31.1采用React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1，免费优先。2026年10月18日15:20通过[GitHub Actions](https://github.com/windssea/enStudy/actions/runs/39106806497)将应用提交`fe2ffd5`同步发布至Preview与Production，两站独立D1均至0033。330项单元、957项CI运行、两站和正式域名各36项线上、22项补充功能及6项隔离检查通过，见[最新阶段与发布记录](docs/52-household-invitations-and-roles.md)。

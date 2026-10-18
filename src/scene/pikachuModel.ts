@@ -23,6 +23,7 @@ export const pikachuPalette = {
   cheek: "#ef6b5e",
   brown: "#a67446",
   white: "#fffaf0",
+  scarf: "#4ba99a",
 } as const;
 /** Close both arc ends in the runtime geometry, not only the authoring preview. */
 function closedSmileArc() {
@@ -78,7 +79,8 @@ const tailGeometry = () => {
 
 export function createPikachuModel({
   authoring = false,
-}: { authoring?: boolean } = {}) {
+  adventure = false,
+}: { authoring?: boolean; adventure?: boolean } = {}) {
   const root = new Group();
   root.name = "clay-pikachu-partner";
   const body = new Group();
@@ -179,8 +181,38 @@ export function createPikachuModel({
     ear.position.set(side * 0.32, 0.28, -0.015);
     ear.rotation.z = side * -0.32;
     head.add(ear);
-    add(`yellow-ear-${side}`, earBase, "yellow", [0, 0, 0], [1, 1, 1], ear);
-    add(`black-ear-tip-${side}`, earTip, "ear", [0, 0, 0], [1, 1, 1], ear);
+    const bend = (geometry: BufferGeometry, tip = false) => {
+      if (!adventure) return geometry;
+      const bent = geometry.clone();
+      const p = bent.getAttribute("position");
+      for (let i = 0; i < p.count; i++) {
+        const t = side === 1 ? Math.max(0, (p.getY(i) - 0.38) / 0.4) : 0;
+        p.setXYZ(
+          i,
+          p.getX(i) * (tip ? 1.08 : 1) + 0.15 * t * t,
+          p.getY(i) - 0.1 * t * t,
+          p.getZ(i) * (tip ? 1.08 : 1) + 0.12 * t * t,
+        );
+      }
+      bent.computeVertexNormals();
+      return bent;
+    };
+    add(
+      `yellow-ear-${side}`,
+      bend(earBase),
+      "yellow",
+      [0, 0, 0],
+      [1, 1, 1],
+      ear,
+    );
+    add(
+      `black-ear-tip-${side}`,
+      bend(earTip, true),
+      "ear",
+      [0, 0, 0],
+      [1, 1, 1],
+      ear,
+    );
   }
   const eyes = new Group();
   eyes.name = "pikachu-eyes";
@@ -339,6 +371,53 @@ export function createPikachuModel({
     [1, 1, 1],
     tail,
   );
+  if (adventure) {
+    // A closed, soft collar with a separate thick bib. Kept on the body so
+    // head nods never pull the neck cloth through the face.
+    const collar = new TorusGeometry(0.36, 0.042, 10, 48);
+    const neck = add(
+      "pikachu-scarf-collar",
+      collar,
+      "scarf",
+      [0, 0.98, 0.015],
+      [1.16, 0.83, 1],
+    );
+    neck.rotation.x = Math.PI / 2;
+    const shape = new Shape();
+    shape.moveTo(-0.22, 0.025);
+    shape.quadraticCurveTo(0, -0.02, 0.22, 0.025);
+    shape.quadraticCurveTo(0.17, -0.12, 0.035, -0.22);
+    shape.quadraticCurveTo(0, -0.245, -0.035, -0.22);
+    shape.quadraticCurveTo(-0.17, -0.12, -0.22, 0.025);
+    const bib = new ExtrudeGeometry(shape, {
+      depth: 0.028,
+      bevelEnabled: true,
+      bevelThickness: 0.012,
+      bevelSize: 0.012,
+      bevelSegments: 3,
+      curveSegments: 10,
+    });
+    add("pikachu-scarf-bib", bib, "scarf", [0, 0.98, 0.305]);
+    ball(
+      "pikachu-scarf-knot",
+      "scarf",
+      [0.29, 0.97, -0.15],
+      [0.075, 0.065, 0.075],
+    );
+    const end = ball(
+      "pikachu-scarf-fold",
+      "scarf",
+      [0.35, 0.865, -0.18],
+      [0.07, 0.16, 0.035],
+    );
+    end.rotation.z = -0.25;
+    ball(
+      "pikachu-scarf-button",
+      "white",
+      [0, 0.9, 0.361],
+      [0.031, 0.031, 0.012],
+    );
+  }
   const pose: FoxPoseNodes = { body, head, arm, tail, eyes };
   applyFoxPose(pose, {
     time: 0,

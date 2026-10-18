@@ -2,7 +2,7 @@ id,milestone,task,acceptance,status,evidence
 M0-01,M0,React TypeScript Vite工程与依赖锁定,类型检查与生产构建通过,done,package-lock.json与npm run build
 M0-02,M0,真实Three.js地图模块与DOM降级,懒加载和2D切换实现且实机另验,implemented-unverified-visual,src/World.tsx
 M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,deployed-assets-and-data-verified-visual-pending,docs/51-position-lab-and-third-term-unit.md及位置实验和双伙伴与六种词语模型加线上模块摘要和17专题54示范通过而浏览器GPU实机未验
-M0-02c,M0,宝可梦元素伙伴与形象选择,具名卡通粘土角色多视角拓扑动作和选择持久化通过,deployed-assets-and-preferences-verified-device-pending,docs/50-pikachu-and-saved-companions.md及皮卡丘25闭合网格和实际GLB姿态渲染与31项本机偏好及三地址各30线上检查通过而网页实机待验
+M0-02c,M0,宝可梦元素伙伴与形象选择,具名卡通粘土角色多视角拓扑动作和选择持久化通过,local-v2-rendered-live-v1-device-pending,docs/54-expressive-clay-partners.md及v2三十闭合网格十三贴合与8姿态实渲和346单元31伙伴37离线通过而新模型动作未发布与网页实机待验
 M0-02d,M0,位置关系3D教学,同一实物位置与中文步骤及示范证据一致,deployed-assets-and-evidence-verified-device-pending,docs/51-position-lab-and-third-term-unit.md及13闭合网格四状态实渲和位置路径与三地址线上辅助证据通过而网页实机待验
 M0-03,M0,课程专题句式目录,72单元60专题72句式可读且标明草稿,done,public/content/catalog.json与HTTP检查
 M0-04,M0,本地D1迁移和样课闭环,服务端判题保存调度与提示证据通过,done,npm run verify:local

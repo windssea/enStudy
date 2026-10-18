@@ -4259,6 +4259,26 @@ button.unit-node:not(:disabled) {
   flex-wrap: wrap;
   gap: 8px;
 }
+.companion-gestures {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.companion-gestures .scene-play,
+.scene-stage[data-kind="partner"] .scene-play {
+  min-height: 52px;
+  font-size: 16px;
+}
+.scene-stage[data-kind="partner"] .scene-actions {
+  gap: 12px;
+}
+.scene-controls .companion-play-note {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
 .word-object-scene {
   margin-top: 16px;
   padding: 8px;
