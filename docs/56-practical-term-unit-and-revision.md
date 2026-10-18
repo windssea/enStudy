@@ -24,3 +24,15 @@
 365项单元检查通过。格式、生产构建、Functions编译及本地0036迁移通过。51项新增课程专项通过，完整保存216任务（215项独立、一项显式提示），覆盖设备接管、幂等回执、跨入口示范与复习隔离；两道修订拼句实际提交了交换后的物品顺序。修订前完整本地回归1055项已通过，最终版本将由本轮CI再次完整执行。AI及语音检查使用本机隔离模拟，未验收真实供应商；Tabbit连接不可用，未宣称PC/iPad视觉、声音和GPU通过。
 
 用户于2026年10月18日要求额度恢复后同步推送。发布前只读核验Preview、Production与正式域名均为216课、`course-catalog-v9`、静态缓存`eq-shell-v1-d62821ae1b4b4288`。本轮对最新main运行GitHub Actions，按Preview迁移/上传/检查后再Production相同步骤执行；结果随后追加。旧定时自动化保持停用；若仍受免费额度限制，停止重复尝试并如实记录两站状态。
+
+## 2026年10月18日17:19同步结果：GitHub成功，云端仍受额度限制
+
+应用提交`2e9dd8ba8c33cce8d511dc2328fa3b963230a071`已推送main。[运行39114398198](https://github.com/windssea/enStudy/actions/runs/39114398198)的check成功：365项单元、1055项完整运行检查（1013行PASS及基础42项）、格式、生产构建、Functions编译与本地迁移均通过。新增51项专项完整保存216任务，并实际接受两种交换物品后的语序。
+
+Cloudflare在北京时间17:19:29执行Preview迁移时再次返回7500：账号D1免费每日行写入额度已用尽。待执行0034、0035、0036未完成，Pages上传没有执行；Production迁移、上传、两站37项线上检查、补充功能与写入隔离检查均跳过。没有重新运行旧提交或重复触发本轮，没有升级、新建资源或新增定时任务。
+
+失败后对原来两套D1只读SELECT均确认：最新迁移0033，B第四/第五单元lesson数0，三个新release均不存在；响应`changed_db=false`、`rows_written=0`，没有留下部分新课。Preview仍绑定`28fdeae4-7ebe-409f-9beb-2766122fa159`，Production仍绑定`bfbbf58a-56fc-4173-bfa4-81442a15e257`。
+
+Preview、Production及正式域名的health、课程目录与静态shell再次核验，三者均保持v0.31.1、216课、`course-catalog-v9`和`eq-shell-v1-d62821ae1b4b4288`。注册仍关闭，家庭协作开启。本轮新增课、伙伴模型和动效已在GitHub及本地，尚未发布；页面200不代表额度受限时能保存答案。
+
+日志在忽略目录artifacts：`actions-v035-check.log`、`actions-v035-failed.log`、`d1-preview-v035-after.json`、`d1-production-v035-after.json`、`published-v035-after.json`。按照本次API返回的UTC零点重置说明，下一次北京时间为10月19日08:00；未设置自动重试，历史automation仍为PAUSED。发布记录以`[skip ci]`提交，避免记录提交再次触发相同失败。

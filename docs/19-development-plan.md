@@ -1,6 +1,6 @@
 # 开发执行计划
 
-本项目在M1–M4之间分阶段推进，当前代码v0.35.0（本地264课、粘土伙伴升级；按用户要求重新同步发布）、线上仍为已核验的v0.31.1（216课及家庭协作已开启）；完整交付门槛M5尚未通过。注册暂时关闭，默认admin采用用户指定密码。公开首发范围仍是P1–P6、288课、72单元、60专题和72条句式；当前本地264课、线上216课、互动工坊与54个教学演示不替代完整课程目标。最新记录见[第五单元与同步](56-practical-term-unit-and-revision.md)、[贴面闭眼](55-surface-safe-cartoon-blinks.md)、[表情与粘土伙伴](54-expressive-clay-partners.md)、[第四单元与额度受限记录](53-cooperation-term-unit-and-home-activities.md)、[家庭邀请与权限](52-household-invitations-and-roles.md)、[位置实验与第三单元](51-position-lab-and-third-term-unit.md)、[皮卡丘与档案伙伴](50-pikachu-and-saved-companions.md)、[粘土词卡与B第二单元](49-word-study-and-b-term-unit-two.md)、[粘土伙伴与B学期](48-clay-guide-and-next-term.md)、[同步发布](47-20261018-synchronized-release.md)、[第六单元与历史示范记录](46-sixth-unit-and-historical-demonstrations.md)、[实物比较场景](45-measured-comparison-scenes.md)、[第五单元与课内3D入口](43-fifth-unit-scenarios-and-lesson-labs.md)、[本机离线练习](42-offline-practice-and-confirmation.md)及[开发待办](development/backlog.csv)。
+本项目在M1–M4之间分阶段推进，当前代码v0.35.0（本地264课、粘土伙伴升级；已推送GitHub；本轮部署仍被D1额度7500阻止）、线上仍为已核验的v0.31.1（216课及家庭协作已开启）；完整交付门槛M5尚未通过。注册暂时关闭，默认admin采用用户指定密码。公开首发范围仍是P1–P6、288课、72单元、60专题和72条句式；当前本地264课、线上216课、互动工坊与54个教学演示不替代完整课程目标。最新记录见[第五单元与同步](56-practical-term-unit-and-revision.md)、[贴面闭眼](55-surface-safe-cartoon-blinks.md)、[表情与粘土伙伴](54-expressive-clay-partners.md)、[第四单元与额度受限记录](53-cooperation-term-unit-and-home-activities.md)、[家庭邀请与权限](52-household-invitations-and-roles.md)、[位置实验与第三单元](51-position-lab-and-third-term-unit.md)、[皮卡丘与档案伙伴](50-pikachu-and-saved-companions.md)、[粘土词卡与B第二单元](49-word-study-and-b-term-unit-two.md)、[粘土伙伴与B学期](48-clay-guide-and-next-term.md)、[同步发布](47-20261018-synchronized-release.md)、[第六单元与历史示范记录](46-sixth-unit-and-historical-demonstrations.md)、[实物比较场景](45-measured-comparison-scenes.md)、[第五单元与课内3D入口](43-fifth-unit-scenarios-and-lesson-labs.md)、[本机离线练习](42-offline-practice-and-confirmation.md)及[开发待办](development/backlog.csv)。
 
 ## 当前工程基线
 
@@ -15,7 +15,7 @@
 | 家长报告与离线 | 7/30自然日及非独立证据报告；七题型当前轮题包、加密本机队列、逐题联网确认和显式重新授权 | 浏览器实际缓存/持久化/飞行模式、云端验证、导出和完整错因归因待验/待做 |
 | Cloudflare CLI与GitHub Actions | Preview/Production与正式域名已同步v0.31.1；330单元与957运行、各36线上、22功能及6隔离检查通过 | 保持免费；main推送经过检查后发布，历史定时自动化仍停用；真实设备及完整媒体待验 |
 
-v0.32的运行39108621475在2026年10月18日15:47迁移Preview时返回D1免费写入额度7500，Pages和Production部署均未执行。只读核验两站仍至0033且B第四单元数据为零，未重试。按错误信息，下一次UTC零点为北京时间10月19日08:00；此前额度受限时停止部署；本轮用户明确要求额度恢复后同步，运行最新main且仍保持免费，不新建资源或定时自动化。实际结果以第五单元记录为准。
+v0.32的运行39108621475在2026年10月18日15:47迁移Preview时返回D1免费写入额度7500，Pages和Production部署均未执行。只读核验两站仍至0033且B第四单元数据为零，未重试。按错误信息，下一次UTC零点为北京时间10月19日08:00；此前额度受限时停止部署；本轮按用户要求对最新main运行39114398198：365单元、1055流程检查通过，但17:19 Preview迁移仍返回7500，Production跳过。只读核验两站仍为216课、0033；保持免费，不新建资源或定时自动化，不再重复部署。实际结果以第五单元记录为准。
 
 当前依赖以package-lock.json为准。安装时仅批准了esbuild和workerd两个明确依赖的安装脚本；没有全局放开依赖安装脚本。
 
