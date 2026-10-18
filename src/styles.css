@@ -4821,3 +4821,28 @@ button.unit-node:not(:disabled) {
   outline: 3px solid var(--primary);
   outline-offset: 4px;
 }
+
+.course-wrapup {
+  max-width: 58ch;
+  padding: 16px;
+  border-inline-start: 5px solid var(--primary);
+  border-radius: 16px;
+  background: var(--surface);
+  overflow-wrap: anywhere;
+}
+.map-footer .course-wrapup p {
+  font-size: 16px;
+  color: var(--ink);
+  margin-block: 8px;
+  line-height: 1.65;
+}
+.course-wrapup button {
+  min-height: 52px;
+  margin-block: 8px;
+}
+.course-wrapup small {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}

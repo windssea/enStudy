@@ -120,7 +120,7 @@ check(
   "published lesson metadata and real topic availability delivered without answer keys",
 );
 const homeLessons = course.lessons.filter((lesson) =>
-  /^P[1-6]B-U05-L[1-4]$/.test(lesson.id),
+  /^P[1-6]B-U06-L[1-4]$/.test(lesson.id),
 );
 check(
   homeLessons.length === 24 &&
@@ -343,14 +343,14 @@ try {
     "position lab returns its authored scene without creating a score",
   );
   const courseStart = await authenticated("/sessions", {
-    lessonId: "P6B-U05-L1",
+    lessonId: "P6B-U06-L1",
     clientRequestId: crypto.randomUUID(),
   });
   check(
     courseStart.status === 201 &&
-      courseStart.data.exercise?.id === "P6B-U05-L1.p1.listen" &&
+      courseStart.data.exercise?.id === "P6B-U06-L1.p1.listen" &&
       courseStart.data.total === 9,
-    "latest B-term unit five is assignable from remote D1",
+    "latest B-term unit six is assignable from remote D1",
   );
   const positionTask = await authenticated("/sessions", {
     exerciseId: "P1B-U03-L1.p8.input",

@@ -26,6 +26,7 @@ import type {
 import { api, setHouseholdContext, ApiError, setLearningChild } from "./api";
 import { parseRoute, mapFragment, type View } from "./routes";
 import { courseStep } from "./courseNavigation";
+import CourseWrapUp from "./CourseWrapUp";
 import CompanionPicker from "./CompanionPicker";
 import { companionInfo } from "../packages/domain/companions";
 import { applyCompanionChoice } from "./companionState";
@@ -1153,11 +1154,18 @@ export default function App() {
                   </div>
                   <div className="map-footer">
                     <div>
-                      <strong>
-                        {nextLesson
-                          ? `${courseNavigation.allPractised ? "再探一遍" : "下一站"}：${nextLesson.title}`
-                          : "这个学期的课程正在准备"}
-                      </strong>
+                      {courseNavigation.allPractised && term === "B" ? (
+                        <CourseWrapUp
+                          dueCount={learning.dueCount}
+                          onReview={() => move("review")}
+                        />
+                      ) : (
+                        <strong>
+                          {nextLesson
+                            ? `${courseNavigation.allPractised ? "再探一遍" : "下一站"}：${nextLesson.title}`
+                            : "这个学期的课程正在准备"}
+                        </strong>
+                      )}
                       {courseNavigation.nextTerm && (
                         <p>
                           这批上学期微课都练过了，也可以去下学期的新起点看看。
@@ -1185,14 +1193,17 @@ export default function App() {
                     {nextLesson && (
                       <button
                         className={
-                          session && identity.authenticated
+                          (session && identity.authenticated) ||
+                          (courseNavigation.allPractised && term === "B")
                             ? "secondary"
                             : "primary"
                         }
                         disabled={busy}
                         onClick={() => openLesson(nextLesson)}
                       >
-                        打开这节课
+                        {courseNavigation.allPractised && term === "B"
+                          ? "再看一节课"
+                          : "打开这节课"}
                         <Icon kind="arrow" />
                       </button>
                     )}

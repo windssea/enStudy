@@ -42,8 +42,8 @@ describe("fourth B-term cooperation and everyday communication courses", () => {
       ).toBe(hash);
   });
   it("opens the actual scoped fourth unit for all six grades and continues there after older units", () => {
-    expect(courseCatalog.lessons).toHaveLength(264);
-    expect(new Set(courseCatalog.lessons.map((l) => l.id)).size).toBe(264);
+    expect(courseCatalog.lessons).toHaveLength(288);
+    expect(new Set(courseCatalog.lessons.map((l) => l.id)).size).toBe(288);
     expect(courseCatalog.lessons.filter((l) => l.term === "A")).toHaveLength(
       144,
     );
@@ -67,7 +67,7 @@ describe("fourth B-term cooperation and everyday communication courses", () => {
         courseCatalog.lessons.filter(
           (l) => l.grade === grade && l.term === "B",
         ),
-      ).toHaveLength(20);
+      ).toHaveLength(24);
       const old = courseCatalog.lessons.filter(
         (l) => l.grade === grade && l.term === "B" && l.unitNumber! < 4,
       );

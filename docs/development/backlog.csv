@@ -18,7 +18,7 @@ M1-03,M1,会话重载与设备接管,重载恢复且旧lease不能重复写入,l
 M1-04,M1,更多受管理账号与家庭,保持注册关闭且账号管理权限隔离,deployed-admin-listing-verified-crud-and-device-pending,docs/30-managed-family-accounts.md及46项本地管理账号检查与docs/47-20261018-synchronized-release.md线上管理员登录列表通过而远程完整CRUD与真机待验
 M1-05,M1,同家庭多成人邀请与成人生命周期,一次性邀请角色变更与删除保留期核验,partial-deployed-invitations-and-roles-lifecycle-pending,docs/52-household-invitations-and-roles.md及62项CI家庭协作与两步兼容发布通过而远程完整邀请及浏览器和账户删除保留期仍待做
 M2-01,M2,不可变内容release和审核流水线,发布审核撤题与版本兼容通过,partial-versioned-release-snapshot,docs/34-course-expansion-and-exposure.md及追加v2和历史恢复与混合来源已验证而编辑审核撤题运营待做
-M2-02,M2,全年级课程与媒体,288微课与各年级综合能力覆盖审核,partial-264-of-288-ci-verified-d1-quota-release-pending,docs/56-practical-term-unit-and-revision.md及365单元1055CI流程通过但39114398198被每日写入额度阻止且线上仍216课而剩余24课与完整媒体教研审核待做
+M2-02,M2,全年级课程与媒体,288微课与各年级综合能力覆盖审核,partial-288-core-media-and-teaching-review-pending,docs/57-final-core-unit-and-continued-review.md及288核心课2592任务和376单元51新增专项1106完整本地回归通过而完整媒体自然拼读自由写作教研及云端仍待完成
 M2-03,M2,完整互动题型与可访问替代,听读分类纠错与引导表达可用,partial-seven-type-mixed-course,docs/40-fourth-unit-and-clearer-navigation.md及第四单元课内组合七种题型和独立证据而真机发声丰富媒体表达及PC平板验收待做
 M3-01,M3,60专题诊断与迁移,分层与题目家族隔离通过,partial-local-training-journeys,docs/33-topic-training-journeys.md与38-guided-training-centres.md及60专题分步和8类入口而全面错因诊断专用内容开放场景及教研审核待做
 M3-02,M3,72句式和词形规则,槽位与合法变体及错误归因通过,partial-72-frame-banks,docs/38-guided-training-centres.md与39-time-and-word-form-labs.md及句式题库与词形演示而完整归因迁移教研审核待做

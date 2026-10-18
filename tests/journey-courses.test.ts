@@ -44,8 +44,8 @@ describe("sixth-unit core curriculum", () => {
       ).toBe(hash);
   });
   it("opens four sixth-unit lessons in every grade and keeps all previous courses", () => {
-    expect(courseCatalog.lessons).toHaveLength(264);
-    expect(new Set(courseCatalog.lessons.map((row) => row.id)).size).toBe(264);
+    expect(courseCatalog.lessons).toHaveLength(288);
+    expect(new Set(courseCatalog.lessons.map((row) => row.id)).size).toBe(288);
     expect(journeyRelease.lessons).toHaveLength(24);
     for (let grade = 1; grade <= 6; grade++) {
       expect(
@@ -55,7 +55,7 @@ describe("sixth-unit core curriculum", () => {
       ).toEqual([21, 22, 23, 24]);
       expect(
         courseCatalog.lessons.filter((row) => row.grade === grade),
-      ).toHaveLength(44);
+      ).toHaveLength(48);
     }
     const units = catalog.units.filter((unit) =>
       /^P[1-6]A-U06$/.test(unit.unit_id),

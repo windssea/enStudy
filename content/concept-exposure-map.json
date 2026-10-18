@@ -171,6 +171,7 @@
     ],
     "forms.irregular-past/write": [
       "family:fact-873bf8614d3cbba7",
+      "family:fact-fb0b6b704c8f9255",
       "family:topic-fact-208ff7c3f972a2e33a8f",
       "family:topic-fact-3611d90d94b739d26cfe",
       "family:topic-fact-44cd0e7db5083b3dd506",
@@ -178,6 +179,7 @@
       "sentence:nora wrote a postcard last night",
       "sentence:sam wrote a note yesterday",
       "sentence:yesterday, lily wrote a letter.(write)",
+      "sentence:yesterday, we wrote a caption for the clay theatre",
       "sentence:写出不规则动词write的过去式。",
       "sentence:完整过去事件:lily wrote a letter yesterday.(write)",
       "sentence:明确过去时间:lily wrote a letter yesterday.(write)",
@@ -211,6 +213,7 @@
     ],
     "forms.past-participle/write": [
       "family:fact-873bf8614d3cbba7",
+      "family:fact-fb0b6b704c8f9255",
       "family:topic-fact-208ff7c3f972a2e33a8f",
       "family:topic-fact-3611d90d94b739d26cfe",
       "family:topic-fact-44cd0e7db5083b3dd506",
@@ -223,6 +226,7 @@
       "sentence:sam wrote a note yesterday",
       "sentence:we have not written a letter yet.(write)",
       "sentence:yesterday, lily wrote a letter.(write)",
+      "sentence:yesterday, we wrote a caption for the clay theatre",
       "sentence:写出不规则动词write的过去式。",
       "sentence:完整过去事件:lily wrote a letter yesterday.(write)",
       "sentence:明确过去时间:lily wrote a letter yesterday.(write)",

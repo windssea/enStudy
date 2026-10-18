@@ -125,7 +125,7 @@ let courseChild;
 try {
   const catalog = (await request("/lessons")).data;
   check(
-    catalog.lessons.length === 264 &&
+    catalog.lessons.length === 288 &&
       release.lessons.every((l) => catalog.lessons.some((c) => c.id === l.id)),
     "public catalog exposes all twenty-four third-unit lessons alongside earlier courses",
   );

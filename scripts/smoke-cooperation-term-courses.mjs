@@ -211,9 +211,9 @@ try {
   );
   const meta = (await request("/lessons")).data;
   check(
-    meta.lessons.length === 264 &&
-      new Set(meta.lessons.map((l) => l.unitId)).size === 66,
-    "authoritative catalog contains six A-term units and five B-term units for every grade and 264 lessons",
+    meta.lessons.length === 288 &&
+      new Set(meta.lessons.map((l) => l.unitId)).size === 72,
+    "authoritative catalog contains six A-term units and six B-term units for every grade and 288 lessons",
   );
   const old = (await open({ exerciseId: "sample.be.1" })).data;
   player = "2";

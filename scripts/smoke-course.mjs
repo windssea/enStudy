@@ -64,9 +64,9 @@ const submit = (session, index = 2) => {
 try {
   const metadata = await request("/lessons");
   check(
-    metadata.data.lessons.length === 264 &&
+    metadata.data.lessons.length === 288 &&
       !JSON.stringify(metadata.data).includes('"answers":'),
-    "public metadata covers 264 lessons without answer keys",
+    "public metadata covers 288 lessons without answer keys",
   );
   check(
     Object.values(metadata.data.topicAvailability).filter(Boolean).length >= 15,

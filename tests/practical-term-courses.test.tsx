@@ -71,8 +71,8 @@ describe("fifth B-term practical reading, plans and revision", () => {
       ).toBe(hash);
   });
   it("opens the scoped fifth unit in all six grades and continues into it without rewriting previous results", () => {
-    expect(courseCatalog.lessons).toHaveLength(264);
-    expect(new Set(courseCatalog.lessons.map((l) => l.id)).size).toBe(264);
+    expect(courseCatalog.lessons).toHaveLength(288);
+    expect(new Set(courseCatalog.lessons.map((l) => l.id)).size).toBe(288);
     expect(courseCatalog.lessons.filter((l) => l.term === "A")).toHaveLength(
       144,
     );
@@ -96,7 +96,7 @@ describe("fifth B-term practical reading, plans and revision", () => {
         courseCatalog.lessons.filter(
           (l) => l.grade === grade && l.term === "B",
         ),
-      ).toHaveLength(20);
+      ).toHaveLength(24);
       const older = courseCatalog.lessons.filter(
         (l) => l.grade === grade && l.term === "B" && l.unitNumber! < 5,
       );

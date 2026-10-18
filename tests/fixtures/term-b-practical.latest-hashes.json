@@ -1,0 +1,6 @@
+{
+  "content/practical-term-course-release.v1.json": "01a912875f51c354de0a4a2c6fcb046d4b4d20a67df1efca65e0312332dc576a",
+  "content/practical-term-course-release.latest.json": "85f9fb729083eb2ed1a992d321c1120ea84edcb23d1b1be6e308ed1e9ab0055c",
+  "migrations/0035_term_b_practical.sql": "014d651cf00abe05a88a56142ff8fb0406a8c2a3711e9044246054b74af82525",
+  "migrations/0036_practical_order_aliases_v2.sql": "d999d3298dc7bdc02ed62d4a2d16c8d5fea21caf70b86fedb6b3a62d34875561"
+}

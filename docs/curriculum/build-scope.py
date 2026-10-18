@@ -80,6 +80,11 @@ SCOPE = {
 
 def main():
     target = Path(__file__).with_name('p1-p6-scope.csv')
+    # Rebuilding the original scope must preserve reviewed status and textbook mappings.
+    previous = {}
+    if target.exists():
+        with target.open(encoding='utf-8-sig', newline='') as handle:
+            previous = {row['unit_id']: row for row in csv.DictReader(handle)}
     with target.open('w', newline='', encoding='utf-8-sig') as handle:
         writer = csv.writer(handle)
         writer.writerow(['unit_id','grade','term','unit_in_term','title','grammar_focus','vocabulary_theme','phonics_or_word_strategy','integrated_task','lesson_count','minimum_unit_items','mapping_status','content_status'])
@@ -90,8 +95,10 @@ def main():
                 title, grammar, vocabulary, phonics, task = row.split('|')
                 term = 'A' if index < 6 else 'B'
                 unit = index % 6 + 1
-                writer.writerow([f'P{grade}{term}-U{unit:02}',grade,term,unit,title,grammar,vocabulary,phonics,task,4,36,'not_bound','planned'])
-    print(f'Wrote {target}: 72 original planned units, 288 lessons, 2592 unit items; 240 phonics items planned separately.')
+                unit_id = f'P{grade}{term}-U{unit:02}'
+                prior = previous.get(unit_id, {})
+                writer.writerow([unit_id,grade,term,unit,title,grammar,vocabulary,phonics,task,4,36,prior.get('mapping_status','not_bound'),prior.get('content_status','planned')])
+    print(f'Wrote {target}: 72 original scoped units, 288 planned lessons, 2592 unit items; existing delivery statuses preserved; 240 phonics items planned separately.')
 
 if __name__ == '__main__':
     main()
