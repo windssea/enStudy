@@ -6,6 +6,7 @@ import type {
 import { api } from "./api";
 import { SecretField } from "./AccountSecurity";
 import AiVoiceSettings from "./AiVoiceSettings";
+import WritingAiSettings from "./WritingAiSettings";
 import { announceAiSettings } from "./aiSettingsSignal";
 const blank = {
   label: "",
@@ -156,7 +157,7 @@ export default function AiSettings() {
       <span className="eyebrow">由家长选择的AI小帮手</span>
       <h2 id="ai-settings-title">连接自己的AI服务</h2>
       <p>
-        标准课程、判题和复习不依赖AI。这里接入兼容的文本服务，用短中文和英文例句帮助理解；设备朗读与AI语音对话是不同能力。
+        标准课程、判题和复习不依赖AI。这里分别配置题目解释、作品建议和角色对话，下方各项独立同意；设备朗读与AI语音对话是不同能力。
       </p>
       {loading && <p role="status">正在读取AI设置…</p>}
       {error && (
@@ -185,9 +186,9 @@ export default function AiSettings() {
       {data && (
         <>
           <div className="ai-privacy">
-            <strong>开启前，先了解这些信息</strong>
+            <strong>先了解题目解释的发送范围</strong>
             <p>
-              题目片段、年级、标准讲解和已保存的作答结果类型会发送给你选择的服务；不发送孩子昵称、账号、原始输入或完整学习历史。服务商的数据保留与处理地区以其政策为准。
+              题目解释会发送题目片段、年级、标准讲解和已保存的作答结果类型；不发送孩子昵称、账号、原始作答输入或完整学习历史。作品点评和角色对话的范围在各自设置中说明，服务商的数据保留与处理地区以其政策为准。
             </p>
             <p>
               网站服务端需要临时解密Key才能调用服务。短解释仅在10分钟内可重试读取，过期后不再返回，后续访问设置时清理缓存。角色对话的保留说明见下方语音设置。未知或取消请求不假定未收费。
@@ -489,7 +490,7 @@ export default function AiSettings() {
                   />
                 </label>
                 <label className="field">
-                  每个孩子每天最多解释次数
+                  每个孩子每天最多解释与作品点评次数
                   <input
                     type="number"
                     required
@@ -551,6 +552,11 @@ export default function AiSettings() {
               </button>
             </fieldset>
           </form>
+          <WritingAiSettings
+            connections={data.items}
+            available={data.available}
+            key={`writing:${data.items.map((c) => `${c.id}:${c.version}:${c.tested}`).join("|")}`}
+          />
           <AiVoiceSettings
             key={data.items
               .map((item) => `${item.id}:${item.version}:${item.tested}`)

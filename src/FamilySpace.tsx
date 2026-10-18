@@ -443,7 +443,7 @@ export default function FamilySpace({
           className="card ai-settings-disclosure"
           onToggle={(event) => setAiOpen(event.currentTarget.open)}
         >
-          <summary>家长设置 · AI解释、角色对话与语音</summary>
+          <summary>家长设置 · AI解释、作品点评、对话与语音</summary>
           <Suspense fallback={<p role="status">正在准备AI连接设置…</p>}>
             {aiOpen && <AiSettings key={identity.adult.username} />}
           </Suspense>

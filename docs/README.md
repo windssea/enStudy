@@ -72,6 +72,7 @@
 | 62 | [v0.38拼读与整词声音](60-phonics-word-audio-and-clay-workbench.md) | 六站240任务、粘土字母标记、真实静态音频、共用证据与复习 |
 | 63 | [v0.39家庭私有资料导出](61-private-family-data-export.md) | 25类固定快照、密码复验、分卷下载、失效清理和内置浏览器检查 |
 | 64 | [v0.40分步拼读与粘土词块](62-guided-clay-phonics-workbench.md) | 三步中文引导、直接点实物、长词块加宽、2D示意与浏览器实测 |
+| 65 | [v0.41自带AI的单段写作建议](63-byok-writing-feedback.md) | 独立同意、版本绑定、加密建议、共用预算、只读恢复与浏览器模拟验收 |
 
 配套资料：
 

@@ -289,6 +289,7 @@ try {
     `UPDATE children SET stream_version=53 WHERE id=${quote(child)};`,
     `INSERT INTO ai_connections(id,household_id,label,adapter,base_url,model,key_ciphertext,key_iv,key_id,key_suffix,capabilities_json,state,created_at) VALUES(${quote(connection)},${quote(a.home)},'导出隔离连接','openai-compatible','https://api.openai.com/v1','placeholder',${quote(secret)},${quote(secret)},${quote(secret)},${quote(secret)},'{}','disabled',${now});`,
     `INSERT INTO ai_settings(household_id,active_connection_id,enabled) VALUES(${quote(a.home)},${quote(connection)},0);`,
+    `INSERT INTO ai_writing_settings(household_id,connection_id,connection_version,enabled,consent_at,version) VALUES(${quote(a.home)},${quote(connection)},0,1,${now},2);`,
     `INSERT INTO children(id,household_id,nickname,grade,created_at) VALUES(${quote(crypto.randomUUID())},${quote(b.home)},${quote(foreignMarker)},2,${now});`,
   );
   const seedFile = `.wrangler/export-seed-${stamp}.sql`;
@@ -366,6 +367,9 @@ try {
     assert.ok(!encoded.includes(forbidden), forbidden);
   check(
     records.connections.length === 1 &&
+      records.ai_settings[0].writing_review.connection_id === connection &&
+      records.ai_settings[0].writing_review.consent_at === now &&
+      records.ai_settings[0].writing_review.version === 2 &&
       records.invitations.length === 1 &&
       records.members.length === 2 &&
       records.membership_history.length >= 2,

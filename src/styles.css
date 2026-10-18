@@ -5589,6 +5589,86 @@ button.unit-node:not(:disabled) {
 .phonics-flat[data-folded="true"] [data-selected="true"] {
   transform: none;
 }
+.writing-ai-settings {
+  border-top: 2px solid var(--border);
+  padding-top: 24px;
+  margin-top: 32px;
+}
+.writing-ai-settings fieldset {
+  border: 0;
+  padding: 0;
+  margin: 20px 0 0;
+  min-width: 0;
+}
+.writing-review-trigger {
+  display: block;
+  min-height: 52px;
+  margin-top: 12px;
+  text-align: start;
+}
+.writing-ai-review {
+  margin: 16px 0;
+  padding: clamp(16px, 2vw, 24px);
+  border: 2px solid var(--control-border);
+  border-radius: 22px;
+  background: var(--primary-soft);
+  overflow-wrap: anywhere;
+}
+.writing-ai-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.writing-ai-heading h3 {
+  margin: 0;
+}
+.writing-ai-review button {
+  min-height: 52px;
+}
+.writing-ai-review blockquote {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border-inline-start: 4px solid var(--blue);
+  border-radius: 0 12px 12px 0;
+  background: var(--surface);
+  white-space: pre-wrap;
+}
+.writing-review-source {
+  max-height: 16rem;
+  overflow-y: auto;
+}
+.writing-review-source:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+.writing-review-confirm {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-height: 52px;
+  margin: 16px 0;
+}
+.writing-review-confirm input {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  accent-color: var(--blue);
+}
+.writing-review-observation {
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: 18px;
+}
+.writing-review-observation h4 {
+  margin-top: 0;
+}
+.writing-review-example {
+  font-size: 20px;
+  white-space: pre-wrap;
+}
 @media (max-width: 560px) {
   .phonics-flat {
     min-height: 240px;

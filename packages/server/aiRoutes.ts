@@ -31,6 +31,7 @@ import type { Actor, Env } from "./app";
 import { recordExposure } from "./exposure";
 import { sentenceKey } from "../domain/exposure";
 import { createVoiceRoutes } from "./aiVoiceRoutes";
+import { createWritingAiRoutes } from "./writingAiRoutes";
 
 export interface AiEnv extends Env, AiConfig {}
 export type B = { Bindings: AiEnv; Variables: { adult: AdultSession } };
@@ -774,6 +775,16 @@ export function createAiRoutes(
       ]);
     return c.json(result);
   });
+  routes.route(
+    "/",
+    createWritingAiRoutes(resolveActor, {
+      owner,
+      connection,
+      ownerSql,
+      ownerParams,
+      audit,
+    }),
+  );
   routes.route(
     "/",
     createVoiceRoutes(resolveActor, {

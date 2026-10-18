@@ -222,6 +222,7 @@ app.get("/api/v1/health", (c) =>
     databaseBinding: Boolean(c.env.DB),
     companionProtocol: 1,
     writingProtocol: 1,
+    writingReviewProtocol: 1,
     phonicsProtocol: 1,
     exportProtocol: 1,
     householdProtocol: 1,

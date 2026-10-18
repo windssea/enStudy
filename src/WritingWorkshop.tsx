@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { api, ApiError } from "./api";
 import type {
   WritingContent,
@@ -22,6 +22,7 @@ type SaveCommand = {
   expectedRevision: number;
   content: WritingContent;
 };
+const WritingAiReview = lazy(() => import("./WritingAiReview"));
 const copy = (c: WritingContent): WritingContent => ({
   ...c,
   paragraphs: [...c.paragraphs],
@@ -89,6 +90,8 @@ export default function WritingWorkshop({
     [notice, setNotice] = useState(""),
     [conflict, setConflict] = useState(false),
     [remote, setRemote] = useState<WritingDraft | null>(null);
+  const [reviewSection, setReviewSection] = useState<number | null>(null);
+  const reviewTriggers = useRef<(HTMLButtonElement | null)[]>([]);
   const generation = useRef(0),
     pending = useRef<SaveCommand | null>(null),
     saving = useRef(false);
@@ -395,8 +398,7 @@ export default function WritingWorkshop({
           从一句配文开始，也可以写成三段作品。先想一想，再写下来，最后读回自己的文字。
         </p>
         <p className="footnote">
-          作品只在当前档案保存，不公开发布，不发送给
-          AI；保存和自查不会加星星，也不代表语法已正确。
+          作品只在当前档案保存，不公开发布。AI点评需家长单独开启，再由你核对并主动选择一段发送；保存和自查不会加星星，也不代表语法已正确。
         </p>
       </header>
       {!childId ? (
@@ -515,7 +517,9 @@ export default function WritingWorkshop({
                 </details>
                 {draft.prompt.sections.map((s, i) => (
                   <div className="writing-paragraph" key={s.id}>
-                    <label htmlFor={`writing-${s.id}`}>{s.title}</label>
+                    <label htmlFor={`writing-paragraph-${s.id}`}>
+                      {s.title}
+                    </label>
                     <p id={`writing-help-${s.id}`}>{s.guidance}</p>
                     <details>
                       <summary>需要一个起步句框？</summary>
@@ -527,7 +531,7 @@ export default function WritingWorkshop({
                       </p>
                     </details>
                     <textarea
-                      id={`writing-${s.id}`}
+                      id={`writing-paragraph-${s.id}`}
                       lang="en"
                       spellCheck
                       value={content.paragraphs[i]}
@@ -546,6 +550,37 @@ export default function WritingWorkshop({
                       {content.paragraphs[i].length}/{writingLimits.paragraph}{" "}
                       字符 · 字数不代表成绩
                     </small>
+                    <button
+                      className="text-button writing-review-trigger"
+                      ref={(node) => {
+                        reviewTriggers.current[i] = node;
+                      }}
+                      aria-expanded={reviewSection === i}
+                      onClick={() =>
+                        setReviewSection(reviewSection === i ? null : i)
+                      }
+                    >
+                      看看这一段的AI小建议（可选）
+                    </button>
+                    {reviewSection === i && (
+                      <Suspense
+                        fallback={<p role="status">正在准备点评入口…</p>}
+                      >
+                        <WritingAiReview
+                          key={`${draft.id}:${draft.revision}:${i}`}
+                          childId={childId}
+                          draftId={draft.id}
+                          revision={draft.revision}
+                          section={i}
+                          paragraph={content.paragraphs[i]}
+                          disabled={unconfirmed || !!busy || conflict}
+                          onClose={() => {
+                            setReviewSection(null);
+                            reviewTriggers.current[i]?.focus();
+                          }}
+                        />
+                      </Suspense>
+                    )}
                   </div>
                 ))}
                 <div className="writing-actions">

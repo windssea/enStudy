@@ -11,7 +11,7 @@ export const exportExclusions = [
   "密码与密码哈希",
   "API密钥及其加密值",
   "登录、设备令牌和邀请码",
-  "临时AI对话、转写和合成音频",
+  "临时AI点评、对话、转写和合成音频",
   "公共题库标准答案及内部事务检查",
 ];
 const uuid = (s: unknown): s is string =>

@@ -49,6 +49,7 @@ export async function reserveAi(
     params: (string | number)[];
     countChild?: boolean;
     extraStatements?: D1PreparedStatement[];
+    afterStatements?: D1PreparedStatement[];
     ttlMs?: number;
   },
 ) {
@@ -126,7 +127,7 @@ export async function reserveAi(
       ),
   );
   try {
-    await db.batch(statements);
+    await db.batch([...statements, ...(input.afterStatements ?? [])]);
   } catch {
     const concurrent = await findAiRequest(
       db,
@@ -153,7 +154,12 @@ export async function reserveAi(
 export async function settleAi(
   db: D1Database,
   row: AiRequestRow,
-  result: { response?: unknown; error?: AiFault; actual: number | null },
+  result: {
+    response?: unknown;
+    error?: AiFault;
+    actual: number | null;
+    responseGate?: { sql: string; params: (string | number)[] };
+  },
 ) {
   const charged = result.actual ?? row.reserved_units,
     day = localDay(row.created_at, "Asia/Shanghai");
@@ -165,11 +171,12 @@ export async function settleAi(
   await db.batch([
     db
       .prepare(
-        "UPDATE ai_requests SET state=?,actual_units=?,response_json=?,failure_code=? WHERE request_id=? AND household_id=? AND state='reserved'",
+        `UPDATE ai_requests SET state=?,actual_units=?,response_json=${result.responseGate ? `CASE WHEN ${result.responseGate.sql} THEN ? ELSE NULL END` : "?"},failure_code=? WHERE request_id=? AND household_id=? AND state='reserved'`,
       )
       .bind(
         state,
         result.actual,
+        ...(result.responseGate?.params ?? []),
         result.response ? JSON.stringify(result.response) : null,
         result.error?.code ?? null,
         row.request_id,

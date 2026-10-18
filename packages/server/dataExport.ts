@@ -152,11 +152,19 @@ const sources = [
       ["self_checks", "json(t.checks_json)"],
     ],
   },
-  simple(
-    "ai_settings",
-    "active_connection_id,enabled,daily_calls,daily_units,child_calls,consent_at,version",
-    "t.household_id",
-  ),
+  {
+    ...simple(
+      "ai_settings",
+      "active_connection_id,enabled,daily_calls,daily_units,child_calls,consent_at,version",
+      "t.household_id",
+    ),
+    extra: [
+      [
+        "writing_review",
+        "json((SELECT json_object('connection_id',w.connection_id,'connection_version',w.connection_version,'enabled',w.enabled,'consent_at',w.consent_at,'version',w.version) FROM ai_writing_settings w WHERE w.household_id=t.household_id))",
+      ],
+    ],
+  },
   simple(
     "ai_voice_settings",
     "text_connection_id,asr_connection_id,tts_connection_id,asr_model,tts_model,tts_voice,text_enabled,asr_enabled,tts_enabled,consent_at,audio_consent_at,child_turns,child_audio_ms,family_audio_ms,child_tts_chars,family_tts_chars,version",

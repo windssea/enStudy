@@ -138,6 +138,7 @@ check(
   currentHealth.offlineProtocol === 1 &&
     currentHealth.companionProtocol === 1 &&
     currentHealth.writingProtocol === 1 &&
+    currentHealth.writingReviewProtocol === 1 &&
     currentHealth.phonicsProtocol === 1 &&
     currentHealth.exportProtocol === 1,
   "current offline confirmation and companion protocols delivered",
@@ -195,6 +196,22 @@ const models = expectedShell.assets.filter((path) => path.endsWith(".glb"));
 const exportModules = expectedShell.assets.filter((path) =>
   /\/DataExportPanel-.*\.js$/.test(path),
 );
+const writingReviewModules = expectedShell.assets.filter((path) =>
+  /\/WritingAiReview-.*\.js$/.test(path),
+);
+assert.equal(writingReviewModules.length, 1);
+for (const path of writingReviewModules) {
+  const r = await request(path),
+    actual = Buffer.from(await r.arrayBuffer()),
+    expected = await readFile(new URL("../dist" + path, import.meta.url));
+  check(
+    r.status === 200 &&
+      /javascript/.test(r.headers.get("content-type") ?? "") &&
+      createHash("sha256").update(actual).digest("hex") ===
+        createHash("sha256").update(expected).digest("hex"),
+    "writing review interface matches this build",
+  );
+}
 assert.equal(exportModules.length, 1);
 for (const path of exportModules) {
   const r = await request(path),

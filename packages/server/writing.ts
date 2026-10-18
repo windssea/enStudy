@@ -30,6 +30,8 @@ const auth = (a: Actor, now = Date.now()) => [
   now,
   now,
 ];
+export const writingAuthority = authority;
+export const writingAuth = auth;
 interface Row {
   id: string;
   child_id: string;

@@ -21,7 +21,7 @@ M1-05,M1,同家庭多成人邀请与成人生命周期,一次性邀请角色变�
 M1-06,M1,家庭私有资料导出,管理家长复验且跨家庭与删除失效和分卷完整性通过,local-verified-browser-form-only-remote-and-disk-pending,docs/61-private-family-data-export.md及25类固定快照44专项414单元1247完整本地回归与内置浏览器表单核验通过而云端平板实际下载落盘独立清理与导入恢复待做待验
 M2-01,M2,不可变内容release和审核流水线,发布审核撤题与版本兼容通过,partial-versioned-release-snapshot,docs/34-course-expansion-and-exposure.md及追加v2和历史恢复与混合来源已验证而编辑审核撤题运营待做
 M2-02,M2,全年级课程与媒体,288微课与各年级综合能力覆盖审核,partial-core-writing-and-phonics-full-media-review-pending,docs/60-phonics-word-audio-and-clay-workbench.md及288核心课和写作工坊加六站240拼读任务145整词合成声与402单元61专项1203完整本地回归通过而完整音素教学声学教研云端及真机仍待完成
-M2-03,M2,完整互动题型与可访问替代,听读分类纠错与引导表达可用,partial-seven-types-and-saved-writing,docs/58-saved-writing-workshop.md及七题型与六个年级开放文字草稿和自查另存及36专项通过而真实声源富媒体AI点评及PC平板验收待做
+M2-03,M2,完整互动题型与可访问替代,听读分类纠错与引导表达可用,partial-seven-types-and-saved-writing-review,docs/63-byok-writing-feedback.md及七题型六年级草稿自查另存与保存单段AI建议和36写作49点评检查通过而真实声源富媒体点评教研与完整PC平板验收待做
 M3-01,M3,60专题诊断与迁移,分层与题目家族隔离通过,partial-local-training-journeys,docs/33-topic-training-journeys.md与38-guided-training-centres.md及60专题分步和8类入口而全面错因诊断专用内容开放场景及教研审核待做
 M3-02,M3,72句式和词形规则,槽位与合法变体及错误归因通过,partial-72-frame-banks,docs/38-guided-training-centres.md与39-time-and-word-form-labs.md及句式题库与词形演示而完整归因迁移教研审核待做
 M3-03,M3,复习选题与延迟测验,积压保护与同日跨入口不重复晋级,partial-local-delayed-checkpoints,docs/33-topic-training-journeys.md及1/3/7日共用卡片和逾期合并通过而专用评估池与跨入口任务合并待做
@@ -29,4 +29,5 @@ M3-04,M3,离线队列与报告,断网恢复且未确认进度不虚报,partial-l
 M3-05,M3,独立单词特训,分级词库多模式随机与复习进度通过,partial-deployed-word-study,docs/49-word-study-and-b-term-unit-two.md及360词条18主题1440任务保留加六种粘土模型与词卡四模式示范16本机和两站22功能检查通过而真实设备与教研审核待验
 M4-01,M4,BYOK与预算,加密限流出站控制及故障回退通过,partial-local-text-and-voice,docs/35-ai-dialogue-and-voice.md及文字音频独立配置预算加密与本地59项语音检查通过而真实供应商出题审核运营治理和生产主密钥待做
 M4-02,M4,轮流语音,真实iPad格式权限和取消验证,partial-local-turn-based-voice,docs/35-ai-dialogue-and-voice.md及六场景WAV识别确认短对话和MP3合成本地实现而真实供应商与PC平板权限播放和实时语音待验
+M4-03,M4,BYOK单段写作建议,独立同意和版本隔离及共用预算和失败回退通过,local-mock-browser-and-runtime-verified-provider-review-pending,docs/63-byok-writing-feedback.md及429单元1296完整本地回归49点评专项与隔离模拟浏览器确认返回改文后收起通过而真实供应商教学质量平板与云端待验
 M5-01,M5,真机性能隐私和运营,发布门槛全部通过且可恢复删除,todo,
