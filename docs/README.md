@@ -52,6 +52,7 @@
 | 46 | [10月18日单次发布失败记录](44-20261018-single-deployment-attempt.md) | CI本机连接失败、deploy跳过、两站仍v0.8、自动化已停用 |
 | 47 | [v0.25实物比较场景](45-measured-comparison-scenes.md) | 塔高、桥宽、书薄的3D/2D比例与DOM观察及辅助证据 |
 | 48 | [v0.26第六单元与历史示范记录](46-sixth-unit-and-historical-demonstrations.md) | 六个年级24课216任务与旧示范对新增题目的保护 |
+| 49 | [10月18日同步发布v0.26](47-20261018-synchronized-release.md) | 修复验收Cookie、两站至0027、正式域名及功能和隔离核验 |
 
 配套资料：
 
