@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { build } from "esbuild";
 import { run } from "./runtime.mjs";
+import { fetchLocalRead } from "./local-read.mjs";
 await build({
   entryPoints: ["src/offlineModel.ts"],
   outfile: ".wrangler/offline-verifier-model.mjs",
@@ -38,7 +39,7 @@ const sql = (command) =>
     }),
   )[0].results;
 async function request(path, body, cookies = jar) {
-  const r = await fetch(`${base}/api/v1${path}`, {
+  const r = await fetchLocalRead(`${base}/api/v1${path}`, {
     method: body === undefined ? "GET" : "POST",
     headers: {
       Cookie: [...cookies].map(([k, v]) => `${k}=${v}`).join("; "),
@@ -504,7 +505,7 @@ try {
     ).data.error?.code === "TRAINING_REQUIRES_ONLINE",
     "manual offline flags cannot consume a reserved training assessment",
   );
-  const shell = await fetch(`${base}/offline-shell.json`);
+  const shell = await fetchLocalRead(`${base}/offline-shell.json`);
   assert.equal(shell.status, 200);
   const manifest = await shell.json();
   check(
@@ -516,11 +517,11 @@ try {
     "built offline manifest contains its player modules and only public shell assets",
   );
   for (const path of manifest.assets) {
-    const r = await fetch(base + path);
+    const r = await fetchLocalRead(base + path);
     assert.equal(r.status, 200, path);
   }
   check(
-    (await fetch(base + "/offline-sw.js")).status === 200,
+    (await fetchLocalRead(base + "/offline-sw.js")).status === 200,
     "public worker and every declared shell asset are served by the local preview",
   );
   console.log(

@@ -1,6 +1,6 @@
 # 英语探险岛
 
-面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.24.0：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。课程120/288节，覆盖各年级前五个单元；前48节以文字核心为主，后72节混合听句、阅读找线索与受控语法，第四、第五单元还组合分类和修正。第五单元12节课有可选3D规律入口。云端仍为v0.8，后续本地阶段尚未发布。
+面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.24.0：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。课程120/288节，覆盖各年级前五个单元；前48节以文字核心为主，后72节混合听句、阅读找线索与受控语法，第四、第五单元还组合分类和修正。第五单元12节课有可选3D规律入口。云端仍为v0.8，后续本地阶段尚未发布。10月18日唯一一次重试在CI本机连接检查失败，deploy跳过，自动化已停用，见[本次发布记录](docs/44-20261018-single-deployment-attempt.md)。
 
 [开发预览](https://development.english-quest-dev.pages.dev) 通过GitHub Actions发布。M1加入管理员登录（账号admin，密码使用用户指定值）、关闭注册、儿童档案管理与刷新续学；开发测试身份继续只限本机。验证与剩余范围见[M1进展](docs/23-next-phase-progress.md)。
 
