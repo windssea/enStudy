@@ -3,6 +3,7 @@ import { setTimeout as delay } from "node:timers/promises";
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { sameLessonRelease } from "./remote-release.mjs";
+import { responseCookieHeader } from "./response-cookies.mjs";
 const expectedCourse = JSON.parse(
   await readFile(
     new URL("../public/content/lessons.json", import.meta.url),
@@ -151,10 +152,7 @@ const login = await request("/api/v1/auth/login", {
     password: process.env.EQ_ADMIN_PASSWORD ?? "admin123123456",
   }),
 });
-const cookie = login.headers
-  .getSetCookie()
-  .map((value) => value.split(";")[0])
-  .join("; ");
+const cookie = responseCookieHeader(login.headers.getSetCookie());
 try {
   check(
     login.status === 200 && cookie.includes("eq_account="),
