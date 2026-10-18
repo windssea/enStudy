@@ -1,6 +1,8 @@
 # 英语探险岛
 
-面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前代码v0.27.0（本阶段待发布）：React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1可运行，采用免费优先服务。课程168/288节，覆盖各年级A学期六个单元的核心练习；前48节以文字核心为主，后120节混合听句、阅读找线索与受控语法，第四至第六单元还组合分类和修正。第五单元12节、第六单元4节、B学期8节课有可选3D规律入口，完整媒体与教学审核待做。2026年10月18日10:38已通过GitHub Actions同步发布到Preview和Production（`c813f65`），两站独立D1均至0027。254项单元、706项CI运行检查、两站及正式域名各20项线上检查、20项补充功能检查和6项隔离检查通过，见[最新发布记录](docs/47-20261018-synchronized-release.md)。此前08:05定时重试失败记录保留，定时自动化仍停用。
+面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。当前v0.27.0采用React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1，免费优先。2026年10月18日11:51通过[GitHub Actions](https://github.com/windssea/enStudy/actions/runs/39094705023)将应用提交`5a53d56`同步发布至Preview与Production，两站独立D1均至0028。285项单元、752项CI运行、两站和正式域名各21项线上、20项补充功能及6项隔离检查通过，见[最新阶段与发布记录](docs/48-clay-guide-and-next-term.md)。
+
+新增Blender制作的超轻粘土小狐狸、柔光和顶点遮蔽、三种岛屿及转身看背包互动。当前168/288课，覆盖各年级A学期六单元与B学期首单元；前48节以文字核心为主，后120节组合听句、阅读、受控语法、分类和修正。部分微课接入可选3D规律入口。剩余120课、完整媒体与教研审核，以及PC/iPad实际视觉、触控和帧率待验。注册保持关闭，指定管理员不变，历史定时自动化仍停用。
 
 [开发预览](https://development.english-quest-dev.pages.dev) 通过GitHub Actions发布。M1加入管理员登录（账号admin，密码使用用户指定值）、关闭注册、儿童档案管理与刷新续学；开发测试身份继续只限本机。验证与剩余范围见[M1进展](docs/23-next-phase-progress.md)。
 

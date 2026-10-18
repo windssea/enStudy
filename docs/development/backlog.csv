@@ -1,7 +1,7 @@
 id,milestone,task,acceptance,status,evidence
 M0-01,M0,React TypeScript Vite工程与依赖锁定,类型检查与生产构建通过,done,package-lock.json与npm run build
 M0-02,M0,真实Three.js地图模块与DOM降级,懒加载和2D切换实现且实机另验,implemented-unverified-visual,src/World.tsx
-M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,deployed-assets-and-data-verified-visual-pending,docs/45-measured-comparison-scenes.md及16专题51示范与三组按比例3D实物和DOM操作与docs/47-20261018-synchronized-release.md线上资源摘要和权威数据通过而浏览器GPU实机未验
+M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,deployed-assets-and-data-verified-visual-pending,docs/48-clay-guide-and-next-term.md及Blender粘土伙伴棚灯转身与模型拓扑摘要和线上GLB验证通过且16专题51示范保留而浏览器GPU实机未验
 M0-03,M0,课程专题句式目录,72单元60专题72句式可读且标明草稿,done,public/content/catalog.json与HTTP检查
 M0-04,M0,本地D1迁移和样课闭环,服务端判题保存调度与提示证据通过,done,npm run verify:local
 M0-05,M0,跨家庭与幂等保护,越权拒绝且并发重试只计一次,done,本地workerd HTTP验证
@@ -9,7 +9,7 @@ M0-06,M0,CLI免费优先资源计划和脚本,计划输出且账号检查和默�
 M0-07,M0,本人账号创建开发Pages与D1,实际ID与绑定通过远程核验,done,2026-10-17本人OAuth与CLI创建成功
 M0-08,M0,预览发布与远程冒烟,实际URL与403开发身份保护和D1绑定验证,done,npm run verify:remote共8项通过
 M0-09,M0,GitHub Actions自动部署,main检查与受限Token部署实际通过,done,Actions运行39008241021完整成功与8项线上检查通过
-M0-10,M0,Preview与Production同步发布,同版本独立D1正式域名与账号验证通过,done,Actions39090512760及254单元706运行加两站和正式域名各20线上与20功能和6隔离检查通过
+M0-10,M0,Preview与Production同步发布,同版本独立D1正式域名与账号验证通过,done,Actions39094705023及285单元752运行加两站和正式域名各21线上与20功能和6隔离检查通过
 M1-01,M1,关闭注册与管理员身份,指定admin密码哈希和登录撤销通过,done,CI39009235672与线上23项账号检查
 M1-02,M1,儿童档案与设备授权,增改删切换及旧授权撤销通过,done,CI接口验证与线上23项账号检查
 M1-03,M1,会话重载与设备接管,重载恢复且旧lease不能重复写入,local-verified-remote-and-device-pending,docs/31-device-session-handover.md及36项续学检查和206项本机HTTP回归
