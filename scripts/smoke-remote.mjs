@@ -138,7 +138,8 @@ check(
   currentHealth.offlineProtocol === 1 &&
     currentHealth.companionProtocol === 1 &&
     currentHealth.writingProtocol === 1 &&
-    currentHealth.phonicsProtocol === 1,
+    currentHealth.phonicsProtocol === 1 &&
+    currentHealth.exportProtocol === 1,
   "current offline confirmation and companion protocols delivered",
 );
 const shell = await shellResponse.json();
@@ -191,6 +192,26 @@ for (const path of writingAssets) {
   );
 }
 const models = expectedShell.assets.filter((path) => path.endsWith(".glb"));
+const exportModules = expectedShell.assets.filter((path) =>
+  /\/DataExportPanel-.*\.js$/.test(path),
+);
+assert.equal(exportModules.length, 1);
+for (const path of exportModules) {
+  const r = await request(path),
+    actual = Buffer.from(await r.arrayBuffer()),
+    expected = await readFile(new URL("../dist" + path, import.meta.url));
+  check(
+    r.status === 200 &&
+      /javascript/.test(r.headers.get("content-type") ?? "") &&
+      createHash("sha256").update(actual).digest("hex") ===
+        createHash("sha256").update(expected).digest("hex"),
+    "private export interface module matches this build",
+  );
+}
+check(
+  (await request("/api/v1/family/exports/list")).status === 401,
+  "anonymous private exports rejected",
+);
 const phonicsModules = expectedShell.assets.filter((path) =>
   /\/(?:PhonicsCentre|PhonicsCanvas)-.*\.js$/.test(path),
 );
@@ -324,6 +345,13 @@ try {
         expectedFeatures.householdSharingEnabled &&
       !JSON.stringify(household.data).includes("token_hash"),
     "household membership protocol and release feature state are available",
+  );
+  const exportsList = await authenticated("/family/exports/list");
+  check(
+    exportsList.status === 200 &&
+      Array.isArray(exportsList.data.items) &&
+      exportsList.data.lifetimeMs === 600000,
+    "private export schema is readable without copying real household records",
   );
   check(
     (

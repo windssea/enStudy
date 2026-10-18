@@ -37,6 +37,7 @@ import { conceptLab } from "../domain/concepts";
 import { companionRoutes, readCompanion } from "./companions";
 import { writingRoutes } from "./writing";
 import { phonicsRoutes } from "./phonics";
+import { dataExportRoutes } from "./dataExport";
 import conceptExposure from "../../content/concept-exposure-map.json";
 import { authRoutes, readAdult, readAccountActor, logoutAccount } from "./auth";
 import { managedAccountRoutes } from "./managedAccounts";
@@ -222,6 +223,7 @@ app.get("/api/v1/health", (c) =>
     companionProtocol: 1,
     writingProtocol: 1,
     phonicsProtocol: 1,
+    exportProtocol: 1,
     householdProtocol: 1,
     householdSharingEnabled:
       c.env.APP_STAGE === "local" || platformFeatures.householdSharingEnabled,
@@ -319,6 +321,7 @@ app.route("/api/v1", authRoutes);
 app.route("/api/v1", managedAccountRoutes);
 app.route("/api/v1", householdRoutes);
 app.route("/api/v1", reportRoutes);
+app.route("/api/v1", dataExportRoutes);
 app.post("/api/v1/dev/session", async (c) => {
   if (!devAllowed(c.env, c.req.url))
     return c.json(

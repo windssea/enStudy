@@ -12,6 +12,7 @@ const AiSettings = lazy(() => import("./AiSettings"));
 const TrainingFollowUps = lazy(() => import("./TrainingFollowUps"));
 const LearningReport = lazy(() => import("./LearningReport"));
 const HouseholdAccess = lazy(() => import("./HouseholdAccess"));
+const DataExportPanel = lazy(() => import("./DataExportPanel"));
 
 export default function FamilySpace({
   identity,
@@ -39,6 +40,7 @@ export default function FamilySpace({
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [aiOpen, setAiOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   const canManage = identity.adult?.role === "owner";
   const loadChildren = async () =>
     setChildren((await api<{ items: ChildProfile[] }>("/children")).items);
@@ -417,6 +419,24 @@ export default function FamilySpace({
         <Suspense fallback={<p role="status">正在准备家庭账号管理…</p>}>
           <ManagedAccounts />
         </Suspense>
+      )}
+      {identity.adult && canManage && !identity.adult.mustChangePassword && (
+        <details
+          className="card data-export"
+          onToggle={(event) => setExportOpen(event.currentTarget.open)}
+        >
+          <summary>家庭数据 · 导出学习资料</summary>
+          <Suspense fallback={<p role="status">正在准备家庭资料入口…</p>}>
+            {exportOpen && (
+              <DataExportPanel
+                key={`${identity.adult.username}:${identity.adult.householdId}:${identity.adult.contextVersion}`}
+                householdId={identity.adult.householdId}
+                householdName={identity.adult.householdName ?? "当前家庭"}
+                username={identity.adult.username}
+              />
+            )}
+          </Suspense>
+        </details>
       )}
       {identity.adult && canManage && !identity.adult.mustChangePassword && (
         <details

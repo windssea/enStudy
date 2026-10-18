@@ -70,6 +70,7 @@
 | 60 | [v0.37保存写作作品](58-saved-writing-workshop.md) | 六个年级的配文与多段草稿、冲突保护和私有生命周期 |
 | 61 | [10月18日v0.37同步核验](59-20261018-v037-deployment-attempt.md) | 最新main的CI通过、D1额度拒绝及两站实际状态 |
 | 62 | [v0.38拼读与整词声音](60-phonics-word-audio-and-clay-workbench.md) | 六站240任务、粘土字母标记、真实静态音频、共用证据与复习 |
+| 63 | [v0.39家庭私有资料导出](61-private-family-data-export.md) | 25类固定快照、密码复验、分卷下载、失效清理和内置浏览器检查 |
 
 配套资料：
 
