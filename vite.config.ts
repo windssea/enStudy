@@ -62,6 +62,8 @@ export default defineConfig({
         "**/content/action-course-release*.json",
         "**/content/discovery-courses*.mjs",
         "**/content/discovery-course-release*.json",
+        "**/content/journey-courses*.mjs",
+        "**/content/journey-course-release*.json",
         "**/.wrangler/**",
         "**/.cloudflare/**",
         "**/.git/**",

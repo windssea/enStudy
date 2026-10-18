@@ -47,6 +47,7 @@ import {
   exposureStatements,
   lessonExampleKeys,
   exampleShownToday,
+  disclosureCheckKeys,
   exposurePredicate,
   hashedExposureKeys,
   patternPreview,
@@ -1649,7 +1650,9 @@ app.post("/api/v1/attempts", async (c) => {
         ),
         422,
       );
-    const evidenceKeys = await hashedExposureKeys(answerExposureKeys(exercise));
+    const evidenceKeys = await hashedExposureKeys(
+      disclosureCheckKeys(exercise),
+    );
     const offline = !!body.evidenceSource || row.offline_prepared_at !== null;
     const support = offline
       ? "offline"
@@ -1700,7 +1703,7 @@ app.post("/api/v1/attempts", async (c) => {
     try {
       await c.env.DB.batch([
         c.env.DB.prepare(
-          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND ${grantAuthorization} AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.lease_grant_id=? AND s.state='active' AND si.id=? AND si.hint_level=? AND COALESCE(si.offline_prepared_at,0)=?) ${outcome === "correct" ? `AND ${exposurePredicate(answerExposureKeys(exercise).length)}` : ""}`,
+          `UPDATE children SET stream_version=stream_version+1 WHERE id=? AND household_id=? AND stream_version=? AND ${grantAuthorization} AND EXISTS(SELECT 1 FROM learning_sessions s JOIN session_items si ON si.session_id=s.id WHERE s.id=? AND s.lease_id=? AND s.lease_grant_id=? AND s.state='active' AND si.id=? AND si.hint_level=? AND COALESCE(si.offline_prepared_at,0)=?) ${outcome === "correct" ? `AND ${exposurePredicate(evidenceKeys.length)}` : ""}`,
         ).bind(
           actor.childId,
           actor.householdId,

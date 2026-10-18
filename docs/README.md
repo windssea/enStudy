@@ -51,6 +51,7 @@
 | 45 | [v0.24第五单元与课内3D入口](43-fifth-unit-scenarios-and-lesson-labs.md) | 120课、24节新情景课、216任务、比较级条件句与跨题型辅助记录 |
 | 46 | [10月18日单次发布失败记录](44-20261018-single-deployment-attempt.md) | CI本机连接失败、deploy跳过、两站仍v0.8、自动化已停用 |
 | 47 | [v0.25实物比较场景](45-measured-comparison-scenes.md) | 塔高、桥宽、书薄的3D/2D比例与DOM观察及辅助证据 |
+| 48 | [v0.26第六单元与历史示范记录](46-sixth-unit-and-historical-demonstrations.md) | 六个年级24课216任务与旧示范对新增题目的保护 |
 
 配套资料：
 

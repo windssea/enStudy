@@ -1874,9 +1874,12 @@ export default function App() {
                       </strong>
                       <p>{receipt.feedback}</p>
                       {receipt.correctedSentence && (
-                        <p className="corrected-sentence" lang="en">
-                          {receipt.correctedSentence}
-                        </p>
+                        <div>
+                          <p>一种正确表达：</p>
+                          <p className="corrected-sentence" lang="en">
+                            {receipt.correctedSentence}
+                          </p>
+                        </div>
                       )}
                       {receipt.details && (
                         <ul

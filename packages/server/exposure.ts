@@ -7,6 +7,30 @@ import {
   type PrivateExercise,
 } from "./exercises";
 import catalog from "../../public/content/catalog.json";
+import conceptExposure from "../../content/concept-exposure-map.json";
+import { conceptLabs } from "../domain/concepts";
+// Read aliases preserve demonstrations recorded before a later content release.
+// Never write these aliases as feedback: answering a task did not show a lab case.
+const historicalConceptKeys = new Map<string, Set<string>>();
+for (const lab of conceptLabs)
+  for (const example of lab.cases) {
+    const canonical = sentenceKey(example.sentence);
+    const entries = conceptExposure.entries as Record<string, string[]>;
+    for (const key of entries[`${lab.id}/${example.id}`] ?? []) {
+      const aliases = historicalConceptKeys.get(key) ?? new Set<string>();
+      aliases.add(canonical);
+      historicalConceptKeys.set(key, aliases);
+    }
+  }
+export function disclosureCheckKeys(item: PrivateExercise) {
+  const primary = answerExposureKeys(item);
+  return [
+    ...new Set([
+      ...primary,
+      ...primary.flatMap((key) => [...(historicalConceptKeys.get(key) ?? [])]),
+    ]),
+  ];
+}
 const patternPreviewKeys = new Map<string, string[]>();
 export const patternPreview = (id: string) =>
   catalog.patterns.find((row) => row.pattern_id === id);
@@ -106,7 +130,7 @@ export async function exampleShownToday(
   actor: Actor,
   item: PrivateExercise,
 ) {
-  const keys = await hashedExposureKeys(answerExposureKeys(item));
+  const keys = await hashedExposureKeys(disclosureCheckKeys(item));
   return !!(await db
     .prepare(
       `SELECT 1 FROM teaching_exposures WHERE household_id=? AND child_id=? AND shown_day=? AND evidence_key IN (${keys.map(() => "?").join(",")}) LIMIT 1`,

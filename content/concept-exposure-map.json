@@ -240,9 +240,11 @@
     ],
     "forms.comparison/wide": [
       "family:fact-2b2d9829193bee4d",
+      "family:fact-49458de4ec1fc067",
       "family:fact-65074df635a3bdb1",
       "family:pattern-sentence-18ff19500d87a8bfd5bf",
       "sentence:the left path is wider than the right path",
+      "sentence:the second channel is the widest of the three",
       "sentence:this bag is wider than that one",
       "sentence:this is the widest path in the garden",
       "sentence:this section is the widest of the three",
@@ -261,12 +263,16 @@
       "workshop-target:morphology.adjective.comparison:c1a0dc227b5aa"
     ],
     "forms.comparison/good": [
+      "family:fact-0c7175911bf44078",
       "family:fact-5f145fcb49aac90c",
       "family:fact-d02aee86a8da02f6",
+      "family:fact-e18777fa3c82037e",
       "family:topic-fact-645b0fe4920d61fc2cd0",
       "family:topic-fact-737f3ac35e3282069404",
+      "sentence:photo b is the best in this clarity test",
       "sentence:plan b is the best of the three for wheelchair access",
       "sentence:the new knee pads are better than the old ones",
+      "sentence:this is the best camera for this clarity test",
       "sentence:this is the best route to the harbour",
       "sentence:比较三者或更多:写出good的最高级。",
       "sentence:比较两者:写出good的比较级。",
@@ -290,10 +296,12 @@
     ],
     "forms.comparison/bridge-group": [
       "family:fact-2b2d9829193bee4d",
+      "family:fact-49458de4ec1fc067",
       "family:fact-65074df635a3bdb1",
       "family:pattern-sentence-18ff19500d87a8bfd5bf",
       "sentence:the left path is wider than the right path",
       "sentence:the orange bridge is the widest of these three bridges",
+      "sentence:the second channel is the widest of the three",
       "sentence:this bag is wider than that one",
       "sentence:this section is the widest of the three",
       "workshop-target:morphology.adjective.comparison:c0abaa40b1043"

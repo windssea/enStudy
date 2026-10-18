@@ -16,7 +16,7 @@ M1-03,M1,会话重载与设备接管,重载恢复且旧lease不能重复写入,l
 M1-04,M1,更多受管理账号与家庭,保持注册关闭且账号管理权限隔离,local-verified-remote-quota-blocked,docs/30-managed-family-accounts.md及46项管理账号检查与全流程170项HTTP回归
 M1-05,M1,同家庭多成人邀请与成人生命周期,一次性邀请角色变更与删除保留期核验,todo,
 M2-01,M2,不可变内容release和审核流水线,发布审核撤题与版本兼容通过,partial-versioned-release-snapshot,docs/34-course-expansion-and-exposure.md及追加v2和历史恢复与混合来源已验证而编辑审核撤题运营待做
-M2-02,M2,全年级课程与媒体,288微课与各年级综合能力覆盖审核,partial-120-of-288,docs/43-fifth-unit-scenarios-and-lesson-labs.md及第五单元24课216混合任务和12课内3D入口而剩余168课与完整媒体教研审核待做
+M2-02,M2,全年级课程与媒体,288微课与各年级综合能力覆盖审核,partial-144-of-288,docs/46-sixth-unit-and-historical-demonstrations.md及各年级前六个A学期单元核心与第六单元24课216任务和历史示范保护而剩余144课与完整媒体教研审核待做
 M2-03,M2,完整互动题型与可访问替代,听读分类纠错与引导表达可用,partial-seven-type-mixed-course,docs/40-fourth-unit-and-clearer-navigation.md及第四单元课内组合七种题型和独立证据而真机发声丰富媒体表达及PC平板验收待做
 M3-01,M3,60专题诊断与迁移,分层与题目家族隔离通过,partial-local-training-journeys,docs/33-topic-training-journeys.md与38-guided-training-centres.md及60专题分步和8类入口而全面错因诊断专用内容开放场景及教研审核待做
 M3-02,M3,72句式和词形规则,槽位与合法变体及错误归因通过,partial-72-frame-banks,docs/38-guided-training-centres.md与39-time-and-word-form-labs.md及句式题库与词形演示而完整归因迁移教研审核待做
