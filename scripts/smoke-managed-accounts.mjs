@@ -151,7 +151,9 @@ try {
     initial.every(
       (row) =>
         Object.keys(row).sort().join(",") ===
-        "childCount,createdAt,disabled,householdName,id,isAdmin,mustChangePassword,username,version",
+          "childCount,createdAt,disabled,householdCount,householdName,id,isAdmin,mustChangePassword,username,version" &&
+        Number.isSafeInteger(row.householdCount) &&
+        row.householdCount >= 0,
     ),
     "list exposes only intended account metadata",
   );
