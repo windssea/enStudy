@@ -1,0 +1,6 @@
+{
+  "content/discovery-course-release.v1.json": "b3eb3805ddf4e40c4f681fdc75df43926899fab8f8c7128d409333e2f51518c4",
+  "migrations/0026_discovery_courses_v1.sql": "400bad137a59c2f91cbf496294ff678e025bf850128ad09a09874985492b968c",
+  "content/journey-course-release.v1.json": "24f56ea89ac2b1ea8953b92cde2bd36d4cbdd7009cf39e058e61fd7a2beda23d",
+  "migrations/0027_journey_courses_v1.sql": "3212e1f7b13fdba26dc317182acc40e3b843fa836109362dec01a81bdfa1e5e6"
+}

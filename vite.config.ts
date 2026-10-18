@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { createHash } from "node:crypto";
 export default defineConfig({
+  assetsInclude: ["**/*.glb"],
   plugins: [
     react(),
     {
@@ -11,7 +12,7 @@ export default defineConfig({
         const assets = [
           "/index.html",
           ...Object.keys(bundle)
-            .filter((name) => /\.(js|css)$/.test(name))
+            .filter((name) => /\.(js|css|glb)$/.test(name))
             .map((name) => `/${name}`),
         ].sort();
         const hash = createHash("sha256")
@@ -64,6 +65,8 @@ export default defineConfig({
         "**/content/discovery-course-release*.json",
         "**/content/journey-courses*.mjs",
         "**/content/journey-course-release*.json",
+        "**/content/next-term-courses*.mjs",
+        "**/content/next-term-course-release*.json",
         "**/.wrangler/**",
         "**/.cloudflare/**",
         "**/.git/**",

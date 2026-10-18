@@ -140,6 +140,26 @@ for (const path of sceneAssets) {
     `3D module matches build: ${path.split("/").pop()}`,
   );
 }
+const models = expectedShell.assets.filter((path) => path.endsWith(".glb"));
+assert.equal(
+  models.length,
+  1,
+  "this release includes one Blender-authored clay guide",
+);
+for (const path of models) {
+  const response = await request(path),
+    actual = Buffer.from(await response.arrayBuffer());
+  const expected = await readFile(new URL(`../dist${path}`, import.meta.url));
+  check(
+    response.status === 200 &&
+      actual.length > 20 &&
+      actual.length < 1_700_000 &&
+      actual.readUInt32LE(0) === 0x46546c67 &&
+      createHash("sha256").update(actual).digest("hex") ===
+        createHash("sha256").update(expected).digest("hex"),
+    "Blender clay model matches this exact build",
+  );
+}
 check(
   (await request("/api/v1/admin/accounts")).status === 401,
   "anonymous account administration rejected",

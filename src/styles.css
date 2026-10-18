@@ -4222,6 +4222,15 @@ button.unit-node:not(:disabled) {
   font-weight: 750;
   font-size: 14px;
 }
+.scene-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.map-footer .scene-actions {
+  justify-content: flex-start;
+}
 .scene-controls p {
   min-height: 44px;
   margin: 12px 0 0;

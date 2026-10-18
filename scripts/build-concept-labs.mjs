@@ -20,6 +20,7 @@ const paths = [
   "action-course-release.latest.json",
   "discovery-course-release.v1.json",
   "journey-course-release.v1.json",
+  "next-term-course-release.v1.json",
 ];
 const items = [
   ...new Map(

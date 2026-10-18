@@ -10,6 +10,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import FoxSticker from "./FoxSticker";
 import { isSpeechActive } from "./speechActivity";
 
 const SceneCanvas = lazy(() => import("./SceneCanvas"));
@@ -40,9 +41,9 @@ const scripts: Record<
   { action: string; lines: string[] }
 > = {
   words: {
-    action: "和词语伙伴打招呼",
+    action: "和小狐狸打招呼",
     lines: [
-      "词语伙伴准备好啦。",
+      "小狐狸橙橙准备好啦。",
       "Hello! 今天也一起认识新单词。",
       "把单词放进句子，意思就更清楚了。",
     ],
@@ -84,45 +85,19 @@ const scripts: Record<
 function FlatScene({
   kind,
   reaction,
+  turned,
 }: {
   kind: SceneKind;
   reaction: Reaction;
+  turned: boolean;
 }) {
   return (
     <svg className="scene-flat" viewBox="0 0 320 230" aria-hidden="true">
       <ellipse cx="160" cy="202" rx="123" ry="18" fill="#d0dfed" />
       <path d="M35 183Q160 124 285 183L277 202H43Z" fill="#bde4cf" />
-      <rect
-        x="62"
-        y="74"
-        width="104"
-        height="110"
-        rx="43"
-        fill="#ffd166"
-        stroke="#edbd59"
-        strokeWidth="4"
-      />
-      <path
-        d="M69 83Q103 44 146 83"
-        fill="#bde4cf"
-        stroke="#449e79"
-        strokeWidth="8"
-      />
-      <circle cx="94" cy="116" r="6" fill="#172b4d" />
-      <circle cx="135" cy="116" r="6" fill="#172b4d" />
-      <path
-        d={reaction === "incorrect" ? "M101 144h26" : "M101 139q14 17 27 0"}
-        fill="none"
-        stroke="#172b4d"
-        strokeWidth="5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M70 161l-18-13m104 13 18-22"
-        stroke="#ffd166"
-        strokeWidth="18"
-        strokeLinecap="round"
-      />
+      <g transform="translate(38 25) scale(.86)">
+        <FoxSticker reaction={reaction} turned={turned} />
+      </g>
       {kind === "sorting" ? (
         <g>
           <path
@@ -237,6 +212,7 @@ export default function SceneStage({
   const [speaking, setSpeaking] = useState(isSpeechActive);
   const [lost, setLost] = useState(false);
   const [pulse, setPulse] = useState(0);
+  const [turned, setTurned] = useState(false);
   const [reacting, setReacting] = useState(false);
   const lastReaction = useRef(reaction);
   useEffect(() => {
@@ -287,7 +263,9 @@ export default function SceneStage({
     return () => clearTimeout(timer);
   }, [kind, reaction, animateReaction, quiet, visible, hidden, speaking]);
   const paused = quiet || hidden || !visible || speaking;
-  const fallback = <FlatScene kind={kind} reaction={reaction} />;
+  const fallback = (
+    <FlatScene kind={kind} reaction={reaction} turned={turned} />
+  );
   const script = kind === "feedback" ? null : scripts[kind];
   return (
     <div
@@ -306,6 +284,7 @@ export default function SceneStage({
                 kind={kind}
                 reaction={reaction}
                 pulse={pulse}
+                turned={turned}
                 paused={paused}
                 moving={kind !== "feedback" || reacting}
                 onLost={() => setLost(true)}
@@ -316,15 +295,32 @@ export default function SceneStage({
       </div>
       {script && (
         <div className="scene-controls">
-          <button
-            type="button"
-            className="scene-play"
-            onClick={() => setPulse((n) => n + 1)}
-          >
-            {script.action}
-            <span aria-hidden="true"> ↗</span>
-          </button>
-          <p role="status">{script.lines[pulse % script.lines.length]}</p>
+          <div className="scene-actions">
+            <button
+              type="button"
+              className="scene-play"
+              onClick={() => {
+                setTurned(false);
+                setPulse((n) => n + 1);
+              }}
+            >
+              {script.action}
+              <span aria-hidden="true"> ↗</span>
+            </button>
+            <button
+              type="button"
+              className="scene-play"
+              aria-pressed={turned}
+              onClick={() => setTurned((value) => !value)}
+            >
+              {turned ? "转回正面" : "看看背包"}
+            </button>
+          </div>
+          <p role="status">
+            {turned
+              ? "橙橙的小背包，装着下一次探险的好奇心。"
+              : script.lines[pulse % script.lines.length]}
+          </p>
         </div>
       )}
       {lost && <span className="scene-mode-note">已切换为 2D 小伙伴</span>}

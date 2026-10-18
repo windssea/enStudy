@@ -1,8 +1,10 @@
+import ClayStudio from "./ClayStudio";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import type { Group, OrthographicCamera } from "three";
 import { Explorer, Tile } from "./SceneModels";
 import { RenderActivity } from "./SceneRuntime";
+import { createIslandModel, type IslandKind } from "./scene/islandModel";
 
 function Framing({ onLost }: { onLost: () => void }) {
   const { camera, size, invalidate, gl } = useThree();
@@ -38,10 +40,24 @@ function Cloud({
           position={[x, i === 1 ? 0.18 : 0, 0]}
           scale={[0.6, 0.36, 0.4]}
         >
-          <sphereGeometry args={[1, 10, 8]} />
-          <meshStandardMaterial color="#ffffff" flatShading />
+          <sphereGeometry args={[1, 18, 12]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.8} />
         </mesh>
       ))}
+      {[-1, 1].map((side) => (
+        <mesh
+          key={side}
+          position={[side * 0.16, 0.015, 0.385]}
+          scale={[0.028, 0.045, 0.018]}
+        >
+          <sphereGeometry args={[1, 12, 8]} />
+          <meshStandardMaterial color="#27334b" />
+        </mesh>
+      ))}
+      <mesh position={[0, -0.075, 0.405]} rotation={[0, 0, Math.PI]}>
+        <torusGeometry args={[0.068, 0.012, 6, 16, Math.PI]} />
+        <meshStandardMaterial color="#27334b" />
+      </mesh>
     </group>
   );
 }
@@ -101,83 +117,56 @@ function Balloon({ quiet, greet }: { quiet: boolean; greet: number }) {
 function Island({
   position,
   color,
-  animate,
+  kind,
 }: {
   position: [number, number, number];
   color: string;
-  animate: boolean;
+  kind: IslandKind;
 }) {
-  const group = useRef<Group>(null);
-  useFrame(({ clock }) => {
-    if (group.current && animate)
-      group.current.position.y =
-        position[1] + Math.sin(clock.elapsedTime * 0.7 + position[0]) * 0.07;
-  });
+  const model = useMemo(() => createIslandModel(kind, color), [kind, color]);
+  useEffect(() => () => model.dispose(), [model]);
   return (
-    <group ref={group} position={position}>
-      <mesh position={[0, -0.22, 0]}>
-        <cylinderGeometry args={[1.5, 0.75, 0.85, 6]} />
-        <meshStandardMaterial color="#a4bdd1" flatShading />
-      </mesh>
-      <mesh position={[0, 0.24, 0]}>
-        <cylinderGeometry args={[1.55, 1.5, 0.14, 6]} />
-        <meshStandardMaterial color={color} flatShading />
-      </mesh>
-      <mesh position={[0.55, 0.65, -0.35]}>
-        <cylinderGeometry args={[0.08, 0.1, 0.7, 7]} />
-        <meshStandardMaterial color="#987659" />
-      </mesh>
-      <mesh position={[0.55, 1.1, -0.35]}>
-        <coneGeometry args={[0.45, 1.1, 7]} />
-        <meshStandardMaterial color="#449e79" flatShading />
-      </mesh>
-      <mesh position={[-0.45, 0.65, 0.1]}>
-        <boxGeometry args={[0.65, 0.7, 0.65]} />
-        <meshStandardMaterial color="#fff1bf" />
-      </mesh>
-      <mesh position={[-0.45, 1.18, 0.1]} rotation={[0, Math.PI / 4, 0]}>
-        <coneGeometry args={[0.64, 0.5, 4]} />
-        <meshStandardMaterial color="#ee9b86" flatShading />
-      </mesh>
-      {[-1, 1].map((x) => (
-        <mesh key={x} position={[x * 0.9, 0.38, 0.5]}>
-          <dodecahedronGeometry args={[0.18, 0]} />
-          <meshStandardMaterial color={x === 1 ? "#ffd166" : "#ef9f87"} />
-        </mesh>
-      ))}
+    <group position={position}>
+      <primitive object={model.root} />
     </group>
   );
 }
 export default function World({
   quiet,
   greet = 0,
+  turned = false,
   completed = 0,
   onLost,
 }: {
   quiet: boolean;
   greet?: number;
+  turned?: boolean;
   completed?: number;
   onLost: () => void;
 }) {
   return (
     <Canvas
       aria-hidden="true"
+      shadows="percentage"
       orthographic
       camera={{ position: [11, 12, 15], zoom: 43 }}
       dpr={[1, 1.5]}
       frameloop="demand"
       gl={{ antialias: true, alpha: true }}
     >
-      <ambientLight intensity={1.9} />
+      <ClayStudio
+        wide
+        revision={`${completed}:${greet}:${turned}`}
+        onLost={onLost}
+      />
       <RenderActivity active={!quiet} />
       <Framing onLost={onLost} />
-      <directionalLight position={[3, 8, 5]} intensity={2.5} />
-      <Island position={[-3.3, 0, 0.8]} color="#a4dcc0" animate={false} />
-      <Island position={[0, 0.65, -0.8]} color="#c3e5a7" animate={false} />
-      <Island position={[3.1, 0.05, 0.4]} color="#a5d7e4" animate={false} />
+      <Island position={[-3.3, 0, 0.8]} color="#95d9b3" kind="home" />
+      <Island position={[0, 0.65, -0.8]} color="#b6d986" kind="library" />
+      <Island position={[3.1, 0.05, 0.4]} color="#98d9db" kind="garden" />
       <Balloon quiet={quiet} greet={greet} />
-      <group position={[-2.85, 0.35, 1.2]} rotation={[0, 0.35, 0]} scale={0.8}>
-        <Explorer paused={quiet} pulse={greet} />
+      <group position={[-2.85, 0.43, 1.2]} rotation={[0, 0.35, 0]} scale={0.8}>
+        <Explorer paused={quiet} pulse={greet} turned={turned} />
       </group>
       <group position={[0.15, 1.6, -0.3]} rotation={[0, 0.45, 0]}>
         <mesh>

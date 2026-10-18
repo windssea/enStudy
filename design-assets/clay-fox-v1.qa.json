@@ -1,0 +1,411 @@
+{
+  "blender": "5.2.1 LTS",
+  "glb_sha256": "ac75b67bcb2302f9937d0a38c0f8bd87a5de2ec1cf6a45f7ddcba81392fbb0f3",
+  "closed_solids": true,
+  "surface_attachments": [
+    {
+      "detail": "eye--1",
+      "surface": "cream-face--1",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "eye-glint--1",
+      "surface": "eye--1",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "eye-small-glint--1",
+      "surface": "eye--1",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "blush--1",
+      "surface": "cream-face--1",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "boot-toe--1",
+      "surface": "boot--1",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "eye-1",
+      "surface": "cream-face-1",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "eye-glint-1",
+      "surface": "eye-1",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "eye-small-glint-1",
+      "surface": "eye-1",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "blush-1",
+      "surface": "cream-face-1",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "boot-toe-1",
+      "surface": "boot-1",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "little-nose",
+      "surface": "muzzle-base",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "nose-glint",
+      "surface": "little-nose",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "gentle-smile",
+      "surface": "muzzle-base",
+      "vertices": 133,
+      "misses": 0
+    },
+    {
+      "detail": "sun-badge",
+      "surface": "cream-belly",
+      "vertices": 313,
+      "misses": 0
+    },
+    {
+      "detail": "sun-badge-centre",
+      "surface": "sun-badge",
+      "vertices": 313,
+      "misses": 0
+    }
+  ],
+  "objects": [
+    {
+      "name": "tail-root",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.068575226753043
+    },
+    {
+      "name": "fluffy-tail",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.159947055576489
+    },
+    {
+      "name": "cream-tail-tip",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.158474440275858
+    },
+    {
+      "name": "mint-backpack",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.10149832188928254
+    },
+    {
+      "name": "backpack-pocket",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.068575226753043
+    },
+    {
+      "name": "boot--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.068575226753043
+    },
+    {
+      "name": "boot-toe--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.5424765761572009
+    },
+    {
+      "name": "boot-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.068575226753043
+    },
+    {
+      "name": "boot-toe-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.5424765499402403
+    },
+    {
+      "name": "orange-body",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.159947055576494
+    },
+    {
+      "name": "cream-belly",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.158474440275856
+    },
+    {
+      "name": "right-sleeve",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.01629823897508772
+    },
+    {
+      "name": "right-cream-paw",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.068575226753043
+    },
+    {
+      "name": "left-sleeve",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.01629823897508772
+    },
+    {
+      "name": "left-cream-paw",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.068575226753043
+    },
+    {
+      "name": "teal-scarf",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.018026020280555506
+    },
+    {
+      "name": "scarf-knot",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.068575226753043
+    },
+    {
+      "name": "scarf-tail",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.068575226753043
+    },
+    {
+      "name": "sun-badge",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.4645515332250996
+    },
+    {
+      "name": "sun-badge-centre",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.0171091964323233
+    },
+    {
+      "name": "round-fox-head",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.159947055576493
+    },
+    {
+      "name": "fox-ear--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.03285505153109814
+    },
+    {
+      "name": "pink-ear--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.03285505153109814
+    },
+    {
+      "name": "cream-face--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.158474440275857
+    },
+    {
+      "name": "blush--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.4890999193781751
+    },
+    {
+      "name": "fox-ear-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.03285505153109814
+    },
+    {
+      "name": "pink-ear-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.03285505153109814
+    },
+    {
+      "name": "cream-face-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.158474440275857
+    },
+    {
+      "name": "blush-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.48735780464628253
+    },
+    {
+      "name": "muzzle-base",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.1584744402758576
+    },
+    {
+      "name": "eye--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.356061087803927
+    },
+    {
+      "name": "eye-glint--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.5080138529308019
+    },
+    {
+      "name": "eye-small-glint--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.7626240194978181
+    },
+    {
+      "name": "eye-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.3563236713890443
+    },
+    {
+      "name": "eye-glint-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.5080288479470451
+    },
+    {
+      "name": "eye-small-glint-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.7626657606772385
+    },
+    {
+      "name": "little-nose",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.1753655583512315
+    },
+    {
+      "name": "nose-glint",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.0168029567208732
+    },
+    {
+      "name": "gentle-smile",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 7.848539488158547e-05
+    }
+  ]
+}

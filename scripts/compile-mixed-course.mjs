@@ -11,7 +11,9 @@ export async function compileMixedCourse({
   releasePath,
   catalogRelease,
   summary,
+  term = "A",
 }) {
+  if (!["A", "B"].includes(term)) throw Error("Unknown course term.");
   const unitSuffix = String(unitNumber).padStart(2, "0");
   const scope = parse(
     await readFile("docs/curriculum/p1-p6-scope.csv", "utf8"),
@@ -58,11 +60,12 @@ export async function compileMixedCourse({
       !Number.isInteger(lesson.unitLesson) ||
       lesson.unitLesson < 1 ||
       lesson.unitLesson > 4 ||
-      lesson.id !== `P${lesson.grade}A-U${unitSuffix}-L${lesson.unitLesson}` ||
-      lesson.unitId !== `P${lesson.grade}A-U${unitSuffix}` ||
+      lesson.id !==
+        `P${lesson.grade}${term}-U${unitSuffix}-L${lesson.unitLesson}` ||
+      lesson.unitId !== `P${lesson.grade}${term}-U${unitSuffix}` ||
       lesson.unitNumber !== unitNumber ||
       lesson.order !== (unitNumber - 1) * 4 + lesson.unitLesson ||
-      lesson.term !== "A" ||
+      lesson.term !== term ||
       lesson.examples.length !== 3 ||
       lesson.words.length !== 4 ||
       !lesson.rule ||
@@ -71,7 +74,7 @@ export async function compileMixedCourse({
       lesson.audio.length !== 2 ||
       lesson.reading.length !== 3
     )
-      throw Error(`Invalid discovery lesson ${lesson.id}`);
+      throw Error(`Invalid ${unitLabel} lesson ${lesson.id}`);
     const {
       audio,
       reading,
@@ -355,7 +358,7 @@ export async function compileMixedCourse({
   ];
   for (const lesson of lessons)
     sql.push(
-      `INSERT INTO lessons VALUES(${quote(lesson.id)},1,'${id}',${lesson.grade},'A',${unitNumber},${quote(lesson.title)},${quote(JSON.stringify(lesson))});`,
+      `INSERT INTO lessons VALUES(${quote(lesson.id)},1,'${id}',${lesson.grade},${quote(term)},${unitNumber},${quote(lesson.title)},${quote(JSON.stringify(lesson))});`,
     );
   for (const item of items) {
     const {

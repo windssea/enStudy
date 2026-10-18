@@ -33,7 +33,8 @@ export default function LessonView({
         <div>
           <p className="eyebrow">LEARN IT. TRY IT. USE IT.</p>
           <span className="badge">
-            {["一", "二", "三", "四", "五", "六"][lesson.grade - 1]}年级 · 第
+            {["一", "二", "三", "四", "五", "六"][lesson.grade - 1]}年级 ·
+            {lesson.term === "B" ? "下学期" : "上学期"} · 第
             {lesson.unitLesson ?? lesson.order}课 · {lesson.unitTitle} · 约
             {lesson.minutes}分钟
           </span>

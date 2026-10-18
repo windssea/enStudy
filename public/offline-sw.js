@@ -8,7 +8,8 @@ self.addEventListener("activate", (event) =>
 );
 function allowed(path) {
   return (
-    path === "/index.html" || /^\/assets\/[a-zA-Z0-9_.-]+\.(js|css)$/.test(path)
+    path === "/index.html" ||
+    /^\/assets\/[a-zA-Z0-9_.-]+\.(js|css|glb)$/.test(path)
   );
 }
 self.addEventListener("message", (event) => {
@@ -50,10 +51,22 @@ self.addEventListener("message", (event) => {
             ? !/(java|ecma)script/.test(mime)
             : path.endsWith(".css")
               ? !mime.includes("text/css")
-              : !mime.includes("text/html")
+              : path.endsWith(".glb")
+                ? !/(model\/gltf-binary|application\/octet-stream)/.test(mime)
+                : !mime.includes("text/html")
         )
           throw Error();
         const blob = await r.clone().blob();
+        if (path.endsWith(".glb")) {
+          if (blob.size < 20 || blob.size > 1_700_000) throw Error();
+          const header = new DataView(await blob.slice(0, 12).arrayBuffer());
+          if (
+            header.getUint32(0, true) !== 0x46546c67 ||
+            header.getUint32(4, true) !== 2 ||
+            header.getUint32(8, true) !== blob.size
+          )
+            throw Error();
+        }
         bytes += blob.size;
         if (bytes > 8 * 1024 * 1024) throw Error();
         await cache.put(path, r);

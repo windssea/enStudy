@@ -5,7 +5,7 @@ const source = readFileSync(
   new URL("../public/offline-sw.js", import.meta.url),
   "utf8",
 );
-function runtime() {
+function runtime(model = false, invalidModel = false) {
   const stores = new Map<string, Map<string, Response>>(),
     handlers = new Map<string, (event: any) => void>(),
     requests: { url: string; options: any }[] = [];
@@ -42,10 +42,25 @@ function runtime() {
         cacheKey: "eq-shell-v1-1234567890abcdef",
         assets: malicious
           ? ["/index.html", "/api/v1/me"]
-          : ["/index.html", "/assets/main-1.js", "/assets/main-1.css"],
+          : [
+              "/index.html",
+              "/assets/main-1.js",
+              "/assets/main-1.css",
+              ...(model ? ["/assets/fox-1.glb"] : []),
+            ],
       });
     if (badAsset && url.endsWith(".css"))
       return new Response("broken", { status: 503 });
+    if (url.endsWith(".glb")) {
+      const data = new Uint8Array(20),
+        view = new DataView(data.buffer);
+      view.setUint32(0, invalidModel ? 0 : 0x46546c67, true);
+      view.setUint32(4, 2, true);
+      view.setUint32(8, data.length, true);
+      return new Response(data, {
+        headers: { "Content-Type": "model/gltf-binary" },
+      });
+    }
     return new Response(
       url.endsWith(".js")
         ? "console.log(1)"
@@ -110,6 +125,22 @@ function runtime() {
   };
 }
 describe("offline public shell policy", () => {
+  it("prepares a bounded public GLB and serves it offline without credentials", async () => {
+    const r = runtime(true);
+    expect((await r.prepare()).prepared).toBe(true);
+    r.offline();
+    expect(
+      (await (await r.request("/assets/fox-1.glb"))!.arrayBuffer()).byteLength,
+    ).toBe(20);
+    expect(r.requests.every((q) => q.options.credentials === "omit")).toBe(
+      true,
+    );
+  });
+  it("rejects a mislabeled model instead of marking an incomplete shell ready", async () => {
+    const r = runtime(true, true);
+    expect((await r.prepare()).prepared).toBe(false);
+    expect([...r.stores.values()][0].has("/offline-ready")).toBe(false);
+  });
   it("caches only an explicit public shell with credentials omitted", async () => {
     const r = runtime();
     expect((await r.prepare()).prepared).toBe(true);

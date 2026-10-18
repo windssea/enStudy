@@ -24,7 +24,8 @@ import type {
   TrainingCycle,
 } from "../packages/contracts/index";
 import { api, ApiError, setLearningChild } from "./api";
-import { parseRoute, type View } from "./routes";
+import { parseRoute, mapFragment, type View } from "./routes";
+import { courseStep } from "./courseNavigation";
 import {
   topicGroups,
   topicItems,
@@ -186,6 +187,10 @@ export default function App() {
       if (route.lessonId) setLessonId(route.lessonId);
       setTrainingTopic(route.trainingTopic ?? null);
       setPatternId(route.patternId ?? null);
+      if (route.mapScope) {
+        setGrade(route.mapScope.grade);
+        setTerm(route.mapScope.term);
+      }
     };
     window.addEventListener("popstate", pop);
     window.addEventListener("hashchange", pop);
@@ -200,8 +205,8 @@ export default function App() {
     developmentIdentityAvailable: false,
   });
   const [progress, setProgress] = useState<Progress>(emptyProgress);
-  const [grade, setGrade] = useState(3),
-    [term, setTerm] = useState("A");
+  const [grade, setGrade] = useState(() => readRoute().mapScope?.grade ?? 3),
+    [term, setTerm] = useState<string>(() => readRoute().mapScope?.term ?? "A");
   const [quiet, setQuiet] = useState(() => storedFlag("eq-quiet"));
   const [reduced, setReduced] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -209,6 +214,7 @@ export default function App() {
   const [twoD, setTwoD] = useState(() => storedFlag("eq-2d")),
     [hidden, setHidden] = useState(document.hidden);
   const [greet, setGreet] = useState(0);
+  const [mascotTurned, setMascotTurned] = useState(false);
   const [worldVisible, setWorldVisible] = useState(true);
   const worldRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -266,6 +272,25 @@ export default function App() {
     targetLessonId?: string,
     restoreLibrary = false,
   ) => {
+    let mapGrade = grade,
+      mapTerm = term;
+    if (next === "map") {
+      const originId =
+        view === "lesson"
+          ? lessonId
+          : view === "exercise"
+            ? session?.lessonId
+            : view === "review"
+              ? lastResult?.lessonId
+              : null;
+      const origin = lessons.find((lesson) => lesson.id === originId);
+      if (origin) {
+        mapGrade = origin.grade;
+        mapTerm = origin.term;
+        setGrade(origin.grade);
+        setTerm(origin.term);
+      }
+    }
     if (next !== "exercise") {
       setTrainingTopic(null);
       setPatternId(null);
@@ -273,7 +298,9 @@ export default function App() {
     const hash =
       next === "lesson"
         ? `#lesson=${encodeURIComponent(targetLessonId ?? lessonId ?? "")}`
-        : `#${next}`;
+        : next === "map"
+          ? mapFragment(mapGrade, mapTerm)
+          : `#${next}`;
     if (window.location.hash !== hash) window.history.pushState(null, "", hash);
     setView(next);
     setError("");
@@ -284,6 +311,12 @@ export default function App() {
       );
     }
   };
+  function browseCourseMap(nextGrade: number, nextTerm: string) {
+    setGrade(nextGrade);
+    setTerm(nextTerm);
+    const hash = mapFragment(nextGrade, nextTerm);
+    if (window.location.hash !== hash) window.history.pushState(null, "", hash);
+  }
   const refreshProgress = async (currentEpoch = epoch.current) => {
     const [result, summary] = await Promise.all([
       api<Progress>("/progress"),
@@ -333,7 +366,7 @@ export default function App() {
         setLearningChild(me.child?.id ?? null);
         setIdentity(me);
         setOfflineIdentity(me);
-        if (me.child) setGrade(me.child.grade);
+        if (me.child) setGrade(readRoute().mapScope?.grade ?? me.child.grade);
         if (me.authenticated) {
           await refreshProgress();
           await restoreSession(epoch.current);
@@ -369,7 +402,7 @@ export default function App() {
     setSessionStopped(false);
     setDraftBackup(null);
     setSessionNotice("");
-    if (me.child) setGrade(me.child.grade);
+    if (me.child) setGrade(readRoute().mapScope?.grade ?? me.child.grade);
     if (me.authenticated) {
       await refreshProgress(current);
       await restoreSession(current);
@@ -719,6 +752,8 @@ export default function App() {
     }
   }
   function openLesson(lesson: CourseLesson) {
+    setGrade(lesson.grade);
+    setTerm(lesson.term);
     setLessonId(lesson.id);
     move("lesson", lesson.id);
   }
@@ -779,14 +814,14 @@ export default function App() {
   const units = (catalog?.units ?? []).filter(
     (u) => u.grade === String(grade) && u.term === term,
   );
-  const availableLessons = lessons.filter(
-    (lesson) => lesson.grade === grade && lesson.term === term,
+  const courseNavigation = courseStep(
+    lessons,
+    grade,
+    term,
+    learning.completedLessons,
   );
-  const nextLesson =
-    availableLessons.find(
-      (lesson) =>
-        !learning.completedLessons.some((row) => row.lessonId === lesson.id),
-    ) ?? availableLessons[0];
+  const availableLessons = courseNavigation.available;
+  const nextLesson = courseNavigation.next;
   const nav: [View, string, string][] = [
     ["map", "探险地图", "map"],
     ["words", "单词特训", "words"],
@@ -960,7 +995,9 @@ export default function App() {
                     年级
                     <select
                       value={grade}
-                      onChange={(e) => setGrade(Number(e.target.value))}
+                      onChange={(e) =>
+                        browseCourseMap(Number(e.target.value), term)
+                      }
                     >
                       {journeys.map((j, i) => (
                         <option key={j} value={i + 1}>
@@ -974,7 +1011,7 @@ export default function App() {
                     学期
                     <select
                       value={term}
-                      onChange={(e) => setTerm(e.target.value)}
+                      onChange={(e) => browseCourseMap(grade, e.target.value)}
                     >
                       <option value="A">上学期</option>
                       <option value="B">下学期</option>
@@ -1032,7 +1069,7 @@ export default function App() {
                   </div>
                   <div className="world-scene" ref={worldRef}>
                     {twoD ? (
-                      <FlatMap />
+                      <FlatMap turned={mascotTurned} />
                     ) : (
                       <WorldBoundary onLost={() => setTwoD(true)}>
                         <Suspense
@@ -1045,6 +1082,7 @@ export default function App() {
                           <World
                             quiet={quiet || reduced || hidden || !worldVisible}
                             greet={greet}
+                            turned={mascotTurned}
                             onLost={() => setTwoD(true)}
                             completed={
                               learning.completedLessons.filter((row) =>
@@ -1061,9 +1099,11 @@ export default function App() {
                     )}
                     <div className="world-caption">
                       <span role="status">
-                        {greet
-                          ? "你好，小探险家！"
-                          : "小伙伴和热气球，等你一起出发。"}
+                        {mascotTurned
+                          ? "橙橙背好小背包，准备下一次探险。"
+                          : greet
+                            ? "你好，小探险家！"
+                            : "小狐狸橙橙和热气球，等你一起出发。"}
                       </span>
                     </div>
                   </div>
@@ -1090,17 +1130,32 @@ export default function App() {
                     <div>
                       <strong>
                         {nextLesson
-                          ? `下一站：${nextLesson.title}`
+                          ? `${courseNavigation.allPractised ? "再探一遍" : "下一站"}：${nextLesson.title}`
                           : "这个学期的课程正在准备"}
                       </strong>
-                      {!twoD && (
+                      {courseNavigation.nextTerm && (
+                        <p>
+                          这批上学期微课都练过了，也可以去下学期的新起点看看。
+                        </p>
+                      )}
+                      <div className="scene-actions">
                         <button
                           className="text-button"
-                          onClick={() => setGreet(greet + 1)}
+                          onClick={() => {
+                            setMascotTurned(false);
+                            setGreet((value) => value + 1);
+                          }}
                         >
-                          和小伙伴打个招呼
+                          和小狐狸打个招呼
                         </button>
-                      )}
+                        <button
+                          className="text-button"
+                          aria-pressed={mascotTurned}
+                          onClick={() => setMascotTurned((value) => !value)}
+                        >
+                          {mascotTurned ? "转回正面" : "看看背包"}
+                        </button>
+                      </div>
                     </div>
                     {nextLesson && (
                       <button
@@ -1113,6 +1168,19 @@ export default function App() {
                         onClick={() => openLesson(nextLesson)}
                       >
                         打开这节课
+                        <Icon kind="arrow" />
+                      </button>
+                    )}
+                    {courseNavigation.nextTerm && (
+                      <button
+                        className="secondary"
+                        onClick={() => {
+                          browseCourseMap(grade, "B");
+                          window.scrollTo({ top: 0 });
+                          requestAnimationFrame(() => mainRef.current?.focus());
+                        }}
+                      >
+                        看看下学期新课
                         <Icon kind="arrow" />
                       </button>
                     )}
@@ -1175,6 +1243,8 @@ export default function App() {
                     <p>先读中文小讲解，再试着把英语说完整。</p>
                   </div>
                   <span className="badge">
+                    {["一", "二", "三", "四", "五", "六"][grade - 1]}年级 ·
+                    {term === "B" ? "下学期" : "上学期"} ·
                     {
                       lessons.filter(
                         (l) => l.grade === grade && l.term === term,
@@ -1196,7 +1266,9 @@ export default function App() {
                             {String(lesson.order).padStart(2, "0")}
                           </span>
                           <span className="badge">
-                            {completed ? "已完成练习" : "约6分钟"}
+                            {completed
+                              ? "已完成练习"
+                              : `约${lesson.minutes}分钟`}
                           </span>
                           <h3>{lesson.title}</h3>
                           <p className="footnote">{lesson.unitTitle}</p>

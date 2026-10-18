@@ -512,13 +512,24 @@ try {
     manifest.schema === 1 &&
       manifest.assets.some((p) => p.includes("OfflinePractice")) &&
       manifest.assets.every(
-        (p) => p === "/index.html" || /^\/assets\/[\w.-]+\.(js|css)$/.test(p),
+        (p) =>
+          p === "/index.html" || /^\/assets\/[\w.-]+\.(js|css|glb)$/.test(p),
       ),
     "built offline manifest contains its player modules and only public shell assets",
   );
   for (const path of manifest.assets) {
     const r = await fetchLocalRead(base + path);
     assert.equal(r.status, 200, path);
+    if (path.endsWith(".glb")) {
+      assert.match(
+        r.headers.get("content-type") ?? "",
+        /model\/gltf-binary|application\/octet-stream/,
+      );
+      const bytes = Buffer.from(await r.arrayBuffer());
+      assert.ok(bytes.length < 1_700_000 && bytes.length > 20);
+      assert.equal(bytes.readUInt32LE(0), 0x46546c67);
+      assert.equal(bytes.readUInt32LE(8), bytes.length);
+    }
   }
   check(
     (await fetchLocalRead(base + "/offline-sw.js")).status === 200,

@@ -1,3 +1,4 @@
+import ClayStudio from "./ClayStudio";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import type { Group, OrthographicCamera } from "three";
@@ -229,6 +230,7 @@ export default function ConceptCanvas({
   return (
     <Canvas
       aria-hidden="true"
+      shadows="percentage"
       orthographic
       camera={{ position: [2, 2.1, 7], zoom: 70 }}
       dpr={[1, 1.5]}
@@ -237,11 +239,10 @@ export default function ConceptCanvas({
     >
       <RenderActivity active={moving} />
       <Setup revision={revision} onLost={onLost} />
-      <ambientLight intensity={1.9} />
-      <directionalLight position={[-3, 7, 5]} intensity={2.4} />
+      <ClayStudio revision={`${data.kind}:${revision}`} onLost={onLost} />
       <mesh position={[0, -0.18, 0]}>
         <cylinderGeometry args={[2.35, 2.1, 0.2, 40]} />
-        <meshStandardMaterial color="#c9dcec" />
+        <meshStandardMaterial color="#d8c4a4" roughness={0.9} />
       </mesh>
       {data.measurement ? (
         <MeasurementModels

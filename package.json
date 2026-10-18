@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.26.0",
+  "version": "0.27.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -49,7 +49,8 @@
     "cf:deploy:production": "node scripts/cloudflare.mjs deploy --production",
     "verify:production": "node scripts/smoke-remote.mjs https://english-quest-dev.pages.dev production",
     "verify:isolation": "node scripts/smoke-isolation.mjs",
-    "verify:journey-courses": "node scripts/smoke-journey-courses.mjs"
+    "verify:journey-courses": "node scripts/smoke-journey-courses.mjs",
+    "verify:next-term-courses": "node scripts/smoke-next-term-courses.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.2",

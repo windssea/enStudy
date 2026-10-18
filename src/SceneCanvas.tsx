@@ -1,3 +1,4 @@
+import ClayStudio from "./ClayStudio";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import type { Group, OrthographicCamera } from "three";
@@ -66,6 +67,7 @@ export default function SceneCanvas({
   kind,
   reaction,
   pulse,
+  turned,
   paused,
   moving,
   onLost,
@@ -73,6 +75,7 @@ export default function SceneCanvas({
   kind: SceneKind;
   reaction: Reaction;
   pulse: number;
+  turned: boolean;
   paused: boolean;
   moving: boolean;
   onLost: () => void;
@@ -81,6 +84,7 @@ export default function SceneCanvas({
   return (
     <Canvas
       aria-hidden="true"
+      shadows="percentage"
       orthographic
       camera={{ position: [3, 2.3, 7], zoom: 70 }}
       dpr={[1, 1.5]}
@@ -89,12 +93,15 @@ export default function SceneCanvas({
     >
       <RenderActivity active={active} />
       <Setup onLost={onLost} />
-      <ambientLight intensity={1.9} />
-      <directionalLight position={[-3, 7, 5]} intensity={2.4} />
-      <group position={[-0.85, 0, 0]}>
+      <ClayStudio
+        revision={`${kind}:${pulse}:${reaction}:${turned}`}
+        onLost={onLost}
+      />
+      <group position={[-0.85, 0.1, 0]}>
         <Explorer
           paused={!active}
           pulse={pulse}
+          turned={turned}
           reaction={reaction}
           idle={kind !== "feedback"}
         />
@@ -104,9 +111,18 @@ export default function SceneCanvas({
         scale={[2.2, 0.13, 1.05]}
         color="#bde4cf"
       />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.78, 0.1, 0.15]}>
+        <circleGeometry args={[0.57, 32]} />
+        <meshBasicMaterial
+          color="#24584b"
+          transparent
+          opacity={0.12}
+          depthWrite={false}
+        />
+      </mesh>
       <mesh position={[0, -0.18, 0]}>
         <cylinderGeometry args={[2.05, 1.85, 0.22, 48]} />
-        <meshStandardMaterial color="#c9dcec" />
+        <meshStandardMaterial color="#d8c4a4" roughness={0.9} />
       </mesh>
       {kind === "feedback" ? (
         <Tile
