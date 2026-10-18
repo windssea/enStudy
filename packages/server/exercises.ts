@@ -17,6 +17,8 @@ import nextTerm from "../../content/next-term-course-release.v1.json";
 import explorerTerm from "../../content/explorer-term-course-release.v1.json";
 import neighbourhoodTerm from "../../content/neighbourhood-term-course-release.v1.json";
 import cooperationTerm from "../../content/cooperation-term-course-release.v1.json";
+import practicalOriginal from "../../content/practical-term-course-release.v1.json";
+import practicalTerm from "../../content/practical-term-course-release.latest.json";
 import { structuredCanonical, sortPlacements } from "../domain/structured";
 import type {
   Answer,
@@ -63,7 +65,7 @@ export const courseExpansion = expansionLatest as unknown as {
   items: PrivateExercise[];
 };
 export const courseCatalog = {
-  id: "course-catalog-v10",
+  id: "course-catalog-v11",
   lessons: [
     ...courseRelease.lessons,
     ...courseExpansion.lessons,
@@ -75,6 +77,7 @@ export const courseCatalog = {
     ...explorerTerm.lessons,
     ...neighbourhoodTerm.lessons,
     ...cooperationTerm.lessons,
+    ...practicalTerm.lessons,
   ] as CourseLesson[],
   items: [
     ...courseRelease.items,
@@ -87,6 +90,7 @@ export const courseCatalog = {
     ...explorerTerm.items,
     ...neighbourhoodTerm.items,
     ...cooperationTerm.items,
+    ...practicalTerm.items,
   ] as PrivateExercise[],
 };
 export const storyRelease = story as unknown as {
@@ -138,6 +142,12 @@ export const cooperationTermRelease = cooperationTerm as unknown as {
   lessons: CourseLesson[];
   items: PrivateExercise[];
 };
+export const practicalTermRelease = practicalTerm as unknown as {
+  id: string;
+  manifestHash: string;
+  lessons: CourseLesson[];
+  items: PrivateExercise[];
+};
 export const topicRelease = topics as unknown as {
   id: string;
   manifestHash: string;
@@ -179,6 +189,7 @@ export const exercises = [
   ...explorerTerm.items,
   ...neighbourhoodTerm.items,
   ...cooperationTerm.items,
+  ...practicalTerm.items,
 ] as PrivateExercise[];
 export const workshopRelease = workshopLatest as unknown as {
   id: string;
@@ -213,12 +224,16 @@ export const wordThemes: WordTheme[] = vocabularyRelease.themes.map(
 );
 export const exerciseById = new Map(exercises.map((item) => [item.id, item]));
 const versionedExercises = new Map(
-  [...expansion.items, ...workshop.items, ...action.items, ...exercises].map(
-    (item) => [
-      `${item.id}@${(item as PrivateExercise).version ?? 1}`,
-      item as PrivateExercise,
-    ],
-  ),
+  [
+    ...expansion.items,
+    ...workshop.items,
+    ...action.items,
+    ...practicalOriginal.items,
+    ...exercises,
+  ].map((item) => [
+    `${item.id}@${(item as PrivateExercise).version ?? 1}`,
+    item as PrivateExercise,
+  ]),
 );
 export const exerciseVersion = (id: string, version = 1) =>
   versionedExercises.get(`${id}@${version}`);

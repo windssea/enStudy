@@ -127,8 +127,10 @@
       "workshop-target:morphology.verb.ing:c584178e5e351"
     ],
     "forms.regular-past/paint": [
+      "family:fact-ba317f200f6a129a",
       "family:topic-fact-79655b964caa05beb228",
       "sentence:nora painted a wooden star yesterday",
+      "sentence:yesterday, nivi painted the cardboard arch",
       "sentence:把动词paint变为过去式。"
     ],
     "forms.regular-past/worry": [

@@ -66,6 +66,7 @@ try {
   await run("smoke-explorer-term-courses.mjs");
   await run("smoke-neighbourhood-term-courses.mjs");
   await run("smoke-cooperation-term-courses.mjs");
+  await run("smoke-practical-term-courses.mjs");
   await run("smoke-concepts.mjs");
   await run("smoke-reports.mjs");
   await run("smoke-offline.mjs");

@@ -15,7 +15,7 @@ import ListeningPrompt from "../src/ListeningPrompt";
 import type { LearningSession } from "../packages/contracts/index";
 describe("third-unit listening and evidence reading", () => {
   it("covers another four actual lessons per grade with nine distinct facts and separate demonstrations", () => {
-    expect(courseCatalog.lessons).toHaveLength(240);
+    expect(courseCatalog.lessons).toHaveLength(264);
     expect(storyRelease.lessons).toHaveLength(24);
     expect(storyRelease.items).toHaveLength(216);
     expect(new Set(storyRelease.items.map((i) => i.family)).size).toBe(216);

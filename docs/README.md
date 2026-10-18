@@ -1,6 +1,6 @@
 # 英语学习网站设计文档导航
 
-开发进度：v0.34.0本地补齐贴面闭眼与安全眨眼，354单元及37离线检查通过；此前v0.32已提交240课。D1每日写入额度阻止发布，线上仍为216课。详见[贴面闭眼与实际验证](55-surface-safe-cartoon-blinks.md)、[粘土伙伴](54-expressive-clay-partners.md)及[第四单元部署状态](53-cooperation-term-unit-and-home-activities.md)。
+开发进度：v0.35.0本地累计264/288课，365项单元检查通过；按用户要求同步GitHub与Cloudflare，结果见[第五单元与同步记录](56-practical-term-unit-and-revision.md)。线上基线在本轮发布前仍为216课。
 
 线上基线版本：0.31.1，日期：2026-10-18。工作名称为“英语探险岛 / English Quest”。当前216/288节微课，包含各年级完整A学期核心练习与B学期前三单元；360词条支持认词义、听词辨义、拼写、语境和混合练习。17个实验台提供54个可选3D教学示范，含2D替代和示范记录。另有家长7/30日报告与本机离线练习。v0.31.1已同步发布至Preview、Production及正式域名，新增定向家庭邀请、成员权限和显式家庭切换，见[阶段与发布记录52](52-household-invitations-and-roles.md)。保留皮卡丘与狐狸双伙伴，保持免费、关闭注册和独立D1，历史定时自动化仍停用。完整媒体、剩余72课、教学审核及PC/iPad实机质量待完成。设计目标不等于已实现功能。
 
@@ -63,6 +63,7 @@
 | 55 | [v0.32合作与第四单元](53-cooperation-term-unit-and-home-activities.md) | 24课216任务、中文家庭小活动和语义边界 |
 | 56 | [v0.33表情与粘土伙伴](54-expressive-clay-partners.md) | 弯耳领巾模型、短动作、材质与资源验证 |
 | 57 | [v0.34贴面闭眼](55-surface-safe-cartoon-blinks.md) | 独立闭眼曲线、局部遮蔽、缓存与拓扑验证 |
+| 58 | [v0.35第五单元与同步](56-practical-term-unit-and-revision.md) | 264课、实用表达、追加版本接受自然语序与部署核验 |
 
 配套资料：
 

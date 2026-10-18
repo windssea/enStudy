@@ -31,8 +31,8 @@ const solution = (row: (typeof discoveryRelease.items)[number]) =>
         : row.answers[0];
 describe("fifth-unit original lessons and guided 3D links", () => {
   it("adds four fifth-unit lessons in every grade while retaining all older versions", () => {
-    expect(courseCatalog.lessons).toHaveLength(240);
-    expect(new Set(courseCatalog.lessons.map((row) => row.id)).size).toBe(240);
+    expect(courseCatalog.lessons).toHaveLength(264);
+    expect(new Set(courseCatalog.lessons.map((row) => row.id)).size).toBe(264);
     expect(discoveryRelease.lessons).toHaveLength(24);
     expect(discoveryRelease.items).toHaveLength(216);
     const newUnits = catalog.units.filter((unit) =>
@@ -51,7 +51,7 @@ describe("fifth-unit original lessons and guided 3D links", () => {
       ).toEqual([17, 18, 19, 20]);
       expect(
         courseCatalog.lessons.filter((row) => row.grade === grade),
-      ).toHaveLength(40);
+      ).toHaveLength(44);
     }
     expect(exerciseVersion("P3A-U04-L3.p3.choice", 1)?.prompt).toContain(
       "finding a dictionary",

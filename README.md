@@ -1,8 +1,8 @@
 # 英语探险岛
 
-开发v0.34.0：本地新增贴面闭眼弧线与“眨眨眼”，修正眼珠缩放穿脸和旧眼窝阴影；354项单元及37项离线检查通过。弯耳/领巾皮卡丘与其他短动作继续可用。按`[skip ci]`提交，不重试受限部署；模型实渲不代表网页或iPad已验收，详见[贴面闭眼阶段记录](docs/55-surface-safe-cartoon-blinks.md)。
+开发v0.35.0：累计264/288课，新增下学期第五单元24课216任务，并保留旧版本修正两道并列物品拼句。365项单元检查通过；当前按用户要求整理同步GitHub与Cloudflare，实际发布结果见[第五单元与同步记录](docs/56-practical-term-unit-and-revision.md)。此前伙伴短动作和贴面闭眼纳入本轮发布；真实PC/iPad验收仍待完成。
 
-v0.32.0已提交新增24课与可选家庭小活动，累计240/288课；339单元及1004本地/CI运行检查通过，但0034预览迁移被D1每日免费写入额度阻止（运行39108621475），尚未发布。两站及正式域名仍为下述v0.31.1、216课、D1至0033。额度恢复前继续本地开发，提交使用`[skip ci]`，不反复部署。见[第四单元阶段记录](docs/53-cooperation-term-unit-and-home-activities.md)。
+v0.32.0已提交新增24课与可选家庭小活动，累计240/288课；339单元及1004本地/CI运行检查通过，但0034预览迁移被D1每日免费写入额度阻止（运行39108621475），尚未发布。两站及正式域名仍为下述v0.31.1、216课、D1至0033。此前额度受限期间只做本地开发；用户现要求重新同步，最新结果见文首记录。见[第四单元阶段记录](docs/53-cooperation-term-unit-and-home-activities.md)。
 
 面向小学P1–P6的英语学习网站，支持多家庭、多儿童、PC和平板。v0.31.1采用React/TypeScript/Vite、Three.js/R3F、Hono Pages Functions与Cloudflare D1，免费优先。2026年10月18日15:20通过[GitHub Actions](https://github.com/windssea/enStudy/actions/runs/39106806497)将应用提交`fe2ffd5`同步发布至Preview与Production，两站独立D1均至0033。330项单元、957项CI运行、两站和正式域名各36项线上、22项补充功能及6项隔离检查通过，见[最新阶段与发布记录](docs/52-household-invitations-and-roles.md)。
 

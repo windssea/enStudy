@@ -24,6 +24,8 @@ const paths = [
   "explorer-term-course-release.v1.json",
   "neighbourhood-term-course-release.v1.json",
   "cooperation-term-course-release.v1.json",
+  "practical-term-course-release.v1.json",
+  "practical-term-course-release.latest.json",
 ];
 const items = [
   ...new Map(
