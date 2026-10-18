@@ -10,7 +10,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import FoxSticker from "./FoxSticker";
+import CompanionSticker from "./CompanionSticker";
+import { CompanionContext } from "./CompanionContext";
+import { companionInfo, type CompanionId } from "../packages/domain/companions";
 import { isSpeechActive } from "./speechActivity";
 
 const SceneCanvas = lazy(() => import("./SceneCanvas"));
@@ -19,27 +21,45 @@ export function MotionShell({
   quiet,
   flat,
   children,
+  companion = "fox",
 }: {
   quiet: boolean;
   flat: boolean;
   children: ReactNode;
+  companion?: CompanionId;
 }) {
   const preferences = useMemo(() => ({ quiet, flat }), [quiet, flat]);
   return (
-    <MotionContext.Provider value={preferences}>
-      <div className="app-shell" data-quiet={quiet}>
-        {children}
-      </div>
-    </MotionContext.Provider>
+    <CompanionContext.Provider value={companion}>
+      <MotionContext.Provider value={preferences}>
+        <div className="app-shell" data-quiet={quiet}>
+          {children}
+        </div>
+      </MotionContext.Provider>
+    </CompanionContext.Provider>
   );
 }
 export type SceneKind =
-  "words" | "workshop" | "sorting" | "garden" | "lesson" | "feedback";
+  | "words"
+  | "workshop"
+  | "sorting"
+  | "garden"
+  | "lesson"
+  | "feedback"
+  | "partner";
 export type Reaction = "correct" | "hinted" | "incorrect" | "thinking";
 const scripts: Record<
   Exclude<SceneKind, "feedback">,
   { action: string; lines: string[] }
 > = {
+  partner: {
+    action: "和伙伴打招呼",
+    lines: [
+      "小伙伴准备好啦。",
+      "Hello! 一起慢慢来。",
+      "选好喜欢的伙伴，再回到课程探险吧。",
+    ],
+  },
   words: {
     action: "和小狐狸打招呼",
     lines: [
@@ -95,8 +115,14 @@ function FlatScene({
     <svg className="scene-flat" viewBox="0 0 320 230" aria-hidden="true">
       <ellipse cx="160" cy="202" rx="123" ry="18" fill="#d0dfed" />
       <path d="M35 183Q160 124 285 183L277 202H43Z" fill="#bde4cf" />
-      <g transform="translate(38 25) scale(.86)">
-        <FoxSticker reaction={reaction} turned={turned} />
+      <g
+        transform={
+          kind === "partner"
+            ? "translate(72 8) scale(1)"
+            : "translate(38 25) scale(.86)"
+        }
+      >
+        <CompanionSticker reaction={reaction} turned={turned} />
       </g>
       {kind === "sorting" ? (
         <g>
@@ -142,7 +168,7 @@ function FlatScene({
           />
           <path d="M201 174h49l-8 25h-33Z" fill="#ee9b86" />
         </g>
-      ) : (
+      ) : kind !== "partner" ? (
         <g transform="rotate(9 228 134)">
           <rect
             x="188"
@@ -172,7 +198,7 @@ function FlatScene({
                 : "I"}
           </text>
         </g>
-      )}
+      ) : null}
     </svg>
   );
 }
@@ -205,6 +231,8 @@ export default function SceneStage({
   animateReaction?: boolean;
 }) {
   const { quiet, flat } = useContext(MotionContext);
+  const companion = useContext(CompanionContext),
+    info = companionInfo(companion);
   const host = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [ready, setReady] = useState(false);
@@ -304,7 +332,9 @@ export default function SceneStage({
                 setPulse((n) => n + 1);
               }}
             >
-              {script.action}
+              {kind === "words" || kind === "partner"
+                ? `和${info.name}打招呼`
+                : script.action}
               <span aria-hidden="true"> ↗</span>
             </button>
             <button
@@ -313,13 +343,16 @@ export default function SceneStage({
               aria-pressed={turned}
               onClick={() => setTurned((value) => !value)}
             >
-              {turned ? "转回正面" : "看看背包"}
+              {turned ? "转回正面" : info.backAction}
             </button>
           </div>
           <p role="status">
             {turned
-              ? "橙橙的小背包，装着下一次探险的好奇心。"
-              : script.lines[pulse % script.lines.length]}
+              ? info.backLine
+              : (kind === "words" || kind === "partner") &&
+                  pulse % script.lines.length === 0
+                ? `${info.name}准备好啦。`
+                : script.lines[pulse % script.lines.length]}
           </p>
         </div>
       )}

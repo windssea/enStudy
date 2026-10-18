@@ -2,6 +2,21 @@ import { describe, expect, it } from "vitest";
 import { responseCookieHeader } from "../scripts/response-cookies.mjs";
 
 describe("same-origin release verifier cookies", () => {
+  it("keeps the parent cookie while selecting and then removing a disposable child", () => {
+    const selected = responseCookieHeader([
+      "eq_account=parent",
+      "eq_child=old",
+      "eq_child=; Max-Age=0; Path=/",
+      "eq_child=selected; Secure; Path=/",
+    ]);
+    expect(selected).toBe("eq_account=parent; eq_child=selected");
+    expect(
+      responseCookieHeader([
+        ...selected.split("; "),
+        "eq_child=; Max-Age=0; Path=/",
+      ]),
+    ).toBe("eq_account=parent");
+  });
   it("sends the new login cookies after the server expires previous sessions", () => {
     expect(
       responseCookieHeader([

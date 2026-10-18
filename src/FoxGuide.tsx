@@ -1,14 +1,35 @@
-import { useFrame, useLoader } from "@react-three/fiber";
-import { Suspense, useEffect, useMemo, useRef } from "react";
-import { applyFoxPose, createFoxModel } from "./scene/foxModel";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
+import { Suspense, useContext, useEffect, useMemo, useRef } from "react";
+import { createFoxModel } from "./scene/foxModel";
+import { createPikachuModel } from "./scene/pikachuModel";
+import { CompanionContext } from "./CompanionContext";
+import { applyCompanionPose } from "./scene/companionPose";
+import type { CompanionId } from "../packages/domain/companions";
 import type { Reaction } from "./SceneStage";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { prepareClayFox } from "./scene/loadClayFox";
+import { prepareClayPartner } from "./scene/loadClayFox";
 import { foxTurnAngle } from "./scene/foxTurn";
-import type { Object3D } from "three";
+import { Mesh, type Object3D } from "three";
 
 const clayFoxUrl = new URL("./assets/models/clay-fox-v1.glb", import.meta.url)
   .href;
+const clayPikachuUrl = new URL(
+  "./assets/models/clay-pikachu-v1.glb",
+  import.meta.url,
+).href;
+function usePartnerShadow(root: Object3D) {
+  const { gl, invalidate } = useThree();
+  useEffect(() => {
+    root.traverse((node) => {
+      if (node instanceof Mesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+      }
+    });
+    gl.shadowMap.needsUpdate = true;
+    invalidate();
+  }, [root, gl, invalidate]);
+}
 
 function useFoxTurn(root: Object3D, turned: boolean, paused: boolean) {
   const state = useRef({ target: 0, from: 0, start: -100 });
@@ -37,15 +58,21 @@ function ProceduralGuide({
   reaction = "thinking",
   idle = true,
   turned = false,
+  companion,
 }: {
   paused: boolean;
   pulse?: number;
   reaction?: Reaction;
   idle?: boolean;
   turned?: boolean;
+  companion: CompanionId;
 }) {
-  const model = useMemo(createFoxModel, []);
+  const model = useMemo(
+    () => (companion === "fox" ? createFoxModel() : createPikachuModel()),
+    [companion],
+  );
   useFoxTurn(model.root, turned, paused);
+  usePartnerShadow(model.root);
   const changed = useRef({ pulse, reaction, start: -100 });
   useEffect(() => () => model.dispose(), [model]);
   useFrame(({ clock }) => {
@@ -56,7 +83,7 @@ function ProceduralGuide({
       changed.current.reaction !== reaction
     )
       changed.current = { pulse, reaction, start: time };
-    applyFoxPose(model, {
+    applyCompanionPose(model, companion, {
       time,
       age: time - changed.current.start,
       paused,
@@ -73,10 +100,18 @@ function LoadedGuide({
   reaction = "thinking",
   idle = true,
   turned = false,
+  companion,
 }: Props) {
-  const gltf = useLoader(GLTFLoader, clayFoxUrl);
-  const model = useMemo(() => prepareClayFox(gltf.scene), [gltf.scene]);
+  const gltf = useLoader(
+    GLTFLoader,
+    companion === "fox" ? clayFoxUrl : clayPikachuUrl,
+  );
+  const model = useMemo(
+    () => prepareClayPartner(gltf.scene, companion),
+    [gltf.scene, companion],
+  );
   useFoxTurn(model.root, turned, paused);
+  usePartnerShadow(model.root);
   const changed = useRef({ pulse, reaction, start: -100 });
   useEffect(() => () => model.dispose(), [model]);
   useFrame(({ clock }) => {
@@ -87,7 +122,7 @@ function LoadedGuide({
       changed.current.reaction !== reaction
     )
       changed.current = { pulse, reaction, start: time };
-    applyFoxPose(model, {
+    applyCompanionPose(model, companion, {
       time,
       age: time - changed.current.start,
       paused,
@@ -97,10 +132,15 @@ function LoadedGuide({
   });
   return <primitive object={model.root} />;
 }
-export default function FoxGuide(props: Props) {
+export default function FoxGuide(props: Omit<Props, "companion">) {
+  const companion = useContext(CompanionContext);
   return (
-    <Suspense fallback={<ProceduralGuide {...props} />}>
-      <LoadedGuide {...props} />
+    <Suspense
+      fallback={
+        <ProceduralGuide key={companion} {...props} companion={companion} />
+      }
+    >
+      <LoadedGuide key={companion} {...props} companion={companion} />
     </Suspense>
   );
 }

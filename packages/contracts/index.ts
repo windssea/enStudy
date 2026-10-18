@@ -237,7 +237,14 @@ export interface Identity {
     isAdmin: boolean;
     mustChangePassword: boolean;
   };
-  child?: { id: string; nickname: string; grade: number; householdId: string };
+  child?: {
+    id: string;
+    nickname: string;
+    grade: number;
+    householdId: string;
+    companionId?: import("../domain/companions").CompanionId;
+    companionVersion?: number;
+  };
 }
 export interface ManagedAccount {
   id: string;

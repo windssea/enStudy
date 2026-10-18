@@ -1,4 +1,4 @@
-import FoxSticker from "./FoxSticker";
+import CompanionSticker from "./CompanionSticker";
 export default function FlatMap({ turned = false }: { turned?: boolean }) {
   return (
     <svg className="flat-map" viewBox="0 0 700 350" aria-hidden="true">
@@ -25,7 +25,7 @@ export default function FlatMap({ turned = false }: { turned?: boolean }) {
         </g>
       ))}
       <g transform="translate(124 109) scale(.57)">
-        <FoxSticker turned={turned} />
+        <CompanionSticker turned={turned} />
       </g>
       <g transform="translate(480 74)">
         <ellipse rx="32" ry="40" fill="#ef9f87" />

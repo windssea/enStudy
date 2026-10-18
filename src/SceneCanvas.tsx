@@ -6,15 +6,18 @@ import { Explorer, Pebble, StageProp, Tile } from "./SceneModels";
 import type { Reaction, SceneKind } from "./SceneStage";
 import { RenderActivity } from "./SceneRuntime";
 
-function Setup({ onLost }: { onLost: () => void }) {
+function Setup({ onLost, partner }: { onLost: () => void; partner: boolean }) {
   const { camera, size, gl, invalidate } = useThree();
   useEffect(() => {
     const lens = camera as OrthographicCamera;
-    lens.zoom = Math.min(size.width / 4.9, size.height / 3.6);
-    lens.lookAt(0, 0.85, 0);
+    lens.zoom = Math.min(
+      size.width / (partner ? 3.4 : 4.9),
+      size.height / (partner ? 2.9 : 3.6),
+    );
+    lens.lookAt(0, partner ? 1.15 : 0.85, 0);
     lens.updateProjectionMatrix();
     invalidate();
-  }, [camera, size, invalidate]);
+  }, [camera, size, invalidate, partner]);
   useEffect(() => {
     const canvas = gl.domElement;
     const lost = (event: Event) => {
@@ -92,12 +95,12 @@ export default function SceneCanvas({
       gl={{ antialias: true, alpha: true }}
     >
       <RenderActivity active={active} />
-      <Setup onLost={onLost} />
+      <Setup onLost={onLost} partner={kind === "partner"} />
       <ClayStudio
         revision={`${kind}:${pulse}:${reaction}:${turned}`}
         onLost={onLost}
       />
-      <group position={[-0.85, 0.1, 0]}>
+      <group position={[kind === "partner" ? 0 : -0.85, 0.1, 0]}>
         <Explorer
           paused={!active}
           pulse={pulse}
@@ -133,9 +136,9 @@ export default function SceneCanvas({
           position={[1.05, 0.95, 0]}
           rotation={-0.08}
         />
-      ) : (
+      ) : kind !== "partner" ? (
         <StageProp kind={kind} paused={!active} pulse={pulse} />
-      )}
+      ) : null}
       {kind === "feedback" && reaction === "correct" && active && (
         <Sparkles reaction={reaction} />
       )}

@@ -2,7 +2,7 @@ id,milestone,task,acceptance,status,evidence
 M0-01,M0,React TypeScript Vite工程与依赖锁定,类型检查与生产构建通过,done,package-lock.json与npm run build
 M0-02,M0,真实Three.js地图模块与DOM降级,懒加载和2D切换实现且实机另验,implemented-unverified-visual,src/World.tsx
 M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,deployed-assets-and-data-verified-visual-pending,docs/49-word-study-and-b-term-unit-two.md及六种词语模型和词卡记录加Blender伙伴与线上模块摘要通过且16专题51示范保留而浏览器GPU实机未验
-M0-02c,M0,宝可梦元素伙伴与形象选择,具名卡通粘土角色多视角拓扑动作和选择持久化通过,todo,用户总目标仍未满足而现有原创狐狸不能代表具名宝可梦角色已完成
+M0-02c,M0,宝可梦元素伙伴与形象选择,具名卡通粘土角色多视角拓扑动作和选择持久化通过,local-model-and-preference-verified-remote-and-device-pending,docs/50-pikachu-and-saved-companions.md及皮卡丘25闭合网格和实际GLB姿态渲染与31项偏好保存检查通过而云端和网页实机待验
 M0-03,M0,课程专题句式目录,72单元60专题72句式可读且标明草稿,done,public/content/catalog.json与HTTP检查
 M0-04,M0,本地D1迁移和样课闭环,服务端判题保存调度与提示证据通过,done,npm run verify:local
 M0-05,M0,跨家庭与幂等保护,越权拒绝且并发重试只计一次,done,本地workerd HTTP验证

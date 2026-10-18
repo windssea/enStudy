@@ -76,7 +76,9 @@ check(
 );
 let lessonResponse = await request("/api/v1/lessons");
 let course = await lessonResponse.json();
+let featureHealth = await (await request("/api/v1/health")).json();
 const courseReady = () =>
+  featureHealth.companionProtocol === 1 &&
   lessonResponse.status === 200 &&
   sameLessonRelease(course, expectedCourse) &&
   Object.keys(course.topicStats ?? {}).length === 60 &&
@@ -102,6 +104,7 @@ for (let attempt = 0; !courseReady() && attempt < 12; attempt++) {
   await delay(2500);
   lessonResponse = await request("/api/v1/lessons");
   course = await lessonResponse.json();
+  featureHealth = await (await request("/api/v1/health")).json();
 }
 check(
   courseReady(),
@@ -110,8 +113,8 @@ check(
 const shellResponse = await request("/offline-shell.json");
 const currentHealth = await (await request("/api/v1/health")).json();
 check(
-  currentHealth.offlineProtocol === 1,
-  "current offline confirmation protocol delivered",
+  currentHealth.offlineProtocol === 1 && currentHealth.companionProtocol === 1,
+  "current offline confirmation and companion protocols delivered",
 );
 const shell = await shellResponse.json();
 check(
@@ -145,8 +148,8 @@ for (const path of sceneAssets) {
 const models = expectedShell.assets.filter((path) => path.endsWith(".glb"));
 assert.equal(
   models.length,
-  1,
-  "this release includes one Blender-authored clay guide",
+  2,
+  "this release includes both Blender-authored clay partners",
 );
 for (const path of models) {
   const response = await request(path),
@@ -174,7 +177,26 @@ const login = await request("/api/v1/auth/login", {
     password: process.env.EQ_ADMIN_PASSWORD ?? "admin123123456",
   }),
 });
-const cookie = responseCookieHeader(login.headers.getSetCookie());
+let cookie = responseCookieHeader(login.headers.getSetCookie());
+let temporaryChild;
+async function authenticated(path, body) {
+  const response = await request(`/api/v1${path}`, {
+    method: body === undefined ? "GET" : "POST",
+    headers: {
+      Cookie: cookie,
+      "X-EQ-Player-Version": "3",
+      ...(body === undefined
+        ? {}
+        : { "Content-Type": "application/json", Origin: base.origin }),
+    },
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  });
+  cookie = responseCookieHeader([
+    ...cookie.split(/;\s*/).filter(Boolean),
+    ...response.headers.getSetCookie(),
+  ]);
+  return { status: response.status, data: await response.json() };
+}
 try {
   check(
     login.status === 200 && cookie.includes("eq_account="),
@@ -194,21 +216,84 @@ try {
       identity.adult?.isAdmin === true,
     "administrator account listing available",
   );
+  const made = await authenticated("/children", {
+    nickname: `伙伴发布核验${crypto.randomUUID().slice(0, 6)}`,
+    grade: 3,
+  });
+  temporaryChild = made.data.id;
+  assert.ok(temporaryChild, "temporary child returned for cleanup");
+  const selected = await authenticated(
+    `/children/${temporaryChild}/select`,
+    {},
+  );
+  check(
+    made.status === 201 && selected.status === 200,
+    "disposable release profile selected",
+  );
+  const initial = await authenticated("/learning/companion");
+  check(
+    initial.status === 200 &&
+      initial.data.childId === temporaryChild &&
+      initial.data.companionId === "fox" &&
+      initial.data.version === 0,
+    "new profile has the default partner and version",
+  );
+  const command = {
+    childId: temporaryChild,
+    companionId: "pikachu",
+    expectedVersion: 0,
+    requestId: crypto.randomUUID(),
+  };
+  const saved = await authenticated("/learning/companion", command),
+    restored = await authenticated("/me");
+  check(
+    saved.status === 200 &&
+      saved.data.version === 1 &&
+      restored.data.child?.companionId === "pikachu" &&
+      restored.data.child?.companionVersion === 1,
+    "remote D1 saves and restores the Pikachu preference",
+  );
+  const replay = await authenticated("/learning/companion", command),
+    stale = await authenticated("/learning/companion", {
+      ...command,
+      requestId: crypto.randomUUID(),
+      companionId: "fox",
+    });
+  check(
+    replay.status === 200 &&
+      replay.data.replayed &&
+      replay.data.version === 1 &&
+      stale.status === 409,
+    "preference retry is idempotent and a stale version cannot overwrite it",
+  );
+  const unchangedProgress = await authenticated("/progress"),
+    unchangedSession = await authenticated("/sessions/current");
+  check(
+    unchangedProgress.data.answered === 0 &&
+      unchangedProgress.data.stars === 0 &&
+      unchangedSession.data.session === null,
+    "choosing a partner does not create learning progress or a session",
+  );
 } finally {
-  if (cookie)
-    check(
-      (
-        await request("/api/v1/logout", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Origin: base.origin,
-            Cookie: cookie,
-          },
-          body: "{}",
-        })
-      ).status === 200,
-      "verification login revoked",
-    );
+  try {
+    if (temporaryChild) {
+      const removed = await authenticated(
+          `/children/${temporaryChild}/remove`,
+          {},
+        ),
+        children = await authenticated("/children");
+      check(
+        removed.status === 200 &&
+          !children.data.items?.some((child) => child.id === temporaryChild),
+        "disposable partner verification profile removed",
+      );
+    }
+  } finally {
+    if (cookie)
+      check(
+        (await authenticated("/logout", {})).status === 200,
+        "verification login revoked",
+      );
+  }
 }
 console.log(`${checks} remote checks passed on ${base.origin}`);

@@ -26,6 +26,9 @@ import type {
 import { api, ApiError, setLearningChild } from "./api";
 import { parseRoute, mapFragment, type View } from "./routes";
 import { courseStep } from "./courseNavigation";
+import CompanionPicker from "./CompanionPicker";
+import { companionInfo } from "../packages/domain/companions";
+import { applyCompanionChoice } from "./companionState";
 import {
   topicGroups,
   topicItems,
@@ -215,6 +218,11 @@ export default function App() {
     [hidden, setHidden] = useState(document.hidden);
   const [greet, setGreet] = useState(0);
   const [mascotTurned, setMascotTurned] = useState(false);
+  const partner = companionInfo(identity.child?.companionId);
+  useEffect(() => {
+    setGreet(0);
+    setMascotTurned(false);
+  }, [identity.child?.id, identity.child?.companionId]);
   const [worldVisible, setWorldVisible] = useState(true);
   const worldRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -856,7 +864,7 @@ export default function App() {
         : view;
   const activeNav = currentSection === "workshops" ? "topics" : currentSection;
   return (
-    <MotionShell quiet={quiet || reduced} flat={twoD}>
+    <MotionShell quiet={quiet || reduced} flat={twoD} companion={partner.id}>
       <a className="skip" href="#main">
         跳到主要内容
       </a>
@@ -1100,13 +1108,24 @@ export default function App() {
                     <div className="world-caption">
                       <span role="status">
                         {mascotTurned
-                          ? "橙橙背好小背包，准备下一次探险。"
+                          ? partner.backLine
                           : greet
                             ? "你好，小探险家！"
-                            : "小狐狸橙橙和热气球，等你一起出发。"}
+                            : `${partner.name}和热气球，等你一起出发。`}
                       </span>
                     </div>
                   </div>
+                  <CompanionPicker
+                    key={identity.child?.id ?? "guest"}
+                    childId={identity.child?.id}
+                    current={partner.id}
+                    onNeedProfile={() => move("parent")}
+                    onSaved={(choice) => {
+                      setIdentity((previous) =>
+                        applyCompanionChoice(previous, choice),
+                      );
+                    }}
+                  />
                   <div className="unit-path" aria-label="本学期单元">
                     {units.map((u, i) => {
                       const available = lessons.find(
@@ -1146,14 +1165,14 @@ export default function App() {
                             setGreet((value) => value + 1);
                           }}
                         >
-                          和小狐狸打个招呼
+                          和{partner.name}打个招呼
                         </button>
                         <button
                           className="text-button"
                           aria-pressed={mascotTurned}
                           onClick={() => setMascotTurned((value) => !value)}
                         >
-                          {mascotTurned ? "转回正面" : "看看背包"}
+                          {mascotTurned ? "转回正面" : partner.backAction}
                         </button>
                       </div>
                     </div>

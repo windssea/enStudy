@@ -6,6 +6,9 @@
   --ink: #172b4d;
   --muted: #46566e;
   --blue: #2557d6;
+  --primary: var(--blue);
+  --primary-soft: #e8efff;
+  --surface: #fff;
   --border: #dae4f2;
   --control-border: #62768f;
   --mint: #d9f4e8;
@@ -4251,6 +4254,93 @@ button.unit-node:not(:disabled) {
 }
 .word-object-scene .text-button {
   min-height: 52px;
+}
+.companion-picker {
+  margin: 0 20px 20px;
+  border: 1.5px solid var(--control-border);
+  border-radius: 20px;
+  background: var(--surface);
+}
+.companion-picker > summary {
+  padding: 16px;
+  min-height: 56px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.companion-picker > summary span {
+  display: inline-block;
+  margin-left: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+.companion-picker-body {
+  padding: 0 16px 16px;
+}
+.companion-picker fieldset {
+  padding: 0;
+  border: 0;
+  margin: 0 0 16px;
+}
+.companion-picker legend {
+  padding: 0;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.companion-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: 12px;
+}
+.companion-option {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid var(--control-border);
+  border-radius: 20px;
+  background: #fff8e6;
+  cursor: pointer;
+}
+.companion-option[data-selected="true"] {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+.companion-option:has(input:focus-visible) {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+.companion-option svg {
+  width: 100%;
+  height: 120px;
+}
+.companion-preview {
+  margin: 16px 0;
+  padding: 12px;
+  border-radius: 20px;
+  background: #fff8e6;
+  text-align: center;
+}
+.companion-preview .scene-stage {
+  width: min(100%, 360px);
+  margin: 0 auto;
+}
+.companion-option-heading {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  gap: 10px;
+}
+.companion-option input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--primary);
+}
+.companion-option > span:not(.companion-option-heading),
+.companion-option small {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
 }
 .map-footer .scene-actions {
   justify-content: flex-start;
