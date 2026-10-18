@@ -1,5 +1,20 @@
 import assert from "node:assert/strict";
 import { setTimeout as delay } from "node:timers/promises";
+import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { sameLessonRelease } from "./remote-release.mjs";
+const expectedCourse = JSON.parse(
+  await readFile(
+    new URL("../public/content/lessons.json", import.meta.url),
+    "utf8",
+  ),
+);
+const expectedShell = JSON.parse(
+  await readFile(
+    new URL("../dist/offline-shell.json", import.meta.url),
+    "utf8",
+  ),
+);
 
 const base = new URL(
   process.argv[2] ?? "https://development.english-quest-dev.pages.dev",
@@ -62,7 +77,7 @@ let lessonResponse = await request("/api/v1/lessons");
 let course = await lessonResponse.json();
 const courseReady = () =>
   lessonResponse.status === 200 &&
-  course.lessons?.length === 24 &&
+  sameLessonRelease(course, expectedCourse) &&
   Object.keys(course.topicStats ?? {}).length === 60 &&
   Object.values(course.topicStats ?? {}).every(
     (stats) => stats.items >= 120 && stats.families >= 60,
@@ -74,6 +89,10 @@ const courseReady = () =>
   ) &&
   course.vocabulary?.totalWords === 360 &&
   course.vocabulary?.themes?.length === 18 &&
+  course.vocabulary?.themes?.every(
+    (theme) =>
+      theme.modes?.includes("listening") && theme.modes?.includes("spelling"),
+  ) &&
   !JSON.stringify(course).includes('"answers":');
 // Pages may report completion before the branch alias serves the new Functions
 // on every edge. Wait only for release propagation; all security checks above
@@ -87,4 +106,89 @@ check(
   courseReady(),
   "published lesson metadata and real topic availability delivered without answer keys",
 );
+const shellResponse = await request("/offline-shell.json");
+const currentHealth = await (await request("/api/v1/health")).json();
+check(
+  currentHealth.offlineProtocol === 1,
+  "current offline confirmation protocol delivered",
+);
+const shell = await shellResponse.json();
+check(
+  shellResponse.status === 200 &&
+    shell.cacheKey === expectedShell.cacheKey &&
+    JSON.stringify(shell.assets) === JSON.stringify(expectedShell.assets),
+  "static shell matches this exact build",
+);
+const sceneAssets = expectedShell.assets.filter((path) =>
+  /\/(?:World|SceneRuntime|SceneCanvas|ConceptCanvas)-.*\.js$/.test(path),
+);
+assert.equal(
+  sceneAssets.length,
+  4,
+  "all four scene modules are present in this build",
+);
+for (const path of sceneAssets) {
+  const response = await request(path);
+  const actual = Buffer.from(await response.arrayBuffer());
+  const expected = await readFile(new URL(`../dist${path}`, import.meta.url));
+  check(
+    response.status === 200 &&
+      /javascript/.test(response.headers.get("content-type") ?? "") &&
+      createHash("sha256").update(actual).digest("hex") ===
+        createHash("sha256").update(expected).digest("hex"),
+    `3D module matches build: ${path.split("/").pop()}`,
+  );
+}
+check(
+  (await request("/api/v1/admin/accounts")).status === 401,
+  "anonymous account administration rejected",
+);
+const login = await request("/api/v1/auth/login", {
+  method: "POST",
+  headers: { "Content-Type": "application/json", Origin: base.origin },
+  body: JSON.stringify({
+    username: "admin",
+    password: process.env.EQ_ADMIN_PASSWORD ?? "admin123123456",
+  }),
+});
+const cookie = login.headers
+  .getSetCookie()
+  .map((value) => value.split(";")[0])
+  .join("; ");
+try {
+  check(
+    login.status === 200 && cookie.includes("eq_account="),
+    "administrator login accepted",
+  );
+  const response = await request("/api/v1/admin/accounts", {
+    headers: { Cookie: cookie },
+  });
+  const data = await response.json();
+  const identity = await (
+    await request("/api/v1/me", { headers: { Cookie: cookie } })
+  ).json();
+  check(
+    response.status === 200 &&
+      Array.isArray(data.items) &&
+      identity.adult?.username === "admin" &&
+      identity.adult?.isAdmin === true,
+    "administrator account listing available",
+  );
+} finally {
+  if (cookie)
+    check(
+      (
+        await request("/api/v1/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Origin: base.origin,
+            Cookie: cookie,
+          },
+          body: "{}",
+        })
+      ).status === 200,
+      "verification login revoked",
+    );
+}
 console.log(`${checks} remote checks passed on ${base.origin}`);
