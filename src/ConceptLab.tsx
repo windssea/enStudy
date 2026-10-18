@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   conceptView,
   type ConceptCase,
@@ -7,6 +7,7 @@ import {
 import { api } from "./api";
 import ConceptScene from "./ConceptScene";
 import SpeechButton from "./SpeechButton";
+import MeasurementControls from "./MeasurementControls";
 export default function ConceptLab({
   lab,
   childId,
@@ -19,6 +20,8 @@ export default function ConceptLab({
     [revision, setRevision] = useState(0),
     [loading, setLoading] = useState(false),
     [error, setError] = useState("");
+  const titleId = useId();
+  const [selectedMeasurement, setSelectedMeasurement] = useState("");
   const request = useRef<AbortController | null>(null),
     live = useRef(true);
   useEffect(() => {
@@ -48,6 +51,11 @@ export default function ConceptLab({
       if (!data.saved || data.example?.id !== id)
         throw new Error("演示暂时没打开，请再试一次。");
       setExample(data.example);
+      setSelectedMeasurement(
+        "measurement" in data.example
+          ? (data.example.measurement?.items[0]?.id ?? "")
+          : "",
+      );
       setStep(0);
       setRevision((value) => value + 1);
     } catch (error) {
@@ -62,14 +70,14 @@ export default function ConceptLab({
   }
   const scene = example ? conceptView(lab, example, step) : null;
   return (
-    <section className="concept-lab" aria-labelledby="concept-title">
+    <section className="concept-lab" aria-labelledby={titleId}>
       <div className="concept-heading">
         <div>
           <p className="eyebrow">动手观察 · 不计分的示范</p>
-          <h3 id="concept-title">{lab.title}</h3>
+          <h3 id={titleId}>{lab.title}</h3>
           <p>{lab.description}</p>
         </div>
-        <span className="badge">3个小情景</span>
+        <span className="badge">{lab.cases.length}个小情景</span>
       </div>
       <div className="concept-choices" role="group" aria-label="选择演示例子">
         {lab.cases.map((row) => (
@@ -93,13 +101,32 @@ export default function ConceptLab({
       )}
       {!example && !loading && (
         <p className="concept-invitation">
-          点选一个例子，让时间线或词块动起来。
+          点选一个例子，观察时间、词形或实物之间的关系。
         </p>
       )}
       {example && scene && (
         <>
-          <div className="concept-stage-layout">
-            <ConceptScene data={scene} revision={revision} />
+          <div
+            className="concept-stage-layout"
+            data-measured={Boolean(scene.measurement)}
+          >
+            <div className="concept-scene-shell">
+              <ConceptScene
+                data={scene}
+                revision={revision}
+                selectedMeasurement={selectedMeasurement}
+              />
+              {scene.measurement && (
+                <MeasurementControls
+                  data={scene.measurement}
+                  selected={selectedMeasurement}
+                  onSelect={(id) => {
+                    setSelectedMeasurement(id);
+                    setRevision((value) => value + 1);
+                  }}
+                />
+              )}
+            </div>
             <div
               className="concept-observation"
               aria-live="polite"
@@ -110,7 +137,13 @@ export default function ConceptLab({
                   ? `第${step + 1}步 / 共3步`
                   : `正在观察 · ${example.label}`}
               </span>
-              <h4>{lab.kind === "morph" ? "看看词形怎样变" : example.label}</h4>
+              <h4>
+                {scene.measurement
+                  ? "尺寸和词形一起看"
+                  : lab.kind === "morph"
+                    ? "看看词形怎样变"
+                    : example.label}
+              </h4>
               {lab.kind === "morph" && (
                 <p className="concept-word" lang="en">
                   {scene.tiles.join(` ${scene.joiner} `)}

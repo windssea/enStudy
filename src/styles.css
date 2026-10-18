@@ -4001,6 +4001,79 @@ button.unit-node:not(:disabled) {
   background: linear-gradient(#eef7ff, #fff0b8);
   pointer-events: none;
 }
+.concept-scene-shell {
+  min-width: 0;
+}
+.concept-stage-layout[data-measured="true"] {
+  align-items: start;
+}
+.measurement-controls > p {
+  margin: 14px 0;
+  font-size: 16px;
+  color: var(--ink);
+}
+.measurement-choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.measurement-controls[data-count="2"] .measurement-choices {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.measurement-choices button {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  min-height: 108px;
+  padding: 12px 8px;
+  border: 2px solid var(--control-border);
+  border-radius: 18px;
+  background: white;
+  overflow-wrap: anywhere;
+}
+.measurement-choices button[aria-pressed="true"] {
+  background: var(--sky-soft);
+  border-color: var(--blue);
+  box-shadow: inset 0 0 0 1px var(--blue);
+}
+.measurement-number {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 11px;
+  font-weight: 800;
+}
+.measurement-choices button strong,
+.measurement-choices button strong + span {
+  display: block;
+}
+.measurement-choices button small {
+  font-size: 14px;
+}
+.measurement-controls .measurement-status {
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--sun-soft);
+}
+@media (max-width: 620px) {
+  .measurement-choices,
+  .measurement-controls[data-count="2"] .measurement-choices {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .measurement-choices button {
+    flex-direction: row;
+    min-height: 64px;
+    padding: 12px;
+    gap: 12px;
+  }
+  .measurement-choices button > span:nth-child(2) {
+    text-align: left;
+    flex: 1;
+  }
+}
 .concept-flat {
   width: 100%;
   height: 100%;

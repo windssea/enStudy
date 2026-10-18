@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "sourceHash": "2ed2ee6ea75c5e1884f7a209799b5fe2fa544ed382fa98d0be4e33127852a37d",
+  "sourceHash": "697dd8426d101d5c1aa9c9d2923881e64fe66abb4dc396fcbdc14beed54aee91",
   "entries": {
     "tense.present-simple/habit": [
       "sentence:every thursday, nora waters the lemon tree"
@@ -272,6 +272,41 @@
       "sentence:比较两者:写出good的比较级。",
       "workshop-target:morphology.adjective.comparison:c8f4375ec65c2",
       "workshop-target:morphology.adjective.comparison:cd7d5dcc36942"
+    ],
+    "forms.comparison/tower-pair": [
+      "family:fact-48295d8f6971445a",
+      "family:fact-7006db2e7ded2f32",
+      "family:topic-fact-1d52ccbb8f8fe05aeeef",
+      "family:topic-fact-2395f02309132ae98b5d",
+      "family:workshop-sentence-331936068c446803",
+      "sentence:ben is taller than mia",
+      "sentence:dan is taller than tim",
+      "sentence:my brother is taller than me",
+      "sentence:the orange tower is taller than the blue tower",
+      "sentence:比较两件物品:my bag is taller than yours",
+      "sentence:比较两者:写出tall的比较级。",
+      "workshop-target:morphology.adjective.comparison:c241daf2e753a",
+      "workshop-target:morphology.adjective.comparison:c563803ed2de9"
+    ],
+    "forms.comparison/bridge-group": [
+      "family:fact-2b2d9829193bee4d",
+      "family:fact-65074df635a3bdb1",
+      "family:pattern-sentence-18ff19500d87a8bfd5bf",
+      "sentence:the left path is wider than the right path",
+      "sentence:the orange bridge is the widest of these three bridges",
+      "sentence:this bag is wider than that one",
+      "sentence:this section is the widest of the three",
+      "workshop-target:morphology.adjective.comparison:c0abaa40b1043"
+    ],
+    "forms.comparison/book-pair": [
+      "family:fact-1db0411cd625bde6",
+      "family:pattern-sentence-090c54e66452333381b2",
+      "family:topic-fact-cb0c04ecaf79e6b10f81",
+      "sentence:the orange book is thinner than the blue book",
+      "sentence:the white paper is thinner than the black card",
+      "sentence:this bag is thinner than that one",
+      "sentence:比较两者:写出thin的比较级。",
+      "workshop-target:morphology.adjective.comparison:c1a0dc227b5aa"
     ],
     "forms.derivation/kind": [
       "family:topic-fact-b0ab4e5528c3d96e96b0",

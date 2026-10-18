@@ -13,8 +13,24 @@ import type { ConceptSceneData } from "../packages/domain/concepts";
 import { MotionContext } from "./SceneStage";
 import { isSpeechActive } from "./speechActivity";
 import { CONCEPT_MOTION_MS } from "./conceptMotion";
+import MeasurementFlat from "./MeasurementFlat";
 const ConceptCanvas = lazy(() => import("./ConceptCanvas"));
-export function ConceptFlat({ data }: { data: ConceptSceneData }) {
+export function ConceptFlat({
+  data,
+  selectedMeasurement,
+}: {
+  data: ConceptSceneData;
+  selectedMeasurement?: string;
+}) {
+  if (data.measurement)
+    return (
+      <MeasurementFlat
+        data={data.measurement}
+        selected={selectedMeasurement}
+        tiles={data.tiles}
+        joiner={data.joiner}
+      />
+    );
   const x = (point: number) => 35 + point * 330;
   return (
     <svg viewBox="0 0 400 240" className="concept-flat" aria-hidden="true">
@@ -145,9 +161,11 @@ class Boundary extends Component<
 export default function ConceptScene({
   data,
   revision,
+  selectedMeasurement,
 }: {
   data: ConceptSceneData;
   revision: number;
+  selectedMeasurement?: string;
 }) {
   const { quiet, flat } = useContext(MotionContext);
   const host = useRef<HTMLDivElement>(null),
@@ -194,7 +212,9 @@ export default function ConceptScene({
     const timer = setTimeout(() => setMoving(false), CONCEPT_MOTION_MS);
     return () => clearTimeout(timer);
   }, [revision, paused]);
-  const fallback = <ConceptFlat data={data} />;
+  const fallback = (
+    <ConceptFlat data={data} selectedMeasurement={selectedMeasurement} />
+  );
   return (
     <div ref={host} className="concept-scene" data-paused={paused}>
       <div className="concept-viewport" aria-hidden="true">
@@ -208,6 +228,7 @@ export default function ConceptScene({
                 revision={revision}
                 moving={moving && !paused}
                 onLost={() => setLost(true)}
+                selectedMeasurement={selectedMeasurement}
               />
             </Suspense>
           </Boundary>
@@ -215,9 +236,11 @@ export default function ConceptScene({
       </div>
       <p className="footnote">
         {lost ? "已切换为2D示意图。" : flat ? "2D示意图 · " : "互动示意图 · "}
-        {data.kind === "timeline"
-          ? "圆点表示所看的时刻；线段和小点表示进行、重复或与现在的联系，不按真实时间比例。"
-          : "词块会随着步骤变化；中间词块不一定是完整英文单词。"}
+        {data.measurement
+          ? "编号和下方物品对应；点击按钮观察。只在同组内按同一比例比较尺寸，视角不改变数字。"
+          : data.kind === "timeline"
+            ? "圆点表示所看的时刻；线段和小点表示进行、重复或与现在的联系，不按真实时间比例。"
+            : "词块会随着步骤变化；中间词块不一定是完整英文单词。"}
       </p>
     </div>
   );

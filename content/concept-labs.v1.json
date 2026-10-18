@@ -1038,7 +1038,7 @@
       "kind": "morph",
       "skill": "morphology.adjective.comparison",
       "title": "比较台阶，一阶一阶看",
-      "description": "点选例子，拆开看看，再合起来。中间词块不一定是完整单词。",
+      "description": "先选词形或实物情景。看清比较对象和尺寸，再观察词形怎样变化。",
       "cases": [
         {
           "id": "wide",
@@ -1138,6 +1138,173 @@
           "sentence": "This is the best route to the harbour.",
           "translation": "这是去海港的最佳路线。",
           "note": "good、better、best要单独记。"
+        },
+        {
+          "id": "tower-pair",
+          "label": "两座塔，比高低",
+          "base": "tall",
+          "result": "taller",
+          "targetForms": [
+            "taller"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "tall"
+              ],
+              "note": "两座塔从同一地面量高度：蓝塔4米，橙塔7米。先点它们看看。"
+            },
+            {
+              "tiles": [
+                "tall",
+                "er"
+              ],
+              "note": "比较两个物品谁更高：tall加er，变成taller。"
+            },
+            {
+              "tiles": [
+                "taller"
+              ],
+              "note": "7大于4。橙塔比蓝塔高：用taller than连接两个比较对象。"
+            }
+          ],
+          "sentence": "The orange tower is taller than the blue tower.",
+          "translation": "橙塔比蓝塔高。",
+          "note": "这是虚构的教学数据；高度按同一比例显示。比较两者要看同一个指标。",
+          "measurement": {
+            "kind": "tower",
+            "metric": "高度",
+            "unit": "米",
+            "preference": "larger",
+            "comparative": "更高",
+            "superlative": "最高",
+            "items": [
+              {
+                "id": "blue",
+                "label": "蓝塔",
+                "value": 4
+              },
+              {
+                "id": "orange",
+                "label": "橙塔",
+                "value": 7
+              }
+            ],
+            "targetId": "orange"
+          }
+        },
+        {
+          "id": "bridge-group",
+          "label": "三座桥，找最宽",
+          "base": "wide",
+          "result": "widest",
+          "targetForms": [
+            "wider",
+            "widest"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "wide"
+              ],
+              "note": "桥面宽度分别是2米、3米和5米。三座桥都用同一个单位和比例。"
+            },
+            {
+              "tiles": [
+                "wider"
+              ],
+              "note": "两座桥相比，可以说wider than。3米的桥比2米的桥宽。"
+            },
+            {
+              "tiles": [
+                "widest"
+              ],
+              "note": "在这三座桥中选最宽的：5米最大，用the widest。"
+            }
+          ],
+          "sentence": "The orange bridge is the widest of these three bridges.",
+          "translation": "橙桥是这三座桥中最宽的。",
+          "note": "虚构桥面数据。wide以不发音e结尾，这里比较级加r、最高级加st。",
+          "measurement": {
+            "kind": "bridge",
+            "metric": "宽度",
+            "unit": "米",
+            "preference": "larger",
+            "comparative": "更宽",
+            "superlative": "最宽",
+            "items": [
+              {
+                "id": "blue",
+                "label": "蓝桥",
+                "value": 2
+              },
+              {
+                "id": "green",
+                "label": "绿桥",
+                "value": 3
+              },
+              {
+                "id": "orange",
+                "label": "橙桥",
+                "value": 5
+              }
+            ],
+            "targetId": "orange"
+          }
+        },
+        {
+          "id": "book-pair",
+          "label": "两本书，比厚薄",
+          "base": "thin",
+          "result": "thinner",
+          "targetForms": [
+            "thinner"
+          ],
+          "steps": [
+            {
+              "tiles": [
+                "thin"
+              ],
+              "note": "蓝书厚3厘米，橙书厚1厘米。更薄对应更小的厚度，不是更大的数字。"
+            },
+            {
+              "tiles": [
+                "thinn",
+                "er"
+              ],
+              "note": "thin变比较级时，双写n再加er；中间的thinn是拼写步骤，不是完整单词。"
+            },
+            {
+              "tiles": [
+                "thinner"
+              ],
+              "note": "1小于3。橙书比蓝书薄：用thinner than。"
+            }
+          ],
+          "sentence": "The orange book is thinner than the blue book.",
+          "translation": "橙书比蓝书薄。",
+          "note": "虚构书本数据；只比较厚度，书本长宽相同。",
+          "measurement": {
+            "kind": "book",
+            "metric": "厚度",
+            "unit": "厘米",
+            "preference": "smaller",
+            "comparative": "更薄",
+            "superlative": "最薄",
+            "items": [
+              {
+                "id": "blue",
+                "label": "蓝书",
+                "value": 3
+              },
+              {
+                "id": "orange",
+                "label": "橙书",
+                "value": 1
+              }
+            ],
+            "targetId": "orange"
+          }
         }
       ]
     },

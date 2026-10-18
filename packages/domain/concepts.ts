@@ -1,4 +1,5 @@
 import source from "../../content/concept-labs.v1.json";
+import type { MeasurementVisual } from "./measurements";
 export type TimelineVisual = {
   point: number;
   span?: [number, number];
@@ -20,6 +21,7 @@ export type MorphCase = BaseCase & {
   result: string;
   targetForms: string[];
   steps: ConceptStep[];
+  measurement?: MeasurementVisual;
 };
 export type ConceptCase = TimeCase | MorphCase;
 export type ConceptLabData = {
@@ -46,6 +48,7 @@ export function conceptView(
       tiles: [] as string[],
       joiner: "+" as const,
       note: example.note,
+      measurement: undefined,
     };
   if ("steps" in example)
     return {
@@ -54,6 +57,7 @@ export function conceptView(
       tiles: example.steps[safeStep].tiles,
       joiner: example.steps[safeStep].joiner ?? "+",
       note: example.steps[safeStep].note,
+      measurement: example.measurement,
     };
   throw new Error("演示内容与场景类型不一致。");
 }

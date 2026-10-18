@@ -27,10 +27,10 @@ describe("authored time and morphology concept demonstrations", () => {
     expect(
       conceptLabs.every((l) => catalog.topics.some((t) => t.topic_id === l.id)),
     ).toBe(true);
-    expect(conceptLabs.flatMap((l) => l.cases)).toHaveLength(48);
+    expect(conceptLabs.flatMap((l) => l.cases)).toHaveLength(51);
     for (const lab of conceptLabs) {
-      expect(lab.cases).toHaveLength(3);
-      expect(new Set(lab.cases.map((c) => c.id)).size).toBe(3);
+      expect(lab.cases).toHaveLength(lab.id === "forms.comparison" ? 6 : 3);
+      expect(new Set(lab.cases.map((c) => c.id)).size).toBe(lab.cases.length);
     }
     expect(JSON.stringify(source)).not.toMatch(
       /"(?:answers|placements|repairs|rewardDelta)":/,
@@ -59,7 +59,7 @@ describe("authored time and morphology concept demonstrations", () => {
       .cases[0];
     expect("visual" in habit && habit.visual.repeat?.length).toBeGreaterThan(1);
   });
-  it("keeps all forty-eight demonstrations readable through the SVG fallback at every supported step", () => {
+  it("keeps all fifty-one demonstrations readable through the SVG fallback at every supported step", () => {
     for (const lab of conceptLabs)
       for (const example of lab.cases)
         for (let step = 0; step < 3; step++) {
@@ -77,7 +77,7 @@ describe("authored time and morphology concept demonstrations", () => {
     const cases = conceptLabs.flatMap((l) =>
       l.kind === "morph" ? (l.cases as MorphCase[]) : [],
     );
-    expect(cases).toHaveLength(24);
+    expect(cases).toHaveLength(27);
     for (const row of cases) {
       expect(row.steps).toHaveLength(3);
       expect(row.steps[0].tiles).toEqual([row.base]);
@@ -107,7 +107,9 @@ describe("authored time and morphology concept demonstrations", () => {
       const html = renderToStaticMarkup(
         createElement(ConceptLab, { lab, childId: "selected-child" }),
       );
-      expect(html.match(/class="concept-choice"/g)).toHaveLength(3);
+      expect(html.match(/class="concept-choice"/g)).toHaveLength(
+        lab.cases.length,
+      );
       expect(html).not.toContain("<canvas");
       for (const example of lab.cases)
         expect(html).not.toContain(example.sentence);
@@ -129,7 +131,7 @@ describe("authored time and morphology concept demonstrations", () => {
     expect(index.sourceHash).toBe(
       createHash("sha256").update(JSON.stringify(source)).digest("hex"),
     );
-    expect(Object.keys(index.entries)).toHaveLength(48);
+    expect(Object.keys(index.entries)).toHaveLength(51);
     const entries = index.entries as Record<string, string[]>;
     for (const lab of conceptLabs)
       for (const row of lab.cases) {

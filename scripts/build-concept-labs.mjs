@@ -65,9 +65,44 @@ const answerKeys = (item) => {
 };
 const entries = {};
 for (const lab of source.labs) {
-  if (!["timeline", "morph"].includes(lab.kind) || lab.cases.length !== 3)
+  if (
+    !["timeline", "morph"].includes(lab.kind) ||
+    lab.cases.length !== (lab.id === "forms.comparison" ? 6 : 3)
+  )
     throw Error(`Invalid concept lab ${lab.id}`);
   for (const example of lab.cases) {
+    if (example.measurement) {
+      const data = example.measurement;
+      if (
+        lab.id !== "forms.comparison" ||
+        !["tower", "bridge", "book"].includes(data.kind) ||
+        !["larger", "smaller"].includes(data.preference) ||
+        !["米", "厘米"].includes(data.unit) ||
+        !data.metric ||
+        !data.comparative ||
+        !data.superlative ||
+        !Array.isArray(data.items) ||
+        ![2, 3].includes(data.items.length) ||
+        new Set(data.items.map((item) => item.id)).size !== data.items.length ||
+        data.items.some(
+          (item) =>
+            !/^[a-z][a-z-]*$/.test(item.id) ||
+            !item.label ||
+            !Number.isFinite(item.value) ||
+            item.value <= 0,
+        )
+      )
+        throw Error(`Invalid measurement ${lab.id}/${example.id}`);
+      const best =
+        data.preference === "larger"
+          ? Math.max(...data.items.map((item) => item.value))
+          : Math.min(...data.items.map((item) => item.value));
+      if (
+        data.items.filter((item) => item.value === best).length !== 1 ||
+        data.items.find((item) => item.id === data.targetId)?.value !== best
+      )
+        throw Error(`Measurement claim contradicts its data ${example.id}`);
+    }
     const keys = new Set([sentenceKey(example.sentence)]);
     const forms = new Set((example.targetForms ?? []).map(normalize));
     const skills = new Set([
@@ -113,8 +148,8 @@ for (const lab of source.labs) {
     entries[`${lab.id}/${example.id}`] = [...keys].sort();
   }
 }
-if (source.labs.length !== 16 || Object.keys(entries).length !== 48)
-  throw Error("Expected sixteen labs and forty-eight distinct examples.");
+if (source.labs.length !== 16 || Object.keys(entries).length !== 51)
+  throw Error("Expected sixteen labs and fifty-one distinct examples.");
 await writeContent(
   "content/concept-exposure-map.json",
   JSON.stringify(
@@ -130,5 +165,5 @@ await writeContent(
   ) + "\n",
 );
 console.log(
-  "Built 16 optional concept labs / 48 teaching demonstrations and their private exposure mapping; no exercise or course credit added.",
+  "Built 16 optional concept labs / 51 teaching demonstrations including three measured comparisons; no exercise or course credit added.",
 );

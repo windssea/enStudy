@@ -5,6 +5,7 @@ import { Tile } from "./SceneModels";
 import { RenderActivity } from "./SceneRuntime";
 import { conceptProgress, timelineX } from "./conceptMotion";
 import type { ConceptSceneData } from "../packages/domain/concepts";
+import MeasurementModels from "./MeasurementModels";
 
 function Setup({ revision, onLost }: { revision: number; onLost: () => void }) {
   const { camera, size, gl, invalidate } = useThree();
@@ -217,11 +218,13 @@ export default function ConceptCanvas({
   revision,
   moving,
   onLost,
+  selectedMeasurement,
 }: {
   data: ConceptSceneData;
   revision: number;
   moving: boolean;
   onLost: () => void;
+  selectedMeasurement?: string;
 }) {
   return (
     <Canvas
@@ -240,7 +243,16 @@ export default function ConceptCanvas({
         <cylinderGeometry args={[2.35, 2.1, 0.2, 40]} />
         <meshStandardMaterial color="#c9dcec" />
       </mesh>
-      <Rail data={data} revision={revision} moving={moving} />
+      {data.measurement ? (
+        <MeasurementModels
+          data={data.measurement}
+          selected={selectedMeasurement}
+          revision={revision}
+          moving={moving}
+        />
+      ) : (
+        <Rail data={data} revision={revision} moving={moving} />
+      )}
     </Canvas>
   );
 }

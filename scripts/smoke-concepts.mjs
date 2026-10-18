@@ -12,8 +12,12 @@ const topic = JSON.parse(
 const workshops = JSON.parse(
   await readFile("content/workshop-release.latest.json", "utf8"),
 );
+const discovery = JSON.parse(
+  await readFile("content/discovery-course-release.v1.json", "utf8"),
+);
 let child,
   sibling,
+  measuredChild,
   checks = 0;
 const check = (ok, label) => {
   assert.ok(ok, label);
@@ -133,8 +137,8 @@ try {
       viewed++;
     }
   check(
-    viewed === 48,
-    "all sixteen labs reveal all forty-eight authoritative demonstrations after acknowledgement",
+    viewed === 51,
+    "all sixteen labs reveal all fifty-one authoritative demonstrations after acknowledgement",
   );
   const snapshot = (await request("/sessions/current")).data.session;
   check(
@@ -166,7 +170,7 @@ try {
     `SELECT evidence_key FROM teaching_exposures WHERE child_id=${quote(child)}`,
   );
   check(
-    rows.length >= 48 &&
+    rows.length >= 51 &&
       rows.every((row) => /^sha256:[a-f0-9]{64}$/.test(row.evidence_key)),
     "persistent demonstration evidence contains hashes instead of raw examples",
   );
@@ -286,11 +290,56 @@ try {
       .status === 403,
     "private demonstration-to-assessment mapping is blocked by the dev server",
   );
+  measuredChild = (
+    await request("/children", { nickname: "实物比较示范验证", grade: 4 })
+  ).data.id;
+  assert.ok(measuredChild);
+  assert.equal(
+    (await request(`/children/${measuredChild}/select`, {})).status,
+    200,
+  );
+  for (const [caseId, itemId] of [
+    ["tower-pair", "P4A-U05-L1.p3.choice"],
+    ["bridge-group", "P5A-U05-L2.p8.input"],
+    ["book-pair", "P4A-U05-L3.p6.repair"],
+  ]) {
+    const expected = source.labs
+      .find((lab) => lab.id === "forms.comparison")
+      .cases.find((row) => row.id === caseId);
+    const shown = await request("/learning/concepts/forms.comparison/view", {
+      caseId,
+      measurement: { items: [{ id: "fake", value: 999 }] },
+    });
+    check(
+      shown.status === 200 &&
+        shown.data.saved &&
+        JSON.stringify(shown.data.example.measurement) ===
+          JSON.stringify(expected.measurement),
+      `authoritative ${caseId} measurements ignore client replacement data`,
+    );
+    const item = discovery.items.find((item) => item.id === itemId),
+      session = await single(itemId);
+    const response = await request("/attempts", {
+      sessionId: session.id,
+      assignmentId: session.assignmentId,
+      leaseId: session.leaseId,
+      eventId: crypto.randomUUID(),
+      answer:
+        item.type === "repair" ? JSON.parse(item.answers[0]) : item.answers[0],
+    });
+    check(
+      response.status === 201 &&
+        response.data.support === "example" &&
+        response.data.outcome === "hinted" &&
+        !response.data.independentEvidence,
+      `${caseId} protects later ${item.type} practice as guided evidence`,
+    );
+  }
   console.log(
-    `${checks} concept demonstration checks passed on local workerd/D1; 48 cases viewed, no browser animation or provider test.`,
+    `${checks} concept demonstration checks passed on local workerd/D1; 51 cases viewed, no browser animation or provider test.`,
   );
 } finally {
-  for (const id of [sibling, child].filter(Boolean))
+  for (const id of [measuredChild, sibling, child].filter(Boolean))
     if (jar.has("eq_account"))
       assert.equal(
         (await request(`/children/${id}/remove`, {})).status,
