@@ -1,7 +1,8 @@
 id,milestone,task,acceptance,status,evidence
 M0-01,M0,React TypeScript Vite工程与依赖锁定,类型检查与生产构建通过,done,package-lock.json与npm run build
 M0-02,M0,真实Three.js地图模块与DOM降级,懒加载和2D切换实现且实机另验,implemented-unverified-visual,src/World.tsx
-M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,deployed-assets-and-data-verified-visual-pending,docs/48-clay-guide-and-next-term.md及Blender粘土伙伴棚灯转身与模型拓扑摘要和线上GLB验证通过且16专题51示范保留而浏览器GPU实机未验
+M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,deployed-assets-and-data-verified-visual-pending,docs/49-word-study-and-b-term-unit-two.md及六种词语模型和词卡记录加Blender伙伴与线上模块摘要通过且16专题51示范保留而浏览器GPU实机未验
+M0-02c,M0,宝可梦元素伙伴与形象选择,具名卡通粘土角色多视角拓扑动作和选择持久化通过,todo,用户总目标仍未满足而现有原创狐狸不能代表具名宝可梦角色已完成
 M0-03,M0,课程专题句式目录,72单元60专题72句式可读且标明草稿,done,public/content/catalog.json与HTTP检查
 M0-04,M0,本地D1迁移和样课闭环,服务端判题保存调度与提示证据通过,done,npm run verify:local
 M0-05,M0,跨家庭与幂等保护,越权拒绝且并发重试只计一次,done,本地workerd HTTP验证
@@ -9,7 +10,7 @@ M0-06,M0,CLI免费优先资源计划和脚本,计划输出且账号检查和默�
 M0-07,M0,本人账号创建开发Pages与D1,实际ID与绑定通过远程核验,done,2026-10-17本人OAuth与CLI创建成功
 M0-08,M0,预览发布与远程冒烟,实际URL与403开发身份保护和D1绑定验证,done,npm run verify:remote共8项通过
 M0-09,M0,GitHub Actions自动部署,main检查与受限Token部署实际通过,done,Actions运行39008241021完整成功与8项线上检查通过
-M0-10,M0,Preview与Production同步发布,同版本独立D1正式域名与账号验证通过,done,Actions39094705023及285单元752运行加两站和正式域名各21线上与20功能和6隔离检查通过
+M0-10,M0,Preview与Production同步发布,同版本独立D1正式域名与账号验证通过,done,Actions39096907871及299单元814运行加两站和正式域名各23线上与22功能和6隔离检查通过
 M1-01,M1,关闭注册与管理员身份,指定admin密码哈希和登录撤销通过,done,CI39009235672与线上23项账号检查
 M1-02,M1,儿童档案与设备授权,增改删切换及旧授权撤销通过,done,CI接口验证与线上23项账号检查
 M1-03,M1,会话重载与设备接管,重载恢复且旧lease不能重复写入,local-verified-remote-and-device-pending,docs/31-device-session-handover.md及36项续学检查和206项本机HTTP回归
@@ -22,7 +23,7 @@ M3-01,M3,60专题诊断与迁移,分层与题目家族隔离通过,partial-local
 M3-02,M3,72句式和词形规则,槽位与合法变体及错误归因通过,partial-72-frame-banks,docs/38-guided-training-centres.md与39-time-and-word-form-labs.md及句式题库与词形演示而完整归因迁移教研审核待做
 M3-03,M3,复习选题与延迟测验,积压保护与同日跨入口不重复晋级,partial-local-delayed-checkpoints,docs/33-topic-training-journeys.md及1/3/7日共用卡片和逾期合并通过而专用评估池与跨入口任务合并待做
 M3-04,M3,离线队列与报告,断网恢复且未确认进度不虚报,partial-local-offline-confirmation,docs/42-offline-practice-and-confirmation.md及当前轮加密七题型队列和两种丢响应恢复及显式重新授权加7和30日报告而真实缓存磁盘飞行模式多标签导出完整错因及云端验收待做
-M3-05,M3,独立单词特训,分级词库多模式随机与复习进度通过,partial-deployed-word-listening,docs/37-listening-and-evidence-reading.md及360词条18主题1440任务含听辨与本机记录及docs/47-20261018-synchronized-release.md两站拼写成绩和词汇进度保存通过而真实设备与教研审核待验
+M3-05,M3,独立单词特训,分级词库多模式随机与复习进度通过,partial-deployed-word-study,docs/49-word-study-and-b-term-unit-two.md及360词条18主题1440任务保留加六种粘土模型与词卡四模式示范16本机和两站22功能检查通过而真实设备与教研审核待验
 M4-01,M4,BYOK与预算,加密限流出站控制及故障回退通过,partial-local-text-and-voice,docs/35-ai-dialogue-and-voice.md及文字音频独立配置预算加密与本地59项语音检查通过而真实供应商出题审核运营治理和生产主密钥待做
 M4-02,M4,轮流语音,真实iPad格式权限和取消验证,partial-local-turn-based-voice,docs/35-ai-dialogue-and-voice.md及六场景WAV识别确认短对话和MP3合成本地实现而真实供应商与PC平板权限播放和实时语音待验
 M5-01,M5,真机性能隐私和运营,发布门槛全部通过且可恢复删除,todo,
