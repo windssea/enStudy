@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.27.0",
+  "version": "0.28.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -50,7 +50,9 @@
     "verify:production": "node scripts/smoke-remote.mjs https://english-quest-dev.pages.dev production",
     "verify:isolation": "node scripts/smoke-isolation.mjs",
     "verify:journey-courses": "node scripts/smoke-journey-courses.mjs",
-    "verify:next-term-courses": "node scripts/smoke-next-term-courses.mjs"
+    "verify:next-term-courses": "node scripts/smoke-next-term-courses.mjs",
+    "verify:explorer-term-courses": "node scripts/smoke-explorer-term-courses.mjs",
+    "verify:word-study": "node scripts/smoke-word-study.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.2",

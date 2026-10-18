@@ -1,0 +1,208 @@
+{
+  "blender": "5.2.1 LTS",
+  "source_ts_sha256": "0511f637d2d0a898104b8bcb050417e1c6c19a8ad6c971da9408495438893dba",
+  "source_glb_sha256": "be4cbe516274633d13e2f9b69c7ebf08145f90c089110c9224c9e0dc2f768bae",
+  "objects": [
+    {
+      "name": "left-apple-lobe",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.136306781962249
+    },
+    {
+      "name": "right-apple-lobe",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.136306781962249
+    },
+    {
+      "name": "apple-stem",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.00169479007283097
+    },
+    {
+      "name": "apple-leaf",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.136306781962249
+    },
+    {
+      "name": "curved-banana",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.0691373760592566
+    },
+    {
+      "name": "banana-tip--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.0008588107356679785
+    },
+    {
+      "name": "banana-tip-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.0008588107356679785
+    },
+    {
+      "name": "book-pages",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.18736569734712974
+    },
+    {
+      "name": "book-cover--0.115",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.07329801792554066
+    },
+    {
+      "name": "book-cover-0.115",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.07329801792554066
+    },
+    {
+      "name": "book-spine",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.014295303104106712
+    },
+    {
+      "name": "book-cover-sun",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.136306781962249
+    },
+    {
+      "name": "pencil-shaft",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.038160540593735116
+    },
+    {
+      "name": "wood-tip",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.003876073726770352
+    },
+    {
+      "name": "graphite-tip",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.00015662694099439331
+    },
+    {
+      "name": "pencil-band",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.006308713843651595
+    },
+    {
+      "name": "rounded-eraser",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.008696852829026361
+    },
+    {
+      "name": "fish-body",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.136306781962249
+    },
+    {
+      "name": "fish-tail",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.025727996059665373
+    },
+    {
+      "name": "fish-top-fin",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.136306781962249
+    },
+    {
+      "name": "fish-eye--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.5507137276475251
+    },
+    {
+      "name": "fish-eye-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.5515163548869173
+    },
+    {
+      "name": "fish-side-fin",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.136306781962249
+    },
+    {
+      "name": "orange-colour-chip",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 0.2449419688918218
+    },
+    {
+      "name": "colour-chip-highlight",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 4.136306781962249
+    }
+  ],
+  "closed_solids": true
+}

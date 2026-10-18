@@ -4228,6 +4228,30 @@ button.unit-node:not(:disabled) {
   flex-wrap: wrap;
   gap: 8px;
 }
+.word-object-scene {
+  margin-top: 16px;
+  padding: 8px;
+  border-radius: 20px;
+  background: #fff4d7;
+}
+.word-object-viewport {
+  height: 220px;
+  width: 100%;
+  pointer-events: none;
+}
+.word-object-flat {
+  width: 100%;
+  height: 100%;
+}
+.word-object-caption,
+.word-study-note {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.word-object-scene .text-button {
+  min-height: 52px;
+}
 .map-footer .scene-actions {
   justify-content: flex-start;
 }

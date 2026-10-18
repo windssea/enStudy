@@ -121,12 +121,14 @@ check(
   "static shell matches this exact build",
 );
 const sceneAssets = expectedShell.assets.filter((path) =>
-  /\/(?:World|SceneRuntime|SceneCanvas|ConceptCanvas)-.*\.js$/.test(path),
+  /\/(?:World|SceneRuntime|SceneCanvas|ConceptCanvas|WordObjectScene|WordObjectCanvas)-.*\.js$/.test(
+    path,
+  ),
 );
 assert.equal(
   sceneAssets.length,
-  4,
-  "all four scene modules are present in this build",
+  6,
+  "all six scene modules including word study are present in this build",
 );
 for (const path of sceneAssets) {
   const response = await request(path);

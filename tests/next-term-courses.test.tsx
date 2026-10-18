@@ -45,15 +45,16 @@ describe("first B-term core courses", () => {
       ).toBe(hash);
   });
   it("opens a distinct first B-term unit without changing the 144 A-term lessons", () => {
-    expect(courseCatalog.lessons).toHaveLength(168);
+    expect(courseCatalog.lessons).toHaveLength(192);
     expect(
       courseCatalog.lessons.filter((row) => row.term === "A"),
     ).toHaveLength(144);
     expect(nextTermRelease.lessons).toHaveLength(24);
-    expect(new Set(courseCatalog.lessons.map((row) => row.id)).size).toBe(168);
+    expect(new Set(courseCatalog.lessons.map((row) => row.id)).size).toBe(192);
     for (let grade = 1; grade <= 6; grade++) {
       const rows = courseCatalog.lessons.filter(
-        (row) => row.grade === grade && row.term === "B",
+        (row) =>
+          row.grade === grade && row.term === "B" && row.unitNumber === 1,
       );
       expect(rows.map((row) => row.order)).toEqual([1, 2, 3, 4]);
       expect(rows.map((row) => row.id)).toEqual(

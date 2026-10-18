@@ -4,6 +4,7 @@ import { sentenceKey, answerExposureKeys } from "../domain/exposure";
 import {
   courseCatalog,
   patternRelease,
+  vocabularyRelease,
   type PrivateExercise,
 } from "./exercises";
 import catalog from "../../public/content/catalog.json";
@@ -32,6 +33,28 @@ export function disclosureCheckKeys(item: PrivateExercise) {
   ];
 }
 const patternPreviewKeys = new Map<string, string[]>();
+export function wordPreview(id: string) {
+  return vocabularyRelease.themes
+    .flatMap((theme) => theme.words)
+    .find((word) => word.id === id);
+}
+const wordPreviewKeys = new Map<string, string[]>();
+export function wordExampleKeys(id: string) {
+  const cached = wordPreviewKeys.get(id);
+  if (cached) return cached;
+  const word = wordPreview(id);
+  if (!word) return [];
+  const keys = [
+    ...new Set([
+      sentenceKey(word.example),
+      ...vocabularyRelease.items
+        .filter((item) => item.wordId === id)
+        .flatMap(answerExposureKeys),
+    ]),
+  ];
+  wordPreviewKeys.set(id, keys);
+  return keys;
+}
 export const patternPreview = (id: string) =>
   catalog.patterns.find((row) => row.pattern_id === id);
 export function patternExampleKeys(id: string) {

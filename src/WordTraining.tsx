@@ -6,8 +6,8 @@ import type {
   VocabularySummary,
 } from "../packages/contracts/index";
 import { api } from "./api";
-import SpeechButton from "./SpeechButton";
 import SceneStage from "./SceneStage";
+import WordStudyCard from "./WordStudyCard";
 const themePaths: Record<string, string> = {
   animals:
     "M7 12 4 6l7 3h2l7-3-3 6v4a5 5 0 0 1-10 0v-4Zm2 2h.01M15 14h.01M10 18l2 1 2-1",
@@ -526,18 +526,11 @@ export default function WordTraining({
             )}
             <div className="word-card-grid">
               {words.map((word) => (
-                <details className="word-flashcard" key={word.id}>
-                  <summary>
-                    <strong lang="en">{word.word}</strong>
-                    <span>点开释义与例句</span>
-                  </summary>
-                  <div>
-                    <h4>{word.meaning}</h4>
-                    <p lang="en">{word.example}</p>
-                    <SpeechButton text={word.word} />
-                    <SpeechButton text={word.example} label="读例句" />
-                  </div>
-                </details>
+                <WordStudyCard
+                  key={`${childId ?? "guest"}:${word.id}`}
+                  word={word}
+                  childId={childId}
+                />
               ))}
             </div>
             {!loading && !error && data?.id === selectedId && !words.length && (

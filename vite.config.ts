@@ -67,6 +67,8 @@ export default defineConfig({
         "**/content/journey-course-release*.json",
         "**/content/next-term-courses*.mjs",
         "**/content/next-term-course-release*.json",
+        "**/content/explorer-term-courses*.mjs",
+        "**/content/explorer-term-course-release*.json",
         "**/.wrangler/**",
         "**/.cloudflare/**",
         "**/.git/**",

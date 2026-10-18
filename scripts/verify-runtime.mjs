@@ -54,12 +54,14 @@ try {
   await run("smoke-training.mjs");
   await run("smoke-patterns.mjs");
   await run("smoke-vocabulary.mjs");
+  await run("smoke-word-study.mjs");
   await run("smoke-workshops.mjs");
   await run("smoke-listening-reading.mjs");
   await run("smoke-action-courses.mjs");
   await run("smoke-discovery-courses.mjs");
   await run("smoke-journey-courses.mjs");
   await run("smoke-next-term-courses.mjs");
+  await run("smoke-explorer-term-courses.mjs");
   await run("smoke-concepts.mjs");
   await run("smoke-reports.mjs");
   await run("smoke-offline.mjs");

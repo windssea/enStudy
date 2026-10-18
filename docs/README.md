@@ -54,6 +54,7 @@
 | 48 | [v0.26第六单元与历史示范记录](46-sixth-unit-and-historical-demonstrations.md) | 六个年级24课216任务与旧示范对新增题目的保护 |
 | 49 | [10月18日同步发布v0.26](47-20261018-synchronized-release.md) | 修复验收Cookie、两站至0027、正式域名及功能和隔离核验 |
 | 50 | [v0.27粘土伙伴与B学期起点](48-clay-guide-and-next-term.md) | Blender源模型、棚灯与缓存、原创卡通角色、168课与学期引导 |
+| 51 | [v0.28粘土词语角与B第二单元](49-word-study-and-b-term-unit-two.md) | 192课、词义匹配的六种模型、词卡示范与独立记忆衔接 |
 
 配套资料：
 

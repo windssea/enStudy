@@ -18,3 +18,14 @@ Validated version: Blender 5.2.1 LTS. The current file is 1,468,224 bytes with 3
 CI checks the checked-in GLB and its QA binding without requiring Blender. Browser materials add a tiny deterministic clay-grain bump texture; the baked vertex AO is preserved. Independent clones share immutable geometry while owning their pose nodes and materials. Static topology and render inspection do not certify every animated pose or device.
 
 Blender MCP was not exposed in the current session, and plugin discovery returned no matching connected capability. Authoring therefore used the installed Blender CLI directly. No MCP connection was fabricated or installed.
+
+## Runtime word objects
+
+The six word props are code-defined in `src/scene/wordObjectModel.ts`. Inspect the same geometry with:
+
+```powershell
+node scripts/export-word-objects.mjs
+& 'D:/Program Files/Blender Foundation/Blender 5.2/blender.exe' --background --factory-startup --python tools/blender/preview_word_objects.py
+```
+
+The inspection checks all 25 solids without repairing their geometry. Its report binds the modelling source SHA-256; CI detects stale reports. `design-assets/previews/word-objects-studio.png` is a Cycles render of these actual meshes, not a browser screenshot. The browser uses the factory geometry directly and the shared clay studio. Only the preview export strips the tiny runtime bump texture and adds equivalent fine grain in Blender; it does not replace runtime geometry with an unrelated illustration.
