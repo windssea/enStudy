@@ -274,6 +274,47 @@ try {
       unchangedSession.data.session === null,
     "choosing a partner does not create learning progress or a session",
   );
+  const positionDemo = await authenticated(
+      "/learning/concepts/grammar.prepositions/view",
+      { caseId: "in-box" },
+    ),
+    afterDemo = await authenticated("/progress");
+  check(
+    positionDemo.status === 200 &&
+      positionDemo.data.saved &&
+      positionDemo.data.example?.spatial?.relation === "in" &&
+      afterDemo.data.answered === 0 &&
+      afterDemo.data.stars === 0,
+    "position lab returns its authored scene without creating a score",
+  );
+  const courseStart = await authenticated("/sessions", {
+    lessonId: "P6B-U03-L1",
+    clientRequestId: crypto.randomUUID(),
+  });
+  check(
+    courseStart.status === 201 &&
+      courseStart.data.exercise?.id === "P6B-U03-L1.p1.listen" &&
+      courseStart.data.total === 9,
+    "latest B-term unit three is assignable from remote D1",
+  );
+  const positionTask = await authenticated("/sessions", {
+    exerciseId: "P1B-U03-L1.p8.input",
+    clientRequestId: crypto.randomUUID(),
+  });
+  assert.equal(positionTask.status, 201);
+  const positionReceipt = await authenticated("/attempts", {
+    sessionId: positionTask.data.id,
+    assignmentId: positionTask.data.assignmentId,
+    leaseId: positionTask.data.leaseId,
+    eventId: crypto.randomUUID(),
+    answer: "in",
+  });
+  check(
+    positionReceipt.status === 201 &&
+      positionReceipt.data.support === "example" &&
+      !positionReceipt.data.independentEvidence,
+    "position demonstration protects matching assessment evidence in remote D1",
+  );
 } finally {
   try {
     if (temporaryChild) {

@@ -137,8 +137,8 @@ try {
       viewed++;
     }
   check(
-    viewed === 51,
-    "all sixteen labs reveal all fifty-one authoritative demonstrations after acknowledgement",
+    viewed === 54,
+    "all seventeen labs reveal all fifty-four authoritative demonstrations after acknowledgement",
   );
   const snapshot = (await request("/sessions/current")).data.session;
   check(
@@ -170,7 +170,7 @@ try {
     `SELECT evidence_key FROM teaching_exposures WHERE child_id=${quote(child)}`,
   );
   check(
-    rows.length >= 51 &&
+    rows.length >= 54 &&
       rows.every((row) => /^sha256:[a-f0-9]{64}$/.test(row.evidence_key)),
     "persistent demonstration evidence contains hashes instead of raw examples",
   );
@@ -336,7 +336,7 @@ try {
     );
   }
   console.log(
-    `${checks} concept demonstration checks passed on local workerd/D1; 51 cases viewed, no browser animation or provider test.`,
+    `${checks} concept demonstration checks passed on local workerd/D1; 54 cases viewed, no browser animation or provider test.`,
   );
 } finally {
   for (const id of [measuredChild, sibling, child].filter(Boolean))

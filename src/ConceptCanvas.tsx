@@ -7,6 +7,7 @@ import { RenderActivity } from "./SceneRuntime";
 import { conceptProgress, timelineX } from "./conceptMotion";
 import type { ConceptSceneData } from "../packages/domain/concepts";
 import MeasurementModels from "./MeasurementModels";
+import SpatialModels from "./SpatialModels";
 
 function Setup({ revision, onLost }: { revision: number; onLost: () => void }) {
   const { camera, size, gl, invalidate } = useThree();
@@ -240,11 +241,18 @@ export default function ConceptCanvas({
       <RenderActivity active={moving} />
       <Setup revision={revision} onLost={onLost} />
       <ClayStudio revision={`${data.kind}:${revision}`} onLost={onLost} />
-      <mesh position={[0, -0.18, 0]}>
+      <mesh position={[0, data.kind === "spatial" ? -0.1 : -0.18, 0]}>
         <cylinderGeometry args={[2.35, 2.1, 0.2, 40]} />
         <meshStandardMaterial color="#d8c4a4" roughness={0.9} />
       </mesh>
-      {data.measurement ? (
+      {data.kind === "spatial" ? (
+        <SpatialModels
+          data={data.spatial}
+          placed={data.placed}
+          revision={revision}
+          moving={moving}
+        />
+      ) : data.measurement ? (
         <MeasurementModels
           data={data.measurement}
           selected={selectedMeasurement}

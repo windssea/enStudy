@@ -21,13 +21,13 @@ import { ConceptFlat } from "../src/ConceptScene";
 import ConceptLab from "../src/ConceptLab";
 
 describe("authored time and morphology concept demonstrations", () => {
-  it("covers all sixteen tense and morphology topics without pretending to add assessed tasks", () => {
-    expect(conceptLabs).toHaveLength(16);
-    expect(new Set(conceptLabs.map((l) => l.id)).size).toBe(16);
+  it("covers seventeen tense, morphology and spatial topics without pretending to add assessed tasks", () => {
+    expect(conceptLabs).toHaveLength(17);
+    expect(new Set(conceptLabs.map((l) => l.id)).size).toBe(17);
     expect(
       conceptLabs.every((l) => catalog.topics.some((t) => t.topic_id === l.id)),
     ).toBe(true);
-    expect(conceptLabs.flatMap((l) => l.cases)).toHaveLength(51);
+    expect(conceptLabs.flatMap((l) => l.cases)).toHaveLength(54);
     for (const lab of conceptLabs) {
       expect(lab.cases).toHaveLength(lab.id === "forms.comparison" ? 6 : 3);
       expect(new Set(lab.cases.map((c) => c.id)).size).toBe(lab.cases.length);
@@ -59,7 +59,7 @@ describe("authored time and morphology concept demonstrations", () => {
       .cases[0];
     expect("visual" in habit && habit.visual.repeat?.length).toBeGreaterThan(1);
   });
-  it("keeps all fifty-one demonstrations readable through the SVG fallback at every supported step", () => {
+  it("keeps all fifty-four demonstrations readable through the SVG fallback at every supported step", () => {
     for (const lab of conceptLabs)
       for (const example of lab.cases)
         for (let step = 0; step < 3; step++) {
@@ -131,7 +131,7 @@ describe("authored time and morphology concept demonstrations", () => {
     expect(index.sourceHash).toBe(
       createHash("sha256").update(JSON.stringify(source)).digest("hex"),
     );
-    expect(Object.keys(index.entries)).toHaveLength(51);
+    expect(Object.keys(index.entries)).toHaveLength(54);
     const entries = index.entries as Record<string, string[]>;
     for (const lab of conceptLabs)
       for (const row of lab.cases) {

@@ -14,6 +14,7 @@ import { MotionContext } from "./SceneStage";
 import { isSpeechActive } from "./speechActivity";
 import { CONCEPT_MOTION_MS } from "./conceptMotion";
 import MeasurementFlat from "./MeasurementFlat";
+import SpatialFlat from "./SpatialFlat";
 const ConceptCanvas = lazy(() => import("./ConceptCanvas"));
 export function ConceptFlat({
   data,
@@ -22,6 +23,8 @@ export function ConceptFlat({
   data: ConceptSceneData;
   selectedMeasurement?: string;
 }) {
+  if (data.kind === "spatial")
+    return <SpatialFlat data={data.spatial} placed={data.placed} />;
   if (data.measurement)
     return (
       <MeasurementFlat
@@ -236,11 +239,13 @@ export default function ConceptScene({
       </div>
       <p className="footnote">
         {lost ? "已切换为2D示意图。" : flat ? "2D示意图 · " : "互动示意图 · "}
-        {data.measurement
-          ? "编号和下方物品对应；点击按钮观察。只在同组内按同一比例比较尺寸，视角不改变数字。"
-          : data.kind === "timeline"
-            ? "圆点表示所看的时刻；线段和小点表示进行、重复或与现在的联系，不按真实时间比例。"
-            : "词块会随着步骤变化；中间词块不一定是完整英文单词。"}
+        {data.kind === "spatial"
+          ? "小球、桌子和开口盒子的关系与文字对应；轻点步骤观察，不用拖动。"
+          : data.measurement
+            ? "编号和下方物品对应；点击按钮观察。只在同组内按同一比例比较尺寸，视角不改变数字。"
+            : data.kind === "timeline"
+              ? "圆点表示所看的时刻；线段和小点表示进行、重复或与现在的联系，不按真实时间比例。"
+              : "词块会随着步骤变化；中间词块不一定是完整英文单词。"}
       </p>
     </div>
   );

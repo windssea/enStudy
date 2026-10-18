@@ -133,16 +133,18 @@ export default function ConceptLab({
               aria-atomic="true"
             >
               <span className="eyebrow">
-                {lab.kind === "morph"
+                {lab.kind !== "timeline"
                   ? `第${step + 1}步 / 共3步`
                   : `正在观察 · ${example.label}`}
               </span>
               <h4>
-                {scene.measurement
-                  ? "尺寸和词形一起看"
-                  : lab.kind === "morph"
-                    ? "看看词形怎样变"
-                    : example.label}
+                {lab.kind === "spatial"
+                  ? "看清球和参照物的位置"
+                  : scene.measurement
+                    ? "尺寸和词形一起看"
+                    : lab.kind === "morph"
+                      ? "看看词形怎样变"
+                      : example.label}
               </h4>
               {lab.kind === "morph" && (
                 <p className="concept-word" lang="en">
@@ -155,7 +157,7 @@ export default function ConceptLab({
               )}
             </div>
           </div>
-          {lab.kind === "morph" && (
+          {lab.kind !== "timeline" && (
             <div className="concept-controls">
               <button
                 className="secondary"

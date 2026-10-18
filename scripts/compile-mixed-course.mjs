@@ -54,6 +54,26 @@ export async function compileMixedCourse({
         rule: lesson.rule,
       },
       unit = scope.find((row) => row.unit_id === lesson.unitId);
+    const skillKinds = new Set([
+      "grammar",
+      "lexeme",
+      "morphology",
+      "vocabulary",
+      "phonics",
+      "listening",
+      "reading",
+      "speaking",
+      "writing",
+    ]);
+    for (const skill of [
+      plan.skill,
+      plan.repairSkill,
+      plan.sortingSkill,
+      plan.inputSkill,
+      plan.orderSkill,
+    ].filter((value) => value !== undefined))
+      if (typeof skill !== "string" || !skillKinds.has(skill.split(".")[0]))
+        throw Error(`Unsupported skill kind in ${lesson.id}: ${skill}`);
     if (
       !unit ||
       !source.plans[lesson.grade] ||

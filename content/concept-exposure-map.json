@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "sourceHash": "697dd8426d101d5c1aa9c9d2923881e64fe66abb4dc396fcbdc14beed54aee91",
+  "sourceHash": "73e1b41a88e2065a59e595135ee114e26d1993c550dcecb817193f70977077c6",
   "entries": {
     "tense.present-simple/habit": [
       "sentence:every thursday, nora waters the lemon tree"
@@ -336,6 +336,16 @@
       "sentence:nora is careful with the glass jar",
       "sentence:按本词表写出“小心的”的英文。",
       "sentence:给care加前缀或后缀,组成表示“小心的”的词。"
+    ],
+    "grammar.prepositions/in-box": [
+      "family:fact-d6b1c2eb9480b272",
+      "sentence:the coral ball is in the box"
+    ],
+    "grammar.prepositions/on-table": [
+      "sentence:the coral ball is on the table"
+    ],
+    "grammar.prepositions/under-table": [
+      "sentence:the coral ball is under the table"
     ]
   }
 }

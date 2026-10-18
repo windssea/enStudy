@@ -42,3 +42,12 @@ node scripts/export-word-objects.mjs
 ```
 
 The inspection checks all 25 solids without repairing their geometry. Its report binds the modelling source SHA-256; CI detects stale reports. `design-assets/previews/word-objects-studio.png` is a Cycles render of these actual meshes, not a browser screenshot. The browser uses the factory geometry directly and the shared clay studio. Only the preview export strips the tiny runtime bump texture and adds equivalent fine grain in Blender; it does not replace runtime geometry with an unrelated illustration.
+
+## Position classroom
+
+```powershell
+node scripts/export-spatial-poses.mjs
+& 'D:/Program Files/Blender Foundation/Blender 5.2/blender.exe' --background --factory-startup --python tools/blender/preview_spatial_classroom.py
+```
+
+The browser and the inspection use `src/scene/spatialModel.ts` and `packages/domain/spatial.ts`. The exporter places the same moving ball at home, in the box, on the table and under the table. Each pose has 13 closed solids / 8,504 triangles. The QA scene welds export seams only in a check copy and rejects invalid topology; it does not repair or substitute runtime geometry. Four Cycles images and the editable `.blend` preserve the inspected furniture, placements and studio lighting. The report binds both runtime source hashes; the unit suite rejects stale reports. WebGL, actual touch and device performance require separate browser/device checks.

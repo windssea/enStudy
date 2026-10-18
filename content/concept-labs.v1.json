@@ -1415,6 +1415,45 @@
           "note": "care → careful；不要照full的拼写写成carefull。"
         }
       ]
+    },
+    {
+      "id": "grammar.prepositions",
+      "kind": "spatial",
+      "skill": "grammar.prepositions.place",
+      "title": "位置小实验",
+      "description": "先找小球和参照物，再轻点步骤，看看里面、上面和下面有什么不同。",
+      "cases": [
+        {
+          "id": "in-box",
+          "label": "in · 放在盒子里",
+          "sentence": "The coral ball is in the box.",
+          "translation": "珊瑚色小球在盒子里。",
+          "note": "in说盒子内部。球从开口进入，不是放在盒子表面。",
+          "spatial": {
+            "relation": "in"
+          }
+        },
+        {
+          "id": "on-table",
+          "label": "on · 放在桌面上",
+          "sentence": "The coral ball is on the table.",
+          "translation": "珊瑚色小球在桌面上。",
+          "note": "on说桌子上表面，小球和桌面有接触。",
+          "spatial": {
+            "relation": "on"
+          }
+        },
+        {
+          "id": "under-table",
+          "label": "under · 放在桌子下",
+          "sentence": "The coral ball is under the table.",
+          "translation": "珊瑚色小球在桌子下面。",
+          "note": "under说桌子下方。球在地面上，与桌面上的on不同。",
+          "spatial": {
+            "relation": "under"
+          }
+        }
+      ]
     }
   ]
 }

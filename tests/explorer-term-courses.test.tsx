@@ -41,8 +41,8 @@ describe("B-term second-unit learning", () => {
       ).toBe(hash);
   });
   it("adds four separate second-unit lessons per grade without replacing A or B unit 1", () => {
-    expect(courseCatalog.lessons).toHaveLength(192);
-    expect(new Set(courseCatalog.lessons.map((row) => row.id)).size).toBe(192);
+    expect(courseCatalog.lessons).toHaveLength(216);
+    expect(new Set(courseCatalog.lessons.map((row) => row.id)).size).toBe(216);
     expect(explorerTermRelease.lessons).toHaveLength(24);
     expect(
       courseCatalog.lessons.filter((row) => row.term === "A"),
@@ -59,7 +59,7 @@ describe("B-term second-unit learning", () => {
         courseCatalog.lessons.filter(
           (row) => row.grade === grade && row.term === "B",
         ),
-      ).toHaveLength(8);
+      ).toHaveLength(12);
     }
   });
   it("uses 216 distinct new families, all seven task types, and examples separated from the assessed sentences", () => {

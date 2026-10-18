@@ -69,6 +69,8 @@ export default defineConfig({
         "**/content/next-term-course-release*.json",
         "**/content/explorer-term-courses*.mjs",
         "**/content/explorer-term-course-release*.json",
+        "**/content/neighbourhood-term-courses*.mjs",
+        "**/content/neighbourhood-term-course-release*.json",
         "**/.wrangler/**",
         "**/.cloudflare/**",
         "**/.git/**",

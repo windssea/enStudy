@@ -22,6 +22,7 @@ const paths = [
   "journey-course-release.v1.json",
   "next-term-course-release.v1.json",
   "explorer-term-course-release.v1.json",
+  "neighbourhood-term-course-release.v1.json",
 ];
 const items = [
   ...new Map(
@@ -69,11 +70,17 @@ const answerKeys = (item) => {
 const entries = {};
 for (const lab of source.labs) {
   if (
-    !["timeline", "morph"].includes(lab.kind) ||
+    !["timeline", "morph", "spatial"].includes(lab.kind) ||
     lab.cases.length !== (lab.id === "forms.comparison" ? 6 : 3)
   )
     throw Error(`Invalid concept lab ${lab.id}`);
   for (const example of lab.cases) {
+    if (
+      lab.kind === "spatial" &&
+      (lab.id !== "grammar.prepositions" ||
+        !["in", "on", "under"].includes(example.spatial?.relation))
+    )
+      throw Error(`Invalid spatial example ${lab.id}/${example.id}`);
     if (example.measurement) {
       const data = example.measurement;
       if (
@@ -151,8 +158,8 @@ for (const lab of source.labs) {
     entries[`${lab.id}/${example.id}`] = [...keys].sort();
   }
 }
-if (source.labs.length !== 16 || Object.keys(entries).length !== 51)
-  throw Error("Expected sixteen labs and fifty-one distinct examples.");
+if (source.labs.length !== 17 || Object.keys(entries).length !== 54)
+  throw Error("Expected seventeen labs and fifty-four distinct examples.");
 await writeContent(
   "content/concept-exposure-map.json",
   JSON.stringify(
@@ -168,5 +175,5 @@ await writeContent(
   ) + "\n",
 );
 console.log(
-  "Built 16 optional concept labs / 51 teaching demonstrations including three measured comparisons; no exercise or course credit added.",
+  "Built 17 optional concept labs / 54 teaching demonstrations including spatial placement and three measured comparisons; no exercise or course credit added.",
 );

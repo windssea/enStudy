@@ -1,0 +1,5 @@
+{
+  "content/explorer-term-course-release.v1.json": "cf9a21ee5afad4b1b804af1429a132a4c05d4edeecae6878772e7c706a04a9c6",
+  "migrations/0029_term_b_explorers.sql": "e88083e5cfac3e1856024e3f3fb7f17ba67c39b657ed4e6be1c691ba696d8097",
+  "migrations/0030_child_companions.sql": "bbbd199ad66e871a5ce26f3cbb206fa750505e30868cd67f51ecb5419b51b5c6"
+}

@@ -1,0 +1,453 @@
+{
+  "blender": "5.2.1 LTS",
+  "poses": {
+    "home": {
+      "meshes": 13,
+      "triangles": 8504,
+      "source_glb_sha256": "d06501f9bf1856fceaea74cc25816cf2058109f9e197826dcf49d126f6f1c210",
+      "objects": [
+        {
+          "name": "rounded-tabletop",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.21548876296320893
+        },
+        {
+          "name": "table-leg:-1.34:-0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-1.34:0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-0.16:-0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-0.16:0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "box-floor",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.08444094754438877
+        },
+        {
+          "name": "box-side:0.75",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0420864472433546
+        },
+        {
+          "name": "box-side:1.65",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0420864472433546
+        },
+        {
+          "name": "box-back",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.03960099726903119
+        },
+        {
+          "name": "box-front-lip",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.010905757227134069
+        },
+        {
+          "name": "Mesh_10",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.028424545435634302
+        },
+        {
+          "name": "Mesh_11",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 4.9223496821041636e-05
+        },
+        {
+          "name": "Mesh_12",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 4.9223496821041636e-05
+        }
+      ]
+    },
+    "in": {
+      "meshes": 13,
+      "triangles": 8504,
+      "source_glb_sha256": "978a2e94c97b72f89a90364a9893a4f982eb73a20b256e913a72c73c84a031c9",
+      "objects": [
+        {
+          "name": "rounded-tabletop",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.21548876296320893
+        },
+        {
+          "name": "table-leg:-1.34:-0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-1.34:0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-0.16:-0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-0.16:0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "box-floor",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.08444094754438877
+        },
+        {
+          "name": "box-side:0.75",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0420864472433546
+        },
+        {
+          "name": "box-side:1.65",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0420864472433546
+        },
+        {
+          "name": "box-back",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.03960099726903119
+        },
+        {
+          "name": "box-front-lip",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.010905757227134069
+        },
+        {
+          "name": "Mesh_10",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.028424545435634302
+        },
+        {
+          "name": "Mesh_11",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 4.9223496821041636e-05
+        },
+        {
+          "name": "Mesh_12",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 4.9223496821041636e-05
+        }
+      ]
+    },
+    "on": {
+      "meshes": 13,
+      "triangles": 8504,
+      "source_glb_sha256": "5a7b5b04707da5a4d066dca36c81205b53c02a36eef67321d43fbc8f8f3c23ae",
+      "objects": [
+        {
+          "name": "rounded-tabletop",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.21548876296320893
+        },
+        {
+          "name": "table-leg:-1.34:-0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-1.34:0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-0.16:-0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-0.16:0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "box-floor",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.08444094754438877
+        },
+        {
+          "name": "box-side:0.75",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0420864472433546
+        },
+        {
+          "name": "box-side:1.65",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0420864472433546
+        },
+        {
+          "name": "box-back",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.03960099726903119
+        },
+        {
+          "name": "box-front-lip",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.010905757227134069
+        },
+        {
+          "name": "Mesh_10",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.028424545435634302
+        },
+        {
+          "name": "Mesh_11",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 4.9223496821041636e-05
+        },
+        {
+          "name": "Mesh_12",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 4.9223496821041636e-05
+        }
+      ]
+    },
+    "under": {
+      "meshes": 13,
+      "triangles": 8504,
+      "source_glb_sha256": "cb8be3a6bcf0fd72719ebd7f2eab1d098beccc8f4e0035778ca07839a39bdaf3",
+      "objects": [
+        {
+          "name": "rounded-tabletop",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.21548876296320893
+        },
+        {
+          "name": "table-leg:-1.34:-0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-1.34:0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-0.16:-0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "table-leg:-0.16:0.35",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0156579427559598
+        },
+        {
+          "name": "box-floor",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.08444094754438877
+        },
+        {
+          "name": "box-side:0.75",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0420864472433546
+        },
+        {
+          "name": "box-side:1.65",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.0420864472433546
+        },
+        {
+          "name": "box-back",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.03960099726903119
+        },
+        {
+          "name": "box-front-lip",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.010905757227134069
+        },
+        {
+          "name": "Mesh_10",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 0.028424545435634302
+        },
+        {
+          "name": "Mesh_11",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 4.9223496821041636e-05
+        },
+        {
+          "name": "Mesh_12",
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "degenerate_faces": 0,
+          "invalid_vertices": 0,
+          "volume": 4.9223496821041636e-05
+        }
+      ]
+    }
+  },
+  "source_hashes": {
+    "src/scene/spatialModel.ts": "b8db0d3b45b115ee67eb8d757e515231cad0ddb412f0ecccf7e43e14e95c9184",
+    "packages/domain/spatial.ts": "940dfe67df2cc099e0681c5bb8b1f620aceb7d0ff4db796f306f0e9ca6291683"
+  }
+}

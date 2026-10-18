@@ -40,7 +40,9 @@ describe("course map across terms", () => {
       completed(["P3B-U01-L1"]),
     );
     expect(state.available.map((row) => row.id)).toEqual(
-      [1, 2].flatMap((unit) => [1, 2, 3, 4].map((n) => `P3B-U0${unit}-L${n}`)),
+      [1, 2, 3].flatMap((unit) =>
+        [1, 2, 3, 4].map((n) => `P3B-U0${unit}-L${n}`),
+      ),
     );
     expect(state.next?.id).toBe("P3B-U01-L2");
     expect(state.allPractised).toBe(false);
@@ -101,7 +103,7 @@ describe("course map across terms", () => {
     expect(state.allPractised).toBe(true);
     expect(state.nextTerm).toBeNull();
     expect(state.next?.id).toBe("P6B-U01-L1");
-    expect(state.available).toHaveLength(8);
+    expect(state.available).toHaveLength(12);
   });
   it("continues into B unit two when the first B unit is practised", () => {
     const state = courseStep(
@@ -111,6 +113,20 @@ describe("course map across terms", () => {
       completed([1, 2, 3, 4].map((n) => `P2B-U01-L${n}`)),
     );
     expect(state.next?.id).toBe("P2B-U02-L1");
+    expect(state.allPractised).toBe(false);
+  });
+  it("continues into the new third B unit without marking it practised from older unit results", () => {
+    const state = courseStep(
+      lessons,
+      1,
+      "B",
+      completed(
+        [1, 2].flatMap((unit) =>
+          [1, 2, 3, 4].map((n) => `P1B-U0${unit}-L${n}`),
+        ),
+      ),
+    );
+    expect(state.next?.id).toBe("P1B-U03-L1");
     expect(state.allPractised).toBe(false);
   });
 });
