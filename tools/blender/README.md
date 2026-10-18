@@ -1,5 +1,14 @@
 # Clay fox authoring
 
+## v0.34 closed eyes
+
+```powershell
+node scripts/export-companion-faces.mjs
+& 'D:/Program Files/Blender Foundation/Blender 5.2/blender.exe' --background --factory-startup --python tools/blender/preview_companion_faces.py
+```
+
+The app now uses surface-conforming, capped eyelid tubes instead of scaling fitted eye beads. The exporter captures open, closed, quiet and idle poses from both actual GLBs with the same pose code and current instance-local AO corrections. The independent checker rejects open or inconsistently wound solids without repairing them; its report binds the current source/model hashes. Eight Cycles views and editable closed-eye inspection scenes are produced. Model construction performs 310 surface probes per companion; animation swaps visibility and changes owned colour buffers only at state transitions. See [scope, tests and unverified device gates](../../docs/55-surface-safe-cartoon-blinks.md).
+
 ## v0.33 adventure Pikachu and expressive poses
 
 ```powershell

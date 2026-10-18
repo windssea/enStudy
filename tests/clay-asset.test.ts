@@ -97,7 +97,9 @@ describe("Blender-authored clay fox asset", () => {
         reaction: "correct",
       });
       expect(a.arm.rotation.z).toBeGreaterThan(b.arm.rotation.z);
-      expect(a.eyes.scale.y).toBeLessThan(1);
+      expect(a.eyes.scale.y).toBe(1);
+      expect(a.eyes.visible).toBe(false);
+      expect(a.closedEyes.visible).toBe(true);
       expect(b.eyes.scale.y).toBe(1);
       let first: Mesh | undefined;
       gltf.scene.traverse((node) => {

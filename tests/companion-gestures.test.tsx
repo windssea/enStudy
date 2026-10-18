@@ -241,10 +241,10 @@ describe("clay partner expressive play", () => {
     expect(html).toContain('data-gesture="stretch"');
     expect(html).not.toContain("<canvas");
   });
-  it("offers three named native play buttons separate from greeting and turning, without a score or assessment response", () => {
+  it("offers named native play buttons separate from greeting and turning, without a score or assessment response", () => {
     const html = renderToStaticMarkup(<CompanionActions onPlay={() => {}} />);
-    expect(html.match(/<button/g)).toHaveLength(3);
-    for (const label of ["点点头", "伸个懒腰", "摇摇尾巴"])
+    expect(html.match(/<button/g)).toHaveLength(4);
+    for (const label of ["眨眨眼", "点点头", "伸个懒腰", "摇摇尾巴"])
       expect(html).toContain(label);
     expect(html).toContain('aria-label="伙伴小动作"');
     expect(html).not.toContain("得分");

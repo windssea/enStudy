@@ -1,13 +1,13 @@
 # 开发执行计划
 
-本项目在M1–M4之间分阶段推进，当前代码v0.33.0（本地240课、粘土伙伴升级；v0.32的发布被D1每日免费写入额度阻止）、线上仍为已核验的v0.31.1（216课及家庭协作已开启）；完整交付门槛M5尚未通过。注册暂时关闭，默认admin采用用户指定密码。公开首发范围仍是P1–P6、288课、72单元、60专题和72条句式；当前本地240课、线上216课、互动工坊与54个教学演示不替代完整课程目标。最新记录见[表情与粘土伙伴](54-expressive-clay-partners.md)、[第四单元与额度受限记录](53-cooperation-term-unit-and-home-activities.md)、[家庭邀请与权限](52-household-invitations-and-roles.md)、[位置实验与第三单元](51-position-lab-and-third-term-unit.md)、[皮卡丘与档案伙伴](50-pikachu-and-saved-companions.md)、[粘土词卡与B第二单元](49-word-study-and-b-term-unit-two.md)、[粘土伙伴与B学期](48-clay-guide-and-next-term.md)、[同步发布](47-20261018-synchronized-release.md)、[第六单元与历史示范记录](46-sixth-unit-and-historical-demonstrations.md)、[实物比较场景](45-measured-comparison-scenes.md)、[第五单元与课内3D入口](43-fifth-unit-scenarios-and-lesson-labs.md)、[本机离线练习](42-offline-practice-and-confirmation.md)及[开发待办](development/backlog.csv)。
+本项目在M1–M4之间分阶段推进，当前代码v0.34.0（本地240课、粘土伙伴升级；v0.32的发布被D1每日免费写入额度阻止）、线上仍为已核验的v0.31.1（216课及家庭协作已开启）；完整交付门槛M5尚未通过。注册暂时关闭，默认admin采用用户指定密码。公开首发范围仍是P1–P6、288课、72单元、60专题和72条句式；当前本地240课、线上216课、互动工坊与54个教学演示不替代完整课程目标。最新记录见[贴面闭眼](55-surface-safe-cartoon-blinks.md)、[表情与粘土伙伴](54-expressive-clay-partners.md)、[第四单元与额度受限记录](53-cooperation-term-unit-and-home-activities.md)、[家庭邀请与权限](52-household-invitations-and-roles.md)、[位置实验与第三单元](51-position-lab-and-third-term-unit.md)、[皮卡丘与档案伙伴](50-pikachu-and-saved-companions.md)、[粘土词卡与B第二单元](49-word-study-and-b-term-unit-two.md)、[粘土伙伴与B学期](48-clay-guide-and-next-term.md)、[同步发布](47-20261018-synchronized-release.md)、[第六单元与历史示范记录](46-sixth-unit-and-historical-demonstrations.md)、[实物比较场景](45-measured-comparison-scenes.md)、[第五单元与课内3D入口](43-fifth-unit-scenarios-and-lesson-labs.md)、[本机离线练习](42-offline-practice-and-confirmation.md)及[开发待办](development/backlog.csv)。
 
 ## 当前工程基线
 
 | 部分 | 已实现 | 明确边界 |
 | --- | --- | --- |
 | React与TypeScript | Vite工程、锁定依赖、分层代码、PC/平板布局 | 浏览器视觉与真实平板性能尚需验收 |
-| Three.js/R3F | 本地弯耳/领巾皮卡丘v2与短动作、材质归一化、档案选择、6种词义匹配粘土物与词卡示范、小狐狸与Blender源模型、PMREM与预算软阴影、差异岛屿及跨页面场景、挥手转身、17专题54示范（含位置与实物比较）、部分课程按需入口、2D、错误边界、安静模式与活动暂停 | 狐狸模型约1.47MB、皮卡丘v2约1.28MB，静态包约4.32MB；新模型与动作未发布，实机发热、帧率、视觉与触控待验 |
+| Three.js/R3F | 本地弯耳/领巾皮卡丘v2、贴面闭眼及短动作、材质与局部遮蔽校正、档案选择、6种词义匹配粘土物与词卡示范、小狐狸与Blender源模型、PMREM与预算软阴影、差异岛屿及跨页面场景、挥手转身、17专题54示范（含位置与实物比较）、部分课程按需入口、2D、错误边界、安静模式与活动暂停 | 狐狸模型约1.47MB、皮卡丘v2约1.28MB，静态包约4.32MB；新模型、动作与表情未发布，实机发热、帧率、视觉与触控待验 |
 | 内容导航 | 72单元、60专题、72句式；单词快速开始和准备页、分组导航、8类专题/12场景、中文句框、示例确认 | 草稿和待制作内容有标记；不冒充已完成课件；真实设备引导待验 |
 | 学习API | 本地240课、线上216课、随机专题/句式/单词、七种题型；词卡四模式同日示范、课程分类修正共用判题/复习/接续 | 真实声源/设备、更多媒体与开放表达、剩余48课和教学审核待做 |
 | D1 | 本地至0034、Preview/Production均至0033、独立伙伴偏好、答题/奖励/复习原子batch、冻结内容版本、服务端离线准备标记、AI加密短缓存 | 两站独立D1及生产令牌隔离已核验；完整备份恢复与运营仍待做 |

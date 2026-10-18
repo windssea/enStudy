@@ -24,7 +24,11 @@ export default function CompanionSticker({
           gesture === "stretch" ? "translate(-2 -5) scale(1.025)" : undefined
         }
       >
-        <FoxSticker turned={turned} reaction={reaction} />
+        <FoxSticker
+          turned={turned}
+          reaction={reaction}
+          closedEyes={gesture === "blink"}
+        />
       </g>
     );
   return (
@@ -82,24 +86,35 @@ export default function CompanionSticker({
         <>
           <ellipse cx="44" cy="91" rx="10" ry="8" fill="#ef6b5e" />
           <ellipse cx="116" cy="91" rx="10" ry="8" fill="#ef6b5e" />
-          {[-1, 1].map((side) => (
-            <g key={side}>
-              <ellipse
-                cx={80 + side * 21}
-                cy="77"
-                rx="6"
-                ry="9"
-                fill="#27313c"
-              />
-              <ellipse
-                cx={78 + side * 21}
-                cy="74"
-                rx="2"
-                ry="3"
-                fill="#fffaf0"
-              />
-            </g>
-          ))}
+          {gesture === "blink"
+            ? [-1, 1].map((side) => (
+                <path
+                  key={side}
+                  d={`M${73 + side * 21} 78q7 5 14 0`}
+                  fill="none"
+                  stroke="#27313c"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+              ))
+            : [-1, 1].map((side) => (
+                <g key={side}>
+                  <ellipse
+                    cx={80 + side * 21}
+                    cy="77"
+                    rx="6"
+                    ry="9"
+                    fill="#27313c"
+                  />
+                  <ellipse
+                    cx={78 + side * 21}
+                    cy="74"
+                    rx="2"
+                    ry="3"
+                    fill="#fffaf0"
+                  />
+                </g>
+              ))}
           <ellipse cx="80" cy="91" rx="3" ry="2" fill="#27313c" />
           <path
             d={

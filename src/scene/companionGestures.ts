@@ -1,5 +1,6 @@
 /** Decorative play only. These actions never represent an assessment result. */
 export const companionGestures = [
+  { id: "blink", label: "眨眨眼", duration: 650, line: "眨眨眼，放松一下。" },
   { id: "wave", label: "挥挥手", duration: 900, line: "Hello! 一起慢慢来。" },
   { id: "nod", label: "点点头", duration: 1300, line: "先想一想，再慢慢试。" },
   {

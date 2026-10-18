@@ -1,0 +1,157 @@
+{
+  "blender": "5.2.1 LTS",
+  "hashes": {
+    "src/scene/closedEyes.ts": "0dad059c834d1f9c9a0fe58669ad5ae1080f4ae00ef6d05583fd37a4b1134b96",
+    "src/scene/foxModel.ts": "6ba8536f157142c120145eae83e207c9bb0738dab62b1239e7b505ba034e4b11",
+    "src/scene/pikachuModel.ts": "8004499f7a320175aa5fed4cea6aa8a166a5ac025a6a6bff01d7b64c86e3fe40",
+    "src/scene/loadClayFox.ts": "2520ca959bdd36c8c40ef8ed4bf8204904118ff4493bfba21a12a38e8fba8138",
+    "src/scene/companionPose.ts": "86e9ca91dd18f26b3e64bc967d294da2650d6d745239d3e8c714a9ad4f8ca55d",
+    "src/assets/models/clay-fox-v1.glb": "ac75b67bcb2302f9937d0a38c0f8bd87a5de2ec1cf6a45f7ddcba81392fbb0f3",
+    "src/assets/models/clay-pikachu-v2.glb": "4688aab20cbeaf5e92405fe8984dd47151788b2e1c8237b2b0c7c196f945390a"
+  },
+  "observations": [
+    {
+      "kind": "fox",
+      "label": "open",
+      "eyesVisible": true,
+      "lidsVisible": false,
+      "eyeScale": [
+        1,
+        1,
+        1
+      ],
+      "probes": 310
+    },
+    {
+      "kind": "fox",
+      "label": "closed",
+      "eyesVisible": false,
+      "lidsVisible": true,
+      "eyeScale": [
+        1,
+        1,
+        1
+      ],
+      "probes": 310
+    },
+    {
+      "kind": "fox",
+      "label": "quiet",
+      "eyesVisible": false,
+      "lidsVisible": true,
+      "eyeScale": [
+        1,
+        1,
+        1
+      ],
+      "probes": 310
+    },
+    {
+      "kind": "fox",
+      "label": "idle",
+      "eyesVisible": false,
+      "lidsVisible": true,
+      "eyeScale": [
+        1,
+        1,
+        1
+      ],
+      "probes": 310
+    },
+    {
+      "kind": "pikachu",
+      "label": "open",
+      "eyesVisible": true,
+      "lidsVisible": false,
+      "eyeScale": [
+        1,
+        1,
+        1
+      ],
+      "probes": 310
+    },
+    {
+      "kind": "pikachu",
+      "label": "closed",
+      "eyesVisible": false,
+      "lidsVisible": true,
+      "eyeScale": [
+        1,
+        1,
+        1
+      ],
+      "probes": 310
+    },
+    {
+      "kind": "pikachu",
+      "label": "quiet",
+      "eyesVisible": false,
+      "lidsVisible": true,
+      "eyeScale": [
+        1,
+        1,
+        1
+      ],
+      "probes": 310
+    },
+    {
+      "kind": "pikachu",
+      "label": "idle",
+      "eyesVisible": false,
+      "lidsVisible": true,
+      "eyeScale": [
+        1,
+        1,
+        1
+      ],
+      "probes": 310
+    }
+  ],
+  "objects": [
+    {
+      "kind": "fox",
+      "name": "companion-closed-eye--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "inconsistent_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.1825666604423863e-05,
+      "triangles": 272
+    },
+    {
+      "kind": "fox",
+      "name": "companion-closed-eye-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "inconsistent_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.1826499375384096e-05,
+      "triangles": 272
+    },
+    {
+      "kind": "pikachu",
+      "name": "companion-closed-eye--1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "inconsistent_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.1825273837261643e-05,
+      "triangles": 272
+    },
+    {
+      "kind": "pikachu",
+      "name": "companion-closed-eye-1",
+      "boundary_edges": 0,
+      "non_manifold_edges": 0,
+      "inconsistent_edges": 0,
+      "degenerate_faces": 0,
+      "invalid_coordinates": 0,
+      "volume": 1.1826798037225575e-05,
+      "triangles": 272
+    }
+  ],
+  "closed_solids": true
+}

@@ -88,7 +88,9 @@ describe("original cartoon scene geometry and activity", () => {
         idle: true,
         reaction: "thinking",
       });
-      expect(model.eyes.scale.y).toBeCloseTo(0.08);
+      expect(model.eyes.scale.y).toBe(1);
+      expect(model.eyes.visible).toBe(false);
+      expect(model.closedEyes.visible).toBe(true);
       applyFoxPose(model, {
         time: 0.4,
         age: 10,
@@ -97,6 +99,8 @@ describe("original cartoon scene geometry and activity", () => {
         reaction: "thinking",
       });
       expect(model.eyes.scale.y).toBe(1);
+      expect(model.eyes.visible).toBe(true);
+      expect(model.closedEyes.visible).toBe(false);
       applyFoxPose(model, {
         time: 0.08,
         age: 0.3,

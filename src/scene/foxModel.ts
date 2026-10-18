@@ -10,6 +10,7 @@ import {
   type BufferGeometry,
   type Object3D,
 } from "three";
+import { addClosedEyes, setCompanionEyes } from "./closedEyes";
 
 type Point = readonly [number, number, number];
 export const foxPalette = {
@@ -288,7 +289,9 @@ export function createFoxModel() {
   );
   mouth.rotation.z = Math.PI;
 
+  const lids = addClosedEyes(root, head, "fox", materials.ink);
   const dispose = () => {
+    lids.release();
     const geometries = new Set<BufferGeometry>();
     root.traverse((node) => {
       if (node instanceof Mesh) geometries.add(node.geometry);
@@ -297,16 +300,16 @@ export function createFoxModel() {
     Object.values(materials).forEach((material) => material.dispose());
   };
   applyFoxPose(
-    { body, head, arm, tail, eyes },
+    { body, head, arm, tail, eyes, closedEyes: lids.group },
     { time: 0, age: 10, paused: true, idle: false, reaction: "thinking" },
   );
-  return { root, body, head, arm, tail, eyes, dispose };
+  return { root, body, head, arm, tail, eyes, closedEyes: lids.group, dispose };
 }
 export type FoxModel = ReturnType<typeof createFoxModel>;
 export type FoxPoseNodes = Record<
   "body" | "head" | "arm" | "tail" | "eyes",
   Object3D
->;
+> & { closedEyes?: Object3D };
 export function applyFoxPose(
   model: FoxPoseNodes,
   {
@@ -315,12 +318,14 @@ export function applyFoxPose(
     paused,
     idle,
     reaction,
+    eyesClosed,
   }: {
     time: number;
     age: number;
     paused: boolean;
     idle: boolean;
     reaction: string;
+    eyesClosed?: boolean;
   },
 ) {
   const gesture =
@@ -340,8 +345,8 @@ export function applyFoxPose(
     -0.1 +
     (paused ? 0 : (idle ? Math.sin(time * 1.4) * 0.055 : 0) + gesture * 0.17);
   const phase = ((time % 4.6) + 4.6) % 4.6;
-  model.eyes.scale.y =
-    paused || !idle || phase > 0.16
-      ? 1
-      : 1 - 0.92 * Math.sin((Math.PI * phase) / 0.16);
+  setCompanionEyes(
+    model,
+    eyesClosed ?? (!paused && idle && phase >= 0.015 && phase <= 0.145),
+  );
 }

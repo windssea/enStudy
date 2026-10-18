@@ -10,6 +10,7 @@ import {
 import { createClayGrain } from "./claySurface";
 import type { FoxPoseNodes } from "./foxModel";
 import type { CompanionId } from "../../packages/domain/companions";
+import { addClosedEyes } from "./closedEyes";
 
 /** The original fox boot patch extends 0.02 below its authoring origin. */
 export function groundClayPartner(root: Object3D) {
@@ -70,10 +71,19 @@ export function prepareClayPartner(source: Group, kind: CompanionId) {
       node.receiveShadow = true;
     }
   });
+  const eyeMesh = root.getObjectByName(
+    kind === "fox" ? "eye--1" : "pikachu-eye--1",
+  ) as Mesh;
+  const eyeMaterial = Array.isArray(eyeMesh.material)
+    ? eyeMesh.material[0]
+    : eyeMesh.material;
+  const lids = addClosedEyes(root, pose.head, kind, eyeMaterial);
   return {
     root,
     ...pose,
+    closedEyes: lids.group,
     dispose: () => {
+      lids.dispose();
       materials.forEach((material) => material.dispose());
       grain.dispose();
     },

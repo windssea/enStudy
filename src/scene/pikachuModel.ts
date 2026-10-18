@@ -15,6 +15,7 @@ import {
   Vector3,
 } from "three";
 import { applyFoxPose, type FoxPoseNodes } from "./foxModel";
+import { addClosedEyes } from "./closedEyes";
 
 export const pikachuPalette = {
   yellow: "#ffda50",
@@ -418,7 +419,17 @@ export function createPikachuModel({
       [0.031, 0.031, 0.012],
     );
   }
-  const pose: FoxPoseNodes = { body, head, arm, tail, eyes };
+  const lids = authoring
+    ? undefined
+    : addClosedEyes(root, head, "pikachu", materials.ink);
+  const pose: FoxPoseNodes = {
+    body,
+    head,
+    arm,
+    tail,
+    eyes,
+    closedEyes: lids?.group,
+  };
   applyFoxPose(pose, {
     time: 0,
     age: 10,
@@ -431,6 +442,7 @@ export function createPikachuModel({
     root,
     ...pose,
     dispose: () => {
+      lids?.release();
       const geometries = new Set<BufferGeometry>([
         sphere,
         limb,

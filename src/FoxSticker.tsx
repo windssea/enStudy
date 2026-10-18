@@ -4,9 +4,11 @@ import type { Reaction } from "./SceneStage";
 export default function FoxSticker({
   reaction = "thinking",
   turned = false,
+  closedEyes = false,
 }: {
   reaction?: Reaction;
   turned?: boolean;
+  closedEyes?: boolean;
 }) {
   if (turned)
     return (
@@ -95,8 +97,26 @@ export default function FoxSticker({
       />
       {[-1, 1].map((side) => (
         <g key={side}>
-          <ellipse cx={80 + side * 22} cy="76" rx="6" ry="9" fill="#27334b" />
-          <circle cx={78 + side * 22} cy="73" r="2.5" fill="white" />
+          {closedEyes ? (
+            <path
+              d={`M${73 + side * 22} 77q7 5 14 0`}
+              fill="none"
+              stroke="#27334b"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+          ) : (
+            <>
+              <ellipse
+                cx={80 + side * 22}
+                cy="76"
+                rx="6"
+                ry="9"
+                fill="#27334b"
+              />
+              <circle cx={78 + side * 22} cy="73" r="2.5" fill="white" />
+            </>
+          )}
           <ellipse cx={80 + side * 36} cy="88" rx="7" ry="3" fill="#ed928a" />
         </g>
       ))}

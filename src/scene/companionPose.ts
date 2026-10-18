@@ -25,7 +25,14 @@ export function applyCompanionPose(
   model.arm.rotation.x = 0;
   model.tail.rotation.y = 0;
   if (leftArm) leftArm.rotation.z = kind === "fox" ? -0.42 : -0.35;
-  applyFoxPose(model, { ...options, age });
+  applyFoxPose(model, {
+    ...options,
+    age,
+    eyesClosed:
+      action === "blink"
+        ? paused || (options.age >= 0.12 && options.age <= 0.34)
+        : undefined,
+  });
   if (kind === "pikachu") {
     const gesture =
       paused || age < 0 || age > 0.9 ? 0 : Math.sin((Math.PI * age) / 0.9);

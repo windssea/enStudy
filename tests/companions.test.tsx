@@ -210,7 +210,9 @@ describe("saved clay partners", () => {
         idle: true,
         reaction: "correct",
       });
-      expect(a.eyes.scale.y).toBeLessThan(1);
+      expect(a.eyes.scale.y).toBe(1);
+      expect(a.eyes.visible).toBe(false);
+      expect(a.closedEyes.visible).toBe(true);
       expect(b.eyes.scale.y).toBe(1);
       expect(a.arm.rotation.z).toBeGreaterThan(b.arm.rotation.z);
       applyCompanionPose(a, "pikachu", {
