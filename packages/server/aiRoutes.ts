@@ -108,13 +108,23 @@ function inputConfig(body: Record<string, unknown>, env: AiConfig) {
   const adapter = body.adapter ?? "openai-chat";
   if (
     typeof adapter !== "string" ||
-    !["openai-chat", "dashscope-asr"].includes(adapter)
+    !["openai-chat", "dashscope-asr", "dashscope-chat"].includes(adapter)
   )
     throw new AiFault("INVALID_AI_ADAPTER", "请选择支持的连接类型。");
   if (adapter === "dashscope-asr" && body.model !== "")
     throw new AiFault(
       "INVALID_AI_MODEL",
       "识别连接无需文本模型，请在下方语音识别中填写ASR模型。",
+    );
+  if (
+    adapter === "dashscope-chat" &&
+    (!validModel(body.model) ||
+      body.tokenParameter !== "max_tokens" ||
+      body.instructionRole !== "system")
+  )
+    throw new AiFault(
+      "INVALID_AI_CONFIG",
+      "阿里文字连接需要文本模型、max_tokens和system参数。",
     );
   if (
     typeof body.label !== "string" ||

@@ -25,6 +25,7 @@ import {
 } from "../domain/conversations";
 import { recordExposure } from "./exposure";
 import { sentenceKey } from "../domain/exposure";
+import { connectionSupports } from "../domain/aiConnections";
 
 type Access = {
   owner: MiddlewareHandler<B>;
@@ -264,7 +265,7 @@ export function createVoiceRoutes(
     const { conn, hash } = await configHash(c, s, kind);
     return (
       !!conn &&
-      (kind === "asr" || conn.adapter !== "dashscope-asr") &&
+      connectionSupports(conn.adapter, kind) &&
       providerUrl(conn.base_url, c.env).approved &&
       !!(await c.env.DB.prepare(
         "SELECT 1 FROM ai_voice_capabilities WHERE household_id=? AND kind=? AND config_hash=?",
@@ -292,7 +293,7 @@ export function createVoiceRoutes(
         : s[`${kind}_enabled`] && s.audio_consent_at;
     if (
       !conn ||
-      (kind !== "asr" && conn.adapter === "dashscope-asr") ||
+      !connectionSupports(conn.adapter, kind) ||
       !keyStoreReady(c.env) ||
       !providerUrl(conn.base_url, c.env).approved ||
       (requireEnabled && !enabled) ||
@@ -470,12 +471,18 @@ export function createVoiceRoutes(
         );
         if (
           !selected ||
-          (field !== "asr_connection_id" &&
-            selected.adapter === "dashscope-asr")
+          !connectionSupports(
+            selected.adapter,
+            field === "asr_connection_id"
+              ? "asr"
+              : field === "tts_connection_id"
+                ? "tts"
+                : "text",
+          )
         )
           throw new AiFault(
             "INVALID_VOICE_CONNECTION",
-            "请选择本家庭支持此能力的连接；阿里原生识别只用于ASR。",
+            "请选择本家庭支持此能力的连接，文字、识别与合成按类型分别配置。",
           );
       }
     for (const kind of ["text", "asr", "tts"] as const)

@@ -15,6 +15,22 @@ const provider = createServer(async (req, res) => {
   const body = Buffer.concat(chunks).toString();
   calls++;
   lastRequest = { url: req.url, headers: req.headers, body };
+  if (req.url === "/compatible-mode/v1/chat/completions") {
+    const value = JSON.parse(body);
+    if (
+      value.enable_thinking !== false ||
+      !Number.isInteger(value.max_tokens) ||
+      "max_completion_tokens" in value
+    ) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          error: "fake-Qwen-requires-explicit-short-response-protocol",
+        }),
+      );
+      return;
+    }
+  }
   const probe = body.includes("compatibility");
   began?.();
   if (!probe && mode === "slow") await new Promise((r) => setTimeout(r, 300));
@@ -989,6 +1005,106 @@ try {
         )
       ).status === 404,
     "child and foreign household cannot read or decrypt native provider configuration",
+  );
+  const chatCfg = {
+    ...cfg("qwen3.8-flash"),
+    adapter: "dashscope-chat",
+    tokenParameter: "max_tokens",
+    baseUrl: upstream + "/compatible-mode/v1",
+  };
+  const chat = (await request("/ai/connections", chatCfg)).data;
+  check(
+    chat.id &&
+      chat.adapter === "dashscope-chat" &&
+      chat.model === "qwen3.8-flash" &&
+      !chat.tested,
+    "Qwen text profile persists separately without auto-enabling a family service",
+  );
+  const chatProbe = await request(`/ai/connections/${chat.id}/test`, {
+    version: 0,
+    clientRequestId: crypto.randomUUID(),
+    currentPassword: "admin123123456",
+  });
+  const chatBody = JSON.parse(lastRequest.body);
+  check(
+    chatProbe.status === 200 &&
+      lastRequest.url === "/compatible-mode/v1/chat/completions" &&
+      chatBody.model === "qwen3.8-flash" &&
+      chatBody.enable_thinking === false &&
+      chatBody.max_tokens === 32 &&
+      !("max_completion_tokens" in chatBody) &&
+      chatBody.messages[0].role === "system",
+    "Qwen real adapter explicitly disables thinking and uses system plus max_tokens for its minimal probe",
+  );
+  check(
+    (await save({ asr_connection_id: chat.id, asr_enabled: false })).status ===
+      422 &&
+      (await save({ tts_connection_id: chat.id, tts_enabled: false }))
+        .status === 422,
+    "Qwen text profile cannot be configured for audio even with switches off",
+  );
+  check(
+    (
+      await request("/ai/connections", {
+        ...chatCfg,
+        clientRequestId: crypto.randomUUID(),
+        tokenParameter: "max_completion_tokens",
+      })
+    ).status === 422 &&
+      (
+        await request("/ai/connections", {
+          ...chatCfg,
+          clientRequestId: crypto.randomUUID(),
+          baseUrl: upstream + "/v1",
+        })
+      ).status === 422,
+    "Qwen preset rejects incompatible limit parameters and the wrong root path before dispatch",
+  );
+  check(
+    (
+      await save({
+        text_connection_id: chat.id,
+        text_enabled: true,
+        asr_connection_id: native.id,
+        asr_model: "qwen-audio-3.1-asr-flash",
+        asr_enabled: false,
+        tts_enabled: false,
+      })
+    ).status === 200,
+    "Qwen text profile saves independently beside the selected native ASR model",
+  );
+  await nativeTest();
+  check(
+    (
+      await save({
+        text_connection_id: chat.id,
+        text_enabled: true,
+        asr_connection_id: native.id,
+        asr_model: "qwen-audio-3.1-asr-flash",
+        asr_enabled: true,
+      })
+    ).status === 200,
+    "independently tested Qwen text and Qwen native ASR enable only after explicit consent",
+  );
+  id = await open();
+  const qwenTurnId = crypto.randomUUID();
+  const qwenTurn = () =>
+    request(`/learning/conversations/${id}/turn`, {
+      clientRequestId: qwenTurnId,
+      expectedTurn: 0,
+      text: "I like apples.",
+    });
+  const qwenReply = await qwenTurn(),
+    qwenCalls = calls;
+  check(
+    qwenReply.status === 200 &&
+      JSON.parse(lastRequest.body).enable_thinking === false &&
+      lastRequest.url === "/compatible-mode/v1/chat/completions",
+    "child dialogue dispatches through the selected short-response Qwen text profile",
+  );
+  check(
+    (await qwenTurn()).data.cached && calls === qwenCalls,
+    "Qwen dialogue replay uses its original encrypted reply without redispatch",
   );
   console.log(
     `Local isolated voice smoke passed (${checks} checks; fake provider only).`,

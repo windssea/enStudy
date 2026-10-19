@@ -26,10 +26,18 @@ export function connectionUrl(
   env: AiConfig,
   adapter = "openai-chat",
 ) {
-  if (!["openai-chat", "dashscope-asr"].includes(adapter))
+  if (!["openai-chat", "dashscope-asr", "dashscope-chat"].includes(adapter))
     throw new AiFault("INVALID_AI_ADAPTER", "请选择支持的连接类型。");
   const target = providerUrl(value, env);
   const isNative = new URL(target.baseUrl).pathname === dashscopeAsrPath;
+  if (
+    adapter === "dashscope-chat" &&
+    new URL(target.baseUrl).pathname !== "/compatible-mode/v1"
+  )
+    throw new AiFault(
+      "INVALID_BASE_URL",
+      "阿里文字连接请填写以 /compatible-mode/v1 结尾的根地址。",
+    );
   if ((adapter === "dashscope-asr") !== isNative)
     throw new AiFault(
       "INVALID_BASE_URL",

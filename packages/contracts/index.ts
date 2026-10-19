@@ -299,7 +299,7 @@ export interface ChildProfile {
   grade: number;
 }
 export interface AiConnectionSummary {
-  adapter: "openai-chat" | "dashscope-asr";
+  adapter: import("../domain/aiConnections").AiAdapter;
   id: string;
   label: string;
   baseUrl: string;

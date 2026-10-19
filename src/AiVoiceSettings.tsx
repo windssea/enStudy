@@ -5,6 +5,7 @@ import { SecretField } from "./AccountSecurity";
 import WavRecorder, { type VoiceClip } from "./WavRecorder";
 import AiAudioPlayer from "./AiAudioPlayer";
 import { announceAiSettings } from "./aiSettingsSignal";
+import { connectionSupports } from "../packages/domain/aiConnections";
 interface Settings {
   text_connection_id: string | null;
   asr_connection_id: string | null;
@@ -223,10 +224,7 @@ export default function AiVoiceSettings({
                       >
                         <option value="">暂不选择</option>
                         {connections
-                          .filter(
-                            (c) =>
-                              kind === "asr" || c.adapter !== "dashscope-asr",
-                          )
+                          .filter((c) => connectionSupports(c.adapter, kind))
                           .map((c) => (
                             <option key={c.id} value={c.id}>
                               {c.label}

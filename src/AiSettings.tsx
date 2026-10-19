@@ -8,6 +8,7 @@ import { SecretField } from "./AccountSecurity";
 import AiVoiceSettings from "./AiVoiceSettings";
 import WritingAiSettings from "./WritingAiSettings";
 import { announceAiSettings } from "./aiSettingsSignal";
+import { connectionSupports } from "../packages/domain/aiConnections";
 const blank = {
   adapter: "openai-chat" as AiConnectionSummary["adapter"],
   label: "",
@@ -223,8 +224,24 @@ export default function AiSettings() {
                         ...form,
                         adapter: e.target
                           .value as AiConnectionSummary["adapter"],
-                        model: "",
-                        baseUrl: "",
+                        model:
+                          e.target.value === "dashscope-chat"
+                            ? "qwen3.8-flash"
+                            : "",
+                        baseUrl:
+                          e.target.value === "dashscope-chat" &&
+                          data.items.some((c) => c.adapter === "dashscope-asr")
+                            ? new URL(
+                                data.items.find(
+                                  (c) => c.adapter === "dashscope-asr",
+                                )!.baseUrl,
+                              ).origin + "/compatible-mode/v1"
+                            : "",
+                        tokenParameter:
+                          e.target.value === "dashscope-chat"
+                            ? "max_tokens"
+                            : "max_completion_tokens",
+                        instructionRole: "system",
                       });
                       createId.current = crypto.randomUUID();
                     }}
@@ -235,6 +252,7 @@ export default function AiSettings() {
                     <option value="dashscope-asr">
                       阿里原生语音识别（Qwen-Audio ASR）
                     </option>
+                    <option value="dashscope-chat">阿里文字对话（Qwen）</option>
                   </select>
                 </label>
                 <label className="field">
@@ -247,7 +265,7 @@ export default function AiSettings() {
                     placeholder="例如：家庭英语助手"
                   />
                 </label>
-                {form.adapter === "openai-chat" && (
+                {form.adapter !== "dashscope-asr" && (
                   <label className="field">
                     文本模型名称（仅语音连接可留空）
                     <input
@@ -271,7 +289,9 @@ export default function AiSettings() {
                     placeholder={
                       form.adapter === "dashscope-asr"
                         ? "https://工作空间域名/api/v1/services/aigc/multimodal-generation/generation"
-                        : "https://服务商域名/v1"
+                        : form.adapter === "dashscope-chat"
+                          ? "https://工作空间域名/compatible-mode/v1"
+                          : "https://服务商域名/v1"
                     }
                   />
                 </label>
@@ -292,6 +312,13 @@ export default function AiSettings() {
                   保存后在下方“语音识别 ASR”选择此连接，填写
                   qwen-audio-3.1-asr-flash，再录音测试。
                   录音以Base64直接发送，无需公开音频链接；这条连接只把声音转成文字，对话与合成声音另行配置。
+                </p>
+              )}
+              {form.adapter === "dashscope-chat" && (
+                <p className="footnote">
+                  已填入 qwen3.8-flash。使用 /compatible-mode/v1 根地址、system
+                  与 max_tokens，关闭深度思考以适配简短互动。
+                  若已保存阿里识别连接，只复制它的主机；Key需自行填写。先保存、测试文本，再分别选择用于解释、作品建议或短对话；此连接不合成声音。
                 </p>
               )}
               <label className="field">
@@ -432,7 +459,7 @@ export default function AiSettings() {
                       busy ||
                       !item.approved ||
                       !data.available ||
-                      item.adapter === "dashscope-asr"
+                      !connectionSupports(item.adapter, "text")
                     }
                     onClick={() => {
                       setTarget({
@@ -543,7 +570,7 @@ export default function AiSettings() {
                 >
                   <option value="">暂不选择</option>
                   {data.items
-                    .filter((item) => item.adapter !== "dashscope-asr")
+                    .filter((item) => connectionSupports(item.adapter, "text"))
                     .map((item) => (
                       <option value={item.id} key={item.id}>
                         {item.label}

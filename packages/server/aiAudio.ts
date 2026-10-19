@@ -1,6 +1,7 @@
 import { AiFault, connectionUrl, type AiConfig } from "./aiPolicy";
 import type { TextConnection } from "./aiAdapter";
 import { voiceBase64 } from "../domain/voice";
+import { connectionSupports } from "../domain/aiConnections";
 export async function audioRequest(
   env: AiConfig,
   connection: TextConnection,
@@ -11,10 +12,10 @@ export async function audioRequest(
   voice = "",
 ) {
   const native = connection.adapter === "dashscope-asr";
-  if (native && kind !== "asr")
+  if (!connectionSupports(connection.adapter, kind))
     throw new AiFault(
       "INVALID_AI_CAPABILITY",
-      "阿里原生识别连接不能合成语音，请另选TTS连接。",
+      "这条连接不支持所选音频能力，请分别配置识别与合成连接。",
     );
   const target = connectionUrl(connection.base_url, env, connection.adapter);
   if (!target.approved)

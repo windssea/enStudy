@@ -4,6 +4,7 @@ import type { WritingReviewSettings } from "../packages/contracts/writingReview"
 import { api } from "./api";
 import { SecretField } from "./AccountSecurity";
 import { announceAiSettings } from "./aiSettingsSignal";
+import { connectionSupports } from "../packages/domain/aiConnections";
 export default function WritingAiSettings({
   connections,
   available,
@@ -126,7 +127,7 @@ export default function WritingAiSettings({
               >
                 <option value="">请选择已测试的文本连接</option>
                 {connections
-                  .filter((c) => c.adapter !== "dashscope-asr")
+                  .filter((c) => connectionSupports(c.adapter, "text"))
                   .map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.label}
