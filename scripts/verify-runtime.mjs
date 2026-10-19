@@ -78,6 +78,7 @@ try {
   await run("smoke-voice.mjs");
   await run("smoke-writing-ai.mjs");
   await run("smoke-mistakes.mjs");
+  await run("smoke-reserved-training.mjs");
 } catch (error) {
   console.error(output);
   throw error;

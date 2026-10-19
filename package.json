@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.43.0",
+  "version": "0.44.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -12,11 +12,11 @@
     "dev:api": "wrangler pages dev dist --ip 127.0.0.1 --port 8788",
     "content:build": "node scripts/build-content.mjs",
     "build": "npm run content:build && tsc --noEmit && vite build",
-    "check": "tsc --noEmit && vitest run",
+    "check": "tsc --noEmit && vitest run --maxWorkers=4",
     "check:functions": "wrangler pages functions build --outdir .wrangler/functions-build",
     "format": "prettier --write src packages functions scripts tests package.json tsconfig.json vite.config.ts wrangler.jsonc cloudflare.project.json",
     "format:check": "prettier --check src packages functions scripts tests package.json tsconfig.json vite.config.ts wrangler.jsonc cloudflare.project.json",
-    "test": "vitest run",
+    "test": "vitest run --maxWorkers=4",
     "setup:local": "node scripts/setup-local.mjs",
     "setup:ai:local": "node scripts/prepare-local-ai.mjs",
     "verify:ai": "node scripts/smoke-ai.mjs",
@@ -63,7 +63,8 @@
     "verify:phonics": "node scripts/smoke-phonics.mjs",
     "verify:exports": "node scripts/smoke-data-export.mjs",
     "verify:writing-ai": "node scripts/smoke-writing-ai.mjs",
-    "verify:mistakes": "node scripts/smoke-mistakes.mjs"
+    "verify:mistakes": "node scripts/smoke-mistakes.mjs",
+    "verify:training-materials": "node scripts/smoke-reserved-training.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.2",

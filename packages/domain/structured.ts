@@ -106,3 +106,81 @@ export function emptyAnswer(exercise: Exercise): Answer {
     ? []
     : "";
 }
+// Recover only the learner's stored canonical response, using public controls.
+// This never reads a solution key or grades the response again.
+export function restoreStoredAnswer(
+  exercise: Exercise,
+  stored: unknown,
+): Answer {
+  const choice = (text: string) =>
+    exercise.choices?.find((c) => normalizeText(c) === normalizeText(text)) ??
+    text;
+  if (exercise.type === "sort") {
+    if (
+      !Array.isArray(stored) ||
+      !stored.every(
+        (r) =>
+          Array.isArray(r) &&
+          r.length === 2 &&
+          r.every((v) => typeof v === "string"),
+      )
+    )
+      return [];
+    const answer = stored.map(([card, group]) => `${card}=${group}`);
+    return sortPlacements(exercise, answer) ? answer : [];
+  }
+  if (exercise.type === "repair" || exercise.type === "evidence") {
+    if (
+      !Array.isArray(stored) ||
+      stored.length !== 2 ||
+      stored.some((v) => typeof v !== "string")
+    )
+      return [];
+    if (exercise.type === "repair")
+      return exercise.editing?.parts.some((p) => p.id === stored[0])
+        ? [stored[0], stored[1]]
+        : [];
+    return exercise.passage?.some((p) => p.id === stored[0])
+      ? [stored[0], choice(stored[1])]
+      : [];
+  }
+  if (typeof stored !== "string") return emptyAnswer(exercise);
+  if (exercise.type === "choice" || exercise.type === "listen")
+    return choice(stored);
+  if (exercise.type !== "order") return stored;
+  const tokens = exercise.tokens ?? [],
+    target = normalizeText(stored),
+    used = new Set<number>();
+  let budget = 4096;
+  const join = (path: string[]) =>
+    normalizeText(
+      exercise.graphemeTokens
+        ? path.join("")
+        : exercise.punctuationTokens
+          ? joinParts(path)
+          : path.join(" "),
+    );
+  function search(path: string[]): string[] | null {
+    if (--budget < 0) return null;
+    const text = join(path);
+    if (
+      text === target &&
+      (!exercise.graphemeTokens || path.length === tokens.length)
+    )
+      return path;
+    const tried = new Set<string>();
+    for (let i = 0; i < tokens.length; i++) {
+      const token = normalizeText(tokens[i]);
+      if (used.has(i) || tried.has(token)) continue;
+      tried.add(token);
+      const next = [...path, tokens[i]];
+      if (!target.startsWith(join(next))) continue;
+      used.add(i);
+      const result = search(next);
+      used.delete(i);
+      if (result) return result;
+    }
+    return null;
+  }
+  return search([]) ?? [];
+}

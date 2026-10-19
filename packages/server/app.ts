@@ -25,7 +25,7 @@ import {
   phonicsRelease,
   structuredFeedback,
 } from "./exercises";
-import { structuredCanonical } from "../domain/structured";
+import { structuredCanonical, restoreStoredAnswer } from "../domain/structured";
 import {
   selectReviewItems,
   selectTopicItems,
@@ -235,6 +235,7 @@ app.get("/api/v1/health", (c) =>
     phonicsProtocol: 1,
     exportProtocol: 1,
     mistakeProtocol: 1,
+    trainingMaterialProtocol: 1,
     householdProtocol: 1,
     householdSharingEnabled:
       c.env.APP_STAGE === "local" || platformFeatures.householdSharingEnabled,
@@ -761,10 +762,10 @@ async function sessionSnapshot(
   const session = sessionPayload(row, actor, playerVersion);
   const attempt = await db
     .prepare(
-      "SELECT receipt_json FROM attempts WHERE assignment_id=? AND household_id=? AND child_id=?",
+      "SELECT receipt_json,answer_json FROM attempts WHERE assignment_id=? AND household_id=? AND child_id=?",
     )
     .bind(row.assignment_id, actor.householdId, actor.childId)
-    .first<{ receipt_json: string }>();
+    .first<{ receipt_json: string; answer_json: string }>();
   if (attempt)
     await recordExposure(
       db,
@@ -775,6 +776,9 @@ async function sessionSnapshot(
     childId: actor.childId,
     session,
     receipt: attempt ? JSON.parse(attempt.receipt_json) : null,
+    submittedAnswer: attempt
+      ? restoreStoredAnswer(session.exercise, JSON.parse(attempt.answer_json))
+      : null,
     hint: row.hint_level
       ? exerciseVersion(row.item_id, row.item_version)?.hint
       : null,
@@ -1037,6 +1041,15 @@ app.post("/api/v1/sessions", async (c) => {
       ? exerciseById.get(mistake.item_id)
       : undefined;
   if (
+    body.exerciseId &&
+    exerciseById.get(body.exerciseId)?.trainingPhase &&
+    !body.mistakeEventId
+  )
+    return c.json(
+      fault("RESERVED_TRAINING_ITEM", "请从专题分步计划开始这份材料。"),
+      404,
+    );
+  if (
     body.mistakeEventId &&
     (!retryExercise || retryExercise.id !== body.exerciseId)
   )
@@ -1203,7 +1216,7 @@ app.post("/api/v1/sessions", async (c) => {
   if (source === "review")
     selected = selectReviewItems(
       await reviewTargets(c.env.DB, actor),
-      exercises,
+      exercises.filter((i) => !i.trainingPhase),
       Date.now(),
     );
   if (!selected.length)
@@ -1253,7 +1266,7 @@ app.post("/api/v1/sessions", async (c) => {
         now,
       ),
       c.env.DB.prepare(
-        `INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref,lease_grant_id) SELECT ?,?,?,?,?,'active',?,?,?,?,? WHERE ${grantAuthorization} AND NOT EXISTS(SELECT 1 FROM learning_sessions s WHERE s.household_id=? AND s.child_id=? AND s.state='active' AND (s.lease_grant_id IS NULL OR s.lease_grant_id<>?)) ${training ? `AND EXISTS(SELECT 1 FROM training_cycles WHERE id=? AND household_id=? AND child_id=? AND version=?) AND NOT EXISTS(SELECT 1 FROM session_items seen WHERE seen.household_id=? AND seen.child_id=? AND seen.item_id IN (${training.guardedItems.map(() => "?").join(",")})) AND NOT EXISTS(SELECT 1 FROM teaching_exposures e WHERE e.household_id=? AND e.child_id=? AND e.evidence_key IN (${training.guardedExposureKeys.map(() => "?").join(",")}))` : ""}${retryExercise ? ` AND ${mistakeExists} AND ${mistakePublication}` : ""}`,
+        `INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref,lease_grant_id) SELECT ?,?,?,?,?,'active',?,?,?,?,? WHERE ${grantAuthorization} AND NOT EXISTS(SELECT 1 FROM learning_sessions s WHERE s.household_id=? AND s.child_id=? AND s.state='active' AND (s.lease_grant_id IS NULL OR s.lease_grant_id<>?)) ${training ? `AND EXISTS(SELECT 1 FROM training_cycles WHERE id=? AND household_id=? AND child_id=? AND version=?) AND NOT EXISTS(SELECT 1 FROM session_items seen WHERE seen.household_id=? AND seen.child_id=? AND seen.item_id IN (${training.guardedItems.map(() => "?").join(",")})) AND NOT EXISTS(SELECT 1 FROM teaching_exposures e WHERE e.household_id=? AND e.child_id=? AND e.evidence_key IN (${training.guardedExposureKeys.map(() => "?").join(",")})) AND ${training.publication.sql}` : ""}${retryExercise ? ` AND ${mistakeExists} AND ${mistakePublication}` : ""}`,
       ).bind(
         body.clientRequestId,
         actor.householdId,
@@ -1283,6 +1296,7 @@ app.post("/api/v1/sessions", async (c) => {
               actor.householdId,
               actor.childId,
               ...training.guardedExposureKeys,
+              ...training.publication.params,
             ]
           : []),
         ...(retryExercise

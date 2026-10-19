@@ -452,6 +452,7 @@ export default function App() {
       session: LearningSession | null;
       receipt?: Receipt | null;
       hint?: string | null;
+      submittedAnswer?: Answer | null;
     }>("/sessions/current");
     if (epoch.current !== current) return;
     if (!saved.session) {
@@ -463,7 +464,13 @@ export default function App() {
     setSessionStopped(false);
     setReceipt(saved.receipt ?? null);
     setHint(saved.hint ?? "");
-    setAnswer(emptyAnswer(saved.session.exercise));
+    setAnswer(
+      saved.receipt &&
+        saved.submittedAnswer !== null &&
+        saved.submittedAnswer !== undefined
+        ? saved.submittedAnswer
+        : emptyAnswer(saved.session.exercise),
+    );
     eventId.current = crypto.randomUUID();
   }
   type SavedSession = {
@@ -471,6 +478,7 @@ export default function App() {
     session: LearningSession | null;
     receipt?: Receipt | null;
     hint?: string | null;
+    submittedAnswer?: Answer | null;
   };
   function applySnapshot(saved: SavedSession) {
     setFreshReceiptEvent(null);
@@ -483,6 +491,9 @@ export default function App() {
       sessionRef.current,
       saved.session,
       draftRef.current,
+      saved.receipt && saved.submittedAnswer !== null
+        ? saved.submittedAnswer
+        : undefined,
     );
     if (draft.backup) setDraftBackup(draft.backup);
     setAnswer(draft.answer);

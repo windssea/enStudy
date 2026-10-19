@@ -150,6 +150,7 @@ const correctAnswer = (item) =>
       : JSON.parse(item.answers[0])
     : item.answers[0];
 function wrongAnswer(item) {
+  if (item.type === "order") return [...item.tokens].reverse();
   if (item.type === "sort") {
     const rows = JSON.parse(item.answers[0]);
     rows[0][1] = item.sorting.groups.find((g) => g.id !== rows[0][1]).id;
@@ -289,10 +290,33 @@ try {
   for (const item of chosen) {
     const made = await start(item);
     assert.equal(made.status, 201, JSON.stringify(made.data));
+    if (!events.length) {
+      const pending = await request(`/sessions/${made.data.id}/snapshot`);
+      check(
+        pending.data.submittedAnswer === null && pending.data.receipt === null,
+        "unanswered snapshots contain no fabricated submitted response",
+      );
+    }
     const saved = await answer(made.data, wrongAnswer(item));
     assert.equal(saved.status, 201, JSON.stringify(saved.data));
     assert.equal(saved.data.outcome, "incorrect");
     events.push({ item, event: saved.data.eventId, session: made.data });
+    const snapshot = await request(`/sessions/${made.data.id}/snapshot`);
+    const restored = snapshot.data.submittedAnswer,
+      expected = wrongAnswer(item);
+    check(
+      snapshot.status === 200 &&
+        snapshot.data.receipt.eventId === saved.data.eventId &&
+        JSON.stringify(
+          item.type === "sort" ? [...restored].sort() : restored,
+        ) ===
+          JSON.stringify(
+            item.type === "sort" ? [...expected].sort() : expected,
+          ),
+      "saved " +
+        item.type +
+        " response restores its original public controls and receipt",
+    );
     const seen = await detail(saved.data.eventId);
     check(
       seen.status === 200 &&

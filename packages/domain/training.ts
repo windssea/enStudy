@@ -1,5 +1,7 @@
-import { selectTopicItems, type Candidate } from "./selection";
+import { selectTopicItems, secureRandom, type Candidate } from "./selection";
 import { addDays, localDay, midnight } from "./review";
+import { answerExposureKeys } from "./exposure";
+import type { Exercise } from "../contracts/index";
 export type TrainingPhase = "diagnostic" | "practice" | "transfer" | "retest";
 export const trainingLabels: Record<TrainingPhase, string> = {
   diagnostic: "先试一试",
@@ -17,22 +19,94 @@ export interface TrainingResult {
   phase: TrainingPhase;
   checkpoint: number;
   sessionId: string;
+  materialReleaseId?: string;
+  materialKind?: "shared" | "reserved";
   state: string;
   total: number | null;
   independent: number | null;
   correct: number | null;
   completedAt: number | null;
 }
-type TrainingCandidate = Candidate & { prompt?: string; reading?: string };
+type TrainingCandidate = Candidate & {
+  prompt?: string;
+  reading?: string;
+  answers?: string[];
+  type?: Exercise["type"];
+  solutionSentences?: string[];
+  evidenceTargets?: string[];
+};
 export function trainingExposureKeys(item: TrainingCandidate) {
   return [
     item.family ?? item.id,
+    ...(item.answers && item.prompt
+      ? answerExposureKeys({
+          id: item.id,
+          family: item.family,
+          answers: item.answers,
+          prompt: item.prompt,
+          type: item.type ?? "input",
+          solutionSentences: item.solutionSentences,
+          evidenceTargets: item.evidenceTargets,
+        }).filter((key) => key.startsWith("sentence:"))
+      : []),
     ...(item.prompt
       ? [
           `prompt:${JSON.stringify([item.prompt.normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase("en-US"), (item.reading ?? "").normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase("en-US")])}`,
         ]
       : []),
   ];
+}
+export function drawReservedTraining<
+  T extends TrainingCandidate & {
+    trainingPhase?: TrainingPhase;
+    trainingDimension?: string;
+  },
+>(
+  items: readonly T[],
+  phase: TrainingPhase,
+  exposed: ReadonlySet<string>,
+  weak: ReadonlySet<string>,
+  random: () => number = secureRandom,
+) {
+  const candidates = items.filter(
+    (i) =>
+      i.trainingPhase === phase &&
+      !trainingExposureKeys(i).some((key) => exposed.has(key)),
+  );
+  const dimensions = [
+    ...new Set(items.map((i) => i.trainingDimension!)),
+  ].sort();
+  if (phase === "practice") {
+    const focused = selectTopicItems(
+      candidates.filter((i) => weak.has(i.pattern ?? "default")),
+      new Set(),
+      6,
+      random,
+    );
+    const used = new Set(focused.map((i) => i.family ?? i.id));
+    return [
+      ...focused,
+      ...selectTopicItems(
+        candidates.filter((i) => !used.has(i.family ?? i.id)),
+        new Set(),
+        trainingSizes.practice - focused.length,
+        random,
+      ),
+    ];
+  }
+  const selected = dimensions.flatMap((d) =>
+    selectTopicItems(
+      candidates.filter((i) => i.trainingDimension === d),
+      new Set(),
+      1,
+      random,
+    ),
+  );
+  // A small assessment always covers every stated dimension. Missing one cannot
+  // be silently filled with more questions about another rule.
+  return selected.length === dimensions.length && dimensions.length === 5
+    ? selectTopicItems(selected, new Set(), 5, random)
+    : [];
 }
 export function nextTrainingStep(
   results: TrainingResult[],

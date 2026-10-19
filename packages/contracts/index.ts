@@ -77,10 +77,22 @@ export interface TrainingCycle {
   title: string;
   version: number;
   planVersion: number;
-  scope: "new-frame" | "new-lexeme";
+  scope: "new-frame" | "new-lexeme" | "controlled-context";
+  materials?: {
+    kind: "shared" | "reserved";
+    releaseId: string | null;
+    revisionId?: string | null;
+    dimensions: { id: string; label: string }[];
+    canAdopt: boolean;
+  };
   finished: boolean;
   results: import("../domain/training").TrainingResult[];
-  coaching: { rule: string; example: string; hinted: boolean }[];
+  coaching: {
+    eventId: string;
+    title: string;
+    dimension?: string;
+    hinted: boolean;
+  }[];
   next: {
     phase: import("../domain/training").TrainingPhase;
     label: string;

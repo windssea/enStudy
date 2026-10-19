@@ -141,7 +141,8 @@ check(
     currentHealth.writingReviewProtocol === 1 &&
     currentHealth.phonicsProtocol === 1 &&
     currentHealth.exportProtocol === 1 &&
-    currentHealth.mistakeProtocol === 1,
+    currentHealth.mistakeProtocol === 1 &&
+    currentHealth.trainingMaterialProtocol === 1,
   "current offline confirmation and companion protocols delivered",
 );
 const shell = await shellResponse.json();

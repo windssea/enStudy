@@ -1,13 +1,17 @@
 import type { Answer, LearningSession } from "../packages/contracts/index";
-import { emptyAnswer } from "../packages/domain/structured";
+import {
+  emptyAnswer,
+  structuredCanonical,
+} from "../packages/domain/structured";
 
 export function reconcileDraft(
   previous: LearningSession | null,
   next: LearningSession,
   answer: Answer,
+  submittedAnswer?: Answer,
 ) {
-  if (previous?.assignmentId === next.assignmentId)
-    return { answer, backup: null };
+  const same = previous?.assignmentId === next.assignmentId;
+  if (same && submittedAnswer === undefined) return { answer, backup: null };
   const text =
     previous?.exercise.type === "sort" && Array.isArray(answer)
       ? answer
@@ -28,7 +32,14 @@ export function reconcileDraft(
             ? answer.join(" ")
             : answer;
   return {
-    answer: emptyAnswer(next.exercise),
-    backup: previous && text.trim() ? text : null,
+    answer: submittedAnswer ?? emptyAnswer(next.exercise),
+    backup:
+      previous &&
+      text.trim() &&
+      (!same ||
+        structuredCanonical(next.exercise, answer) !==
+          structuredCanonical(next.exercise, submittedAnswer!))
+        ? text
+        : null,
   };
 }

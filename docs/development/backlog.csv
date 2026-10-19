@@ -23,9 +23,9 @@ M1-06,M1,家庭私有资料导出,管理家长复验且跨家庭与删除失效�
 M2-01,M2,不可变内容release和审核流水线,发布审核撤题与版本兼容通过,partial-versioned-release-snapshot,docs/34-course-expansion-and-exposure.md及追加v2和历史恢复与混合来源已验证而编辑审核撤题运营待做
 M2-02,M2,全年级课程与媒体,288微课与各年级综合能力覆盖审核,partial-core-writing-and-phonics-full-media-review-pending,docs/60-phonics-word-audio-and-clay-workbench.md及288核心课和写作工坊加六站240拼读任务145整词合成声与402单元61专项1203完整本地回归通过而完整音素教学声学教研云端及真机仍待完成
 M2-03,M2,完整互动题型与可访问替代,听读分类纠错与引导表达可用,partial-seven-types-and-saved-writing-review,docs/63-byok-writing-feedback.md及七题型六年级草稿自查另存与保存单段AI建议和36写作49点评检查通过而真实声源富媒体点评教研与完整PC平板验收待做
-M3-01,M3,60专题诊断与迁移,分层与题目家族隔离通过,partial-local-training-journeys,docs/33-topic-training-journeys.md与38-guided-training-centres.md及60专题分步和8类入口而全面错因诊断专用内容开放场景及教研审核待做
+M3-01,M3,60专题诊断与迁移,分层与题目家族隔离通过,partial-18-reserved-blueprints-42-pending,docs/66-reserved-training-materials.md及18专题五维1080专用材料与显式采用和32隔离检查及373版本修订通过而其余42专用内容及开放场景错因诊断和教研仍待完成
 M3-02,M3,72句式和词形规则,槽位与合法变体及错误归因通过,partial-72-frame-banks,docs/38-guided-training-centres.md与39-time-and-word-form-labs.md及句式题库与词形演示而完整归因迁移教研审核待做
-M3-03,M3,复习选题与延迟测验,积压保护与同日跨入口不重复晋级,partial-local-delayed-checkpoints,docs/33-topic-training-journeys.md及1/3/7日共用卡片和逾期合并通过而专用评估池与跨入口任务合并待做
+M3-03,M3,复习选题与延迟测验,积压保护与同日跨入口不重复晋级,partial-18-reserved-materials-and-delayed-checkpoints,docs/66-reserved-training-materials.md及18专题独立阶段池和1/3/7日35组新材料通过而其余42专用池与跨入口任务合并仍待完成
 M3-04,M3,离线队列与报告,断网恢复且未确认进度不虚报,partial-local-offline-confirmation,docs/42-offline-practice-and-confirmation.md及当前轮加密七题型队列和两种丢响应恢复及显式重新授权加7和30日报告而真实缓存磁盘飞行模式多标签导出完整错因及云端验收待做
 M3-05,M3,独立单词特训,分级词库多模式随机与复习进度通过,partial-deployed-word-study,docs/49-word-study-and-b-term-unit-two.md及360词条18主题1440任务保留加六种粘土模型与词卡四模式示范16本机和两站22功能检查通过而真实设备与教研审核待验
 M3-06,M3,个人错题小本与辅助重做,历史版本七题型对照和筛选分页及授权证据零奖励通过,local-verified-runtime-and-browser-remote-and-device-pending,docs/65-private-mistake-notebook.md及440单元1344完整回归48隔离与内置浏览器对照分页筛选重做奖励0和返回已验而完整错因诊断平板和云端仍待完成

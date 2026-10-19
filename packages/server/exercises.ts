@@ -21,6 +21,8 @@ import practicalOriginal from "../../content/practical-term-course-release.v1.js
 import practicalTerm from "../../content/practical-term-course-release.latest.json";
 import portfolioTerm from "../../content/portfolio-term-course-release.v1.json";
 import phonics from "../../content/phonics-release.v1.json";
+import reservedTrainingOriginal from "../../content/training-reserved-release.v1.json";
+import reservedTraining from "../../content/training-reserved-release.latest.json";
 import { structuredCanonical, sortPlacements } from "../domain/structured";
 import type {
   Answer,
@@ -32,6 +34,8 @@ import type {
   WordMode,
 } from "../contracts/index";
 export interface PrivateExercise extends Exercise {
+  trainingPhase?: import("../domain/training").TrainingPhase;
+  trainingDimension?: string;
   phonicsStageId?: string;
   phonicsWordId?: string;
   orderedTokens?: string[];
@@ -205,7 +209,25 @@ export const exercises = [
   ...practicalTerm.items,
   ...portfolioTerm.items,
   ...phonics.items,
+  ...reservedTraining.items,
 ] as PrivateExercise[];
+export const reservedTrainingRelease = reservedTraining as unknown as {
+  id: string;
+  editionId: string;
+  revisionId: string;
+  releases: string[];
+  manifestHash: string;
+  blueprints: Record<
+    string,
+    {
+      title: string;
+      scope: "controlled-context";
+      dimensions: { id: string; label: string }[];
+      families: number;
+    }
+  >;
+  items: PrivateExercise[];
+};
 export const workshopRelease = workshopLatest as unknown as {
   id: string;
   manifestHash: string;
@@ -246,6 +268,7 @@ export const phonicsRelease = phonics as unknown as {
 };
 const versionedExercises = new Map(
   [
+    ...reservedTrainingOriginal.items,
     ...expansion.items,
     ...workshop.items,
     ...action.items,

@@ -24,6 +24,19 @@ const session: LearningSession = {
   },
 };
 describe("draft preservation during session reconciliation", () => {
+  it("uses the authoritative submitted answer and keeps a conflicting local draft readable", () => {
+    expect(
+      reconcileDraft(session, session, "my unsaved draft", "saved answer"),
+    ).toEqual({ answer: "saved answer", backup: "my unsaved draft" });
+    expect(
+      reconcileDraft(session, session, " SAVED   ANSWER ", "saved answer"),
+    ).toEqual({ answer: "saved answer", backup: null });
+  });
+  it("restores a submitted answer after reload without carrying a previous child's draft", () => {
+    expect(
+      reconcileDraft(null, session, "previous child", "saved answer"),
+    ).toEqual({ answer: "saved answer", backup: null });
+  });
   it("preserves typed input when the same assignment changes devices", () => {
     expect(
       reconcileDraft(

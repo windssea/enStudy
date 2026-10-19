@@ -7,6 +7,7 @@ import {
 } from "../packages/domain/training";
 import SceneStage from "./SceneStage";
 import { conceptLab } from "../packages/domain/concepts";
+import TrainingCoaching from "./TrainingCoaching";
 const ConceptLab = lazy(() => import("./ConceptLab"));
 export default function TopicJourney({
   topicId,
@@ -36,6 +37,31 @@ export default function TopicJourney({
     [loadFailed, setLoadFailed] = useState(false),
     [roundSize, setRoundSize] = useState(5);
   const [labOpen, setLabOpen] = useState(false);
+  const [materials, setMaterials] = useState<{
+    available: boolean;
+    dimensions: { id: string; label: string }[];
+  } | null>(null);
+  const readProgress = async (signal?: AbortSignal) => {
+    const [plans, outline] = await Promise.all([
+      api<{ items: TrainingCycle[] }>("/training/cycles", undefined, {
+        signal,
+      }),
+      api<{
+        childId: string;
+        topicId: string;
+        available: boolean;
+        dimensions: { id: string; label: string }[];
+      }>(`/training/materials/${encodeURIComponent(topicId)}`, undefined, {
+        signal,
+      }),
+    ]);
+    if (outline.childId !== childId || outline.topicId !== topicId)
+      throw Error("档案有变化，请重新打开专题。");
+    return {
+      cycle: plans.items.find((r) => r.topicId === topicId) ?? null,
+      materials: outline,
+    };
+  };
   const lab = conceptLab(topicId);
   const createId = useRef(crypto.randomUUID());
   const generation = useRef(0);
@@ -49,9 +75,10 @@ export default function TopicJourney({
     setLoading(true);
     setError("");
     try {
-      const data = await api<{ items: TrainingCycle[] }>("/training/cycles");
+      const data = await readProgress();
       if (generation.current !== current) return;
-      setCycle(data.items.find((r) => r.topicId === topicId) ?? null);
+      setCycle(data.cycle);
+      setMaterials(data.materials);
       setLoadFailed(false);
     } catch (error) {
       if (generation.current !== current) return;
@@ -65,17 +92,18 @@ export default function TopicJourney({
     const current = ++generation.current;
     const controller = new AbortController();
     setCycle(null);
+    setMaterials(null);
     setError("");
     setLoadFailed(false);
     setLoading(Boolean(childId));
     createId.current = crypto.randomUUID();
     if (childId)
-      api<{ items: TrainingCycle[] }>("/training/cycles", undefined, {
-        signal: controller.signal,
-      })
+      readProgress(controller.signal)
         .then((data) => {
-          if (generation.current === current)
-            setCycle(data.items.find((r) => r.topicId === topicId) ?? null);
+          if (generation.current === current) {
+            setCycle(data.cycle);
+            setMaterials(data.materials);
+          }
         })
         .catch((e) => {
           if (generation.current === current) {
@@ -116,6 +144,38 @@ export default function TopicJourney({
       if (generation.current === current) setSaving(false);
     }
   }
+  async function adoptMaterials() {
+    if (
+      !cycle ||
+      !cycle.materials?.canAdopt ||
+      creating.current ||
+      busy ||
+      saving
+    )
+      return;
+    creating.current = true;
+    setSaving(true);
+    setError("");
+    const current = generation.current;
+    try {
+      const updated = await api<TrainingCycle>(
+        `/training/cycles/${encodeURIComponent(cycle.id)}/materials`,
+        { expectedVersion: cycle.version },
+      );
+      if (generation.current !== current) return;
+      if (updated.id !== cycle.id || updated.topicId !== topicId)
+        throw Error("计划有变化，请刷新后再继续。");
+      setCycle(updated);
+    } catch (e) {
+      if (generation.current === current)
+        setError(
+          e instanceof Error ? e.message : "材料暂时没准备好，请刷新后再试。",
+        );
+    } finally {
+      creating.current = false;
+      if (generation.current === current) setSaving(false);
+    }
+  }
   const waiting = cycle && !cycle.finished && cycle.next.readyAt > Date.now(),
     disabled = busy || saving || loading;
   return (
@@ -145,6 +205,28 @@ export default function TopicJourney({
         aria-busy={loading || saving}
         aria-label="专题分步计划"
       >
+        {!loading && materials?.available && !cycle?.finished && (
+          <details className="library-disclosure training-blueprint">
+            <summary>
+              {cycle?.materials?.kind === "shared"
+                ? "新材料可以练哪五点？"
+                : "这份专用材料练哪五点？"}
+            </summary>
+            <ol>
+              {materials.dimensions.map((d) => (
+                <li key={d.id}>{d.label}</li>
+              ))}
+            </ol>
+            <p>
+              小尝试、换材料应用和隔天回访，每样试一题。巩固会换一些没做过的材料再练。
+            </p>
+            {cycle?.materials?.kind === "shared" && (
+              <p>
+                原来的步骤仍用当时的材料；先完成已开始的一步，再选择用专用材料继续。
+              </p>
+            )}
+          </details>
+        )}
         {loading ? (
           <p role="status">正在读取这个专题的足迹…</p>
         ) : loadFailed ? (
@@ -231,12 +313,29 @@ export default function TopicJourney({
             <details className="library-disclosure training-evidence-note">
               <summary>这一步的学习记录说明</summary>
               <p className="footnote">
-                {cycle.scope === "new-frame"
-                  ? "应用与复测使用另留的题框，避开本计划练过的框架。这仍是受控文字练习，不代表真实口语或自由表达能力。"
-                  : "本专题目前检验换词后的提取；不等于已经验证新句型或自由表达。"}
+                {cycle.scope === "controlled-context"
+                  ? "这份材料专供分步计划；普通随机巩固不会提前抽取。每次小尝试、应用或回访覆盖上面五点，仍是受控文字任务，不代表自由表达或整个专题已经掌握。"
+                  : cycle.scope === "new-frame"
+                    ? "应用与复测使用另留的题框，避开本计划练过的框架。这仍是受控文字练习，不代表真实口语或自由表达能力。"
+                    : "本专题目前检验换词后的提取；不等于已经验证新句型或自由表达。"}
                 评估会检查全部已分配材料；新题不足时先做普通巩固，不把旧题算作新测验。
               </p>
             </details>
+            {cycle.materials?.canAdopt && materials?.available && (
+              <section className="training-material-change">
+                <h3>用专用新材料继续</h3>
+                <p>
+                  已经完成的步骤和作答记录保留原样。选择后，接下来还没开始的步骤使用专用材料，不重做或重置旧结果。
+                </p>
+                <button
+                  className="secondary"
+                  disabled={disabled}
+                  onClick={() => void adoptMaterials()}
+                >
+                  {saving ? "正在准备专用材料…" : "接下来使用专用材料"}
+                </button>
+              </section>
+            )}
             {cycle.coaching.length > 0 && (
               <section className="training-coaching">
                 <h3>这几组题，可以再看一眼</h3>
@@ -244,14 +343,12 @@ export default function TopicJourney({
                   依据本次小尝试中的提示与作答记录整理，不据此推断唯一错因。
                 </p>
                 {cycle.coaching.map((card, index) => (
-                  <details key={index}>
-                    <summary>
-                      {card.hinted ? "跟着提示完成的规律" : "还需巩固的规律"}{" "}
-                      {index + 1}
-                    </summary>
-                    <p>{card.rule}</p>
-                    <p className="teaching-english">{card.example}</p>
-                  </details>
+                  <TrainingCoaching
+                    key={card.eventId ?? index}
+                    card={card}
+                    childId={childId}
+                    index={index}
+                  />
                 ))}
               </section>
             )}
@@ -267,6 +364,13 @@ export default function TopicJourney({
                           {trainingLabels[r.phase]}
                           {r.checkpoint ? ` · 第${r.checkpoint}天` : ""}
                         </strong>
+                        {cycle.materials?.kind === "reserved" && (
+                          <small>
+                            {r.materialKind === "reserved"
+                              ? "专用材料"
+                              : "原题库材料"}
+                          </small>
+                        )}
                         <span>
                           独立答对{r.independent}/{r.total}题 · 提示/示范后答对
                           {(r.correct ?? 0) - (r.independent ?? 0)}题 · 还需巩固

@@ -98,12 +98,20 @@
       "sentence:nora climbs the hill on sundays"
     ],
     "forms.third-person/fix": [
+      "family:reserved-fact-145b9f375a3d4c3c4895",
+      "family:reserved-fact-ba5a15419fe9164aee43",
       "sentence:dad fixes toy boats at weekends",
+      "sentence:every tuesday, rose fixes a chair",
+      "sentence:rose fixes a chair every friday",
       "workshop-target:morphology.verb.third-person:c1c6e6c4c02e5"
     ],
     "forms.third-person/carry": [
+      "family:reserved-fact-abe71ec62c9dfe613a0b",
+      "family:reserved-fact-aea9a8e5bd558fd9fe9d",
       "family:workshop-sentence-5810c4d5d2fbe8eb",
+      "sentence:every tuesday, nina carries a basket",
       "sentence:he carries a bag every morning",
+      "sentence:nina carries a basket every friday",
       "sentence:nora carries a blue lunch box",
       "workshop-target:morphology.verb.third-person:c6ef49cacb4c3"
     ],
@@ -128,9 +136,13 @@
     ],
     "forms.regular-past/paint": [
       "family:fact-ba317f200f6a129a",
+      "family:reserved-fact-0efa28306978e04cddea",
+      "family:reserved-fact-1670f221c11f31a160f9",
       "family:topic-fact-79655b964caa05beb228",
       "sentence:nora painted a wooden star yesterday",
+      "sentence:the job was finished yesterday: zoe painted a wall",
       "sentence:yesterday, nivi painted the cardboard arch",
+      "sentence:yesterday, zoe painted a wall",
       "sentence:把动词paint变为过去式。"
     ],
     "forms.regular-past/worry": [

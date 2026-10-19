@@ -75,6 +75,7 @@
 | 65 | [v0.41自带AI的单段写作建议](63-byok-writing-feedback.md) | 独立同意、版本绑定、加密建议、共用预算、只读恢复与浏览器模拟验收 |
 - [六站粘土课程地图](64-six-station-clay-course-map.md)
 - [个人错题小本与辅助重做](65-private-mistake-notebook.md)
+- [专用专题材料与五维小尝试](66-reserved-training-materials.md)
 
 配套资料：
 

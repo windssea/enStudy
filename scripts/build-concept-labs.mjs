@@ -10,6 +10,8 @@ const paths = [
   "course-expansion.v1.json",
   "course-expansion.latest.json",
   "topic-release.v1.json",
+  "training-reserved-release.v1.json",
+  "training-reserved-release.latest.json",
   "pattern-release.v1.json",
   "vocabulary-release.v1.json",
   "workshop-release.v1.json",

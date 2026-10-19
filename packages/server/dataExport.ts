@@ -117,7 +117,7 @@ const sources = [
   simple("reward_ledger", "id,child_id,source_attempt_id,delta,reason", "t.id"),
   simple(
     "training_cycles",
-    "id,child_id,topic_id,plan_version,version,created_at",
+    "id,child_id,topic_id,plan_version,version,created_at,material_release_id,material_adopted_at",
     "t.created_at,t.id",
   ),
   {

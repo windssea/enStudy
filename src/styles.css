@@ -3482,6 +3482,33 @@ button.unit-node:not(:disabled) {
 .training-next > div {
   flex: 1 1 320px;
 }
+.training-blueprint ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 12px;
+  padding-inline-start: 24px;
+  margin-block: 20px;
+}
+.training-blueprint li {
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--sky-play);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.training-material-change {
+  margin-block: 20px;
+  padding: 20px;
+  border: 1px solid var(--control-border);
+  border-radius: 24px;
+  background: var(--sun-soft);
+}
+.training-material-change h3 {
+  margin-top: 0;
+}
+.training-material-change button {
+  min-height: 52px;
+}
 .training-coaching {
   margin: 24px 0;
   background: #f4f8ff;

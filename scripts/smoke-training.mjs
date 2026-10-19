@@ -4,7 +4,10 @@ import { spawnSync } from "node:child_process";
 import { wrangler } from "./runtime.mjs";
 const base = "http://127.0.0.1:8788",
   bank = JSON.parse(await readFile("content/topic-release.v1.json", "utf8")),
-  byId = new Map(bank.items.map((i) => [i.id, i]));
+  reserved = JSON.parse(
+    await readFile("content/training-reserved-release.latest.json", "utf8"),
+  ),
+  byId = new Map([...bank.items, ...reserved.items].map((i) => [i.id, i]));
 const jar = new Map(),
   device = new Map();
 let child,
@@ -184,6 +187,12 @@ try {
       create("grammar.be", nonce),
     ]),
     cycle = made[0].data;
+  // Preserve the full original v1 allocation regression. These rows belong
+  // only to this disposable local child; dedicated editions have their own suite.
+  sql(
+    `UPDATE training_cycles SET material_release_id=NULL,material_adopted_at=NULL WHERE id=${quote(cycle.id)} AND child_id=${quote(child)};`,
+  );
+  Object.assign(cycle, await read(cycle.id));
   check(
     made.every((r) => [200, 201].includes(r.status)) &&
       made[1].data.id === cycle.id,
@@ -363,6 +372,10 @@ try {
     "returning after a week merges missed checkpoints into one actual visit",
   );
   const exhausted = (await create("grammar.countability")).data;
+  sql(
+    `UPDATE training_cycles SET material_release_id=NULL,material_adopted_at=NULL WHERE id=${quote(exhausted.id)} AND child_id=${quote(child)};`,
+  );
+  Object.assign(exhausted, await read(exhausted.id));
   for (let i = 0; i < 3; i++)
     assert.equal(
       (
