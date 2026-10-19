@@ -14,6 +14,7 @@ await import("./build-vocabulary.mjs");
 await import("./build-workshops.mjs");
 await import("./build-workshop-review.mjs");
 await import("./build-be-action-contrast.mjs");
+await import("./build-be-action-review.mjs");
 await import("./build-story-courses.mjs");
 await import("./build-word-listening.mjs");
 await import("./build-picture-words.mjs");

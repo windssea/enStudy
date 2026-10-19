@@ -1,0 +1,5 @@
+-- Clarify standard question order without changing historical v1 questions or answers.
+INSERT INTO content_releases VALUES('be-action-review-v2','published','0647849b8b79d0bb31122ad71cd12d4517091668d3dff13f4fe91edfdd0ca95c',unixepoch()*1000);
+INSERT INTO lessons VALUES('contrast.be-action',2,'be-action-review-v2',3,'A',1,'be与行为动词辨析：明确问句要求','{}');
+INSERT INTO items VALUES('contrast.be-action.question-state',2,'contrast.be-action',2,'grammar.be-action-contrast','contrast-choice','choice','{"id":"contrast.be-action.question-state","context":"你想知道Nora是否已经准备好了，不是问她是否做准备工作。","prompt":"请选择采用标准一般疑问句语序的问句。","type":"choice","choices":["Is Nora ready?","Does Nora ready?","Nora is ready?"],"category":"grammar","title":"be与行为动词辨析","gradeMin":3}','{"answers":["Is Nora ready?"],"explanation":"ready表示状态。陈述句Nora is ready变一般疑问句时，把is放到主语前。Does后不能直接接ready；本题练习标准的一般疑问句语序。 口语中Nora is ready?可用升调确认信息；本题明确要求be放在主语前的标准一般疑问句语序，因此不选确认式表达。","hint":"ready是状态词，不是动作动词。","family":"contrast.be-action.question-state","workshopId":"be-action-contrast"}','published');
+INSERT INTO release_items VALUES('be-action-review-v2','contrast.be-action.question-state',2);

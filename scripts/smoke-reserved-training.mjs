@@ -36,7 +36,7 @@ const bank = JSON.parse(
   ),
   old = JSON.parse(await readFile("content/topic-release.v1.json", "utf8"));
 const contrast = JSON.parse(
-  await readFile("content/be-action-release.v1.json", "utf8"),
+  await readFile("content/be-action-release.latest.json", "utf8"),
 );
 const items = new Map(
     [...old.items, ...bank.items, ...contrast.items].map((i) => [i.id, i]),
@@ -787,6 +787,7 @@ try {
   );
   await request(`/children/${child}/select`, {});
   await migrate("0048_be_action_contrast.sql");
+  await migrate("0049_be_action_question_review.sql");
   const contrastOpened = await request("/sessions", {
     workshopId: "be-action-contrast",
     roundSize: 20,

@@ -770,7 +770,7 @@ try {
     );
   }
   const contrastBank = JSON.parse(
-    await readFile("content/be-action-release.v1.json", "utf8"),
+    await readFile("content/be-action-release.latest.json", "utf8"),
   );
   const contrast = await authenticated("/sessions", {
     workshopId: "be-action-contrast",

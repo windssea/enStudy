@@ -3,11 +3,21 @@ import {
   workshopRelease,
   gradeAnswer,
   publicExercise,
+  exerciseVersion,
 } from "../packages/server/exercises";
 const items = workshopRelease.items.filter(
   (i) => i.workshopId === "be-action-contrast",
 );
 describe("contextual be/action contrast", () => {
+  it("clarifies standard question order while preserving the original item and answer set", () => {
+    const original = exerciseVersion("contrast.be-action.question-state", 1)!;
+    const current = exerciseVersion(original.id, 2)!;
+    expect(original.version).toBe(1);
+    expect(current.prompt).toContain("标准一般疑问句");
+    expect(current.prompt).not.toBe(original.prompt);
+    expect(current.answers).toEqual(original.answers);
+    expect(current.explanation).toContain("口语中Nora is ready?");
+  });
   it("contains twelve separate judgments and five response types", () => {
     expect(items).toHaveLength(12);
     expect(new Set(items.map((i) => i.family)).size).toBe(12);
