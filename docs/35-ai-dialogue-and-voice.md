@@ -1,5 +1,7 @@
 # v0.16：角色短对话与轮流语音
 
+最新状态（2026-10-19）：本功能已随后续阶段同步发布，线上环境加密配置已就绪；新增[阿里原生ASR](73-aliyun-native-asr.md)与[qwen3.8-flash文字预设](74-qwen-text-profile.md)，文本/识别/合成按类型分别配置和主动测试。原生ASR直接传站内WAV Base64，不需要公开录音URL；Qwen文字显式关闭思考。真实Key、语音质量与Pad实机仍待验。下文云端v0.8和重试计划是10月17日的历史背景，当前部署以[阶段记录](67-stage-cloudflare-deployment.md)为准。
+
 2026-10-17，本地实现记录。延续ui-ux-pro-max与现有设计系统；默认关闭注册、AI和录音，不改默认管理员凭据。今天仅本地开发，保持Cloudflare免费；云端仍为v0.8，沿用10月18日08:05的最新main重试计划。
 
 ## 孩子与家长的实际流程
@@ -27,7 +29,7 @@
 | POST `.../:id/speech` | 只能合成该对话已保存的AI回复ID，不能代理任意文字 |
 | POST `.../:id/close` | 仅原设备清除本段历史及其结果缓存 |
 
-文本沿用已审核主机的Chat Completions适配器；识别固定请求`/audio/transcriptions`，multipart含file/model/response_format=json/language=en。合成固定请求`/audio/speech`，JSON含model/voice/input/response_format=mp3。服务商需要分别兼容这些协议，不能从“文本可用”推断语音能力。协议依据：[官方转写文档](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create)、[官方合成文档](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create)。
+OpenAI兼容类型的文本使用已审核主机的Chat Completions适配器，识别固定请求`/audio/transcriptions`，multipart含file/model/response_format=json/language=en；合成固定请求`/audio/speech`，JSON含model/voice/input/response_format=mp3。服务商需要分别兼容所选协议，不能从“文本可用”推断语音能力。阿里原生ASR与阿里文字预设使用各自明确路径和参数，详见上述阶段文档，不把原生generation端点拼上OpenAI音频路径。兼容音频依据：[官方转写文档](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create)、[官方合成文档](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create)。
 
 录音采用AudioWorklet采集单声道PCM，在浏览器限20秒、重采样为16kHz/16bit WAV。服务器严格检查44字节规范头、数据长度、声道、采样率与时长，再计入额度；不相信浏览器声称的秒数，也无需在Worker转码。这个首版选择收窄了格式范围，替代原设计中的多MediaRecorder容器协商。[AudioWorklet需要安全上下文](https://developer.mozilla.org/en-US/docs/Web/API/AudioWorklet)，麦克风能力运行时检查，无支持或拒绝权限时保留打字/示范句。
 

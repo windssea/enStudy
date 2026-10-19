@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { sameLessonRelease } from "./remote-release.mjs";
 import { responseCookieHeader } from "./response-cookies.mjs";
-import { releasedAsset } from "./remote-asset.mjs";
+import { releasedAsset, releasedJson } from "./remote-asset.mjs";
 const expectedCourse = JSON.parse(
   await readFile(
     new URL("../public/content/lessons.json", import.meta.url),
@@ -49,6 +49,28 @@ const request = async (path, options = {}) => {
   ) {
     const expected = await readFile(new URL("../dist" + path, import.meta.url));
     return releasedAsset(() => fetchOnce(path, options), expected);
+  }
+  if (
+    (!options.method || options.method === "GET") &&
+    /^(?:\/content\/[a-zA-Z0-9._-]+|\/offline-shell)\.json$/.test(path)
+  ) {
+    let expected;
+    try {
+      expected = JSON.parse(
+        await readFile(new URL("../dist" + path, import.meta.url), "utf8"),
+      );
+    } catch (error) {
+      // Missing private files must still reach their original access-denial check.
+      if (error.code === "ENOENT") return fetchOnce(path, options);
+      throw error;
+    }
+    try {
+      return await releasedJson(() => fetchOnce(path, options), expected);
+    } catch {
+      throw Error(
+        `Published static JSON failed its exact release check: ${path}`,
+      );
+    }
   }
   return fetchOnce(path, options);
 };

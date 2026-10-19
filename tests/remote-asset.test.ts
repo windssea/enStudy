@@ -1,9 +1,69 @@
 import { describe, expect, it } from "vitest";
-import { releasedAsset } from "../scripts/remote-asset.mjs";
+import { releasedAsset, releasedJson } from "../scripts/remote-asset.mjs";
 const expected = new TextEncoder().encode("export const ready=true;");
 const js = (body = expected) =>
   new Response(body, { headers: { "Content-Type": "application/javascript" } });
 describe("bounded Pages static propagation checks", () => {
+  it("waits for a JSON manifest after an HTML SPA fallback without consuming its body", async () => {
+    let calls = 0;
+    const expected = { version: 3, items: ["home"] };
+    const r = await releasedJson(
+      async () => {
+        calls++;
+        return calls === 1
+          ? new Response("<!doctype html>", {
+              headers: { "Content-Type": "text/html" },
+            })
+          : Response.json(expected);
+      },
+      expected,
+      { attempts: 3, pauseMs: 0 },
+    );
+    expect(calls).toBe(2);
+    expect(await r.json()).toEqual(expected);
+  });
+  it("compares manifest data independently of platform line endings", async () => {
+    const expected = { version: 3, items: ["home"] };
+    const r = await releasedJson(
+      async () =>
+        new Response(
+          JSON.stringify(expected, null, 2).replaceAll("\n", "\r\n"),
+          { headers: { "Content-Type": "application/json; charset=utf-8" } },
+        ),
+      expected,
+    );
+    expect(await r.json()).toEqual(expected);
+  });
+  it("fails a persistently different JSON release after the fixed attempt limit", async () => {
+    let calls = 0;
+    await expect(
+      releasedJson(
+        async () => {
+          calls++;
+          return Response.json({ version: 2 });
+        },
+        { version: 3 },
+        { attempts: 2, pauseMs: 0 },
+      ),
+    ).rejects.toThrow("expected release");
+    expect(calls).toBe(2);
+  });
+  it("rejects malformed JSON and a false JSON MIME instead of accepting an HTML fallback", async () => {
+    let calls = 0;
+    await expect(
+      releasedJson(
+        async () => {
+          calls++;
+          return new Response("<!doctype html>", {
+            headers: { "Content-Type": "application/json" },
+          });
+        },
+        {},
+        { attempts: 2, pauseMs: 0 },
+      ),
+    ).rejects.toThrow();
+    expect(calls).toBe(2);
+  });
   it("accepts matching JavaScript immediately without consuming the returned body", async () => {
     let calls = 0;
     const r = await releasedAsset(async () => {

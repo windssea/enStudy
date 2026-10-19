@@ -22,3 +22,29 @@ export async function releasedAsset(
   }
   throw Error("No released asset attempts requested.");
 }
+
+export async function releasedJson(
+  read,
+  expected,
+  { attempts = 12, pauseMs = 2500 } = {},
+) {
+  const expectedJson = JSON.stringify(expected);
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const response = await read();
+    if (
+      response.status === 200 &&
+      /application\/json/i.test(response.headers.get("content-type") ?? "")
+    ) {
+      try {
+        if (JSON.stringify(await response.clone().json()) === expectedJson)
+          return response;
+      } catch {
+        /* A transient HTML fallback can carry the old JSON MIME. */
+      }
+    }
+    if (attempt < attempts - 1) await delay(pauseMs);
+  }
+  throw Error(
+    "Static JSON did not match the expected release after bounded GET checks.",
+  );
+}
