@@ -114,7 +114,7 @@ export default function PictureWordDeck({
                   <p>{current.meaning}</p>
                   {wordObjectKind(current) && (
                     <details key={current.id}>
-                      <summary>转转粘土玩具</summary>
+                      <summary>看看词语插画</summary>
                       <Suspense fallback={<p>玩具准备中…</p>}>
                         <WordObjectScene word={current} />
                       </Suspense>

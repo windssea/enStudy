@@ -37,6 +37,7 @@ const check = (condition, message) => {
 };
 const request = (path, options = {}) =>
   fetch(new URL(path, base), {
+    cache: "no-store",
     ...options,
     signal: AbortSignal.timeout(20000),
   });
@@ -90,19 +91,43 @@ const mediaAssets = [
   })),
   ...expectedPictures.atlases.map((a) => ({ ...a, mime: "image/png" })),
 ];
+async function verifiedStaticMedia(a) {
+  let last;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt) await delay(attempt === 1 ? 1000 : 3000);
+    try {
+      const r = await request(a.url),
+        b = Buffer.from(await r.arrayBuffer());
+      last = {
+        status: r.status,
+        mime: r.headers.get("content-type"),
+        bytes: b.length,
+        hashMatch: createHash("sha256").update(b).digest("hex") === a.sha256,
+      };
+      if (
+        r.ok &&
+        (last.mime ?? "").includes(a.mime) &&
+        last.bytes === a.bytes &&
+        last.hashMatch
+      )
+        return true;
+    } catch (error) {
+      last = {
+        error: error instanceof Error ? error.message : "request failed",
+      };
+    }
+  }
+  console.error(
+    "Static media did not match after three public reads",
+    a.url,
+    last,
+  );
+  return false;
+}
 let pictureAssetsValid = true;
 for (let offset = 0; offset < mediaAssets.length; offset += 6) {
   const results = await Promise.all(
-    mediaAssets.slice(offset, offset + 6).map(async (a) => {
-      const r = await request(a.url),
-        b = Buffer.from(await r.arrayBuffer());
-      return (
-        r.ok &&
-        (r.headers.get("content-type") ?? "").includes(a.mime) &&
-        b.length === a.bytes &&
-        createHash("sha256").update(b).digest("hex") === a.sha256
-      );
-    }),
+    mediaAssets.slice(offset, offset + 6).map(verifiedStaticMedia),
   );
   pictureAssetsValid &&= results.every(Boolean);
 }
@@ -226,14 +251,12 @@ check(
   "static shell matches this exact build",
 );
 const sceneAssets = expectedShell.assets.filter((path) =>
-  /\/(?:CourseMapCanvas|SceneRuntime|SceneCanvas|ConceptCanvas|WordObjectScene|WordObjectCanvas)-.*\.js$/.test(
-    path,
-  ),
+  /\/(?:WordObjectScene|ConceptLab)-.*\.js$/.test(path),
 );
 assert.equal(
   sceneAssets.length,
-  6,
-  "all six scene modules including word study are present in this build",
+  2,
+  "both illustrated learning modules are present in this build",
 );
 for (const path of sceneAssets) {
   const response = await request(path);
@@ -244,7 +267,7 @@ for (const path of sceneAssets) {
       /javascript/.test(response.headers.get("content-type") ?? "") &&
       createHash("sha256").update(actual).digest("hex") ===
         createHash("sha256").update(expected).digest("hex"),
-    `3D module matches build: ${path.split("/").pop()}`,
+    `illustrated learning module matches build: ${path.split("/").pop()}`,
   );
 }
 const writingAssets = expectedShell.assets.filter((path) =>
@@ -325,9 +348,9 @@ check(
   "anonymous private exports rejected",
 );
 const phonicsModules = expectedShell.assets.filter((path) =>
-  /\/(?:PhonicsCentre|PhonicsCanvas)-.*\.js$/.test(path),
+  /\/PhonicsCentre-.*\.js$/.test(path),
 );
-assert.equal(phonicsModules.length, 2);
+assert.equal(phonicsModules.length, 1);
 for (const path of phonicsModules) {
   const r = await request(path),
     actual = Buffer.from(await r.arrayBuffer()),
@@ -368,25 +391,33 @@ check(
   (await request("/api/v1/learning/phonics")).status === 401,
   "anonymous phonics progress rejected",
 );
-assert.equal(
-  models.length,
-  2,
-  "this release includes both Blender-authored clay partners",
+check(
+  models.length === 0 &&
+    !expectedShell.assets.some((path) =>
+      /\/(?:SceneCanvas|CourseMapCanvas|ConceptCanvas|WordObjectCanvas|PhonicsCanvas|SceneRuntime)-/.test(
+        path,
+      ),
+    ),
+  "illustrated release ships no legacy WebGL runtime or GLB models",
 );
-for (const path of models) {
-  const response = await request(path),
-    actual = Buffer.from(await response.arrayBuffer());
-  const expected = await readFile(new URL(`../dist${path}`, import.meta.url));
-  check(
-    response.status === 200 &&
-      actual.length > 20 &&
-      actual.length < 1_700_000 &&
-      actual.readUInt32LE(0) === 0x46546c67 &&
-      createHash("sha256").update(actual).digest("hex") ===
-        createHash("sha256").update(expected).digest("hex"),
-    "Blender clay model matches this exact build",
-  );
+const expectedArt = JSON.parse(
+  await readFile(
+    new URL("../public/content/clay-art.v1.json", import.meta.url),
+    "utf8",
+  ),
+);
+const artResponse = await request("/content/clay-art.v1.json");
+check(
+  artResponse.ok &&
+    JSON.stringify(await artResponse.json()) === JSON.stringify(expectedArt),
+  "illustrated clay manifest matches this build",
+);
+let validArt = true;
+for (const asset of Object.values(expectedArt.assets)) {
+  const valid = await verifiedStaticMedia({ ...asset, mime: "image/png" });
+  validArt = validArt && valid;
 }
+check(validArt, "all generated clay PNG assets have exact bytes and MIME");
 check(
   (await request("/api/v1/admin/accounts")).status === 401,
   "anonymous account administration rejected",

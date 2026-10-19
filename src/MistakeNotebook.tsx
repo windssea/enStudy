@@ -7,7 +7,7 @@ import type {
 import { mistakeCategories } from "../packages/domain/mistakes";
 import { api } from "./api";
 import SpeechButton from "./SpeechButton";
-import CompanionSticker from "./CompanionSticker";
+import PaintedCompanion from "./PaintedCompanion";
 import PictureChoice from "./PictureChoice";
 
 const labels: Record<string, string> = {
@@ -164,9 +164,9 @@ export default function MistakeNotebook({
           <h1>错题小本</h1>
           <p className="lead">看看那次怎么想，再把一句规律弄明白。</p>
         </div>
-        <svg viewBox="0 0 190 205" aria-hidden="true">
-          <CompanionSticker />
-        </svg>
+        <div className="mistake-partner-art" aria-hidden="true">
+          <PaintedCompanion />
+        </div>
       </div>
       <p className="mistake-explanation">
         这里按时间记录答错的题和跟着提示、示范答对的题。同一道题可能出现多次，不是“还欠几题”，也不是能力排名。

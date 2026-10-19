@@ -2,16 +2,18 @@ export const companions = [
   {
     id: "fox",
     name: "小狐狸橙橙",
-    detail: "围上小围巾，一起探索词语和句子。",
+    detail: "蓬松的大尾巴，陪你探索词语和句子。",
     backAction: "看看背包",
     backLine: "橙橙的小背包，装着下一次探险的好奇心。",
   },
   {
+    // Historical cosmetic slot key stays stable for saved profiles and old clients.
+    // From v0.47 its user-authorized appearance is the original clay bear.
     id: "pikachu",
-    name: "皮卡丘",
-    detail: "软软的耳朵、圆圆的脸颊，陪你慢慢想一想。",
-    backAction: "看看尾巴",
-    backLine: "皮卡丘转过身，露出闪电形的小尾巴。",
+    name: "小熊团团",
+    detail: "蜂蜜色的小熊，围着薄荷绿围巾，陪你慢慢想一想。",
+    backAction: "看看伙伴",
+    backLine: "团团准备好啦，一起去探险。",
   },
 ] as const;
 export type CompanionId = (typeof companions)[number]["id"];

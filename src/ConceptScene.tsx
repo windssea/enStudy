@@ -1,21 +1,6 @@
-import {
-  Component,
-  lazy,
-  Suspense,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
 import type { ConceptSceneData } from "../packages/domain/concepts";
-import { MotionContext } from "./SceneStage";
-import { isSpeechActive } from "./speechActivity";
-import { CONCEPT_MOTION_MS } from "./conceptMotion";
 import MeasurementFlat from "./MeasurementFlat";
 import SpatialFlat from "./SpatialFlat";
-const ConceptCanvas = lazy(() => import("./ConceptCanvas"));
 export function ConceptFlat({
   data,
   selectedMeasurement,
@@ -146,21 +131,6 @@ export function ConceptFlat({
     </svg>
   );
 }
-class Boundary extends Component<
-  { children: ReactNode; fallback: ReactNode; onLost: () => void },
-  { failed: boolean }
-> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  componentDidCatch() {
-    this.props.onLost();
-  }
-  render() {
-    return this.state.failed ? this.props.fallback : this.props.children;
-  }
-}
 export default function ConceptScene({
   data,
   revision,
@@ -170,75 +140,13 @@ export default function ConceptScene({
   revision: number;
   selectedMeasurement?: string;
 }) {
-  const { quiet, flat } = useContext(MotionContext);
-  const host = useRef<HTMLDivElement>(null),
-    previous = useRef(revision);
-  const [visible, setVisible] = useState(false),
-    [ready, setReady] = useState(false),
-    [hidden, setHidden] = useState(document.hidden),
-    [speaking, setSpeaking] = useState(isSpeechActive),
-    [lost, setLost] = useState(false),
-    [moving, setMoving] = useState(false);
-  useEffect(() => {
-    const node = host.current;
-    if (!node) return;
-    if (!("IntersectionObserver" in window)) {
-      setVisible(true);
-      setReady(true);
-      return;
-    }
-    const observer = new IntersectionObserver(([entry]) => {
-      setVisible(entry.isIntersecting);
-      if (entry.isIntersecting) setReady(true);
-    });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-  useEffect(() => {
-    const visibility = () => setHidden(document.hidden),
-      speech = (event: Event) =>
-        setSpeaking((event as CustomEvent<boolean>).detail);
-    document.addEventListener("visibilitychange", visibility);
-    document.addEventListener("eq-speech-active", speech);
-    return () => {
-      document.removeEventListener("visibilitychange", visibility);
-      document.removeEventListener("eq-speech-active", speech);
-    };
-  }, []);
-  const paused = quiet || hidden || speaking || !visible || flat || lost;
-  useLayoutEffect(() => {
-    const changed = previous.current !== revision;
-    previous.current = revision;
-    setMoving(false);
-    if (paused || !changed) return;
-    setMoving(true);
-    const timer = setTimeout(() => setMoving(false), CONCEPT_MOTION_MS);
-    return () => clearTimeout(timer);
-  }, [revision, paused]);
-  const fallback = (
-    <ConceptFlat data={data} selectedMeasurement={selectedMeasurement} />
-  );
   return (
-    <div ref={host} className="concept-scene" data-paused={paused}>
+    <div className="concept-scene illustrated-concept">
       <div className="concept-viewport" aria-hidden="true">
-        {flat || lost || !ready ? (
-          fallback
-        ) : (
-          <Boundary fallback={fallback} onLost={() => setLost(true)}>
-            <Suspense fallback={fallback}>
-              <ConceptCanvas
-                data={data}
-                revision={revision}
-                moving={moving && !paused}
-                onLost={() => setLost(true)}
-                selectedMeasurement={selectedMeasurement}
-              />
-            </Suspense>
-          </Boundary>
-        )}
+        <ConceptFlat data={data} selectedMeasurement={selectedMeasurement} />
       </div>
       <p className="footnote">
-        {lost ? "已切换为2D示意图。" : flat ? "2D示意图 · " : "互动示意图 · "}
+        互动示意图 ·{" "}
         {data.kind === "spatial"
           ? "小球、桌子和开口盒子的关系与文字对应；轻点步骤观察，不用拖动。"
           : data.measurement

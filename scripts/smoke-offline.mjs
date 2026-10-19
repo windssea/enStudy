@@ -516,7 +516,7 @@ try {
           p === "/index.html" ||
           /^\/assets\/[\w.-]+\.(js|css|glb)$/.test(p) ||
           /^\/audio\/(guides|words)\/[a-f0-9]{24}\.mp3$/.test(p) ||
-          /^\/pictures\/words\/[a-f0-9]{24}\.png$/.test(p),
+          /^\/(?:pictures\/words|art\/clay-v1)\/[a-f0-9]{24}\.png$/.test(p),
       ),
     "built offline manifest contains its player modules and only public shell assets",
   );

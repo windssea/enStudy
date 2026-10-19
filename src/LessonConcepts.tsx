@@ -19,7 +19,7 @@ export default function LessonConcepts({
     >
       <summary>
         <strong>想看规律动起来？</strong>
-        <span>打开3D小实验 · 可选</span>
+        <span>打开互动小实验 · 可选</span>
       </summary>
       {open && (
         <div className="lesson-concept-content">

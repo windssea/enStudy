@@ -296,7 +296,7 @@ describe("saved clay partners", () => {
         onNeedProfile: () => {},
       }),
     );
-    expect(html).toContain("现在是皮卡丘");
+    expect(html).toContain("现在是小熊团团");
     expect(html).not.toContain('type="radio"');
     expect(html).not.toContain("<canvas");
   });

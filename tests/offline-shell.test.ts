@@ -58,6 +58,7 @@ function runtime(
                 ? [
                     "/audio/words/1234567890abcdef12345678.mp3",
                     "/pictures/words/1234567890abcdef12345678.png",
+                    "/art/clay-v1/1234567890abcdef12345678.png",
                   ]
                 : []),
             ],
@@ -158,6 +159,11 @@ describe("offline public shell policy", () => {
     expect(
       (
         await good.request("/pictures/words/1234567890abcdef12345678.png")
+      )?.headers.get("content-type"),
+    ).toBe("image/png");
+    expect(
+      (
+        await good.request("/art/clay-v1/1234567890abcdef12345678.png")
       )?.headers.get("content-type"),
     ).toBe("image/png");
     expect(

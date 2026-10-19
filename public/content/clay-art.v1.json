@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "rendering": "illustrated-clay",
+  "assets": {
+    "fox": {
+      "url": "/art/clay-v1/350201d8dca89f3597f01177.png",
+      "sha256": "350201d8dca89f3597f01177dcd746a586a42f5c69f399d3bb1766b7eaaf018d",
+      "bytes": 1602987,
+      "width": 1254,
+      "height": 1254,
+      "transparent": true
+    },
+    "island": {
+      "url": "/art/clay-v1/a468fb45e27a6d9f0821bb10.png",
+      "sha256": "a468fb45e27a6d9f0821bb10d69e3ccec70e57134dbfcff6230caf1a25dee5cf",
+      "bytes": 2503579,
+      "width": 1536,
+      "height": 1024,
+      "transparent": false
+    },
+    "nook": {
+      "url": "/art/clay-v1/82e5dbaba8d258b3c4dc63b7.png",
+      "sha256": "82e5dbaba8d258b3c4dc63b732dd1aefc2928023acd70cbc7fbf587f60a4ab3a",
+      "bytes": 2378024,
+      "width": 1536,
+      "height": 1024,
+      "transparent": false
+    },
+    "bear": {
+      "url": "/art/clay-v1/a5a16ee411e46fbf5b6c5df8.png",
+      "sha256": "a5a16ee411e46fbf5b6c5df8ad98133438f57a84e606abb41fe908e20a2463d5",
+      "bytes": 1302838,
+      "width": 1254,
+      "height": 1254,
+      "transparent": true
+    }
+  }
+}

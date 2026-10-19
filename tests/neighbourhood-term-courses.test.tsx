@@ -158,7 +158,7 @@ describe("third B-term neighbourhood and planning courses", () => {
         }),
       );
       expect(html).toContain("下学期");
-      expect(html).toContain("打开3D小实验");
+      expect(html).toContain("打开互动小实验");
       expect(html).toContain("开始这节课的练习");
       expect(html).not.toContain("<canvas");
     }

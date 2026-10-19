@@ -998,7 +998,7 @@ export default function App() {
                     aria-pressed={twoD}
                     onClick={() => setTwoD(!twoD)}
                   >
-                    {twoD ? "2D 场景" : "3D 场景"}
+                    {twoD ? "静态插画" : "插画小动作"}
                   </button>
                   <button
                     className="soft-button"
@@ -1148,7 +1148,7 @@ export default function App() {
                       aria-pressed={twoD}
                       onClick={() => setTwoD(!twoD)}
                     >
-                      {twoD ? "试试3D地图" : "切换2D"}
+                      {twoD ? "开启地图小动作" : "地图静止"}
                     </button>
                   </div>
                   <CourseIslandMap

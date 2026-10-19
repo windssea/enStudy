@@ -35,3 +35,4 @@ M4-03,M4,BYOK单段写作建议,独立同意和版本隔离及共用预算和失
 M5-01,M5,真机性能隐私和运营,发布门槛全部通过且可恢复删除,todo,
 M0-08,M0,儿童看图和声音操作界面,图画导航大按钮和中文指令以及逐张双语例句与保存接续通过,deployed-browser-and-runtime-verified-device-pending,docs/68-picture-led-child-interface.md及467单元1390运行两站各56线上和26附加检查及正式域名浏览器通过而儿童研究听审和Pad实机待验
 M3-05b,M3,低识字儿童听音认图与图卡学习,60词图片录音180变体和真实保存复习隔离及反馈示范通过,local-browser-and-runtime-verified-release-pending,docs/69-picture-word-learning.md及477单元和26组专项及180真实变体判分而儿童听审和Pad实机待验
+M0-09,M0,透明粘土角色与插画场景,两位原创角色四张原图六站大按钮及无WebGL前端,local-browser-and-runtime-verified-release-pending,docs/70-generated-clay-illustrations.md及481单元37离线和四种尺寸及透明通道检查通过而Pad实机与儿童研究待验

@@ -1,39 +1,20 @@
-import {
-  Component,
-  lazy,
-  Suspense,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { Catalog, CourseLesson } from "../packages/contracts/index";
 import { CompanionContext } from "./CompanionContext";
 import { companionInfo } from "../packages/domain/companions";
 import { courseMapStations } from "./courseMapModel";
-import { mapTravelMs } from "./scene/mapRoute";
 import FlatMap from "./FlatMap";
-import { isSpeechActive } from "./speechActivity";
-
-const CourseMapCanvas = lazy(() => import("./CourseMapCanvas"));
-class MapBoundary extends Component<
-  { fallback: ReactNode; onLost: () => void; children: ReactNode },
-  { failed: boolean }
-> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  componentDidCatch() {
-    this.props.onLost();
-  }
-  render() {
-    return this.state.failed ? this.props.fallback : this.props.children;
-  }
-}
-
+import PaintedCompanion from "./PaintedCompanion";
+import { clayArt } from "./clayArt";
+import { useIllustrationPause } from "./useIllustrationPause";
+const stops = [
+  [14, 73],
+  [38, 57],
+  [66, 57],
+  [57, 36],
+  [72, 24],
+  [90, 16],
+];
 export default function CourseIslandMap({
   units,
   lessons,
@@ -59,16 +40,12 @@ export default function CourseIslandMap({
     () => courseMapStations(units, lessons, completed),
     [units, lessons, completed],
   );
-  const [selectedId, setSelectedId] = useState<string>();
-  const [greet, setGreet] = useState(0),
-    [turned, setTurned] = useState(false);
-  const [playing, setPlaying] = useState(false),
-    [action, setAction] = useState(0);
-  const [visible, setVisible] = useState(false),
-    [ready, setReady] = useState(false);
-  const [hidden, setHidden] = useState(document.hidden),
-    [speaking, setSpeaking] = useState(isSpeechActive);
-  const viewport = useRef<HTMLDivElement>(null);
+  const [selectedId, setSelectedId] = useState<string>(),
+    [failed, setFailed] = useState(false),
+    [pulse, setPulse] = useState(0),
+    [playing, setPlaying] = useState(false);
+  const viewport = useRef<HTMLDivElement>(null),
+    paused = useIllustrationPause(viewport, quiet || flat);
   const requestedIndex = stations.findIndex(
     (s) => s.id === (selectedId ?? nextUnitId) && s.next,
   );
@@ -79,115 +56,102 @@ export default function CourseIslandMap({
           0,
           stations.findIndex((s) => s.next),
         );
-  const station = stations[selectedIndex];
-  // Catalogs with a future different unit count keep every DOM entry and use 2D.
-  const illustrated = stations.length === 6;
-  const paused =
-    quiet || flat || hidden || !visible || speaking || !illustrated;
-  const info = companionInfo(useContext(CompanionContext));
-  useEffect(() => {
-    const element = viewport.current;
-    if (!element) return;
-    if (!("IntersectionObserver" in window)) {
-      setVisible(true);
-      setReady(true);
-      return;
-    }
-    const observer = new IntersectionObserver(([entry]) => {
-      setVisible(entry.isIntersecting);
-      if (entry.isIntersecting) setReady(true);
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-  useEffect(() => {
-    const visibility = () => setHidden(document.hidden);
-    const speech = () => setSpeaking(isSpeechActive());
-    document.addEventListener("visibilitychange", visibility);
-    document.addEventListener("eq-speech-active", speech);
-    return () => {
-      document.removeEventListener("visibilitychange", visibility);
-      document.removeEventListener("eq-speech-active", speech);
-    };
-  }, []);
+  const station = stations[selectedIndex],
+    info = companionInfo(useContext(CompanionContext));
   useEffect(() => {
     if (paused) {
       setPlaying(false);
       return;
     }
-    if (!action) return;
-    const timer = setTimeout(() => setPlaying(false), mapTravelMs + 180);
+    if (!playing) return;
+    const timer = setTimeout(() => setPlaying(false), 900);
     return () => clearTimeout(timer);
-  }, [action, paused]);
+  }, [playing, pulse, paused]);
   const activate = () => {
+    setPulse((n) => n + 1);
     setPlaying(!paused);
-    setAction((n) => n + 1);
   };
   const select = (index: number) => {
     const next = stations[index];
     if (!next?.next || index === selectedIndex) return;
     setSelectedId(next.id);
     onSelectUnit(next.id);
-    setTurned(false);
     activate();
   };
-  const fallback = illustrated ? (
-    <FlatMap turned={turned} selected={selectedIndex} stations={stations} />
-  ) : (
-    <div className="world-fallback">本学期的课程，请用下方站点选择。</div>
-  );
+  const point = stops[selectedIndex] ?? stops[0];
   return (
-    <div className="course-island-map" data-moving={!paused && playing}>
-      <div className="world-scene course-map-viewport" ref={viewport}>
-        {flat || !illustrated || !ready ? (
-          fallback
+    <div
+      className="course-island-map painted-course-map"
+      data-moving={!paused && playing}
+      data-paused={paused}
+    >
+      <div
+        className="world-scene course-map-viewport painted-map-viewport"
+        ref={viewport}
+      >
+        {failed ? (
+          <FlatMap
+            selected={selectedIndex}
+            stations={stations}
+            showPartner={false}
+          />
         ) : (
-          <MapBoundary fallback={fallback} onLost={onLost}>
-            <Suspense fallback={fallback}>
-              <CourseMapCanvas
-                stations={stations}
-                selected={selectedIndex}
-                onSelect={select}
-                quiet={paused}
-                moving={!paused && playing}
-                greet={greet}
-                turned={turned}
-                onLost={onLost}
-              />
-            </Suspense>
-          </MapBoundary>
+          <img
+            className="painted-map-background"
+            src={clayArt.island.url}
+            width={1536}
+            height={1024}
+            alt=""
+            draggable={false}
+            onError={() => {
+              setFailed(true);
+              onLost();
+            }}
+          />
+        )}
+        {!failed && stations.length === 6 && (
+          <>
+            <div
+              className="painted-map-partner"
+              style={{
+                left: point[0] + "%",
+                top: (point[1] < 50 ? point[1] + 23 : point[1] - 23) + "%",
+              }}
+              aria-hidden="true"
+            >
+              <div key={pulse} className="painted-map-hop">
+                <PaintedCompanion />
+              </div>
+            </div>
+            <div
+              className="painted-map-stops"
+              role="group"
+              aria-label="图片地图上的六个单元站点"
+            >
+              {stations.map((row, i) => (
+                <button
+                  type="button"
+                  key={row.id}
+                  className="painted-map-stop"
+                  style={{ left: stops[i][0] + "%", top: stops[i][1] + "%" }}
+                  disabled={!row.next}
+                  aria-pressed={i === selectedIndex}
+                  aria-controls="course-map-selection"
+                  aria-label={`第${row.number}站：${row.title}`}
+                  onClick={() => select(i)}
+                >
+                  <span aria-hidden="true">{row.number}</span>
+                </button>
+              ))}
+            </div>
+          </>
         )}
       </div>
       <div className="course-map-guide">
-        <p>
-          {flat || !illustrated
-            ? "点下方站点，看看这个单元学什么。"
-            : "点小岛或下方站点，看看这个单元学什么。"}
-        </p>
-        <div className="scene-actions">
-          <button
-            type="button"
-            className="text-button"
-            onClick={() => {
-              setTurned(false);
-              setGreet((n) => n + 1);
-              activate();
-            }}
-          >
-            和{info.name}打个招呼
-          </button>
-          <button
-            type="button"
-            className="text-button"
-            aria-pressed={turned}
-            onClick={() => {
-              setTurned((v) => !v);
-              activate();
-            }}
-          >
-            {turned ? "转回正面" : info.backAction}
-          </button>
-        </div>
+        <p>点小岛上的大圆点，看看这一站学什么。</p>
+        <button type="button" className="scene-play" onClick={activate}>
+          和{info.name}打招呼
+        </button>
       </div>
       <div
         className="course-map-stations"
@@ -253,7 +217,7 @@ export default function CourseIslandMap({
       )}
       <p className="course-map-note">
         逛小岛和伙伴互动不计分；完成练习后，才更新“已练过”的记录。
-        {quiet || flat ? "当前使用静态画面。" : "小动作结束后，地图会停下来。"}
+        {quiet || flat ? "当前使用静态画面。" : "点击后短暂移动，随后停下来。"}
       </p>
     </div>
   );

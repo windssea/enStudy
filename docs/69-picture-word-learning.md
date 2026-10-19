@@ -37,3 +37,5 @@
 2026-10-19，367ff43的首次CI被旧听辨目录断言1440拦截，未进入发布；68ba9f3修正为1620和三个图片主题后，[Actions 39226177765](https://github.com/windssea/enStudy/actions/runs/39226177765)通过477单元和1416运行检查，但Preview在17:05上传Functions时被25MiB未压缩体积上限拒绝。Preview D1已成功应用0045；Preview网页/函数仍为v0.45，Production尚未迁移0045或发布。本地失败包为26,373,213字节，不能将静态上传完成视为发布成功。
 
 修复先用Wrangler的functions build --minify，再用esbuild输出语义相同的UTF-8 JS，避免中文被ASCII转义膨胀；产物18,582,741字节，SHA256 5b5c820bbb5bec51a176dc40b5887aa34fc2ea7dd41790262831b892b3458ed8。24MiB预算在远端迁移前检查，再以预编译_worker.js和--no-bundle发布，保留原API-only _routes和ASSETS回退；本机workerd实际加载最终文件通过health、1620项目录、匿名进度401和静态回退四项检查。[Cloudflare官方高级模式说明](https://developers.cloudflare.com/pages/functions/advanced-mode/)已核对。未改任何应用迁移，未升级资源。修复后的发布结果待后补。
+
+压缩修复提交aa1c2ae经[Actions 39227996119](https://github.com/windssea/enStudy/actions/runs/39227996119)再次通过477单元/1416运行检查，并于17:20完成Preview 17535059发布；云端压缩包同为18,582,741字节和上述SHA256。随后首次62个词汇媒体校验未通过，Production发布因此跳过。复查同一62个媒体全部大小/MIME/哈希一致；Preview补充12项真实功能检查通过，包括编译产物连接D1、图片分配、错答保存与正确图回执、刷新和同日示范，临时档案/登录已清理。没有把首次静态校验失败推定为永久内容错误，也不把尚未运行的Production称为同步成功。下一次发布与v0.47插画阶段合并推进；最终两站状态随后补记。

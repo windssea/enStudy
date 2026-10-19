@@ -244,7 +244,8 @@ describe("final B-term core lessons and continued review", () => {
       expect(html).toContain("开始这节课的练习");
       expect(html).not.toMatch(/<details[^>]*\bopen\b/);
       expect(lesson.homeActivity).toMatch(/[\u4e00-\u9fff]/);
-      if (lesson.conceptLabIds?.length) expect(html).toContain("打开3D小实验");
+      if (lesson.conceptLabIds?.length)
+        expect(html).toContain("打开互动小实验");
     }
   });
   it("offers continued review with an honest empty-due state after all B-term lessons", () => {

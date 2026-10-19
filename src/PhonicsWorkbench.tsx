@@ -1,33 +1,8 @@
-import {
-  Component,
-  lazy,
-  Suspense,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useState } from "react";
 import type { PhonicsWord } from "../packages/contracts/phonics";
 import { phonicsGroupLabel } from "../packages/domain/phonics";
-import { MotionContext } from "./SceneStage";
-import { isSpeechActive } from "./speechActivity";
 import WordAudioButton from "./WordAudioButton";
 import { phonicsObservation, phonicsSteps } from "./phonicsWorkbenchModel";
-const Canvas = lazy(() => import("./PhonicsCanvas"));
-class Boundary extends Component<{ children: ReactNode }, { failed: boolean }> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  render() {
-    return this.state.failed ? (
-      <p>3D暂不可用，下方字母标记仍可使用。</p>
-    ) : (
-      this.props.children
-    );
-  }
-}
 export default function PhonicsWorkbench({
   word,
   kind,
@@ -35,52 +10,9 @@ export default function PhonicsWorkbench({
   word: PhonicsWord;
   kind: "sound" | "meaning";
 }) {
-  const { quiet, flat } = useContext(MotionContext),
-    host = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState(0),
     [step, setStep] = useState(0),
-    [heard, setHeard] = useState(false),
-    [visible, setVisible] = useState(false),
-    [ready, setReady] = useState(false),
-    [hidden, setHidden] = useState(false),
-    [speaking, setSpeaking] = useState(isSpeechActive),
-    [lost, setLost] = useState(false),
-    [moving, setMoving] = useState(false);
-  useEffect(() => {
-    const node = host.current;
-    if (!node) return;
-    if (!("IntersectionObserver" in window)) {
-      setVisible(true);
-      setReady(true);
-      return;
-    }
-    const observer = new IntersectionObserver(([entry]) => {
-      setVisible(entry.isIntersecting);
-      if (entry.isIntersecting) setReady(true);
-    });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-  useEffect(() => {
-    const hide = () => setHidden(document.hidden),
-      speech = (e: Event) => setSpeaking((e as CustomEvent<boolean>).detail);
-    hide();
-    document.addEventListener("visibilitychange", hide);
-    document.addEventListener("eq-speech-active", speech);
-    return () => {
-      document.removeEventListener("visibilitychange", hide);
-      document.removeEventListener("eq-speech-active", speech);
-    };
-  }, []);
-  useEffect(() => {
-    if (quiet || flat || !visible || hidden || speaking) {
-      setMoving(false);
-      return;
-    }
-    setMoving(true);
-    const timer = setTimeout(() => setMoving(false), 650);
-    return () => clearTimeout(timer);
-  }, [step, selected, quiet, flat, visible, hidden, speaking]);
+    [heard, setHeard] = useState(false);
   const group = word.groups[selected] ?? [],
     label = phonicsGroupLabel(word, group),
     folded = step === 2;
@@ -90,7 +22,6 @@ export default function PhonicsWorkbench({
   }
   function go(next: number) {
     setStep(next);
-    setMoving(!quiet && !flat && visible && !hidden && !speaking);
   }
   return (
     <section className="phonics-workbench" aria-label="字母对应示范">
@@ -121,25 +52,8 @@ export default function PhonicsWorkbench({
               : `字母回到一起，仍然是 ${word.word}。再听一次整词，试着自己读一读。`}
         </p>
       </div>
-      <div
-        className="phonics-canvas"
-        data-flat={flat || lost || !ready}
-        ref={host}
-      >
-        {!flat && !lost && ready ? (
-          <Boundary>
-            <Suspense fallback={<p>正在准备粘土词块…</p>}>
-              <Canvas
-                word={word}
-                selected={selected}
-                folded={folded}
-                moving={moving}
-                onSelect={choose}
-                onLost={() => setLost(true)}
-              />
-            </Suspense>
-          </Boundary>
-        ) : (
+      <div className="phonics-canvas" data-flat={true}>
+        {
           <div
             className="phonics-flat"
             data-group={selected % 4}
@@ -158,7 +72,7 @@ export default function PhonicsWorkbench({
             </strong>
             <small>用下方的词块按钮，慢慢看一看。</small>
           </div>
-        )}
+        }
       </div>
       <div
         className="phonics-letter-row"

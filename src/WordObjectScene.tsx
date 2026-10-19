@@ -1,24 +1,10 @@
-import {
-  Component,
-  lazy,
-  Suspense,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
 import type { WordCard } from "../packages/contracts/index";
-import { MotionContext } from "./SceneStage";
-import { isSpeechActive } from "./speechActivity";
 import {
   wordObjectKind,
   wordObjectNote,
   type WordObjectKind,
 } from "./wordObjects";
-const WordObjectCanvas = lazy(() => import("./WordObjectCanvas"));
-
+import WordPicture, { pictureWord } from "./WordPicture";
 export function WordObjectFlat({ kind }: { kind: WordObjectKind }) {
   return (
     <svg viewBox="0 0 280 200" className="word-object-flat" aria-hidden="true">
@@ -99,123 +85,19 @@ export function WordObjectFlat({ kind }: { kind: WordObjectKind }) {
     </svg>
   );
 }
-class Boundary extends Component<
-  { children: ReactNode; fallback: ReactNode; onLost: () => void },
-  { failed: boolean }
-> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  componentDidCatch() {
-    this.props.onLost();
-  }
-  render() {
-    return this.state.failed ? this.props.fallback : this.props.children;
-  }
-}
 export default function WordObjectScene({ word }: { word: WordCard }) {
-  const kind = wordObjectKind(word),
-    { quiet, flat } = useContext(MotionContext),
-    host = useRef<HTMLDivElement>(null),
-    previous = useRef(0);
-  const [angle, setAngle] = useState(0),
-    [moving, setMoving] = useState(false),
-    [ready, setReady] = useState(false),
-    [visible, setVisible] = useState(false),
-    [hidden, setHidden] = useState(document.hidden),
-    [speaking, setSpeaking] = useState(isSpeechActive),
-    [lost, setLost] = useState(false);
-  useEffect(() => {
-    const node = host.current;
-    if (!node) return;
-    if (!("IntersectionObserver" in window)) {
-      setReady(true);
-      setVisible(true);
-      return;
-    }
-    const observer = new IntersectionObserver(([entry]) => {
-      setVisible(entry.isIntersecting);
-      if (entry.isIntersecting) setReady(true);
-    });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-  useEffect(() => {
-    const visibility = () => setHidden(document.hidden),
-      speech = (event: Event) =>
-        setSpeaking((event as CustomEvent<boolean>).detail);
-    document.addEventListener("visibilitychange", visibility);
-    document.addEventListener("eq-speech-active", speech);
-    return () => {
-      document.removeEventListener("visibilitychange", visibility);
-      document.removeEventListener("eq-speech-active", speech);
-    };
-  }, []);
-  const paused = quiet || flat || lost || hidden || speaking || !visible;
-  useLayoutEffect(() => {
-    const changed = previous.current !== angle;
-    previous.current = angle;
-    setMoving(false);
-    if (paused || !changed) return;
-    setMoving(true);
-    const timer = setTimeout(() => setMoving(false), 740);
-    return () => clearTimeout(timer);
-  }, [angle, paused]);
+  const kind = wordObjectKind(word);
   if (!kind) return null;
-  const fallback = <WordObjectFlat kind={kind} />;
   return (
-    <div ref={host} className="word-object-scene">
+    <div className="word-object-scene illustrated-word-object">
       <div className="word-object-viewport" aria-hidden="true">
-        {flat || lost || !ready ? (
-          fallback
+        {pictureWord(word.id) ? (
+          <WordPicture id={word.id} />
         ) : (
-          <Boundary fallback={fallback} onLost={() => setLost(true)}>
-            <Suspense fallback={fallback}>
-              <WordObjectCanvas
-                kind={kind}
-                angle={angle}
-                paused={paused}
-                moving={moving}
-                onLost={() => setLost(true)}
-              />
-            </Suspense>
-          </Boundary>
+          <WordObjectFlat kind={kind} />
         )}
       </div>
-      {!flat && !lost && (
-        <div
-          className="scene-actions"
-          role="group"
-          aria-label={`旋转${word.word}的粘土示意`}
-        >
-          <button
-            type="button"
-            className="text-button"
-            onClick={() => setAngle((value) => value - Math.PI / 2)}
-          >
-            向左转
-          </button>
-          <button
-            type="button"
-            className="text-button"
-            onClick={() => setAngle(0)}
-          >
-            回到正面
-          </button>
-          <button
-            type="button"
-            className="text-button"
-            onClick={() => setAngle((value) => value + Math.PI / 2)}
-          >
-            向右转
-          </button>
-        </div>
-      )}
-      <p className="word-object-caption">
-        {flat || lost ? "2D示意图 · " : "粘土词语角 · "}
-        {wordObjectNote(kind)}
-      </p>
+      <p className="word-object-caption">词语插画 · {wordObjectNote(kind)}</p>
     </div>
   );
 }

@@ -11,7 +11,8 @@ function allowed(path) {
     path === "/index.html" ||
     /^\/assets\/[a-zA-Z0-9_.-]+\.(js|css|glb)$/.test(path) ||
     /^\/audio\/(guides|words)\/[a-f0-9]{24}\.mp3$/.test(path) ||
-    /^\/pictures\/words\/[a-f0-9]{24}\.png$/.test(path)
+    /^\/pictures\/words\/[a-f0-9]{24}\.png$/.test(path) ||
+    /^\/art\/clay-v1\/[a-f0-9]{24}\.png$/.test(path)
   );
 }
 self.addEventListener("message", (event) => {
@@ -84,7 +85,7 @@ self.addEventListener("message", (event) => {
             throw Error();
         }
         bytes += blob.size;
-        if (bytes > 12 * 1024 * 1024) throw Error();
+        if (bytes > 16 * 1024 * 1024) throw Error();
         await cache.put(path, r);
       }
       await cache.put("/offline-ready", new Response("1"));

@@ -7,7 +7,7 @@ import {
   type CompanionId,
 } from "../packages/domain/companions";
 import { api } from "./api";
-import CompanionSticker from "./CompanionSticker";
+import PaintedCompanion from "./PaintedCompanion";
 import { CompanionContext } from "./CompanionContext";
 import SceneStage from "./SceneStage";
 
@@ -128,7 +128,7 @@ export default function CompanionPicker({
       onToggle={(event) => setOpened(event.currentTarget.open)}
     >
       <summary>
-        换个伙伴：橙橙 / 皮卡丘 <span>现在是{companionInfo(current).name}</span>
+        换个伙伴：橙橙 / 团团 <span>现在是{companionInfo(current).name}</span>
       </summary>
       {opened && (
         <div className="companion-picker-body">
@@ -178,9 +178,9 @@ export default function CompanionPicker({
                       key={row.id}
                       data-selected={draft === row.id}
                     >
-                      <svg viewBox="0 0 190 205" aria-hidden="true">
-                        <CompanionSticker kind={row.id} />
-                      </svg>
+                      <div className="companion-option-art" aria-hidden="true">
+                        <PaintedCompanion kind={row.id} />
+                      </div>
                       <span className="companion-option-heading">
                         <input
                           type="radio"
@@ -215,7 +215,7 @@ export default function CompanionPicker({
                   <SceneStage key={draft} kind="partner" />
                 </CompanionContext.Provider>
                 <p className="footnote">
-                  这里可以先打招呼、看背面。保存后，才会成为你的探险伙伴。
+                  这里可以先打招呼、玩小动作。保存后，才会成为你的探险伙伴。
                 </p>
               </div>
               <button

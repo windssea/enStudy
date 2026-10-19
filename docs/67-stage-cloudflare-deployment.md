@@ -39,3 +39,7 @@ CI通过57文件460项单元、格式、构建、Functions编译、本地初始�
 另有20项只读检查覆盖三个域名的课程、接口协议、CSP、相同静态壳与主文件、匿名账号/材料/错题访问拒绝，以及正式域名狐狸和皮卡丘模型的二进制哈希。内置浏览器实测正式域名六站地图已渲染，控制台无错误；截图artifacts/v044-production-clay-map.png。此为PC代表场景，Pad真机、完整听审、供应商联调与教研仍待完成。
 
 证据保存在忽略目录artifacts：actions-v044-stage-complete.log、actions-v044-stage-watch.log及.exit、v044-published-public.json/.log、v044-published-functional.json/.log。补充检查脚本也在该目录，不含Cloudflare Token。仅发布记录补记以[skip ci]推送；下一阶段正常推送继续触发部署。
+
+## v0.46发布中间状态
+
+0045在Preview已应用。aa1c2ae的Actions 39227996119通过全部检查并发布Preview 17535059，但首次媒体校验失败后停止，Production仍为此前v0.45/0044。62个媒体后续复查一致，Preview另12项实际功能验收通过。压缩Functions修复与证据见[69阶段记录](69-picture-word-learning.md)；将与下一插画阶段一起继续正常main发布，保持两站独立D1，不改应用迁移、不升级资源。

@@ -272,7 +272,7 @@ describe("fifth B-term practical reading, plans and revision", () => {
       expect(html).toContain("开始这节课的练习");
       expect(html).not.toMatch(/<details[^>]*\bopen\b/);
       expect(lesson.task).toContain("受控练习");
-      if (lesson.grade === 4) expect(html).toContain("打开3D小实验");
+      if (lesson.grade === 4) expect(html).toContain("打开互动小实验");
     }
   });
 });

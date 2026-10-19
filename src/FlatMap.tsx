@@ -13,10 +13,12 @@ export default function FlatMap({
   turned = false,
   selected = 0,
   stations,
+  showPartner = true,
 }: {
   turned?: boolean;
   selected?: number;
   stations?: CourseMapStation[];
+  showPartner?: boolean;
 }) {
   const [partnerX, partnerY] = positions[selected] ?? positions[0];
   return (
@@ -157,9 +159,13 @@ export default function FlatMap({
             ) : null}
           </g>
         ))}
-      <g transform={`translate(${partnerX - 18} ${partnerY - 112}) scale(.55)`}>
-        <CompanionSticker turned={turned} />
-      </g>
+      {showPartner && (
+        <g
+          transform={`translate(${partnerX - 18} ${partnerY - 112}) scale(.55)`}
+        >
+          <CompanionSticker turned={turned} />
+        </g>
+      )}
     </svg>
   );
 }
