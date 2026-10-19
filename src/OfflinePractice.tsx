@@ -24,6 +24,8 @@ import { prepareOfflineShell } from "./offlineShell";
 import StructuredAnswer from "./StructuredAnswer";
 import EvidenceAnswer from "./EvidenceAnswer";
 import ListeningPrompt from "./ListeningPrompt";
+import PictureChoice from "./PictureChoice";
+import PictureFeedback from "./PictureFeedback";
 
 export default function OfflinePractice({
   session,
@@ -594,7 +596,9 @@ export default function OfflinePractice({
                   disabled={inputDisabled}
                 />
               ) : ["choice", "listen"].includes(item.exercise.type) ? (
-                <div className="answer-options">
+                <div
+                  className={`answer-options${item.exercise.pictureChoices ? " picture-answer-options" : ""}`}
+                >
                   {item.exercise.choices?.map((choice) => (
                     <button
                       key={choice}
@@ -603,7 +607,7 @@ export default function OfflinePractice({
                       disabled={inputDisabled}
                       onClick={() => answerChange(choice)}
                     >
-                      {choice}
+                      <PictureChoice exercise={item.exercise} value={choice} />
                     </button>
                   ))}
                 </div>
@@ -708,7 +712,11 @@ export default function OfflinePractice({
                           ? "还需再练"
                           : "本次核对正确，另记离线练习证据"}
                       </p>
-                      <p>{entry.receipt.feedback}</p>
+                      {entry.receipt.correctedPicture ? (
+                        <PictureFeedback receipt={entry.receipt} />
+                      ) : (
+                        <p>{entry.receipt.feedback}</p>
+                      )}
                     </>
                   )}
                 </li>

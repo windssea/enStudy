@@ -5,7 +5,13 @@ const source = readFileSync(
   new URL("../public/offline-sw.js", import.meta.url),
   "utf8",
 );
-function runtime(model = false, invalidModel = false, guide = false) {
+function runtime(
+  model = false,
+  invalidModel = false,
+  guide = false,
+  pictures = false,
+  invalidPicture = false,
+) {
   const stores = new Map<string, Map<string, Response>>(),
     handlers = new Map<string, (event: any) => void>(),
     requests: { url: string; options: any }[] = [];
@@ -48,10 +54,25 @@ function runtime(model = false, invalidModel = false, guide = false) {
               "/assets/main-1.css",
               ...(model ? ["/assets/fox-1.glb"] : []),
               ...(guide ? ["/audio/guides/1234567890abcdef12345678.mp3"] : []),
+              ...(pictures
+                ? [
+                    "/audio/words/1234567890abcdef12345678.mp3",
+                    "/pictures/words/1234567890abcdef12345678.png",
+                  ]
+                : []),
             ],
       });
     if (badAsset && url.endsWith(".css"))
       return new Response("broken", { status: 503 });
+    if (url.endsWith(".png")) {
+      const bytes = new Uint8Array(200);
+      bytes.set(
+        invalidPicture
+          ? [0, 0, 0, 0, 0, 0, 0, 0]
+          : [137, 80, 78, 71, 13, 10, 26, 10],
+      );
+      return new Response(bytes, { headers: { "Content-Type": "image/png" } });
+    }
     if (url.endsWith(".mp3"))
       return new Response(new Uint8Array(200), {
         headers: { "Content-Type": "audio/mpeg" },
@@ -130,6 +151,24 @@ function runtime(model = false, invalidModel = false, guide = false) {
   };
 }
 describe("offline public shell policy", () => {
+  it("caches only bounded hashed picture/audio assets and rejects a false PNG header", async () => {
+    const good = runtime(false, false, false, true);
+    expect((await good.prepare()).prepared).toBe(true);
+    good.offline();
+    expect(
+      (
+        await good.request("/pictures/words/1234567890abcdef12345678.png")
+      )?.headers.get("content-type"),
+    ).toBe("image/png");
+    expect(
+      (
+        await good.request("/audio/words/1234567890abcdef12345678.mp3")
+      )?.headers.get("content-type"),
+    ).toBe("audio/mpeg");
+    expect(await good.request("/api/v1/me")).toBeUndefined();
+    const bad = runtime(false, false, false, true, true);
+    expect((await bad.prepare()).prepared).toBe(false);
+  });
   it("keeps hashed public navigation audio offline without caching identity APIs", async () => {
     const r = runtime(false, false, true);
     expect((await r.prepare()).prepared).toBe(true);

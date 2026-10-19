@@ -46,7 +46,9 @@ import ChildHome from "./ChildHome";
 import ToyPicture from "./ToyPicture";
 import GuideButton from "./GuideButton";
 import SpeechButton from "./SpeechButton";
-import type { GuideId } from "./wordAudio";
+import type { ChildGuideId } from "./wordAudio";
+import PictureChoice from "./PictureChoice";
+import PictureFeedback from "./PictureFeedback";
 import { reconcileDraft } from "./sessionDraft";
 import { setOfflineIdentity, lockOffline } from "./offlineAccess";
 import {
@@ -261,6 +263,25 @@ export default function App() {
     null,
   );
   const mutation = useRef(0);
+  const pictureFeedbackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (view === "exercise" && session?.exercise.pictureChoices)
+      document
+        .getElementById("main")
+        ?.scrollIntoView({ block: "start", behavior: "auto" });
+  }, [view, session?.assignmentId]);
+  useEffect(() => {
+    if (
+      view === "exercise" &&
+      session?.exercise.pictureChoices &&
+      receipt &&
+      receipt.eventId === freshReceiptEvent
+    )
+      pictureFeedbackRef.current?.scrollIntoView({
+        block: "start",
+        behavior: "auto",
+      });
+  }, [view, receipt?.eventId, freshReceiptEvent]);
   const snapshotRequest = useRef(0);
   const identityChannel = useRef<BroadcastChannel | null>(null);
   const pendingClaim = useRef<{
@@ -912,13 +933,15 @@ export default function App() {
         : currentSection === "phonics"
           ? "words"
           : currentSection;
-  const routeGuide: GuideId =
+  const routeGuide: ChildGuideId =
     view === "exercise"
       ? receipt
         ? "saved"
-        : session?.exercise.type === "listen"
-          ? "choice"
-          : (session?.exercise.type ?? "choice")
+        : session?.exercise.pictureChoices
+          ? "picture"
+          : session?.exercise.type === "listen"
+            ? "choice"
+            : (session?.exercise.type ?? "choice")
       : (view === "topics" && trainingTopic) ||
           (view === "patterns" && patternId)
         ? "start"
@@ -1592,7 +1615,11 @@ export default function App() {
                     >
                       <Icon kind="leaf" />
                       <div>
-                        <strong>{card.label ?? "学习目标"}</strong>
+                        <strong>
+                          {card.modality === "listening-picture"
+                            ? "听音找图片"
+                            : (card.label ?? "学习目标")}
+                        </strong>
                         {card.modality && (
                           <p>
                             {(
@@ -1600,6 +1627,8 @@ export default function App() {
                                 "rule-classification": "词句分类",
                                 "sentence-editing": "句子修正",
                                 "listening-choice": "听音辨义 · 确认或辅助另记",
+                                "listening-picture":
+                                  "听音认图 · 确认或辅助另记",
                                 "reading-evidence": "阅读理解 · 原文找依据",
                                 recognition: "辨认练习",
                                 "controlled-production": "受控表达",
@@ -1843,7 +1872,7 @@ export default function App() {
                 value={(session.position ?? 1) - (receipt ? 0 : 1)}
               />
               <article
-                className="card exercise-card"
+                className={`card exercise-card${session.exercise.pictureChoices ? " picture-exercise" : ""}`}
                 data-saved={Boolean(receipt)}
               >
                 <p className="eyebrow">
@@ -1871,24 +1900,28 @@ export default function App() {
                   <span className="badge">句子修理站 · 找一处，改一处</span>
                 )}
                 <p className="lead">{session.exercise.context}</p>
-                <SpeechButton
-                  text={session.exercise.context}
-                  language="zh-CN"
-                  label="听题目提示"
-                />
-                <SceneStage
-                  key={session.assignmentId}
-                  kind="feedback"
-                  compact
-                  animateReaction={
-                    canWriteSession && receipt?.eventId === freshReceiptEvent
-                  }
-                  reaction={
-                    canWriteSession
-                      ? (receipt?.outcome ?? "thinking")
-                      : "thinking"
-                  }
-                />
+                {!session.exercise.pictureChoices && (
+                  <SpeechButton
+                    text={session.exercise.context}
+                    language="zh-CN"
+                    label="听题目提示"
+                  />
+                )}
+                {!session.exercise.pictureChoices && (
+                  <SceneStage
+                    key={session.assignmentId}
+                    kind="feedback"
+                    compact
+                    animateReaction={
+                      canWriteSession && receipt?.eventId === freshReceiptEvent
+                    }
+                    reaction={
+                      canWriteSession
+                        ? (receipt?.outcome ?? "thinking")
+                        : "thinking"
+                    }
+                  />
+                )}
                 {session.exercise.reading && (
                   <section
                     className="reading-passage"
@@ -1947,7 +1980,9 @@ export default function App() {
                   )}
                   {(session.exercise.type === "choice" ||
                     session.exercise.type === "listen") && (
-                    <div className="answer-options">
+                    <div
+                      className={`answer-options${session.exercise.pictureChoices ? " picture-answer-options" : ""}`}
+                    >
                       {session.exercise.choices?.map((o) => (
                         <div className="child-answer-choice" key={o}>
                           <button
@@ -1963,15 +1998,20 @@ export default function App() {
                             key={o}
                             onClick={() => setAnswer(o)}
                           >
-                            {o}
-                          </button>
-                          {/[\u4e00-\u9fff]/.test(o) && (
-                            <SpeechButton
-                              language="zh-CN"
-                              text={o}
-                              label="听选项"
+                            <PictureChoice
+                              exercise={session.exercise}
+                              value={o}
+                              revealed={Boolean(receipt)}
                             />
-                          )}
+                          </button>
+                          {!session.exercise.pictureChoices &&
+                            /[\u4e00-\u9fff]/.test(o) && (
+                              <SpeechButton
+                                language="zh-CN"
+                                text={o}
+                                label="听选项"
+                              />
+                            )}
                         </div>
                       ))}
                     </div>
@@ -2075,6 +2115,7 @@ export default function App() {
                   {receipt ? (
                     <div
                       className={`feedback ${receipt.outcome === "correct" ? "success" : ""}`}
+                      ref={pictureFeedbackRef}
                       data-outcome={receipt.outcome}
                       role="status"
                     >
@@ -2086,24 +2127,36 @@ export default function App() {
                         />
                       </span>
                       <strong>
-                        {receipt.outcome === "correct"
-                          ? "这一步，想对了！"
-                          : receipt.outcome === "hinted"
-                            ? receipt.support === "offline"
-                              ? "离线练习已核对，另记练习证据。"
-                              : receipt.support === "transcript"
-                                ? "借助文字，完成了这一步。"
-                                : receipt.support === "example"
-                                  ? "跟着示范，完成了这一步。"
-                                  : "跟着提示，完成了这一步。"
-                            : "先看看这个规律，再用新题练习。"}
+                        {receipt.correctedPicture
+                          ? receipt.outcome === "correct"
+                            ? "听出来啦！"
+                            : receipt.outcome === "incorrect"
+                              ? "再看一看，听一听。"
+                              : "跟着帮助，完成啦。"
+                          : receipt.outcome === "correct"
+                            ? "这一步，想对了！"
+                            : receipt.outcome === "hinted"
+                              ? receipt.support === "offline"
+                                ? "离线练习已核对，另记练习证据。"
+                                : receipt.support === "transcript"
+                                  ? "借助文字，完成了这一步。"
+                                  : receipt.support === "example"
+                                    ? "跟着示范，完成了这一步。"
+                                    : "跟着提示，完成了这一步。"
+                              : "先看看这个规律，再用新题练习。"}
                       </strong>
-                      <p>{receipt.feedback}</p>
-                      <SpeechButton
-                        language="zh-CN"
-                        text={receipt.feedback}
-                        label="听讲解"
-                      />
+                      {receipt.correctedPicture ? (
+                        <PictureFeedback receipt={receipt} />
+                      ) : (
+                        <>
+                          <p>{receipt.feedback}</p>
+                          <SpeechButton
+                            language="zh-CN"
+                            text={receipt.feedback}
+                            label="听讲解"
+                          />
+                        </>
+                      )}
                       {receipt.correctedSentence && (
                         <div>
                           <p>一种正确表达：</p>
@@ -2166,6 +2219,7 @@ export default function App() {
                         key={session.assignmentId}
                         session={session}
                         allowed={canWriteSession}
+                        hideUnavailable={Boolean(receipt.correctedPicture)}
                       />
                     </Suspense>
                   )}

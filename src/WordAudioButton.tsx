@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { playWordAudio } from "./wordAudio";
+import { playWordAudio, playPictureWordAudio } from "./wordAudio";
+import ToyPicture from "./ToyPicture";
 export default function WordAudioButton({
   url,
   label = "听完整单词",
   onComplete,
+  picture = false,
 }: {
   url: string;
   label?: string;
   onComplete?: () => void;
+  picture?: boolean;
 }) {
   const [playing, setPlaying] = useState(false),
     [error, setError] = useState("");
@@ -31,7 +34,7 @@ export default function WordAudioButton({
     const n = ++epoch.current;
     try {
       setPlaying(true);
-      player.current = playWordAudio(url, {
+      player.current = (picture ? playPictureWordAudio : playWordAudio)(url, {
         ended: () => {
           if (n === epoch.current) {
             setPlaying(false);
@@ -56,6 +59,7 @@ export default function WordAudioButton({
   return (
     <div className="word-audio">
       <button className="secondary" onClick={play}>
+        <ToyPicture kind="speaker" />
         {playing ? "停止播放" : label}
       </button>
       <small>英式合成整词 · 不做口语评分</small>

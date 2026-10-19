@@ -1,0 +1,786 @@
+{
+  "version": 1,
+  "voice": "en_GB-cori-high",
+  "atlases": [
+    {
+      "id": "animals",
+      "url": "/pictures/words/9ab5d8aca8f800be309848a7.png",
+      "sha256": "9ab5d8aca8f800be309848a74ba6f082f9da7df7d9b98070923ac6471369a081",
+      "bytes": 1957790,
+      "columns": 5,
+      "rows": 4,
+      "coordinateSpace": 1254
+    },
+    {
+      "id": "school",
+      "url": "/pictures/words/a41d96fa113c950bc7ae14de.png",
+      "sha256": "a41d96fa113c950bc7ae14dec4ca0ed97d7c5763ec35e3b752f3c797bb3a0a10",
+      "bytes": 1722977,
+      "columns": 5,
+      "rows": 4,
+      "coordinateSpace": 1254
+    }
+  ],
+  "words": [
+    {
+      "id": "animals.cat",
+      "word": "cat",
+      "meaning": "猫",
+      "example": "The cat says meow.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 0,
+      "crop": [
+        8,
+        20,
+        247,
+        293
+      ]
+    },
+    {
+      "id": "animals.dog",
+      "word": "dog",
+      "meaning": "狗",
+      "example": "The dog says woof.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 1,
+      "crop": [
+        272,
+        35,
+        230,
+        273
+      ]
+    },
+    {
+      "id": "animals.bird",
+      "word": "bird",
+      "meaning": "鸟",
+      "example": "A bird has feathers and wings.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 2,
+      "crop": [
+        516,
+        65,
+        237,
+        243
+      ]
+    },
+    {
+      "id": "animals.fish",
+      "word": "fish",
+      "meaning": "鱼",
+      "example": "The fish swims with fins.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 3,
+      "crop": [
+        760,
+        60,
+        245,
+        248
+      ]
+    },
+    {
+      "id": "animals.rabbit",
+      "word": "rabbit",
+      "meaning": "兔子",
+      "example": "The rabbit has long ears.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 4,
+      "crop": [
+        1022,
+        10,
+        232,
+        305
+      ]
+    },
+    {
+      "id": "animals.horse",
+      "word": "horse",
+      "meaning": "马",
+      "example": "The farmer rides a horse.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 5,
+      "crop": [
+        0,
+        316,
+        258,
+        302
+      ]
+    },
+    {
+      "id": "animals.cow",
+      "word": "cow",
+      "meaning": "奶牛",
+      "example": "The cow gives us milk.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 6,
+      "crop": [
+        265,
+        328,
+        241,
+        290
+      ]
+    },
+    {
+      "id": "animals.sheep",
+      "word": "sheep",
+      "meaning": "绵羊",
+      "example": "The sheep has thick wool.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 7,
+      "crop": [
+        515,
+        328,
+        241,
+        290
+      ]
+    },
+    {
+      "id": "animals.duck",
+      "word": "duck",
+      "meaning": "鸭子",
+      "example": "The duck says quack.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 8,
+      "crop": [
+        763,
+        323,
+        241,
+        295
+      ]
+    },
+    {
+      "id": "animals.frog",
+      "word": "frog",
+      "meaning": "青蛙",
+      "example": "The green frog jumps into the pond.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 9,
+      "crop": [
+        1005,
+        328,
+        249,
+        290
+      ]
+    },
+    {
+      "id": "animals.tiger",
+      "word": "tiger",
+      "meaning": "老虎",
+      "example": "The tiger has black stripes.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 10,
+      "crop": [
+        0,
+        628,
+        260,
+        282
+      ]
+    },
+    {
+      "id": "animals.lion",
+      "word": "lion",
+      "meaning": "狮子",
+      "example": "The lion has a large mane.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 11,
+      "crop": [
+        263,
+        628,
+        247,
+        282
+      ]
+    },
+    {
+      "id": "animals.elephant",
+      "word": "elephant",
+      "meaning": "大象",
+      "example": "The elephant has a long trunk.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 12,
+      "crop": [
+        509,
+        628,
+        247,
+        282
+      ]
+    },
+    {
+      "id": "animals.monkey",
+      "word": "monkey",
+      "meaning": "猴子",
+      "example": "The monkey climbs the tree.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 13,
+      "crop": [
+        758,
+        628,
+        248,
+        282
+      ]
+    },
+    {
+      "id": "animals.panda",
+      "word": "panda",
+      "meaning": "熊猫",
+      "example": "The panda eats bamboo.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 14,
+      "crop": [
+        1007,
+        628,
+        247,
+        282
+      ]
+    },
+    {
+      "id": "animals.bear",
+      "word": "bear",
+      "meaning": "熊",
+      "example": "The large bear has thick fur.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 15,
+      "crop": [
+        4,
+        918,
+        251,
+        306
+      ]
+    },
+    {
+      "id": "animals.snake",
+      "word": "snake",
+      "meaning": "蛇",
+      "example": "The snake has no legs.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 16,
+      "crop": [
+        262,
+        918,
+        249,
+        306
+      ]
+    },
+    {
+      "id": "animals.turtle",
+      "word": "turtle",
+      "meaning": "龟",
+      "example": "The turtle has a hard shell.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 17,
+      "crop": [
+        510,
+        960,
+        251,
+        264
+      ]
+    },
+    {
+      "id": "animals.giraffe",
+      "word": "giraffe",
+      "meaning": "长颈鹿",
+      "example": "The giraffe has a very long neck.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 18,
+      "crop": [
+        766,
+        898,
+        241,
+        331
+      ]
+    },
+    {
+      "id": "animals.zebra",
+      "word": "zebra",
+      "meaning": "斑马",
+      "example": "The zebra has black and white stripes.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 19,
+      "crop": [
+        1008,
+        916,
+        246,
+        313
+      ]
+    },
+    {
+      "id": "school.book",
+      "word": "book",
+      "meaning": "书",
+      "example": "I opened a book and read a story.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 0,
+      "crop": [
+        5,
+        58,
+        277,
+        252
+      ]
+    },
+    {
+      "id": "school.pencil",
+      "word": "pencil",
+      "meaning": "铅笔",
+      "example": "I write with a pencil and can erase it.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 1,
+      "crop": [
+        307,
+        36,
+        192,
+        274
+      ]
+    },
+    {
+      "id": "school.pen",
+      "word": "pen",
+      "meaning": "钢笔",
+      "example": "This pen uses ink.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 2,
+      "crop": [
+        526,
+        39,
+        215,
+        271
+      ]
+    },
+    {
+      "id": "school.ruler",
+      "word": "ruler",
+      "meaning": "尺子",
+      "example": "Use a ruler to draw a straight line.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 3,
+      "crop": [
+        769,
+        38,
+        237,
+        272
+      ]
+    },
+    {
+      "id": "school.eraser",
+      "word": "eraser",
+      "meaning": "橡皮",
+      "example": "Use an eraser to remove pencil marks.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 4,
+      "crop": [
+        1020,
+        86,
+        229,
+        219
+      ]
+    },
+    {
+      "id": "school.bag",
+      "word": "bag",
+      "meaning": "包",
+      "example": "I put my books in my bag.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 5,
+      "crop": [
+        1,
+        328,
+        248,
+        292
+      ]
+    },
+    {
+      "id": "school.desk",
+      "word": "desk",
+      "meaning": "书桌",
+      "example": "My books are on my writing desk.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 6,
+      "crop": [
+        267,
+        343,
+        248,
+        273
+      ]
+    },
+    {
+      "id": "school.chair",
+      "word": "chair",
+      "meaning": "椅子",
+      "example": "Please sit on the chair.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 7,
+      "crop": [
+        539,
+        335,
+        203,
+        284
+      ]
+    },
+    {
+      "id": "school.paper",
+      "word": "paper",
+      "meaning": "纸",
+      "example": "I drew on a piece of paper.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 8,
+      "crop": [
+        773,
+        335,
+        217,
+        285
+      ]
+    },
+    {
+      "id": "school.computer",
+      "word": "computer",
+      "meaning": "电脑",
+      "example": "I type on the computer to save my work.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 9,
+      "crop": [
+        1008,
+        340,
+        242,
+        277
+      ]
+    },
+    {
+      "id": "school.clock",
+      "word": "clock",
+      "meaning": "钟",
+      "example": "The clock on the wall shows the time.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 10,
+      "crop": [
+        3,
+        638,
+        253,
+        264
+      ]
+    },
+    {
+      "id": "school.board",
+      "word": "board",
+      "meaning": "黑板或白板",
+      "example": "The teacher writes on the classroom board.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 11,
+      "crop": [
+        258,
+        640,
+        257,
+        265
+      ]
+    },
+    {
+      "id": "school.school",
+      "word": "school",
+      "meaning": "学校",
+      "example": "We learn and play at school.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 12,
+      "crop": [
+        516,
+        634,
+        233,
+        274
+      ]
+    },
+    {
+      "id": "school.classroom",
+      "word": "classroom",
+      "meaning": "教室",
+      "example": "Our class learns in this classroom.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 13,
+      "crop": [
+        754,
+        638,
+        250,
+        267
+      ]
+    },
+    {
+      "id": "school.teacher",
+      "word": "teacher",
+      "meaning": "教师",
+      "example": "Our teacher helps us learn.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 14,
+      "crop": [
+        1006,
+        635,
+        243,
+        280
+      ]
+    },
+    {
+      "id": "school.student",
+      "word": "student",
+      "meaning": "学生",
+      "example": "Each student has a notebook.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 15,
+      "crop": [
+        1,
+        909,
+        220,
+        321
+      ]
+    },
+    {
+      "id": "school.notebook",
+      "word": "notebook",
+      "meaning": "笔记本",
+      "example": "I wrote notes in my notebook.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 16,
+      "crop": [
+        258,
+        908,
+        250,
+        322
+      ]
+    },
+    {
+      "id": "school.crayon",
+      "word": "crayon",
+      "meaning": "蜡笔",
+      "example": "I coloured the sun with a yellow crayon.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 17,
+      "crop": [
+        531,
+        912,
+        210,
+        318
+      ]
+    },
+    {
+      "id": "school.glue",
+      "word": "glue",
+      "meaning": "胶水",
+      "example": "Use glue to stick the paper together.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 18,
+      "crop": [
+        784,
+        920,
+        191,
+        309
+      ]
+    },
+    {
+      "id": "school.scissors",
+      "word": "scissors",
+      "meaning": "剪刀",
+      "example": "Use scissors to cut the paper.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 19,
+      "crop": [
+        1006,
+        918,
+        248,
+        312
+      ]
+    },
+    {
+      "id": "colours-shapes.red",
+      "word": "red",
+      "meaning": "红色的",
+      "example": "The ripe strawberry is red.",
+      "theme": "colours-shapes",
+      "shape": "red"
+    },
+    {
+      "id": "colours-shapes.blue",
+      "word": "blue",
+      "meaning": "蓝色的",
+      "example": "The clear sky looks blue.",
+      "theme": "colours-shapes",
+      "shape": "blue"
+    },
+    {
+      "id": "colours-shapes.green",
+      "word": "green",
+      "meaning": "绿色的",
+      "example": "The fresh grass is green.",
+      "theme": "colours-shapes",
+      "shape": "green"
+    },
+    {
+      "id": "colours-shapes.yellow",
+      "word": "yellow",
+      "meaning": "黄色的",
+      "example": "The lemon is yellow.",
+      "theme": "colours-shapes",
+      "shape": "yellow"
+    },
+    {
+      "id": "colours-shapes.orange",
+      "word": "orange",
+      "meaning": "橙色的",
+      "example": "This carrot is orange.",
+      "theme": "colours-shapes",
+      "shape": "orange"
+    },
+    {
+      "id": "colours-shapes.purple",
+      "word": "purple",
+      "meaning": "紫色的",
+      "example": "We painted the grapes purple.",
+      "theme": "colours-shapes",
+      "shape": "purple"
+    },
+    {
+      "id": "colours-shapes.pink",
+      "word": "pink",
+      "meaning": "粉色的",
+      "example": "We mixed red and white paint; it became pink.",
+      "theme": "colours-shapes",
+      "shape": "pink"
+    },
+    {
+      "id": "colours-shapes.black",
+      "word": "black",
+      "meaning": "黑色的",
+      "example": "The night sky is very black.",
+      "theme": "colours-shapes",
+      "shape": "black"
+    },
+    {
+      "id": "colours-shapes.white",
+      "word": "white",
+      "meaning": "白色的",
+      "example": "The fresh snow is white.",
+      "theme": "colours-shapes",
+      "shape": "white"
+    },
+    {
+      "id": "colours-shapes.brown",
+      "word": "brown",
+      "meaning": "棕色的",
+      "example": "The chocolate is brown.",
+      "theme": "colours-shapes",
+      "shape": "brown"
+    },
+    {
+      "id": "colours-shapes.grey",
+      "word": "grey",
+      "meaning": "灰色的",
+      "example": "The cloudy sky looks grey.",
+      "theme": "colours-shapes",
+      "shape": "grey"
+    },
+    {
+      "id": "colours-shapes.circle",
+      "word": "circle",
+      "meaning": "圆形",
+      "example": "Draw a round circle with no corners.",
+      "theme": "colours-shapes",
+      "shape": "circle"
+    },
+    {
+      "id": "colours-shapes.square",
+      "word": "square",
+      "meaning": "正方形",
+      "example": "A square has four equal sides and four right angles.",
+      "theme": "colours-shapes",
+      "shape": "square"
+    },
+    {
+      "id": "colours-shapes.triangle",
+      "word": "triangle",
+      "meaning": "三角形",
+      "example": "A triangle has three sides.",
+      "theme": "colours-shapes",
+      "shape": "triangle"
+    },
+    {
+      "id": "colours-shapes.rectangle",
+      "word": "rectangle",
+      "meaning": "长方形",
+      "example": "This rectangle has four right angles, two long sides and two short sides.",
+      "theme": "colours-shapes",
+      "shape": "rectangle"
+    },
+    {
+      "id": "colours-shapes.oval",
+      "word": "oval",
+      "meaning": "椭圆形",
+      "example": "The shape of this egg is an oval.",
+      "theme": "colours-shapes",
+      "shape": "oval"
+    },
+    {
+      "id": "colours-shapes.star",
+      "word": "star",
+      "meaning": "星形",
+      "example": "Draw a five-pointed star on the card.",
+      "theme": "colours-shapes",
+      "shape": "star"
+    },
+    {
+      "id": "colours-shapes.heart",
+      "word": "heart",
+      "meaning": "心形",
+      "example": "She drew a heart to show love.",
+      "theme": "colours-shapes",
+      "shape": "heart"
+    },
+    {
+      "id": "colours-shapes.line",
+      "word": "line",
+      "meaning": "线",
+      "example": "Use a ruler to draw a straight line.",
+      "theme": "colours-shapes",
+      "shape": "line"
+    },
+    {
+      "id": "colours-shapes.dot",
+      "word": "dot",
+      "meaning": "点",
+      "example": "Put a small dot above the letter i.",
+      "theme": "colours-shapes",
+      "shape": "dot"
+    }
+  ]
+}

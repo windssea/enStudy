@@ -13,6 +13,7 @@ await import("./build-workshops.mjs");
 await import("./build-workshop-review.mjs");
 await import("./build-story-courses.mjs");
 await import("./build-word-listening.mjs");
+await import("./build-picture-words.mjs");
 await import("./build-action-courses.mjs");
 await import("./build-action-course-review.mjs");
 await import("./build-discovery-courses.mjs");

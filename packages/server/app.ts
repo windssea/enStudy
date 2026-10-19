@@ -95,13 +95,15 @@ const supportsExercise = (
   exercise: import("../contracts/index").Exercise,
   version?: string,
 ) =>
-  exercise.graphemeTokens || exercise.audioUrl
-    ? version === "4"
-    : ["listen", "evidence"].includes(exercise.type)
-      ? ["3", "4"].includes(version ?? "")
-      : ["sort", "repair"].includes(exercise.type)
-        ? ["2", "3", "4"].includes(version ?? "")
-        : true;
+  exercise.pictureChoices
+    ? version === "5"
+    : exercise.graphemeTokens || exercise.audioUrl
+      ? ["4", "5"].includes(version ?? "")
+      : ["listen", "evidence"].includes(exercise.type)
+        ? ["3", "4", "5"].includes(version ?? "")
+        : ["sort", "repair"].includes(exercise.type)
+          ? ["2", "3", "4", "5"].includes(version ?? "")
+          : true;
 const UUID =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 // Old foundation lessons displayed every practice sentence before starting.
@@ -236,6 +238,7 @@ app.get("/api/v1/health", (c) =>
     exportProtocol: 1,
     mistakeProtocol: 1,
     trainingMaterialProtocol: 1,
+    pictureWordProtocol: 1,
     householdProtocol: 1,
     householdSharingEnabled:
       c.env.APP_STAGE === "local" || platformFeatures.householdSharingEnabled,
@@ -1086,9 +1089,14 @@ app.post("/api/v1/sessions", async (c) => {
   if (
     body.wordMode !== undefined &&
     (!body.wordThemeId ||
-      !["mixed", "meaning", "spelling", "context", "listening"].includes(
-        body.wordMode,
-      ))
+      ![
+        "mixed",
+        "meaning",
+        "spelling",
+        "context",
+        "listening",
+        "picture",
+      ].includes(body.wordMode))
   )
     return c.json(
       fault("INVALID_WORD_MODE", "请选择词义、拼写、语境或混合练习。"),
@@ -1199,8 +1207,9 @@ app.post("/api/v1/sessions", async (c) => {
             ? vocabularyRelease.items.filter(
                 (item) =>
                   item.wordThemeId === body.wordThemeId &&
-                  ((body.wordMode ?? "mixed") === "mixed" ||
-                    item.wordMode === body.wordMode),
+                  ((body.wordMode ?? "mixed") === "mixed"
+                    ? item.wordMode !== "picture"
+                    : item.wordMode === body.wordMode),
               )
             : source === "pattern"
               ? patternRelease.items.filter(
@@ -1454,7 +1463,7 @@ app.post("/api/v1/sessions/:id/next", async (c) => {
   const authorization = grantAuthorization;
   const now = Date.now();
   if (row.cursor + 1 < row.total) {
-    if (c.req.header("X-EQ-Player-Version") !== "4") {
+    if (!["4", "5"].includes(c.req.header("X-EQ-Player-Version") ?? "")) {
       const next = await c.env.DB.prepare(
         "SELECT item_id,item_version FROM session_items WHERE session_id=? AND position=?",
       )
@@ -2006,6 +2015,23 @@ app.post("/api/v1/attempts", async (c) => {
               ? "guided_retry"
               : "participation",
         ),
+        ...(exercise.pictureChoices
+          ? await exposureStatements(
+              c.env.DB,
+              actor,
+              answerExposureKeys(exercise),
+              now,
+              {
+                sql: "EXISTS(SELECT 1 FROM attempts WHERE event_id=? AND household_id=? AND child_id=? AND assignment_id=?)",
+                params: [
+                  body.eventId,
+                  actor.householdId,
+                  actor.childId,
+                  body.assignmentId,
+                ],
+              },
+            )
+          : []),
       ]);
       return c.json(receipt, 201);
     } catch (error) {

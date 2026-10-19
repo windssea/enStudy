@@ -93,7 +93,10 @@ try {
   const metadata = (await request("/lessons")).data.vocabulary;
   check(
     metadata.totalWords === 360 &&
-      metadata.totalItems === 1440 &&
+      metadata.totalItems === 1620 &&
+      metadata.themes.filter(
+        (t) => t.modes.includes("picture") && t.items === 140,
+      ).length === 3 &&
       metadata.themes.length === 18,
     "vocabulary catalog contains 360 entries and eighteen graded themes",
   );

@@ -1,5 +1,5 @@
 import { acquireSpeech, releaseSpeech } from "./speechActivity";
-import guides from "../public/content/child-guides.v1.json";
+import guides from "../public/content/child-guides.v2.json";
 type AudioCallbacks = {
   ended: () => void;
   failed: (message: string) => void;
@@ -28,13 +28,18 @@ export type GuideId =
   | "mistakes"
   | "offline"
   | "talk";
+// Picture mode has its own explicit instruction, without Chinese option reading.
+export type ChildGuideId = GuideId | "picture";
 export function playWordAudio(url: string, callbacks: AudioCallbacks) {
   return playLocalAudio(url, callbacks, "phonics");
 }
-export function playGuideAudio(id: GuideId, callbacks: AudioCallbacks) {
+export function playGuideAudio(id: ChildGuideId, callbacks: AudioCallbacks) {
   const clip = guides.items.find((row) => row.id === id);
   if (!clip) throw Error("这段提示正在准备，请家长帮忙。");
   return playLocalAudio(clip.url, callbacks, "guides");
+}
+export function playPictureWordAudio(url: string, callbacks: AudioCallbacks) {
+  return playLocalAudio(url, callbacks, "words");
 }
 function playLocalAudio(
   url: string,
@@ -43,12 +48,12 @@ function playLocalAudio(
     failed: (message: string) => void;
     stopped: () => void;
   },
-  folder: "phonics" | "guides",
+  folder: "phonics" | "guides" | "words",
 ) {
   if (document.hidden) throw Error("回到本页面后再播放，或使用文字辅助。");
   if (
     !new RegExp(
-      `^/audio/${folder}/[a-f0-9]{24}\\.${folder === "guides" ? "mp3" : "wav"}$`,
+      `^/audio/${folder}/[a-f0-9]{24}\\.${folder === "phonics" ? "wav" : "mp3"}$`,
     ).test(url)
   )
     throw Error("声音地址不匹配，请重新读取这道题。");

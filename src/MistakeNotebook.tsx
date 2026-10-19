@@ -8,6 +8,7 @@ import { mistakeCategories } from "../packages/domain/mistakes";
 import { api } from "./api";
 import SpeechButton from "./SpeechButton";
 import CompanionSticker from "./CompanionSticker";
+import PictureChoice from "./PictureChoice";
 
 const labels: Record<string, string> = {
   all: "全部内容",
@@ -350,7 +351,13 @@ export default function MistakeNotebook({
                           <div className="mistake-comparison">
                             <div>
                               <span>那次保存的答案</span>
-                              <p>{detail.submitted}</p>
+                              <p>
+                                <PictureChoice
+                                  exercise={detail.exercise}
+                                  value={detail.submitted}
+                                  revealed
+                                />
+                              </p>
                             </div>
                             {detail.reference !== null && (
                               <div>
@@ -359,7 +366,13 @@ export default function MistakeNotebook({
                                     ? "当时的一种参考写法"
                                     : "一种参考写法"}
                                 </span>
-                                <p>{detail.reference}</p>
+                                <p>
+                                  <PictureChoice
+                                    exercise={detail.exercise}
+                                    value={detail.reference}
+                                    revealed
+                                  />
+                                </p>
                               </div>
                             )}
                           </div>

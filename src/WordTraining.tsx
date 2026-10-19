@@ -9,6 +9,8 @@ import { api } from "./api";
 import SceneStage from "./SceneStage";
 import WordStudyCard from "./WordStudyCard";
 import ToyPicture from "./ToyPicture";
+import WordPicture from "./WordPicture";
+import PictureWordDeck from "./PictureWordDeck";
 const themePaths: Record<string, string> = {
   animals:
     "M7 12 4 6l7 3h2l7-3-3 6v4a5 5 0 0 1-10 0v-4Zm2 2h.01M15 14h.01M10 18l2 1 2-1",
@@ -46,6 +48,11 @@ function ThemeSymbol({ id }: { id: string }) {
   );
 }
 const modes: { id: WordMode; title: string; description: string }[] = [
+  {
+    id: "picture",
+    title: "听音找图片",
+    description: "听英语，点图片，不用读中文选项",
+  },
   { id: "meaning", title: "认词义", description: "看到英文，找中文意思" },
   {
     id: "listening",
@@ -94,7 +101,9 @@ export default function WordTraining({
     [query, setQuery] = useState(""),
     [wordQuery, setWordQuery] = useState("");
   const [chooserOpen, setChooserOpen] = useState(false);
-  const [mode, setMode] = useState<WordMode>("meaning"),
+  const [mode, setMode] = useState<WordMode>(
+      grade === 1 ? "picture" : "meaning",
+    ),
     [roundSize, setRoundSize] = useState(5);
   const workshopHeading = useRef<HTMLHeadingElement>(null);
   const chooserHeading = useRef<HTMLHeadingElement>(null);
@@ -112,7 +121,9 @@ export default function WordTraining({
   useEffect(() => setYear(grade), [grade]);
   const selected = themes.find((theme) => theme.id === selectedId);
   const recommended = themes.find((theme) => theme.grade === grade);
-  const selectedMode = modes.find((option) => option.id === mode)!;
+  const effectiveMode =
+    selected && !selected.modes.includes(mode) ? "meaning" : mode;
+  const selectedMode = modes.find((option) => option.id === effectiveMode)!;
   const visible = themes.filter(
     (theme) =>
       (year === 0 || theme.grade === year) &&
@@ -131,6 +142,11 @@ export default function WordTraining({
     target.scrollIntoView({ block: "nearest", behavior: "auto" });
   }, [selectedId]);
   const choose = (id: string, from: string) => {
+    setMode(
+      themes.find((t) => t.id === id)?.modes.includes("picture")
+        ? "picture"
+        : "meaning",
+    );
     returnTarget.current = from;
     focusNext.current = "ready";
     onSelect(id);
@@ -195,12 +211,8 @@ export default function WordTraining({
         <div className="word-hero">
           <div>
             <p className="eyebrow">单词探险岛 · WORD QUEST</p>
-            <h1>
-              每天一小轮，
-              <br />
-              单词越玩越熟！
-            </h1>
-            <p className="lead">先认意思，再听、再拼。今天从5题开始。</p>
+            <h1>一起玩单词</h1>
+            <p className="lead">点大三角开始，也可以选一张图片。</p>
             {recommended && (
               <div className="word-launch">
                 <p>
@@ -219,7 +231,15 @@ export default function WordTraining({
                     else themeButtons.current.delete("recommended");
                   }}
                   onClick={() =>
-                    resume ? onResume() : onStart(recommended.id, "meaning", 5)
+                    resume
+                      ? onResume()
+                      : onStart(
+                          recommended.id,
+                          recommended.modes.includes("picture")
+                            ? "picture"
+                            : "meaning",
+                          5,
+                        )
                   }
                 >
                   {busy
@@ -239,7 +259,9 @@ export default function WordTraining({
                   {childId
                     ? resume
                       ? "进度已经保存，接着上次继续。"
-                      : "认词义 · 随机抽题 · 不计时"
+                      : recommended.modes.includes("picture")
+                        ? "听音找图片 · 随机5题 · 不计时"
+                        : "认词义 · 随机抽题 · 不计时"
                     : "请家长登录并选好档案，保存你的学习进度。"}
                 </small>
               </div>
@@ -256,8 +278,37 @@ export default function WordTraining({
               </li>
             </ul>
           </div>
-          <SceneStage kind="words" />
+          <SceneStage kind="partner" simple />
         </div>
+      )}
+      {!selected && (
+        <section className="picture-theme-entry" aria-label="听音找图片主题">
+          <h2>听一听，找图片</h2>
+          <div>
+            {themes
+              .filter((t) => t.modes.includes("picture"))
+              .map((t) => (
+                <button
+                  key={t.id}
+                  className="picture-theme-button"
+                  disabled={busy}
+                  onClick={() => choose(t.id, t.id)}
+                >
+                  <WordPicture
+                    id={
+                      t.id === "animals"
+                        ? "animals.cat"
+                        : t.id === "school"
+                          ? "school.pencil"
+                          : "colours-shapes.star"
+                    }
+                  />
+                  <strong>{t.title}</strong>
+                  <ToyPicture kind="play" />
+                </button>
+              ))}
+          </div>
+        </section>
       )}
       {onPhonics && !selected && (
         <section className="card phonics-entry">
@@ -448,26 +499,28 @@ export default function WordTraining({
             </summary>
             <fieldset className="word-modes">
               <legend>今天想怎么练？</legend>
-              {modes.map((option) => (
-                <label
-                  className="word-mode"
-                  data-selected={mode === option.id}
-                  key={option.id}
-                >
-                  <input
-                    type="radio"
-                    name="word-mode"
-                    value={option.id}
-                    checked={mode === option.id}
-                    onChange={() => setMode(option.id)}
-                    disabled={busy}
-                  />
-                  <span>
-                    <strong>{option.title}</strong>
-                    <small>{option.description}</small>
-                  </span>
-                </label>
-              ))}
+              {modes
+                .filter((option) => selected.modes.includes(option.id))
+                .map((option) => (
+                  <label
+                    className="word-mode"
+                    data-selected={effectiveMode === option.id}
+                    key={option.id}
+                  >
+                    <input
+                      type="radio"
+                      name="word-mode"
+                      value={option.id}
+                      checked={effectiveMode === option.id}
+                      onChange={() => setMode(option.id)}
+                      disabled={busy}
+                    />
+                    <span>
+                      <strong>{option.title}</strong>
+                      <small>{option.description}</small>
+                    </span>
+                  </label>
+                ))}
             </fieldset>
             <div className="word-round-size">
               <label>
@@ -490,14 +543,14 @@ export default function WordTraining({
             <button
               className="primary"
               disabled={busy}
-              onClick={() => onStart(selected.id, mode, roundSize)}
+              onClick={() => onStart(selected.id, effectiveMode, roundSize)}
             >
               {busy
                 ? "正在准备…"
                 : !childId
                   ? "选择档案，再开始"
                   : `开始${roundSize}题 · ${selectedMode.title}`}
-              <span aria-hidden="true">→</span>
+              <ToyPicture kind="play" />
             </button>
             <p>
               {childId
@@ -505,53 +558,64 @@ export default function WordTraining({
                 : "请家长登录并选好档案，就能保存你的进度。"}
             </p>
           </div>
-          <details className="word-preview" key={`preview-${selected.id}`}>
-            <summary>
-              还不熟？先看一看单词卡 <span>{selected.wordCount}张词卡</span>
-            </summary>
-            <div className="word-card-heading">
-              <div>
-                <h3>先和单词打个招呼</h3>
-                <p>点开词卡查看释义和例句，点击“听一听”才会播放。</p>
+          {selected.modes.includes("picture") && data?.id === selectedId ? (
+            <PictureWordDeck
+              key={`${selectedId}:${childId ?? "guest"}`}
+              words={data.words}
+              childId={childId}
+            />
+          ) : (
+            <details className="word-preview" key={`preview-${selected.id}`}>
+              <summary>
+                还不熟？先看一看单词卡 <span>{selected.wordCount}张词卡</span>
+              </summary>
+              <div className="word-card-heading">
+                <div>
+                  <h3>先和单词打个招呼</h3>
+                  <p>点开词卡查看释义和例句，点击“听一听”才会播放。</p>
+                </div>
+                <label>
+                  找词
+                  <input
+                    type="search"
+                    value={wordQuery}
+                    onChange={(e) => setWordQuery(e.target.value)}
+                    placeholder="英文或中文"
+                  />
+                </label>
               </div>
-              <label>
-                找词
-                <input
-                  type="search"
-                  value={wordQuery}
-                  onChange={(e) => setWordQuery(e.target.value)}
-                  placeholder="英文或中文"
-                />
-              </label>
-            </div>
-            {loading && <p role="status">正在打开词卡…</p>}
-            {error && (
-              <div className="notice error" role="alert">
-                {error}
-                <button
-                  className="text-button"
-                  onClick={() => setReload((n) => n + 1)}
-                >
-                  重新加载
-                </button>
+              {loading && <p role="status">正在打开词卡…</p>}
+              {error && (
+                <div className="notice error" role="alert">
+                  {error}
+                  <button
+                    className="text-button"
+                    onClick={() => setReload((n) => n + 1)}
+                  >
+                    重新加载
+                  </button>
+                </div>
+              )}
+              <div className="word-card-grid">
+                {words.map((word) => (
+                  <WordStudyCard
+                    key={`${childId ?? "guest"}:${word.id}`}
+                    word={word}
+                    childId={childId}
+                  />
+                ))}
               </div>
-            )}
-            <div className="word-card-grid">
-              {words.map((word) => (
-                <WordStudyCard
-                  key={`${childId ?? "guest"}:${word.id}`}
-                  word={word}
-                  childId={childId}
-                />
-              ))}
-            </div>
-            {!loading && !error && data?.id === selectedId && !words.length && (
-              <p className="empty-state">这个主题里没有找到该词。</p>
-            )}
-            <p className="footnote">
-              看过词卡后可以多练几轮；完成练习不等于已经掌握，隔几天再独立想一想。
-            </p>
-          </details>
+              {!loading &&
+                !error &&
+                data?.id === selectedId &&
+                !words.length && (
+                  <p className="empty-state">这个主题里没有找到该词。</p>
+                )}
+              <p className="footnote">
+                看过词卡后可以多练几轮；完成练习不等于已经掌握，隔几天再独立想一想。
+              </p>
+            </details>
+          )}
         </section>
       )}
     </div>

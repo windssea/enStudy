@@ -34,3 +34,4 @@ M4-02,M4,轮流语音,真实iPad格式权限和取消验证,partial-local-turn-b
 M4-03,M4,BYOK单段写作建议,独立同意和版本隔离及共用预算和失败回退通过,local-mock-browser-and-runtime-verified-provider-review-pending,docs/63-byok-writing-feedback.md及429单元1296完整本地回归49点评专项与隔离模拟浏览器确认返回改文后收起通过而真实供应商教学质量平板与云端待验
 M5-01,M5,真机性能隐私和运营,发布门槛全部通过且可恢复删除,todo,
 M0-08,M0,儿童看图和声音操作界面,图画导航大按钮和中文指令以及逐张双语例句与保存接续通过,deployed-browser-and-runtime-verified-device-pending,docs/68-picture-led-child-interface.md及467单元1390运行两站各56线上和26附加检查及正式域名浏览器通过而儿童研究听审和Pad实机待验
+M3-05b,M3,低识字儿童听音认图与图卡学习,60词图片录音180变体和真实保存复习隔离及反馈示范通过,local-browser-and-runtime-verified-release-pending,docs/69-picture-word-learning.md及477单元和26组专项及180真实变体判分而儿童听审和Pad实机待验

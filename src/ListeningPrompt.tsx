@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import type { LearningSession } from "../packages/contracts/index";
 import { api } from "./api";
 import { playLocalEnglish } from "./deviceSpeech";
-import { playWordAudio } from "./wordAudio";
+import { playWordAudio, playPictureWordAudio } from "./wordAudio";
+import ToyPicture from "./ToyPicture";
 type InputState = NonNullable<LearningSession["listening"]>;
 export default function ListeningPrompt({
   session,
@@ -51,7 +52,9 @@ export default function ListeningPrompt({
     }
     try {
       const playAudio = session.exercise.audioUrl
-        ? playWordAudio
+        ? session.exercise.pictureChoices
+          ? playPictureWordAudio
+          : playWordAudio
         : playLocalEnglish;
       speech.current = playAudio(
         session.exercise.audioUrl ?? session.exercise.audioText!,
@@ -115,7 +118,10 @@ export default function ListeningPrompt({
   }
   const state = session.listening ?? { heard: false, textSupport: false };
   return (
-    <section className="listening-prompt" aria-label="本题英语声音">
+    <section
+      className={`listening-prompt${session.exercise.pictureChoices ? " picture-listening" : ""}`}
+      aria-label="本题英语声音"
+    >
       <div className="listening-heading">
         <span
           className="listening-speaker"
@@ -156,7 +162,12 @@ export default function ListeningPrompt({
               : "播放本题英语声音，不显示原文"
           }
         >
-          {phase === "playing" ? "停止声音" : "播放 / 再听一次"}
+          <ToyPicture kind="speaker" />
+          {phase === "playing"
+            ? "停一下"
+            : session.exercise.pictureChoices
+              ? "听单词"
+              : "播放 / 再听一次"}
         </button>
         {!state.heard && !answered && (
           <button
@@ -164,23 +175,37 @@ export default function ListeningPrompt({
             className="secondary"
             disabled={disabled || saving || phase !== "ended"}
             onClick={() => void save("heard")}
+            aria-label="听到了，可以作答"
           >
-            听到了，可以作答
+            <ToyPicture kind="check" />
+            {session.exercise.pictureChoices ? "听好啦" : "听到了，可以作答"}
           </button>
         )}
       </div>
       <p role="status">
-        {saving
-          ? "正在保存听音状态…"
-          : state.textSupport
-            ? "已开启文字辅助，本题不记独立听辨证据。"
-            : state.heard
-              ? "已确认听到，可以选择答案。"
-              : phase === "playing"
-                ? "声音播放中。停止或切到后台不会记作听到。"
-                : phase === "ended"
-                  ? "声音播完啦。你听到了吗？确认后再选答案。"
-                  : "还没确认听到。播放后可以确认，听不到也能改用文字辅助。"}
+        {session.exercise.pictureChoices
+          ? saving
+            ? "准备中…"
+            : state.textSupport
+              ? "用了文字帮助，也可以继续。"
+              : state.heard
+                ? "选一张图，再点大勾。"
+                : phase === "playing"
+                  ? "听一听…"
+                  : phase === "ended"
+                    ? "听好了吗？点绿色小勾。"
+                    : "点大喇叭，听单词。"
+          : saving
+            ? "正在保存听音状态…"
+            : state.textSupport
+              ? "已开启文字辅助，本题不记独立听辨证据。"
+              : state.heard
+                ? "已确认听到，可以选择答案。"
+                : phase === "playing"
+                  ? "声音播放中。停止或切到后台不会记作听到。"
+                  : phase === "ended"
+                    ? "声音播完啦。你听到了吗？确认后再选答案。"
+                    : "还没确认听到。播放后可以确认，听不到也能改用文字辅助。"}
       </p>
       {error && (
         <p className="notice" role="alert">

@@ -25,6 +25,7 @@ export interface Exercise {
   type:
     "choice" | "input" | "order" | "sort" | "repair" | "listen" | "evidence";
   choices?: string[];
+  pictureChoices?: { value: string; wordId: string; label: string }[];
   tokens?: string[];
   gradeMin: number;
   reading?: string;
@@ -141,7 +142,7 @@ export interface PatternStats extends TopicStats {
   contexts: number;
 }
 export type WordMode =
-  "mixed" | "meaning" | "spelling" | "context" | "listening";
+  "mixed" | "meaning" | "spelling" | "context" | "listening" | "picture";
 export interface WordCard {
   id: string;
   word: string;
@@ -215,6 +216,12 @@ export interface LearningReport {
   review: { total: number; dueNow: number; dueNext7Days: number };
 }
 export interface Receipt {
+  correctedPicture?: {
+    wordId: string;
+    label: string;
+    word: string;
+    audioUrl: string;
+  };
   details?: {
     label: string;
     submitted: string;

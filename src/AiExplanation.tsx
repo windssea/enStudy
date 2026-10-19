@@ -8,9 +8,11 @@ import SpeechButton from "./SpeechButton";
 export default function AiExplanation({
   session,
   allowed,
+  hideUnavailable = false,
 }: {
   session: LearningSession;
   allowed: boolean;
+  hideUnavailable?: boolean;
 }) {
   const [enabled, setEnabled] = useState(false),
     [busy, setBusy] = useState(false),
@@ -68,7 +70,7 @@ export default function AiExplanation({
     }
   }
   if (!allowed || !enabled)
-    return (
+    return hideUnavailable ? null : (
       <p className="footnote">
         AI辅助需由家长开启；上面的标准讲解可以直接使用。
       </p>

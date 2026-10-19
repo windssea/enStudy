@@ -4,8 +4,8 @@ import { createHash } from "node:crypto";
 import { parseRoute } from "../src/routes";
 import { playGuideAudio, playWordAudio, type GuideId } from "../src/wordAudio";
 import { isSpeechActive } from "../src/speechActivity";
-import guides from "../public/content/child-guides.v1.json";
-import source from "../content/child-guides.v1.json";
+import guides from "../public/content/child-guides.v2.json";
+import source from "../content/child-guides.v2.json";
 class Doc extends EventTarget {
   hidden = false;
 }
@@ -45,8 +45,8 @@ describe("picture-led child entry and local navigation audio", () => {
     expect(parseRoute("#lesson=P1A-U01-L1").lessonId).toBe("P1A-U01-L1");
   });
   it("ships every original Chinese instruction as a small content-addressed local MP3", () => {
-    expect(guides.items).toHaveLength(22);
-    expect(new Set(guides.items.map((i) => i.id)).size).toBe(22);
+    expect(guides.items).toHaveLength(23);
+    expect(new Set(guides.items.map((i) => i.id)).size).toBe(23);
     for (const row of source.items) {
       const clip = guides.items.find((i) => i.id === row.id)!;
       expect(clip.text).toBe(row.text);

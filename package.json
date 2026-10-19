@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.45.0",
+  "version": "0.46.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -64,7 +64,8 @@
     "verify:exports": "node scripts/smoke-data-export.mjs",
     "verify:writing-ai": "node scripts/smoke-writing-ai.mjs",
     "verify:mistakes": "node scripts/smoke-mistakes.mjs",
-    "verify:training-materials": "node scripts/smoke-reserved-training.mjs"
+    "verify:training-materials": "node scripts/smoke-reserved-training.mjs",
+    "verify:picture-words": "node scripts/smoke-picture-words.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.2",

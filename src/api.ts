@@ -45,7 +45,7 @@ export async function api<T>(
       method: body === undefined ? "GET" : "POST",
       credentials: "same-origin",
       headers: {
-        "X-EQ-Player-Version": "4",
+        "X-EQ-Player-Version": "5",
         ...(body === undefined ? {} : { "Content-Type": "application/json" }),
         ...(learningChild ? { "X-EQ-Child-ID": learningChild } : {}),
         ...(householdContext && path !== "/me"

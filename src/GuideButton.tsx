@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { playGuideAudio, type GuideId } from "./wordAudio";
+import { playGuideAudio, type ChildGuideId } from "./wordAudio";
 import ToyPicture from "./ToyPicture";
-export default function GuideButton({ id }: { id: GuideId }) {
+export default function GuideButton({ id }: { id: ChildGuideId }) {
   const [playing, setPlaying] = useState(false),
     [error, setError] = useState("");
   const player = useRef<{ stop: () => void } | null>(null),

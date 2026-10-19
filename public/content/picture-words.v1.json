@@ -1,0 +1,1112 @@
+{
+  "version": 1,
+  "kind": "synthetic-whole-word",
+  "voice": "en_GB-cori-high",
+  "model": {
+    "repo": "rhasspy/piper-voices",
+    "revision": "c10ece1aade47bb51c153c893d14e5bf8e5b7117",
+    "voice": "en_GB-cori-high",
+    "files": [
+      {
+        "name": "MODEL_CARD",
+        "bytes": 468,
+        "sha256": "136e7bd168b6c35b4a5df01a0253297e5773b5775ceae0af5160f264aa58208f"
+      },
+      {
+        "name": "en_GB-cori-high.onnx.json",
+        "bytes": 4963,
+        "sha256": "9e7fb5b5671612c22f3c81cbe46c1ae87b031a4632bcb509e499dad6f1e2adec"
+      },
+      {
+        "name": "en_GB-cori-high.onnx",
+        "bytes": 114219352,
+        "sha256": "470b4dd634c98f8a4850d7626ffc3dfc90774628eeef6605a6dd8f88f30a5903"
+      }
+    ]
+  },
+  "sampleRate": 22050,
+  "channels": 1,
+  "format": "mp3",
+  "atlases": [
+    {
+      "id": "animals",
+      "url": "/pictures/words/9ab5d8aca8f800be309848a7.png",
+      "sha256": "9ab5d8aca8f800be309848a74ba6f082f9da7df7d9b98070923ac6471369a081",
+      "bytes": 1957790,
+      "columns": 5,
+      "rows": 4,
+      "coordinateSpace": 1254
+    },
+    {
+      "id": "school",
+      "url": "/pictures/words/a41d96fa113c950bc7ae14de.png",
+      "sha256": "a41d96fa113c950bc7ae14dec4ca0ed97d7c5763ec35e3b752f3c797bb3a0a10",
+      "bytes": 1722977,
+      "columns": 5,
+      "rows": 4,
+      "coordinateSpace": 1254
+    }
+  ],
+  "words": [
+    {
+      "id": "animals.cat",
+      "word": "cat",
+      "meaning": "猫",
+      "example": "The cat says meow.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 0,
+      "audioUrl": "/audio/words/1cb4c63a178b4af3f003bddf.mp3",
+      "audioSha256": "1cb4c63a178b4af3f003bddf7ea367b50c38a7f458f1cd1c3a63bf3791f84b60",
+      "audioBytes": 6156,
+      "duration": 0.963628,
+      "rms": 0.147705,
+      "crop": [
+        8,
+        20,
+        247,
+        293
+      ]
+    },
+    {
+      "id": "animals.dog",
+      "word": "dog",
+      "meaning": "狗",
+      "example": "The dog says woof.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 1,
+      "audioUrl": "/audio/words/b0d5e16511ea811cd9404f84.mp3",
+      "audioSha256": "b0d5e16511ea811cd9404f84ba8e40ebd0ed9723418acf004c969e1c34aea33d",
+      "audioBytes": 3492,
+      "duration": 0.522449,
+      "rms": 0.168782,
+      "crop": [
+        272,
+        35,
+        230,
+        273
+      ]
+    },
+    {
+      "id": "animals.bird",
+      "word": "bird",
+      "meaning": "鸟",
+      "example": "A bird has feathers and wings.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 2,
+      "audioUrl": "/audio/words/5ab3c278b33f2f619e8522e1.mp3",
+      "audioSha256": "5ab3c278b33f2f619e8522e198ed0e3a899b849b35f5bf4a8d342c6afc25ef14",
+      "audioBytes": 3492,
+      "duration": 0.510839,
+      "rms": 0.238719,
+      "crop": [
+        516,
+        65,
+        237,
+        243
+      ]
+    },
+    {
+      "id": "animals.fish",
+      "word": "fish",
+      "meaning": "鱼",
+      "example": "The fish swims with fins.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 3,
+      "audioUrl": "/audio/words/db6f24067d077c622d7109fd.mp3",
+      "audioSha256": "db6f24067d077c622d7109fd0588a3972999c591e7adfc580e4a0cac5aeb8acb",
+      "audioBytes": 4432,
+      "duration": 0.661769,
+      "rms": 0.154804,
+      "crop": [
+        760,
+        60,
+        245,
+        248
+      ]
+    },
+    {
+      "id": "animals.rabbit",
+      "word": "rabbit",
+      "meaning": "兔子",
+      "example": "The rabbit has long ears.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 4,
+      "audioUrl": "/audio/words/fdd78657fc8479c7978b1517.mp3",
+      "audioSha256": "fdd78657fc8479c7978b1517112dd7df5519a34263615c09fbb7931f94e40c39",
+      "audioBytes": 4746,
+      "duration": 0.731429,
+      "rms": 0.148061,
+      "crop": [
+        1022,
+        10,
+        232,
+        305
+      ]
+    },
+    {
+      "id": "animals.horse",
+      "word": "horse",
+      "meaning": "马",
+      "example": "The farmer rides a horse.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 5,
+      "audioUrl": "/audio/words/f0e1e3534beea59fc661b982.mp3",
+      "audioSha256": "f0e1e3534beea59fc661b98286a3230099ac6f3e63983bbc8512e9c1e800411b",
+      "audioBytes": 4432,
+      "duration": 0.661769,
+      "rms": 0.180006,
+      "crop": [
+        0,
+        316,
+        258,
+        302
+      ]
+    },
+    {
+      "id": "animals.cow",
+      "word": "cow",
+      "meaning": "奶牛",
+      "example": "The cow gives us milk.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 6,
+      "audioUrl": "/audio/words/8a459ed0dfa8f5cd6cb8d56d.mp3",
+      "audioSha256": "8a459ed0dfa8f5cd6cb8d56dbb0c2ff038a8e02e8acf45d55bbb9163629cea82",
+      "audioBytes": 4432,
+      "duration": 0.661769,
+      "rms": 0.241049,
+      "crop": [
+        265,
+        328,
+        241,
+        290
+      ]
+    },
+    {
+      "id": "animals.sheep",
+      "word": "sheep",
+      "meaning": "绵羊",
+      "example": "The sheep has thick wool.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 7,
+      "audioUrl": "/audio/words/aee4901a9055c6aaead54909.mp3",
+      "audioSha256": "aee4901a9055c6aaead54909df7c871ceba885ba93f47c0ad2401729bd4af373",
+      "audioBytes": 3962,
+      "duration": 0.580499,
+      "rms": 0.155484,
+      "crop": [
+        515,
+        328,
+        241,
+        290
+      ]
+    },
+    {
+      "id": "animals.duck",
+      "word": "duck",
+      "meaning": "鸭子",
+      "example": "The duck says quack.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 8,
+      "audioUrl": "/audio/words/b5e7a8413f4e4bbb43bb7580.mp3",
+      "audioSha256": "b5e7a8413f4e4bbb43bb75801db48ac862c39bcd82f860317e31150c41a0c06a",
+      "audioBytes": 3649,
+      "duration": 0.534059,
+      "rms": 0.170858,
+      "crop": [
+        763,
+        323,
+        241,
+        295
+      ]
+    },
+    {
+      "id": "animals.frog",
+      "word": "frog",
+      "meaning": "青蛙",
+      "example": "The green frog jumps into the pond.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 9,
+      "audioUrl": "/audio/words/d01a8207aed913347d503df7.mp3",
+      "audioSha256": "d01a8207aed913347d503df7f1e38df1104720094069eefb941aa59751ecd1ad",
+      "audioBytes": 3805,
+      "duration": 0.557279,
+      "rms": 0.193475,
+      "crop": [
+        1005,
+        328,
+        249,
+        290
+      ]
+    },
+    {
+      "id": "animals.tiger",
+      "word": "tiger",
+      "meaning": "老虎",
+      "example": "The tiger has black stripes.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 10,
+      "audioUrl": "/audio/words/b18fb09f1559f5d9a25ab79d.mp3",
+      "audioSha256": "b18fb09f1559f5d9a25ab79da638c7b5bc095b6958bc02984fa82b9839502082",
+      "audioBytes": 4746,
+      "duration": 0.708209,
+      "rms": 0.176197,
+      "crop": [
+        0,
+        628,
+        260,
+        282
+      ]
+    },
+    {
+      "id": "animals.lion",
+      "word": "lion",
+      "meaning": "狮子",
+      "example": "The lion has a large mane.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 11,
+      "audioUrl": "/audio/words/9652849dd8d9a41738849130.mp3",
+      "audioSha256": "9652849dd8d9a41738849130ab360e7d3505968b0f6bda53488aebf559e0c2fc",
+      "audioBytes": 4432,
+      "duration": 0.661769,
+      "rms": 0.211856,
+      "crop": [
+        263,
+        628,
+        247,
+        282
+      ]
+    },
+    {
+      "id": "animals.elephant",
+      "word": "elephant",
+      "meaning": "大象",
+      "example": "The elephant has a long trunk.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 12,
+      "audioUrl": "/audio/words/b3aef1a5505d2fb8571b8d92.mp3",
+      "audioSha256": "b3aef1a5505d2fb8571b8d92f7f723a3ecee2a29144097d46a5666a7f908328f",
+      "audioBytes": 4903,
+      "duration": 0.754649,
+      "rms": 0.137459,
+      "crop": [
+        509,
+        628,
+        247,
+        282
+      ]
+    },
+    {
+      "id": "animals.monkey",
+      "word": "monkey",
+      "meaning": "猴子",
+      "example": "The monkey climbs the tree.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 13,
+      "audioUrl": "/audio/words/0ee2e43e5854a74c43ed01de.mp3",
+      "audioSha256": "0ee2e43e5854a74c43ed01de46d3e68372223881ba7e86e34c28daecaf386748",
+      "audioBytes": 4746,
+      "duration": 0.719819,
+      "rms": 0.170898,
+      "crop": [
+        758,
+        628,
+        248,
+        282
+      ]
+    },
+    {
+      "id": "animals.panda",
+      "word": "panda",
+      "meaning": "熊猫",
+      "example": "The panda eats bamboo.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 14,
+      "audioUrl": "/audio/words/fcb76fa80ebccacf92f5b301.mp3",
+      "audioSha256": "fcb76fa80ebccacf92f5b30145842cc66bc745664ca5554c90a43a9201c38a02",
+      "audioBytes": 4276,
+      "duration": 0.650159,
+      "rms": 0.277614,
+      "crop": [
+        1007,
+        628,
+        247,
+        282
+      ]
+    },
+    {
+      "id": "animals.bear",
+      "word": "bear",
+      "meaning": "熊",
+      "example": "The large bear has thick fur.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 15,
+      "audioUrl": "/audio/words/6815bd6e767ef236e3fad0e9.mp3",
+      "audioSha256": "6815bd6e767ef236e3fad0e9bb559a1d1383933fdd0bc2c8c709611ab1e7b707",
+      "audioBytes": 3805,
+      "duration": 0.568889,
+      "rms": 0.215578,
+      "crop": [
+        4,
+        918,
+        251,
+        306
+      ]
+    },
+    {
+      "id": "animals.snake",
+      "word": "snake",
+      "meaning": "蛇",
+      "example": "The snake has no legs.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 16,
+      "audioUrl": "/audio/words/3c6aa8fe3ec2c2973d463354.mp3",
+      "audioSha256": "3c6aa8fe3ec2c2973d4633540e92322d8288588f9b1ae3d4fa2ec9fa5f70bf23",
+      "audioBytes": 4589,
+      "duration": 0.696599,
+      "rms": 0.246543,
+      "crop": [
+        262,
+        918,
+        249,
+        306
+      ]
+    },
+    {
+      "id": "animals.turtle",
+      "word": "turtle",
+      "meaning": "龟",
+      "example": "The turtle has a hard shell.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 17,
+      "audioUrl": "/audio/words/5cef46d1ec0ff01faab46af9.mp3",
+      "audioSha256": "5cef46d1ec0ff01faab46af9cd5eff825d14db0ec7131aef37e96ba3087429ae",
+      "audioBytes": 4276,
+      "duration": 0.638549,
+      "rms": 0.176058,
+      "crop": [
+        510,
+        960,
+        251,
+        264
+      ]
+    },
+    {
+      "id": "animals.giraffe",
+      "word": "giraffe",
+      "meaning": "长颈鹿",
+      "example": "The giraffe has a very long neck.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 18,
+      "audioUrl": "/audio/words/08f155cad93b05043fe1333c.mp3",
+      "audioSha256": "08f155cad93b05043fe1333cefdc8a674e93aed36b9c45894f16b60c769c6abf",
+      "audioBytes": 5059,
+      "duration": 0.777868,
+      "rms": 0.165386,
+      "crop": [
+        766,
+        898,
+        241,
+        331
+      ]
+    },
+    {
+      "id": "animals.zebra",
+      "word": "zebra",
+      "meaning": "斑马",
+      "example": "The zebra has black and white stripes.",
+      "theme": "animals",
+      "atlas": "animals",
+      "tile": 19,
+      "audioUrl": "/audio/words/ea1163331263f042b143387a.mp3",
+      "audioSha256": "ea1163331263f042b143387ae6f87393f4467e6aae37e4b636f060c1be1be8bd",
+      "audioBytes": 4432,
+      "duration": 0.661769,
+      "rms": 0.13913,
+      "crop": [
+        1008,
+        916,
+        246,
+        313
+      ]
+    },
+    {
+      "id": "school.book",
+      "word": "book",
+      "meaning": "书",
+      "example": "I opened a book and read a story.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 0,
+      "audioUrl": "/audio/words/351402d99ab251bf9b68ba89.mp3",
+      "audioSha256": "351402d99ab251bf9b68ba8930bf601fec28c899127a1a95c3cec007bae4704c",
+      "audioBytes": 3492,
+      "duration": 0.499229,
+      "rms": 0.180224,
+      "crop": [
+        5,
+        58,
+        277,
+        252
+      ]
+    },
+    {
+      "id": "school.pencil",
+      "word": "pencil",
+      "meaning": "铅笔",
+      "example": "I write with a pencil and can erase it.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 1,
+      "audioUrl": "/audio/words/d18667358a99f10db286f640.mp3",
+      "audioSha256": "d18667358a99f10db286f640914171067b958150b6296dbde00ea140fd35d8fe",
+      "audioBytes": 4589,
+      "duration": 0.684989,
+      "rms": 0.193219,
+      "crop": [
+        307,
+        36,
+        192,
+        274
+      ]
+    },
+    {
+      "id": "school.pen",
+      "word": "pen",
+      "meaning": "钢笔",
+      "example": "This pen uses ink.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 2,
+      "audioUrl": "/audio/words/0d24fd9edf84c7a91c04c0bf.mp3",
+      "audioSha256": "0d24fd9edf84c7a91c04c0bf994522a5ed4fb27ee0ef631be5383c9558fccf4c",
+      "audioBytes": 3649,
+      "duration": 0.545669,
+      "rms": 0.210894,
+      "crop": [
+        526,
+        39,
+        215,
+        271
+      ]
+    },
+    {
+      "id": "school.ruler",
+      "word": "ruler",
+      "meaning": "尺子",
+      "example": "Use a ruler to draw a straight line.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 3,
+      "audioUrl": "/audio/words/a00b8a75582bb3674c689f7c.mp3",
+      "audioSha256": "a00b8a75582bb3674c689f7ceff818adf3c76640743761ece0a0c11b4bcde09a",
+      "audioBytes": 4432,
+      "duration": 0.673379,
+      "rms": 0.289813,
+      "crop": [
+        769,
+        38,
+        237,
+        272
+      ]
+    },
+    {
+      "id": "school.eraser",
+      "word": "eraser",
+      "meaning": "橡皮",
+      "example": "Use an eraser to remove pencil marks.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 4,
+      "audioUrl": "/audio/words/130f51871541a02e37b29d36.mp3",
+      "audioSha256": "130f51871541a02e37b29d3628047ff37e20fde8d75fa2a1bf94c17d9db3ea18",
+      "audioBytes": 5059,
+      "duration": 0.777868,
+      "rms": 0.178739,
+      "crop": [
+        1020,
+        86,
+        229,
+        219
+      ]
+    },
+    {
+      "id": "school.bag",
+      "word": "bag",
+      "meaning": "包",
+      "example": "I put my books in my bag.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 5,
+      "audioUrl": "/audio/words/b9d0e84167632022e7fc710f.mp3",
+      "audioSha256": "b9d0e84167632022e7fc710fc10008be197a414d5873f090345e15891265130b",
+      "audioBytes": 3805,
+      "duration": 0.557279,
+      "rms": 0.196811,
+      "crop": [
+        1,
+        328,
+        248,
+        292
+      ]
+    },
+    {
+      "id": "school.desk",
+      "word": "desk",
+      "meaning": "书桌",
+      "example": "My books are on my writing desk.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 6,
+      "audioUrl": "/audio/words/da6e61d7394ef2731639ca47.mp3",
+      "audioSha256": "da6e61d7394ef2731639ca47a4b483b3ad908b10334b40ebb27281cd0841c24d",
+      "audioBytes": 6000,
+      "duration": 0.917188,
+      "rms": 0.181582,
+      "crop": [
+        267,
+        343,
+        248,
+        273
+      ]
+    },
+    {
+      "id": "school.chair",
+      "word": "chair",
+      "meaning": "椅子",
+      "example": "Please sit on the chair.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 7,
+      "audioUrl": "/audio/words/7743f1301d4c7560f4247410.mp3",
+      "audioSha256": "7743f1301d4c7560f4247410d211edd8ff3518dc55312714078d4d13de0277e5",
+      "audioBytes": 4276,
+      "duration": 0.638549,
+      "rms": 0.194163,
+      "crop": [
+        539,
+        335,
+        203,
+        284
+      ]
+    },
+    {
+      "id": "school.paper",
+      "word": "paper",
+      "meaning": "纸",
+      "example": "I drew on a piece of paper.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 8,
+      "audioUrl": "/audio/words/d6f7830a911ad0da222d0ba2.mp3",
+      "audioSha256": "d6f7830a911ad0da222d0ba28fc4f6fbf5dd935aa0e3d9fb9f0363a265d90348",
+      "audioBytes": 4119,
+      "duration": 0.615329,
+      "rms": 0.157292,
+      "crop": [
+        773,
+        335,
+        217,
+        285
+      ]
+    },
+    {
+      "id": "school.computer",
+      "word": "computer",
+      "meaning": "电脑",
+      "example": "I type on the computer to save my work.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 9,
+      "audioUrl": "/audio/words/bbd098b3275abf0db8aa74bd.mp3",
+      "audioSha256": "bbd098b3275abf0db8aa74bd7e143bde56299708671d7c4fb77e71615a282f44",
+      "audioBytes": 5373,
+      "duration": 0.812698,
+      "rms": 0.22732,
+      "crop": [
+        1008,
+        340,
+        242,
+        277
+      ]
+    },
+    {
+      "id": "school.clock",
+      "word": "clock",
+      "meaning": "钟",
+      "example": "The clock on the wall shows the time.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 10,
+      "audioUrl": "/audio/words/889feb009d66f7290af3f5cf.mp3",
+      "audioSha256": "889feb009d66f7290af3f5cfacc736985b8bfa0eaccff7910e2af956447e2efb",
+      "audioBytes": 3805,
+      "duration": 0.568889,
+      "rms": 0.17337,
+      "crop": [
+        3,
+        638,
+        253,
+        264
+      ]
+    },
+    {
+      "id": "school.board",
+      "word": "board",
+      "meaning": "黑板或白板",
+      "example": "The teacher writes on the classroom board.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 11,
+      "audioUrl": "/audio/words/fc2e07b6c77ff637da1fa604.mp3",
+      "audioSha256": "fc2e07b6c77ff637da1fa6045dac21b15298c8815bd8b94102427065a53c3eed",
+      "audioBytes": 3492,
+      "duration": 0.522449,
+      "rms": 0.273253,
+      "crop": [
+        258,
+        640,
+        257,
+        265
+      ]
+    },
+    {
+      "id": "school.school",
+      "word": "school",
+      "meaning": "学校",
+      "example": "We learn and play at school.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 12,
+      "audioUrl": "/audio/words/101ab06b3abf90ae14298ec0.mp3",
+      "audioSha256": "101ab06b3abf90ae14298ec0d79688e50d16fbbd484d9ae1803ebc6786ad2120",
+      "audioBytes": 4432,
+      "duration": 0.661769,
+      "rms": 0.248871,
+      "crop": [
+        516,
+        634,
+        233,
+        274
+      ]
+    },
+    {
+      "id": "school.classroom",
+      "word": "classroom",
+      "meaning": "教室",
+      "example": "Our class learns in this classroom.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 13,
+      "audioUrl": "/audio/words/93124b3f14a3efecd598a4b8.mp3",
+      "audioSha256": "93124b3f14a3efecd598a4b801cb5f0548a141aee1dd5b323324efd826b9f219",
+      "audioBytes": 5373,
+      "duration": 0.835918,
+      "rms": 0.170593,
+      "crop": [
+        754,
+        638,
+        250,
+        267
+      ]
+    },
+    {
+      "id": "school.teacher",
+      "word": "teacher",
+      "meaning": "教师",
+      "example": "Our teacher helps us learn.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 14,
+      "audioUrl": "/audio/words/bec7aa5c44d61a636ce3f8df.mp3",
+      "audioSha256": "bec7aa5c44d61a636ce3f8dfd332fd8db9b71f4013044f4ef1855c4402b96115",
+      "audioBytes": 9448,
+      "duration": 1.509297,
+      "rms": 0.197337,
+      "crop": [
+        1006,
+        635,
+        243,
+        280
+      ]
+    },
+    {
+      "id": "school.student",
+      "word": "student",
+      "meaning": "学生",
+      "example": "Each student has a notebook.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 15,
+      "audioUrl": "/audio/words/a6a9abb2cc5d34daccf6cb0d.mp3",
+      "audioSha256": "a6a9abb2cc5d34daccf6cb0d009a15dbee394a619436807bfa3ed4a60fda10ea",
+      "audioBytes": 5059,
+      "duration": 0.766259,
+      "rms": 0.221357,
+      "crop": [
+        1,
+        909,
+        220,
+        321
+      ]
+    },
+    {
+      "id": "school.notebook",
+      "word": "notebook",
+      "meaning": "笔记本",
+      "example": "I wrote notes in my notebook.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 16,
+      "audioUrl": "/audio/words/c78feca9274504ed533b16f5.mp3",
+      "audioSha256": "c78feca9274504ed533b16f5e0a56e6d0a2ff4d0a2a2752a0cb568f85be7b84e",
+      "audioBytes": 5059,
+      "duration": 0.766259,
+      "rms": 0.222363,
+      "crop": [
+        258,
+        908,
+        250,
+        322
+      ]
+    },
+    {
+      "id": "school.crayon",
+      "word": "crayon",
+      "meaning": "蜡笔",
+      "example": "I coloured the sun with a yellow crayon.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 17,
+      "audioUrl": "/audio/words/b2ec7b18d25e41a7e971e469.mp3",
+      "audioSha256": "b2ec7b18d25e41a7e971e469582558eb30f07a5afabd778e277228cc6b69bb45",
+      "audioBytes": 4119,
+      "duration": 0.603719,
+      "rms": 0.21063,
+      "crop": [
+        531,
+        912,
+        210,
+        318
+      ]
+    },
+    {
+      "id": "school.glue",
+      "word": "glue",
+      "meaning": "胶水",
+      "example": "Use glue to stick the paper together.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 18,
+      "audioUrl": "/audio/words/0b2e98900ae1f417df9a81a3.mp3",
+      "audioSha256": "0b2e98900ae1f417df9a81a3c4a91ad969167e027c0f744e97fc998be6775cac",
+      "audioBytes": 3962,
+      "duration": 0.592109,
+      "rms": 0.271312,
+      "crop": [
+        784,
+        920,
+        191,
+        309
+      ]
+    },
+    {
+      "id": "school.scissors",
+      "word": "scissors",
+      "meaning": "剪刀",
+      "example": "Use scissors to cut the paper.",
+      "theme": "school",
+      "atlas": "school",
+      "tile": 19,
+      "audioUrl": "/audio/words/68465bca070818306d7513bc.mp3",
+      "audioSha256": "68465bca070818306d7513bc0d16fede9ac2221e54758f3d3c94f51b5bc8dce5",
+      "audioBytes": 5059,
+      "duration": 0.766259,
+      "rms": 0.139124,
+      "crop": [
+        1006,
+        918,
+        248,
+        312
+      ]
+    },
+    {
+      "id": "colours-shapes.red",
+      "word": "red",
+      "meaning": "红色的",
+      "example": "The ripe strawberry is red.",
+      "theme": "colours-shapes",
+      "shape": "red",
+      "audioUrl": "/audio/words/463abc798980d74c9fdeba6f.mp3",
+      "audioSha256": "463abc798980d74c9fdeba6fed91fb8e8ef4f30c786320376bcb4ac7e0297677",
+      "audioBytes": 9134,
+      "duration": 1.451247,
+      "rms": 0.158091
+    },
+    {
+      "id": "colours-shapes.blue",
+      "word": "blue",
+      "meaning": "蓝色的",
+      "example": "The clear sky looks blue.",
+      "theme": "colours-shapes",
+      "shape": "blue",
+      "audioUrl": "/audio/words/751bf7a21af361e03bc87bb7.mp3",
+      "audioSha256": "751bf7a21af361e03bc87bb728c733635879683a90b8e8a4d5b32709c935030f",
+      "audioBytes": 3805,
+      "duration": 0.568889,
+      "rms": 0.255571
+    },
+    {
+      "id": "colours-shapes.green",
+      "word": "green",
+      "meaning": "绿色的",
+      "example": "The fresh grass is green.",
+      "theme": "colours-shapes",
+      "shape": "green",
+      "audioUrl": "/audio/words/e14ef4c114f09c07282e7e0b.mp3",
+      "audioSha256": "e14ef4c114f09c07282e7e0b817ead4fa29856c5b4f61898843f5e0c9bffc68b",
+      "audioBytes": 3805,
+      "duration": 0.557279,
+      "rms": 0.26957
+    },
+    {
+      "id": "colours-shapes.yellow",
+      "word": "yellow",
+      "meaning": "黄色的",
+      "example": "The lemon is yellow.",
+      "theme": "colours-shapes",
+      "shape": "yellow",
+      "audioUrl": "/audio/words/1e2dd73c26733f08013b593a.mp3",
+      "audioSha256": "1e2dd73c26733f08013b593aeb43c38af493342b25a82f3a60fcf3250dd72d70",
+      "audioBytes": 4746,
+      "duration": 0.719819,
+      "rms": 0.217409
+    },
+    {
+      "id": "colours-shapes.orange",
+      "word": "orange",
+      "meaning": "橙色的",
+      "example": "This carrot is orange.",
+      "theme": "colours-shapes",
+      "shape": "orange",
+      "audioUrl": "/audio/words/e1ae44e147535622d5f0b016.mp3",
+      "audioSha256": "e1ae44e147535622d5f0b01655796713a30e49c3632e91e3fc48ab96cfb27a17",
+      "audioBytes": 4746,
+      "duration": 0.719819,
+      "rms": 0.154632
+    },
+    {
+      "id": "colours-shapes.purple",
+      "word": "purple",
+      "meaning": "紫色的",
+      "example": "We painted the grapes purple.",
+      "theme": "colours-shapes",
+      "shape": "purple",
+      "audioUrl": "/audio/words/e0307d5f38c5a20a722cd155.mp3",
+      "audioSha256": "e0307d5f38c5a20a722cd1551803ed72fb4a88a7622267429b9b990f7f266942",
+      "audioBytes": 3805,
+      "duration": 0.557279,
+      "rms": 0.171203
+    },
+    {
+      "id": "colours-shapes.pink",
+      "word": "pink",
+      "meaning": "粉色的",
+      "example": "We mixed red and white paint; it became pink.",
+      "theme": "colours-shapes",
+      "shape": "pink",
+      "audioUrl": "/audio/words/8bf8dfba10f806e7dbb015b2.mp3",
+      "audioSha256": "8bf8dfba10f806e7dbb015b22e316ce380fefd8367c683db886a371a27034e70",
+      "audioBytes": 3335,
+      "duration": 0.476009,
+      "rms": 0.185294
+    },
+    {
+      "id": "colours-shapes.black",
+      "word": "black",
+      "meaning": "黑色的",
+      "example": "The night sky is very black.",
+      "theme": "colours-shapes",
+      "shape": "black",
+      "audioUrl": "/audio/words/4f04f73c09f932cba0468f43.mp3",
+      "audioSha256": "4f04f73c09f932cba0468f43a113016fbae1f9be477efee68b23fed47c005637",
+      "audioBytes": 4119,
+      "duration": 0.615329,
+      "rms": 0.142881
+    },
+    {
+      "id": "colours-shapes.white",
+      "word": "white",
+      "meaning": "白色的",
+      "example": "The fresh snow is white.",
+      "theme": "colours-shapes",
+      "shape": "white",
+      "audioUrl": "/audio/words/182f4c28a3c0ffb8e09d157b.mp3",
+      "audioSha256": "182f4c28a3c0ffb8e09d157b8d0daf0ce136e967073da341728f47d4bc679fdf",
+      "audioBytes": 4119,
+      "duration": 0.626939,
+      "rms": 0.211674
+    },
+    {
+      "id": "colours-shapes.brown",
+      "word": "brown",
+      "meaning": "棕色的",
+      "example": "The chocolate is brown.",
+      "theme": "colours-shapes",
+      "shape": "brown",
+      "audioUrl": "/audio/words/403b26077ee2e5cc952105dc.mp3",
+      "audioSha256": "403b26077ee2e5cc952105dcee2021db6f49a5d9ae79eff843dbba28d831dc08",
+      "audioBytes": 4276,
+      "duration": 0.638549,
+      "rms": 0.209991
+    },
+    {
+      "id": "colours-shapes.grey",
+      "word": "grey",
+      "meaning": "灰色的",
+      "example": "The cloudy sky looks grey.",
+      "theme": "colours-shapes",
+      "shape": "grey",
+      "audioUrl": "/audio/words/daa57504bd6d3b5ef926980b.mp3",
+      "audioSha256": "daa57504bd6d3b5ef926980bf9ec49da48331ff91c90a14b24763fa34e3a3741",
+      "audioBytes": 4432,
+      "duration": 0.673379,
+      "rms": 0.20415
+    },
+    {
+      "id": "colours-shapes.circle",
+      "word": "circle",
+      "meaning": "圆形",
+      "example": "Draw a round circle with no corners.",
+      "theme": "colours-shapes",
+      "shape": "circle",
+      "audioUrl": "/audio/words/27a2b92773830f85c8254f74.mp3",
+      "audioSha256": "27a2b92773830f85c8254f747062f6544e5f262b575af859de8783fbbd816309",
+      "audioBytes": 4432,
+      "duration": 0.673379,
+      "rms": 0.128703
+    },
+    {
+      "id": "colours-shapes.square",
+      "word": "square",
+      "meaning": "正方形",
+      "example": "A square has four equal sides and four right angles.",
+      "theme": "colours-shapes",
+      "shape": "square",
+      "audioUrl": "/audio/words/6e1b55b922fc826a646c0c2d.mp3",
+      "audioSha256": "6e1b55b922fc826a646c0c2d9324c18d4dc83067d1b50fb36e855e846eaf3809",
+      "audioBytes": 4589,
+      "duration": 0.696599,
+      "rms": 0.16731
+    },
+    {
+      "id": "colours-shapes.triangle",
+      "word": "triangle",
+      "meaning": "三角形",
+      "example": "A triangle has three sides.",
+      "theme": "colours-shapes",
+      "shape": "triangle",
+      "audioUrl": "/audio/words/6226b630f966017c0e5bf7f0.mp3",
+      "audioSha256": "6226b630f966017c0e5bf7f04c04a30c5562eda2249191a6b409f85aade78721",
+      "audioBytes": 5843,
+      "duration": 0.893968,
+      "rms": 0.199095
+    },
+    {
+      "id": "colours-shapes.rectangle",
+      "word": "rectangle",
+      "meaning": "长方形",
+      "example": "This rectangle has four right angles, two long sides and two short sides.",
+      "theme": "colours-shapes",
+      "shape": "rectangle",
+      "audioUrl": "/audio/words/dc7d8105bac31816a5e30f31.mp3",
+      "audioSha256": "dc7d8105bac31816a5e30f3127c438cfbdac09b3e362958d35707d40aee1182a",
+      "audioBytes": 5529,
+      "duration": 0.847528,
+      "rms": 0.140168
+    },
+    {
+      "id": "colours-shapes.oval",
+      "word": "oval",
+      "meaning": "椭圆形",
+      "example": "The shape of this egg is an oval.",
+      "theme": "colours-shapes",
+      "shape": "oval",
+      "audioUrl": "/audio/words/f767e44916b92c38d6a3378e.mp3",
+      "audioSha256": "f767e44916b92c38d6a3378ee00af5734e5bc2901a3a321da170c79ba5caed68",
+      "audioBytes": 3962,
+      "duration": 0.592109,
+      "rms": 0.179446
+    },
+    {
+      "id": "colours-shapes.star",
+      "word": "star",
+      "meaning": "星形",
+      "example": "Draw a five-pointed star on the card.",
+      "theme": "colours-shapes",
+      "shape": "star",
+      "audioUrl": "/audio/words/10a2e892ec80e2a85941d035.mp3",
+      "audioSha256": "10a2e892ec80e2a85941d0357559c11872bbc460282e6d103a5769dfb745595c",
+      "audioBytes": 4746,
+      "duration": 0.731429,
+      "rms": 0.152434
+    },
+    {
+      "id": "colours-shapes.heart",
+      "word": "heart",
+      "meaning": "心形",
+      "example": "She drew a heart to show love.",
+      "theme": "colours-shapes",
+      "shape": "heart",
+      "audioUrl": "/audio/words/7e0b1ae63e20fb9dfb1359d7.mp3",
+      "audioSha256": "7e0b1ae63e20fb9dfb1359d7cd4aa8961cb73b455d0abf6578d4c19c65cb6151",
+      "audioBytes": 3962,
+      "duration": 0.580499,
+      "rms": 0.192578
+    },
+    {
+      "id": "colours-shapes.line",
+      "word": "line",
+      "meaning": "线",
+      "example": "Use a ruler to draw a straight line.",
+      "theme": "colours-shapes",
+      "shape": "line",
+      "audioUrl": "/audio/words/8c18b501a79430e3b63a272b.mp3",
+      "audioSha256": "8c18b501a79430e3b63a272bf2974b70572f44930133ec9c168360a95b11bef6",
+      "audioBytes": 4119,
+      "duration": 0.615329,
+      "rms": 0.199174
+    },
+    {
+      "id": "colours-shapes.dot",
+      "word": "dot",
+      "meaning": "点",
+      "example": "Put a small dot above the letter i.",
+      "theme": "colours-shapes",
+      "shape": "dot",
+      "audioUrl": "/audio/words/b4ec193d5e82cf671c6567d4.mp3",
+      "audioSha256": "b4ec193d5e82cf671c6567d4d453030474b178cbadfbcca12f657ea4e7c3f53e",
+      "audioBytes": 4276,
+      "duration": 0.638549,
+      "rms": 0.153907
+    }
+  ]
+}

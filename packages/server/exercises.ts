@@ -9,6 +9,7 @@ import workshop from "../../content/workshop-release.v1.json";
 import workshopLatest from "../../content/workshop-release.latest.json";
 import story from "../../content/story-course-release.v1.json";
 import wordListening from "../../content/word-listening-release.v1.json";
+import pictureWords from "../../content/picture-word-release.v1.json";
 import action from "../../content/action-course-release.v1.json";
 import actionLatest from "../../content/action-course-release.latest.json";
 import discovery from "../../content/discovery-course-release.v1.json";
@@ -199,6 +200,7 @@ export const exercises = [
   ...workshopLatest.items,
   ...story.items,
   ...wordListening.items,
+  ...pictureWords.items,
   ...actionLatest.items,
   ...discovery.items,
   ...journey.items,
@@ -244,16 +246,21 @@ const originalVocabulary = vocabulary as unknown as {
 };
 export const vocabularyRelease = {
   ...originalVocabulary,
-  id: "vocabulary-catalog-v2",
+  id: "vocabulary-catalog-v3",
   items: [
     ...originalVocabulary.items,
     ...wordListening.items,
+    ...pictureWords.items,
   ] as PrivateExercise[],
-  totalItems: 1440,
+  totalItems: 1620,
   themes: originalVocabulary.themes.map((theme) => ({
     ...theme,
-    items: 80,
-    modes: [...theme.modes, "listening"] as WordMode[],
+    items: theme.grade === 1 ? 140 : 80,
+    modes: [
+      ...theme.modes,
+      "listening",
+      ...(theme.grade === 1 ? ["picture"] : []),
+    ] as WordMode[],
   })),
 };
 export const wordThemes: WordTheme[] = vocabularyRelease.themes.map(
@@ -290,6 +297,7 @@ export function publicExercise(exercise: PrivateExercise): Exercise {
     prompt,
     type,
     choices,
+    pictureChoices,
     tokens,
     gradeMin,
     reading,
@@ -309,6 +317,9 @@ export function publicExercise(exercise: PrivateExercise): Exercise {
     prompt,
     type,
     choices,
+    pictureChoices: pictureChoices
+      ?.slice()
+      .sort((a, b) => a.value.localeCompare(b.value)),
     tokens,
     gradeMin,
     reading,
@@ -367,6 +378,20 @@ export function sampleList(category?: Category): Exercise[] {
     .map(publicExercise);
 }
 export function structuredFeedback(item: PrivateExercise, answer: Answer) {
+  if (item.pictureChoices) {
+    const correct = item.pictureChoices.find(
+      (p) => p.value === item.answers[0],
+    );
+    if (correct)
+      return {
+        correctedPicture: {
+          wordId: correct.wordId,
+          label: correct.label,
+          word: item.audioText!,
+          audioUrl: item.audioUrl!,
+        },
+      };
+  }
   if (
     item.type === "evidence" &&
     item.passage &&

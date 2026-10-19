@@ -30,6 +30,7 @@ export const modalityLabels: Record<string, string> = {
   "controlled-production": "受控组句",
   "context-recognition": "词语语境",
   "listening-choice": "听音辨义",
+  "listening-picture": "听音认图",
   "reading-evidence": "阅读找依据",
   "rule-classification": "规则分类",
   "sentence-editing": "句子修正",

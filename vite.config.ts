@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { createHash } from "node:crypto";
-import childGuides from "./public/content/child-guides.v1.json" with { type: "json" };
+import childGuides from "./public/content/child-guides.v2.json" with { type: "json" };
+import pictureMedia from "./public/content/picture-words.v1.json" with { type: "json" };
 export default defineConfig({
   assetsInclude: ["**/*.glb"],
   plugins: [
@@ -13,6 +14,8 @@ export default defineConfig({
         const assets = [
           "/index.html",
           ...childGuides.items.map((row) => row.url),
+          ...pictureMedia.words.map((row) => row.audioUrl),
+          ...pictureMedia.atlases.map((row) => row.url),
           ...Object.keys(bundle)
             .filter((name) => /\.(js|css|glb)$/.test(name))
             .map((name) => `/${name}`),
@@ -62,6 +65,7 @@ export default defineConfig({
         "**/content/story-course-release*.json",
         "**/content/story-courses*.mjs",
         "**/content/word-listening-release*.json",
+        "**/content/picture-word-release*.json",
         "**/content/concept-exposure-map.json",
         "**/content/action-courses*.json",
         "**/content/action-course-release*.json",

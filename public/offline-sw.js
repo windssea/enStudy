@@ -10,7 +10,8 @@ function allowed(path) {
   return (
     path === "/index.html" ||
     /^\/assets\/[a-zA-Z0-9_.-]+\.(js|css|glb)$/.test(path) ||
-    /^\/audio\/guides\/[a-f0-9]{24}\.mp3$/.test(path)
+    /^\/audio\/(guides|words)\/[a-f0-9]{24}\.mp3$/.test(path) ||
+    /^\/pictures\/words\/[a-f0-9]{24}\.png$/.test(path)
   );
 }
 self.addEventListener("message", (event) => {
@@ -32,7 +33,7 @@ self.addEventListener("message", (event) => {
         manifest.schema !== 1 ||
         !/^eq-shell-v1-[a-f0-9]{16}$/.test(manifest.cacheKey) ||
         !Array.isArray(manifest.assets) ||
-        manifest.assets.length > 100 ||
+        manifest.assets.length > 160 ||
         !manifest.assets.includes("/index.html") ||
         !manifest.assets.every(allowed)
       )
@@ -56,10 +57,20 @@ self.addEventListener("message", (event) => {
                 ? !/(model\/gltf-binary|application\/octet-stream)/.test(mime)
                 : path.endsWith(".mp3")
                   ? !/audio\/(mpeg|mp3)/.test(mime)
-                  : !mime.includes("text/html")
+                  : path.endsWith(".png")
+                    ? !mime.includes("image/png")
+                    : !mime.includes("text/html")
         )
           throw Error();
         const blob = await r.clone().blob();
+        if (path.endsWith(".png")) {
+          if (blob.size < 100 || blob.size > 2_500_000) throw Error();
+          const header = new Uint8Array(await blob.slice(0, 8).arrayBuffer());
+          if (
+            ![137, 80, 78, 71, 13, 10, 26, 10].every((v, i) => header[i] === v)
+          )
+            throw Error();
+        }
         if (path.endsWith(".mp3") && (blob.size < 100 || blob.size > 200000))
           throw Error();
         if (path.endsWith(".glb")) {
@@ -73,7 +84,7 @@ self.addEventListener("message", (event) => {
             throw Error();
         }
         bytes += blob.size;
-        if (bytes > 8 * 1024 * 1024) throw Error();
+        if (bytes > 12 * 1024 * 1024) throw Error();
         await cache.put(path, r);
       }
       await cache.put("/offline-ready", new Response("1"));

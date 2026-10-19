@@ -42,11 +42,11 @@ const request = (path, options = {}) =>
   });
 const expectedGuides = JSON.parse(
   await readFile(
-    new URL("../public/content/child-guides.v1.json", import.meta.url),
+    new URL("../public/content/child-guides.v2.json", import.meta.url),
     "utf8",
   ),
 );
-const guideManifestResponse = await request("/content/child-guides.v1.json");
+const guideManifestResponse = await request("/content/child-guides.v2.json");
 check(
   guideManifestResponse.status === 200 &&
     JSON.stringify(await guideManifestResponse.json()) ===
@@ -66,8 +66,49 @@ const guideResults = await Promise.all(
   }),
 );
 check(
-  guideResults.length === 22 && guideResults.every(Boolean),
-  "all twenty-two child guide MP3 assets have expected MIME, size and SHA256",
+  guideResults.length === 23 && guideResults.every(Boolean),
+  "all twenty-three child guide MP3 assets have expected MIME, size and SHA256",
+);
+const expectedPictures = JSON.parse(
+  await readFile(
+    new URL("../public/content/picture-words.v1.json", import.meta.url),
+    "utf8",
+  ),
+);
+const pm = await request("/content/picture-words.v1.json");
+check(
+  pm.status === 200 &&
+    JSON.stringify(await pm.json()) === JSON.stringify(expectedPictures),
+  "picture word media manifest matches the published build",
+);
+const mediaAssets = [
+  ...expectedPictures.words.map((w) => ({
+    url: w.audioUrl,
+    sha256: w.audioSha256,
+    bytes: w.audioBytes,
+    mime: "audio/mpeg",
+  })),
+  ...expectedPictures.atlases.map((a) => ({ ...a, mime: "image/png" })),
+];
+let pictureAssetsValid = true;
+for (let offset = 0; offset < mediaAssets.length; offset += 6) {
+  const results = await Promise.all(
+    mediaAssets.slice(offset, offset + 6).map(async (a) => {
+      const r = await request(a.url),
+        b = Buffer.from(await r.arrayBuffer());
+      return (
+        r.ok &&
+        (r.headers.get("content-type") ?? "").includes(a.mime) &&
+        b.length === a.bytes &&
+        createHash("sha256").update(b).digest("hex") === a.sha256
+      );
+    }),
+  );
+  pictureAssetsValid &&= results.every(Boolean);
+}
+check(
+  pictureAssetsValid && mediaAssets.length === 62,
+  "all sixty English word recordings and two illustration atlases match MIME, size and SHA256",
 );
 const page = await request("/");
 check(
@@ -113,6 +154,9 @@ let lessonResponse = await request("/api/v1/lessons");
 let course = await lessonResponse.json();
 let featureHealth = await (await request("/api/v1/health")).json();
 const courseReady = () =>
+  featureHealth.pictureWordProtocol === 1 &&
+  course.vocabulary?.themes?.filter((t) => t.modes?.includes("picture"))
+    .length === 3 &&
   featureHealth.companionProtocol === 1 &&
   featureHealth.householdProtocol === 1 &&
   featureHealth.householdSharingEnabled ===

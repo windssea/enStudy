@@ -6,7 +6,10 @@ import type {
   Exercise,
 } from "../packages/contracts/index";
 export function offlineAnswerText(exercise: Exercise, answer: Answer) {
-  if (!Array.isArray(answer)) return answer;
+  if (!Array.isArray(answer))
+    return (
+      exercise.pictureChoices?.find((c) => c.value === answer)?.label ?? answer
+    );
   if (exercise.type === "sort")
     return answer
       .map((entry) => {
