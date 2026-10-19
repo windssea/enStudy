@@ -26,6 +26,7 @@ export interface Exercise {
     "choice" | "input" | "order" | "sort" | "repair" | "listen" | "evidence";
   choices?: string[];
   pictureChoices?: { value: string; wordId: string; label: string }[];
+  wordFormCue?: { word: string; instruction: string };
   tokens?: string[];
   gradeMin: number;
   reading?: string;

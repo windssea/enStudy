@@ -32,7 +32,7 @@ const mf = new Miniflare(
   }),
 );
 const bank = JSON.parse(
-    await readFile("content/training-reserved-release.latest.json", "utf8"),
+    await readFile("content/training-reserved-release.catalog.json", "utf8"),
   ),
   old = JSON.parse(await readFile("content/topic-release.v1.json", "utf8"));
 const items = new Map([...old.items, ...bank.items].map((i) => [i.id, i])),
@@ -595,6 +595,182 @@ try {
     "withdrawal during phase activation rolls back both the new claim and the old session pause",
   );
   await db.prepare("DROP TRIGGER fixture_training_withdraw").run();
+  // The new edition is deliberately absent above: old plans must keep working
+  // before its migration is published, and supported new topics must fail closed.
+  check(
+    (
+      await request("/training/cycles", {
+        topicId: "forms.ing",
+        clientRequestId: crypto.randomUUID(),
+      })
+    ).status === 409,
+    "a known but unpublished word-form edition never falls back to ordinary questions",
+  );
+  const originalCompleted = await read(cycle.id);
+  const oldFormId = crypto.randomUUID();
+  await db
+    .prepare(
+      "INSERT INTO training_cycles(id,household_id,child_id,topic_id,created_at) VALUES(?,?,?,'forms.ing',?)",
+    )
+    .bind(oldFormId, household, child, Date.now())
+    .run();
+  await migrate("0046_reserved_word_forms_v1.sql");
+  check(
+    !(await request("/training/materials/forms.ing")).data.available &&
+      (
+        await request("/training/cycles", {
+          topicId: "forms.regular-past",
+          clientRequestId: crypto.randomUUID(),
+        })
+      ).status === 409,
+    "publishing original word rows cannot bypass the required current child-cue revision",
+  );
+  await migrate("0047_reserved_word_forms_child_cues.sql");
+  const formTopics = Object.keys(bank.blueprints).filter((id) =>
+    id.startsWith("forms."),
+  );
+  check(
+    formTopics.length === 8 &&
+      (await request("/training/materials/forms.ing")).data.revisionId ===
+        "reserved-forms-v2",
+    "all eight published morphology outlines identify their own edition",
+  );
+  await db
+    .prepare("UPDATE content_releases SET status='withdrawn' WHERE id=?")
+    .bind(bank.revisionId)
+    .run();
+  const isolatedForm = await create("forms.noun-plural");
+  check(
+    isolatedForm.materials.releaseId === "reserved-forms-v1" &&
+      (await request("/training/materials/forms.noun-plural")).data.available &&
+      !(await request("/training/materials/grammar.be")).data.available,
+    "withdrawing an older grammar revision does not disable the independently published forms edition",
+  );
+  await db
+    .prepare("UPDATE content_releases SET status='published' WHERE id=?")
+    .bind(bank.revisionId)
+    .run();
+  await db
+    .prepare(
+      "UPDATE content_releases SET status='withdrawn' WHERE id='reserved-forms-v2'",
+    )
+    .run();
+  const oldStillWorks = await open(await read(revisionProbe.id));
+  check(
+    (await open(isolatedForm)).status === 409 &&
+      !(await request("/training/materials/forms.noun-plural")).data
+        .available &&
+      (await request("/training/materials/grammar.be")).data.available &&
+      oldStillWorks.status === 201,
+    "withdrawing the new forms edition stops only forms plans while an old-edition phase still opens",
+  );
+  await finish(oldStillWorks.data);
+  await db
+    .prepare(
+      "UPDATE content_releases SET status='published' WHERE id='reserved-forms-v2'",
+    )
+    .run();
+  const oldFormView = await read(oldFormId);
+  check(
+    oldFormView.materials.kind === "shared" && oldFormView.materials.canAdopt,
+    "publishing word forms does not silently rebind an existing ordinary plan",
+  );
+  check(
+    (await adopt({ ...oldFormView, version: oldFormView.version + 1 }))
+      .status === 409,
+    "stale word-form adoption preserves the existing version",
+  );
+  const adoptedForm = await adopt(oldFormView);
+  check(
+    adoptedForm.status === 200 &&
+      adoptedForm.data.materials.releaseId === "reserved-forms-v1" &&
+      adoptedForm.data.version === oldFormView.version + 1 &&
+      (await adopt(oldFormView)).data.version === adoptedForm.data.version,
+    "explicit word-form adoption selects the topic edition once and retries do not increment it again",
+  );
+  for (const topic of formTopics) {
+    const c = await create(topic),
+      used = new Set();
+    async function assertFormPhase(session, phase) {
+      const rows = (
+        await db
+          .prepare(
+            "SELECT item_id FROM session_items WHERE session_id=? ORDER BY position",
+          )
+          .bind(session.id)
+          .all()
+      ).results.map((r) => items.get(r.item_id));
+      assert.equal(rows.length, phase === "practice" ? 10 : 5);
+      assert.ok(
+        rows.every(
+          (i) =>
+            i.topicId === topic &&
+            i.trainingPhase === phase &&
+            !used.has(i.family),
+        ),
+      );
+      if (phase !== "practice")
+        assert.equal(new Set(rows.map((i) => i.trainingDimension)).size, 5);
+      rows.forEach((i) => used.add(i.family));
+    }
+    assert.equal(c.materials.releaseId, "reserved-forms-v1");
+    for (const phase of ["diagnostic", "practice", "transfer"]) {
+      const opened = await open(await read(c.id));
+      assert.equal(opened.status, 201, topic + " " + phase);
+      await assertFormPhase(opened.data, phase);
+      const result = await finish(opened.data);
+      assert.equal(result.result.independent, phase === "practice" ? 10 : 5);
+    }
+    check(
+      (await open(await read(c.id))).status === 409,
+      topic + " keeps the same-day delayed check closed",
+    );
+    const transfer = (await read(c.id)).results.find(
+      (r) => r.phase === "transfer",
+    );
+    for (const day of [1, 3, 7]) {
+      const current = await read(c.id),
+        anchor = Date.now() - day * 86400000;
+      await db
+        .prepare("UPDATE session_results SET completed_at=? WHERE session_id=?")
+        .bind(anchor, transfer.sessionId)
+        .run();
+      for (const r of current.results.filter((r) => r.phase === "retest"))
+        await db
+          .prepare(
+            "UPDATE session_results SET completed_at=? WHERE session_id=?",
+          )
+          .bind(anchor + r.checkpoint * 86400000, r.sessionId)
+          .run();
+      const due = await read(c.id),
+        opened = await open(due);
+      assert.equal(due.next.checkpoint, day);
+      assert.equal(opened.status, 201);
+      await assertFormPhase(opened.data, "retest");
+      await finish(opened.data);
+    }
+    const completed = await read(c.id);
+    check(
+      used.size === 35 &&
+        completed.finished &&
+        completed.results.every(
+          (r) =>
+            r.materialKind === "reserved" &&
+            r.materialReleaseId === "reserved-forms-v2",
+        ),
+      topic +
+        " completes thirty-five distinct families across three actual delayed visits",
+    );
+  }
+  const preservedCompleted = await read(cycle.id);
+  check(
+    preservedCompleted.version === originalCompleted.version &&
+      JSON.stringify(preservedCompleted.results) ===
+        JSON.stringify(originalCompleted.results) &&
+      preservedCompleted.materials.releaseId ===
+        originalCompleted.materials.releaseId,
+    "extending and completing forms leaves the old completed grammar plan and receipts unchanged",
+  );
   const sibling = (
     await request("/children", { nickname: "专题兄弟姐妹", grade: 3 })
   ).data.id;
@@ -674,6 +850,7 @@ try {
         ".wav": "audio/wav",
         ".mp3": "audio/mpeg",
         ".svg": "image/svg+xml",
+        ".png": "image/png",
       };
     gateway = createServer(async (req, res) => {
       try {

@@ -23,7 +23,8 @@ import practicalTerm from "../../content/practical-term-course-release.latest.js
 import portfolioTerm from "../../content/portfolio-term-course-release.v1.json";
 import phonics from "../../content/phonics-release.v1.json";
 import reservedTrainingOriginal from "../../content/training-reserved-release.v1.json";
-import reservedTraining from "../../content/training-reserved-release.latest.json";
+import reservedFormsOriginal from "../../content/training-reserved-release.forms.v1.json";
+import reservedTraining from "../../content/training-reserved-release.catalog.json";
 import { structuredCanonical, sortPlacements } from "../domain/structured";
 import type {
   Answer,
@@ -226,6 +227,9 @@ export const reservedTrainingRelease = reservedTraining as unknown as {
       scope: "controlled-context";
       dimensions: { id: string; label: string }[];
       families: number;
+      editionId: string;
+      revisionId: string;
+      releases: string[];
     }
   >;
   items: PrivateExercise[];
@@ -276,6 +280,7 @@ export const phonicsRelease = phonics as unknown as {
 const versionedExercises = new Map(
   [
     ...reservedTrainingOriginal.items,
+    ...reservedFormsOriginal.items,
     ...expansion.items,
     ...workshop.items,
     ...action.items,
@@ -298,6 +303,7 @@ export function publicExercise(exercise: PrivateExercise): Exercise {
     type,
     choices,
     pictureChoices,
+    wordFormCue,
     tokens,
     gradeMin,
     reading,
@@ -320,6 +326,7 @@ export function publicExercise(exercise: PrivateExercise): Exercise {
     pictureChoices: pictureChoices
       ?.slice()
       .sort((a, b) => a.value.localeCompare(b.value)),
+    wordFormCue,
     tokens,
     gradeMin,
     reading,

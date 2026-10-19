@@ -5,7 +5,7 @@ import { wrangler } from "./runtime.mjs";
 const base = "http://127.0.0.1:8788",
   bank = JSON.parse(await readFile("content/topic-release.v1.json", "utf8")),
   reserved = JSON.parse(
-    await readFile("content/training-reserved-release.latest.json", "utf8"),
+    await readFile("content/training-reserved-release.catalog.json", "utf8"),
   ),
   byId = new Map([...bank.items, ...reserved.items].map((i) => [i.id, i]));
 const jar = new Map(),

@@ -14,9 +14,9 @@ import { disclosureCheckKeys } from "../packages/server/exposure";
 import conceptExposure from "../content/concept-exposure-map.json";
 const bank = reservedTrainingRelease;
 describe("reserved controlled-text training materials", () => {
-  it("states five dimensions for each of eighteen authored topics and partitions all 1080 tasks", () => {
-    expect(Object.keys(bank.blueprints)).toHaveLength(18);
-    expect(bank.items).toHaveLength(1080);
+  it("states five dimensions for each of twenty-six authored topics and partitions all 1560 tasks", () => {
+    expect(Object.keys(bank.blueprints)).toHaveLength(26);
+    expect(bank.items).toHaveLength(1560);
     for (const [id, blueprint] of Object.entries(bank.blueprints)) {
       expect(blueprint.dimensions).toHaveLength(5);
       const items = bank.items.filter((i) => i.topicId === id);
@@ -147,6 +147,6 @@ describe("reserved controlled-text training materials", () => {
       ])
         expect(packet).not.toHaveProperty(key);
     }
-    expect(exercises.filter((i) => i.trainingPhase)).toHaveLength(1080);
+    expect(exercises.filter((i) => i.trainingPhase)).toHaveLength(1560);
   });
 });

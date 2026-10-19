@@ -696,6 +696,46 @@ try {
       !positionReceipt.data.independentEvidence,
     "position demonstration protects matching assessment evidence in remote D1",
   );
+  for (const topic of [
+    "forms.noun-plural",
+    "forms.third-person",
+    "forms.ing",
+    "forms.regular-past",
+    "forms.irregular-past",
+    "forms.past-participle",
+    "forms.comparison",
+    "forms.derivation",
+  ]) {
+    const outline = await authenticated(`/training/materials/${topic}`);
+    const cycle = await authenticated("/training/cycles", {
+      topicId: topic,
+      clientRequestId: crypto.randomUUID(),
+    });
+    check(
+      outline.status === 200 &&
+        outline.data.available === true &&
+        outline.data.revisionId === "reserved-forms-v2" &&
+        outline.data.dimensions?.length === 5 &&
+        !JSON.stringify(outline.data).includes('"answers"') &&
+        cycle.status === 201 &&
+        cycle.data.materials?.releaseId === "reserved-forms-v1",
+      `${topic} outline and temporary plan bind the independent forms edition`,
+    );
+    const started = await authenticated("/sessions", {
+      topicId: topic,
+      trainingCycleId: cycle.data.id,
+      trainingVersion: cycle.data.version,
+      clientRequestId: crypto.randomUUID(),
+    });
+    check(
+      started.status === 201 &&
+        started.data.total === 5 &&
+        started.data.exercise?.id?.startsWith(`reserved.${topic}.`) &&
+        /^[a-z]+$/.test(started.data.exercise?.wordFormCue?.word ?? "") &&
+        !Object.hasOwn(started.data.exercise, "answers"),
+      `${topic} assigns five reserved tasks from remote D1 without answer leakage`,
+    );
+  }
 } finally {
   try {
     if (temporaryChild) {

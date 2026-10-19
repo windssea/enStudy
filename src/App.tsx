@@ -26,6 +26,7 @@ import { api, setHouseholdContext, ApiError, setLearningChild } from "./api";
 import { parseRoute, mapFragment, type View } from "./routes";
 import { courseStep } from "./courseNavigation";
 import CourseWrapUp from "./CourseWrapUp";
+import WordFormCue from "./WordFormCue";
 import CompanionPicker from "./CompanionPicker";
 import { companionInfo } from "../packages/domain/companions";
 import { applyCompanionChoice } from "./companionState";
@@ -1902,26 +1903,38 @@ export default function App() {
                 <p className="lead">{session.exercise.context}</p>
                 {!session.exercise.pictureChoices && (
                   <SpeechButton
-                    text={session.exercise.context}
+                    text={
+                      session.exercise.wordFormCue
+                        ? `${session.exercise.context} ${session.exercise.prompt}`
+                        : session.exercise.context
+                    }
                     language="zh-CN"
                     label="听题目提示"
                   />
                 )}
-                {!session.exercise.pictureChoices && (
-                  <SceneStage
+                {session.exercise.wordFormCue && (
+                  <WordFormCue
                     key={session.assignmentId}
-                    kind="feedback"
-                    compact
-                    animateReaction={
-                      canWriteSession && receipt?.eventId === freshReceiptEvent
-                    }
-                    reaction={
-                      canWriteSession
-                        ? (receipt?.outcome ?? "thinking")
-                        : "thinking"
-                    }
+                    cue={session.exercise.wordFormCue}
                   />
                 )}
+                {!session.exercise.pictureChoices &&
+                  !session.exercise.wordFormCue && (
+                    <SceneStage
+                      key={session.assignmentId}
+                      kind="feedback"
+                      compact
+                      animateReaction={
+                        canWriteSession &&
+                        receipt?.eventId === freshReceiptEvent
+                      }
+                      reaction={
+                        canWriteSession
+                          ? (receipt?.outcome ?? "thinking")
+                          : "thinking"
+                      }
+                    />
+                  )}
                 {session.exercise.reading && (
                   <section
                     className="reading-passage"
@@ -1936,7 +1949,11 @@ export default function App() {
                   disabled={!canWriteSession}
                 >
                   <legend className="visually-hidden">当前题目作答</legend>
-                  <h2 className="question">{session.exercise.prompt}</h2>
+                  <h2
+                    className={`question${session.exercise.wordFormCue ? " word-form-context" : ""}`}
+                  >
+                    {session.exercise.prompt}
+                  </h2>
                   {session.exercise.type === "listen" && (
                     <Suspense fallback={<p role="status">正在准备本题声音…</p>}>
                       <ListeningPrompt

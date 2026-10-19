@@ -1366,6 +1366,8 @@ input {
   text-align: left;
 }
 .word-answer input {
+  width: 100%;
+  min-width: 0;
   font-size: 26px;
   padding: 14px;
 }

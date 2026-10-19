@@ -61,15 +61,19 @@ interface Cycle {
 }
 const reservedItems = (topic: string) =>
   reservedTrainingRelease.items.filter((i) => i.topicId === topic);
+const reservedMaterial = (topic: string) =>
+  reservedTrainingRelease.blueprints[topic];
 const usesReserved = (cycle: Cycle) =>
-  cycle.material_release_id === reservedTrainingRelease.editionId;
+  !!cycle.material_release_id &&
+  cycle.material_release_id === reservedMaterial(cycle.topic_id)?.editionId;
 function releaseReadiness(ids: string[]) {
   return {
     sql: `(SELECT count(*) FROM content_releases rr WHERE rr.status='published' AND rr.id IN (${ids.map(() => "?").join(",")}))=?`,
     params: [...ids, ids.length],
   };
 }
-const reservedReady = releaseReadiness(reservedTrainingRelease.releases);
+const readinessFor = (topic: string) =>
+  releaseReadiness(reservedMaterial(topic)?.releases ?? []);
 const idPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export async function readCycle(db: D1Database, actor: Actor, id: string) {
@@ -137,7 +141,7 @@ function formatCycle(
       kind: usesReserved(cycle) ? "reserved" : "shared",
       releaseId: cycle.material_release_id ?? null,
       revisionId: usesReserved(cycle)
-        ? reservedTrainingRelease.revisionId
+        ? reservedMaterial(cycle.topic_id).revisionId
         : null,
       dimensions: usesReserved(cycle)
         ? reservedTrainingRelease.blueprints[cycle.topic_id].dimensions
@@ -270,7 +274,7 @@ export async function prepareTraining(
     items.flatMap(disclosureCheckKeys),
   );
   const allowedReleases = usesReserved(cycle)
-    ? reservedTrainingRelease.releases
+    ? reservedMaterial(topic).releases
     : [topicRelease.id];
   const publication = {
     sql: `${releaseReadiness(allowedReleases).sql} AND (SELECT count(*) FROM items p WHERE p.status='published' AND EXISTS(SELECT 1 FROM release_items r JOIN content_releases cr ON cr.id=r.release_id WHERE r.item_id=p.id AND r.item_version=p.version AND cr.status='published' AND r.release_id IN (${allowedReleases.map(() => "?").join(",")})) AND (${items.map(() => "(p.id=? AND p.version=?)").join(" OR ")}))=?`,
@@ -289,7 +293,8 @@ export const trainingRoutes = new Hono<{
 }>();
 trainingRoutes.get("/training/materials/:topic", async (c) => {
   const topicId = c.req.param("topic"),
-    blueprint = reservedTrainingRelease.blueprints[topicId];
+    blueprint = reservedMaterial(topicId),
+    reservedReady = readinessFor(topicId);
   const available =
     !!blueprint &&
     !!(await c.env.DB.prepare(`SELECT 1 WHERE ${reservedReady.sql}`)
@@ -299,7 +304,7 @@ trainingRoutes.get("/training/materials/:topic", async (c) => {
     childId: c.get("actor").childId,
     topicId,
     available,
-    revisionId: available ? reservedTrainingRelease.revisionId : null,
+    revisionId: available ? blueprint.revisionId : null,
     dimensions: available ? blueprint.dimensions : [],
   });
 });
@@ -377,9 +382,8 @@ trainingRoutes.post("/training/cycles", async (c) => {
       },
       409,
     );
-  const material = reservedTrainingRelease.blueprints[body.topicId]
-    ? reservedTrainingRelease.editionId
-    : null;
+  const material = reservedMaterial(body.topicId)?.editionId ?? null,
+    reservedReady = readinessFor(body.topicId);
   await c.env.DB.prepare(
     `INSERT OR IGNORE INTO training_cycles(id,household_id,child_id,topic_id,created_at,material_release_id,material_adopted_at) SELECT ?,?,?,?,?,?,? WHERE ${writingAuthority} ${material ? `AND ${reservedReady.sql}` : ""}`,
   )
@@ -453,11 +457,12 @@ trainingRoutes.post("/training/cycles/:id/materials", async (c) => {
       409,
     );
   const now = Date.now();
+  const reservedReady = readinessFor(cycle.topic_id);
   const saved = await c.env.DB.prepare(
     `UPDATE training_cycles SET material_release_id=?,material_adopted_at=?,version=version+1 WHERE id=? AND household_id=? AND child_id=? AND version=? AND material_release_id IS NULL AND NOT EXISTS(SELECT 1 FROM training_phase_runs r LEFT JOIN session_results x ON x.session_id=r.session_id WHERE r.cycle_id=training_cycles.id AND x.session_id IS NULL) AND ${reservedReady.sql} AND ${writingAuthority}`,
   )
     .bind(
-      reservedTrainingRelease.editionId,
+      reservedMaterial(cycle.topic_id).editionId,
       now,
       cycle.id,
       actor.householdId,

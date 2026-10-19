@@ -24,8 +24,12 @@ describe("reviewed dedicated materials keep immutable history and fair answer bo
     expect(prior.prompt).toContain("现在不在活动室");
     expect(prior.family).toBe(item.family);
     expect(item.version).toBe(2);
-    expect(bank.items).toHaveLength(1080);
-    expect(bank.items.filter((i) => i.version === 2)).toHaveLength(373);
+    expect(bank.items).toHaveLength(1560);
+    expect(
+      bank.items.filter(
+        (i) => i.version === 2 && !i.topicId?.startsWith("forms."),
+      ),
+    ).toHaveLength(373);
   });
   it("makes sentence-selection tasks answerable with public choices and protects their whole-sentence evidence", () => {
     for (const item of bank.items.filter(

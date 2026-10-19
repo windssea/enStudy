@@ -1008,3 +1008,67 @@
   width: 60px;
   height: 60px;
 }
+
+.word-form-cue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 14px 18px;
+  border-radius: 26px;
+  background: var(--sun-soft);
+  color: var(--ink);
+}
+.word-form-cue-partner {
+  width: 64px;
+  flex: 0 0 64px;
+}
+.word-form-cue-partner .painted-companion {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+.word-form-cue-word {
+  font-size: clamp(32px, 4vw, 48px);
+  overflow-wrap: anywhere;
+}
+.word-form-cue-arrow {
+  font-size: 36px;
+  color: var(--primary);
+  animation: word-form-direction 500ms ease-out 1;
+  animation-play-state: paused;
+}
+.word-form-cue[data-paused="false"] .word-form-cue-arrow {
+  animation-play-state: running;
+}
+@keyframes word-form-direction {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(7px);
+  }
+}
+.word-form-cue-goal {
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: var(--mint-play);
+  font-size: 20px;
+  font-weight: 800;
+}
+.child-shell .question.word-form-context {
+  font-size: clamp(20px, 2.2vw, 26px);
+  line-height: 1.5;
+}
+@media (max-width: 480px) {
+  .word-form-cue-partner {
+    display: none;
+  }
+  .word-form-cue {
+    padding: 12px;
+    gap: 8px;
+  }
+}
