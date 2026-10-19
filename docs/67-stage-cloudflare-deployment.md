@@ -65,3 +65,7 @@ CI通过57文件460项单元、格式、构建、Functions编译、本地初始�
 ## v0.48线上AI加密配置同步完成
 
 2026年10月19日18:10，[运行39234125516](https://github.com/windssea/enStudy/actions/runs/39234125516)将58ec503同步到Preview 7a97ebd0与Production 7156c758；两站独立D1仍至0045，无新增迁移。495单元、1424运行、两站各57线上，以及20:23后补充22项站内保存和18项只读检查通过；正式域名构建一致。独立环境主密钥经GitHub Secret设置到各自Pages加密绑定，未启用家庭AI或调用真实供应商。完整证据与边界见[阶段记录](71-cloud-ai-key-stores.md)。
+
+## v0.49词形八专题已发布，Production完整复验通过
+
+2026年10月19日21:35–21:36，[运行39259995691](https://github.com/windssea/enStudy/actions/runs/39259995691)发布6de520e至Preview 75356113与Production e7feea6e；两个原独立D1均成功应用0046/0047，主密钥均复用。510单元、1455完整运行、Preview73项线上检查通过。Production发布后的静态导出模块校验失败，Actions最终failure；21:40用原始代码隔离构建重跑未修改的Production检查，完整73项通过，另三域名18项只读校验通过。两站实际已发布，CI首次校验失败与后续完整复验分别记录，未重跑部署。新增480词形任务、儿童词卡及全部哈希/证据见[词形阶段](72-reserved-word-forms.md)。保持免费资源、注册关闭和原管理员，不把此阶段视为全部目标完成。
