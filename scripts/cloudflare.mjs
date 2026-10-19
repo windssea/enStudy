@@ -4,6 +4,7 @@ import { run } from "./runtime.mjs";
 import { parse, printParseErrorCode } from "jsonc-parser";
 import { pagesProjectNames } from "./cloudflare-output.mjs";
 import { deploymentTarget } from "./cloudflare-target.mjs";
+import { buildPagesWorker } from "./build-pages-worker.mjs";
 const action = process.argv[2] ?? "plan";
 const apply = process.argv.includes("--apply");
 const production = process.argv.includes("--production");
@@ -268,6 +269,7 @@ if (action === "provision") {
     config.d1_databases[0].database_id.startsWith("00000000")
   )
     throw new Error("Unsafe or unprovisioned remote configuration.");
+  await buildPagesWorker({ install: true });
   run([
     "d1",
     "migrations",
@@ -280,6 +282,7 @@ if (action === "provision") {
     "pages",
     "deploy",
     "dist",
+    "--no-bundle",
     "--project-name",
     project.projectName,
     "--branch",

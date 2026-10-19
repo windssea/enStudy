@@ -31,3 +31,9 @@
 477项单元检查及构建、Functions、格式通过；新增检查涵盖60词/180变体、文件哈希、坐标边界、目标歧义、公开数据、模态、示范关联和原答案恢复。独立内存workerd/D1脚本实际分配并保存全部180变体、三种主题20词随机轮、听音门槛、错答刷新、幂等、图卡辅助、文字辅助、到期复习、兄弟姐妹隔离及离线题包。新增反馈原子示范后专项共26组检查；脚本中的听音确认模拟协议，不当作真实儿童听审。
 
 内置浏览器在隔离内存D1上验过快速开始、英语音频完整播放及主动确认、图卡打开和中英重播、错答的正确图反馈、刷新恢复原选择及下一题重置。桌面1265宽无横向溢出、控制台无错误；768×1024竖屏、1024×768横屏和375×812窄屏通过实际CSS视口检查，横屏声音与三图并排，窄屏可滚动到保存按钮。截图保留于忽略的artifacts/v046-picture-desktop.png、v046-pad-portrait.png、v046-pad-landscape.png和v046-narrow.png。这里只是浏览器尺寸验收，不替代Pad实机。旧词汇16组、图卡学习16组和离线37组本地回归通过。完整CI及两站部署以随后核验记录为准。保持注册关闭、指定管理员不变、Cloudflare免费及Preview/Production独立D1。此阶段不能替代完整教研、剩余专题专用材料、真实供应商、儿童研究或M5实机门槛。
+
+## 首轮发布与构建修复
+
+2026-10-19，367ff43的首次CI被旧听辨目录断言1440拦截，未进入发布；68ba9f3修正为1620和三个图片主题后，[Actions 39226177765](https://github.com/windssea/enStudy/actions/runs/39226177765)通过477单元和1416运行检查，但Preview在17:05上传Functions时被25MiB未压缩体积上限拒绝。Preview D1已成功应用0045；Preview网页/函数仍为v0.45，Production尚未迁移0045或发布。本地失败包为26,373,213字节，不能将静态上传完成视为发布成功。
+
+修复先用Wrangler的functions build --minify，再用esbuild输出语义相同的UTF-8 JS，避免中文被ASCII转义膨胀；产物18,582,741字节，SHA256 5b5c820bbb5bec51a176dc40b5887aa34fc2ea7dd41790262831b892b3458ed8。24MiB预算在远端迁移前检查，再以预编译_worker.js和--no-bundle发布，保留原API-only _routes和ASSETS回退；本机workerd实际加载最终文件通过health、1620项目录、匿名进度401和静态回退四项检查。[Cloudflare官方高级模式说明](https://developers.cloudflare.com/pages/functions/advanced-mode/)已核对。未改任何应用迁移，未升级资源。修复后的发布结果待后补。

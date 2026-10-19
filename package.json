@@ -13,7 +13,7 @@
     "content:build": "node scripts/build-content.mjs",
     "build": "npm run content:build && tsc --noEmit && vite build",
     "check": "tsc --noEmit && vitest run --maxWorkers=4",
-    "check:functions": "wrangler pages functions build --outdir .wrangler/functions-build",
+    "check:functions": "node scripts/build-pages-worker.mjs",
     "format": "prettier --write src packages functions scripts tests package.json tsconfig.json vite.config.ts wrangler.jsonc cloudflare.project.json",
     "format:check": "prettier --check src packages functions scripts tests package.json tsconfig.json vite.config.ts wrangler.jsonc cloudflare.project.json",
     "test": "vitest run --maxWorkers=4",
