@@ -1,0 +1,195 @@
+{
+    "sampleRate":  22050,
+    "voice":  "Microsoft Huihui Desktop",
+    "version":  3,
+    "items":  [
+                  {
+                      "id":  "home",
+                      "bytes":  67151,
+                      "text":  "点开始学习或继续学习，接着上次的进度。也可以在下面选择课程、单词或复习。",
+                      "sha256":  "f52e688bf42668d1bc3eef354ef100aebb539ac7c410aa13474a205de3121e28",
+                      "duration":  11.088435,
+                      "url":  "/audio/guides/f52e688bf42668d1bc3eef35.mp3"
+                  },
+                  {
+                      "sha256":  "91f89d82733114d0bb9bb7d277191475fcc9cee91c5a35ee69289b55b38971aa",
+                      "id":  "map",
+                      "bytes":  36745,
+                      "text":  "点一个小岛，再点大三角，就能打开小课。",
+                      "url":  "/audio/guides/91f89d82733114d0bb9bb7d2.mp3",
+                      "duration":  6.028027
+                  },
+                  {
+                      "sha256":  "ccd0867af5d68eec26219e4097c79d8a3aa5b97111bbd38ef5e89685c10b7419",
+                      "id":  "words",
+                      "bytes":  54142,
+                      "text":  "点绿色大三角，玩五道单词题。想换主题，点下面的小卡片。",
+                      "url":  "/audio/guides/ccd0867af5d68eec26219e40.mp3",
+                      "duration":  8.91678
+                  },
+                  {
+                      "sha256":  "6af49979cec33b1c7f44edb1948b3ef43275ac367556646cf0791b8ad0370043",
+                      "id":  "topics",
+                      "bytes":  48500,
+                      "text":  "先选一张图片，再挑一个小任务。点大三角，开始玩。",
+                      "url":  "/audio/guides/6af49979cec33b1c7f44edb1.mp3",
+                      "duration":  7.983039
+                  },
+                  {
+                      "sha256":  "7c3c873b495ad0870dfa7553ca23c89bee4edaaee0aee1ca7779b995debc4bdd",
+                      "id":  "patterns",
+                      "bytes":  40820,
+                      "text":  "选一个你想说的话题，再点大三角，试着说一句。",
+                      "url":  "/audio/guides/7c3c873b495ad0870dfa7553.mp3",
+                      "duration":  6.689478
+                  },
+                  {
+                      "sha256":  "9efc9483af9450aa4c476276ed6cbf1f4a988e0672b6b72d973e964ef6d40a99",
+                      "id":  "review",
+                      "bytes":  55396,
+                      "text":  "像给小花浇水一样，想一想学过的内容。做一点点，就可以休息。",
+                      "url":  "/audio/guides/9efc9483af9450aa4c476276.mp3",
+                      "duration":  9.12195
+                  },
+                  {
+                      "sha256":  "823f9c4e6e92f09084dd5ce91befc4eecb6c3485d4dbbfefa49a6c12dfb785d1",
+                      "id":  "lesson",
+                      "bytes":  65271,
+                      "text":  "点喇叭，听一句。用两边的箭头翻卡片。准备好了，点大三角，试一试。",
+                      "url":  "/audio/guides/823f9c4e6e92f09084dd5ce9.mp3",
+                      "duration":  10.787574
+                  },
+                  {
+                      "sha256":  "4712b79d73b5bbfa3f49ac86def2b64946e208389ef453b776f42b82d6d9d1e8",
+                      "id":  "choice",
+                      "bytes":  76556,
+                      "text":  "先听题目，或者看看题目。选好一个答案以后，点绿色大勾。小喇叭可以帮你读中文选项。",
+                      "url":  "/audio/guides/4712b79d73b5bbfa3f49ac86.mp3",
+                      "duration":  12.650159
+                  },
+                  {
+                      "sha256":  "a27494a4bfc30aaf28a63ffa03b1a88c128b3275121bbb7da77b5cdb9786c709",
+                      "id":  "input",
+                      "bytes":  41760,
+                      "text":  "在空格里写下你的答案。写好了，点绿色大勾。",
+                      "url":  "/audio/guides/a27494a4bfc30aaf28a63ffa.mp3",
+                      "duration":  6.857551
+                  },
+                  {
+                      "sha256":  "bbb03ec217765c72c8119c5bf593de9d9eb4d8d044f802a78892b590a2aa0ac4",
+                      "id":  "order",
+                      "bytes":  72010,
+                      "text":  "点小词块，把它们排好。点已经放好的词块，可以拿回来。排好了，点绿色大勾。",
+                      "url":  "/audio/guides/bbb03ec217765c72c8119c5b.mp3",
+                      "duration":  11.902766
+                  },
+                  {
+                      "sha256":  "9281c9322ca23c96ecb14f7b0b54675389aacba30ccb657893533aa8d1ad21c2",
+                      "id":  "sort",
+                      "bytes":  51008,
+                      "text":  "先选一张卡片，再点一个篮子。都放好以后，点绿色大勾。",
+                      "url":  "/audio/guides/9281c9322ca23c96ecb14f7b.mp3",
+                      "duration":  8.392789
+                  },
+                  {
+                      "sha256":  "0ec3adbfb21fdbaffcba4a43acde40943c081220238ee591df73b74298c51024",
+                      "id":  "repair",
+                      "bytes":  61509,
+                      "text":  "找到需要修改的地方，点一下，再写下你的改法。完成以后，点绿色大勾。",
+                      "url":  "/audio/guides/0ec3adbfb21fdbaffcba4a43.mp3",
+                      "duration":  10.152517
+                  },
+                  {
+                      "sha256":  "c9ea19feb531d47eaae5aa8d85f84b36ea1277da71d5c57c39f29db9019930e5",
+                      "id":  "evidence",
+                      "bytes":  55396,
+                      "text":  "先读小故事，再选答案，找一条线索。选好了，点绿色大勾。",
+                      "url":  "/audio/guides/c9ea19feb531d47eaae5aa8d.mp3",
+                      "duration":  9.142585
+                  },
+                  {
+                      "sha256":  "cdb0288749078a472d87fb3c8ae5adc0173eb304e02a8260cbbf8c48b0a82351",
+                      "id":  "saved",
+                      "bytes":  39566,
+                      "text":  "已经保存好啦！点大箭头，继续下一小步。",
+                      "url":  "/audio/guides/cdb0288749078a472d87fb3c.mp3",
+                      "duration":  6.492925
+                  },
+                  {
+                      "sha256":  "8aff54afdc0f19e4a1e892250e229555832beaa25a852410af3789b6fd2d1d66",
+                      "id":  "parent",
+                      "bytes":  59785,
+                      "text":  "请家长来帮你登录，再选一位小探险家。选好以后，就能保存学习进度。",
+                      "url":  "/audio/guides/8aff54afdc0f19e4a1e89225.mp3",
+                      "duration":  9.868617
+                  },
+                  {
+                      "id":  "start",
+                      "sha256":  "a07fdfda84774c736a512ed5c6ea3af709713e6f2bb8d6d3854b4310349cc1e0",
+                      "bytes":  62920,
+                      "url":  "/audio/guides/a07fdfda84774c736a512ed5.mp3",
+                      "text":  "准备好了，就点绿色大三角。不会的地方，可以点小灯泡，请伙伴帮帮忙。",
+                      "duration":  10.396599
+                  },
+                  {
+                      "url":  "/audio/guides/4b0353e4c77cfae01d258a3b.mp3",
+                      "sha256":  "4b0353e4c77cfae01d258a3bdc55e72748706afe72057530b94e92200e621bf1",
+                      "duration":  12.974785,
+                      "bytes":  78436,
+                      "id":  "phonics",
+                      "text":  "先点一条小路。听一听单词，再点字母积木，看看它们怎样合起来。准备好了，点大三角。"
+                  },
+                  {
+                      "url":  "/audio/guides/21c576a1e99fc4c2094e87be.mp3",
+                      "sha256":  "21c576a1e99fc4c2094e87bee5d0d5e7fb368cf11606142fdf5c6d77311bebce",
+                      "duration":  11.109206,
+                      "bytes":  67308,
+                      "id":  "workshops",
+                      "text":  "选一个想玩的工坊，点卡片开始。分类时，把同一类的卡片，放进同一个篮子。"
+                  },
+                  {
+                      "url":  "/audio/guides/46f80143e53ec501050a2fd0.mp3",
+                      "sha256":  "46f80143e53ec501050a2fd0216ea66648e516ee4cd4dec297a384fe08520534",
+                      "duration":  12.595828,
+                      "bytes":  76242,
+                      "id":  "writing",
+                      "text":  "点大空格，写下自己的小作品。点保存，才会留下来。想离开时，可以请家长帮忙。"
+                  },
+                  {
+                      "url":  "/audio/guides/90de062eca8363dd3ecc2708.mp3",
+                      "sha256":  "90de062eca8363dd3ecc2708c3faf9385151ba81796b34e9f1e0b60a3e3c3f17",
+                      "duration":  12.064127,
+                      "bytes":  72951,
+                      "id":  "mistakes",
+                      "text":  "这里放着可以再想一想的题目。点一张小卡，看看上次怎么答。点小喇叭，听一听讲解。"
+                  },
+                  {
+                      "url":  "/audio/guides/ee766437ec4816a45a74b91d.mp3",
+                      "sha256":  "ee766437ec4816a45a74b91d90d3196d8b340915c9f0754889432a6398c5545f",
+                      "duration":  12.100726,
+                      "bytes":  73264,
+                      "id":  "offline",
+                      "text":  "先请家长帮你准备好本机练习。准备好了，就可以接着玩。联网以后，再确认保存。"
+                  },
+                  {
+                      "url":  "/audio/guides/067215ae3d5cefd4e842ff1c.mp3",
+                      "sha256":  "067215ae3d5cefd4e842ff1ca969b54a2d3d510e4d46381f13386539e2bbc540",
+                      "duration":  11.738685,
+                      "bytes":  71070,
+                      "id":  "talk",
+                      "text":  "点一个角色，再点开始。可以说一句，也可以打字。语音功能需要先由家长开启。"
+                  },
+                  {
+                      "id":  "picture",
+                      "bytes":  105081,
+                      "text":  "点大喇叭，听一个英语单词。听清了，点绿色小勾，再选一张图片。选好以后，点下面的大勾。想再听，随时点喇叭。",
+                      "sha256":  "3290bf01d2dd666ccd2475402c15d55b132be674ce4ab7343d231ab35207312c",
+                      "duration":  17.402086,
+                      "url":  "/audio/guides/3290bf01d2dd666ccd247540.mp3"
+                  }
+              ],
+    "channels":  1,
+    "kind":  "synthetic-navigation-only",
+    "format":  "mp3",
+    "bitRate":  48000
+}

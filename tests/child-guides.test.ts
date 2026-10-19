@@ -4,8 +4,8 @@ import { createHash } from "node:crypto";
 import { parseRoute } from "../src/routes";
 import { playGuideAudio, playWordAudio, type GuideId } from "../src/wordAudio";
 import { isSpeechActive } from "../src/speechActivity";
-import guides from "../public/content/child-guides.v2.json";
-import source from "../content/child-guides.v2.json";
+import guides from "../public/content/child-guides.v3.json";
+import source from "../content/child-guides.v3.json";
 class Doc extends EventTarget {
   hidden = false;
 }

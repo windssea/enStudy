@@ -40,6 +40,7 @@ import {
 import FamilySpace from "./FamilySpace";
 import LessonView from "./LessonView";
 import SceneStage, { MotionShell } from "./SceneStage";
+import LearningIcon from "./LearningIcon";
 import CourseIslandMap from "./CourseIslandMap";
 import SessionAccess from "./SessionAccess";
 import ChildNavigation from "./ChildNavigation";
@@ -962,11 +963,11 @@ export default function App() {
         <header className="topbar">
           <button
             className="child-home-button"
-            aria-label="回到小屋"
+            aria-label="回到学习首页"
             onClick={() => move("home")}
           >
-            <ToyPicture kind="home" />
-            <span>小屋</span>
+            <LearningIcon kind="home" />
+            <span>首页</span>
           </button>
           <div className="adult-location">
             <small>你在这里</small>
@@ -1026,8 +1027,8 @@ export default function App() {
               aria-label={`家长空间与档案：${identity.child?.nickname ?? "选择档案"}`}
               onClick={() => move("parent")}
             >
-              <ToyPicture kind="parent" />
-              <span>大人帮忙</span>
+              <LearningIcon kind="person" />
+              <span>家长设置</span>
             </button>
           </div>
         </header>
@@ -1054,6 +1055,7 @@ export default function App() {
           {view === "home" && (
             <ChildHome
               nickname={identity.child?.nickname}
+              grade={identity.child?.grade}
               busy={busy}
               ready={Boolean(nextLesson) || !identity.child || Boolean(session)}
               resume={Boolean(session && identity.authenticated)}

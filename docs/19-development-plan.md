@@ -1,6 +1,8 @@
 # 开发执行计划
 
-v0.51本地开发验收通过：增加qwen3.8-flash阿里文字预设，显式关闭思考、使用system/max_tokens，独立于ASR/TTS；539单元及184项AI相关隔离检查通过，CI与同步部署待验，见[文字模型阶段](74-qwen-text-profile.md)。最新UI目标已改为现代专业风格，界面改造另行推进。
+v0.52首页与导航本地验收通过、待同步发布：现代专业风格、明确开始/继续学习、三类直接入口与新版中文提示音；539单元和浏览器保存/刷新恢复及PC/平板尺寸检查通过。全站其他页面继续统一，见[界面阶段](75-modern-home-and-navigation.md)。
+
+v0.51已同步发布Preview、Production与正式域名：增加qwen3.8-flash阿里文字预设，显式关闭思考、使用system/max_tokens，独立于ASR/TTS；539单元、1483完整运行、两站各73线上与额外18站内保存/18只读检查通过，见[文字模型阶段](74-qwen-text-profile.md)。最新UI目标已改为现代专业风格，界面改造另行推进。
 
 v0.50已同步发布Preview、Production与正式域名：新增阿里原生ASR连接，支持qwen-audio-3.1-asr-flash直接接收站内WAV Base64；文本/合成独立配置，529单元、1475完整CI运行、两站各73线上及额外22站内保存/18只读检查通过，真实Key尚未配置，见[阿里语音识别](73-aliyun-native-asr.md)。
 

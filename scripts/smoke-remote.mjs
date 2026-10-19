@@ -54,11 +54,11 @@ const request = async (path, options = {}) => {
 };
 const expectedGuides = JSON.parse(
   await readFile(
-    new URL("../public/content/child-guides.v2.json", import.meta.url),
+    new URL("../public/content/child-guides.v3.json", import.meta.url),
     "utf8",
   ),
 );
-const guideManifestResponse = await request("/content/child-guides.v2.json");
+const guideManifestResponse = await request("/content/child-guides.v3.json");
 check(
   guideManifestResponse.status === 200 &&
     JSON.stringify(await guideManifestResponse.json()) ===

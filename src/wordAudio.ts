@@ -1,5 +1,5 @@
 import { acquireSpeech, releaseSpeech } from "./speechActivity";
-import guides from "../public/content/child-guides.v2.json";
+import guides from "../public/content/child-guides.v3.json";
 type AudioCallbacks = {
   ended: () => void;
   failed: (message: string) => void;

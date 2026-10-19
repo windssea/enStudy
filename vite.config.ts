@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { createHash } from "node:crypto";
-import childGuides from "./public/content/child-guides.v2.json" with { type: "json" };
+import childGuides from "./public/content/child-guides.v3.json" with { type: "json" };
 import pictureMedia from "./public/content/picture-words.v1.json" with { type: "json" };
 import clayArt from "./public/content/clay-art.v1.json" with { type: "json" };
 export default defineConfig({

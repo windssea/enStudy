@@ -1,11 +1,11 @@
 import type { View } from "./routes";
-import ToyPicture from "./ToyPicture";
+import LearningIcon from "./LearningIcon";
 const destinations = [
-  ["home", "小屋"],
+  ["home", "首页"],
   ["words", "单词"],
-  ["topics", "积木"],
-  ["patterns", "说一句"],
-  ["review", "小花园"],
+  ["topics", "专题"],
+  ["patterns", "句式"],
+  ["review", "复习"],
 ] as const;
 export default function ChildNavigation({
   active,
@@ -16,8 +16,10 @@ export default function ChildNavigation({
 }) {
   return (
     <aside className="child-navigation">
-      <a className="child-brand" href="#home" aria-label="英语探险岛，回到小屋">
-        <ToyPicture kind="home" />
+      <a className="child-brand" href="#home" aria-label="英语探险岛，学习首页">
+        <span className="learning-brand-mark" aria-hidden="true">
+          EQ
+        </span>
         <span>英语探险岛</span>
       </a>
       <nav aria-label="主导航">
@@ -32,18 +34,18 @@ export default function ChildNavigation({
             }
             aria-label={
               id === "home"
-                ? "回到小屋"
+                ? "学习首页"
                 : id === "topics"
-                  ? "句子积木，专题特训"
+                  ? "专题特训，语法、时态与词形"
                   : id === "patterns"
-                    ? "说一句，固定句式"
+                    ? "固定句式练习"
                     : id === "review"
-                      ? "小花园，复习"
+                      ? "间隔复习"
                       : "单词特训"
             }
             onClick={() => onGo(id)}
           >
-            <ToyPicture kind={id} />
+            <LearningIcon kind={id} />
             <span>{label}</span>
           </button>
         ))}

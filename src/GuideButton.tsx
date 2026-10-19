@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { playGuideAudio, type ChildGuideId } from "./wordAudio";
-import ToyPicture from "./ToyPicture";
+import LearningIcon from "./LearningIcon";
 export default function GuideButton({ id }: { id: ChildGuideId }) {
   const [playing, setPlaying] = useState(false),
     [error, setError] = useState("");
@@ -39,19 +39,19 @@ export default function GuideButton({ id }: { id: ChildGuideId }) {
       });
     } catch {
       setPlaying(false);
-      setError("请再点一次小喇叭，或者请家长帮忙。");
+      setError("声音暂不可用，请重试或请家长帮忙。");
     }
   }
   return (
     <span className="child-guide">
       <button
         className="guide-button"
-        aria-label={playing ? "停止玩法提示" : "听一听，怎么玩"}
+        aria-label={playing ? "停止操作提示" : "听操作提示"}
         aria-pressed={playing}
         onClick={toggle}
       >
-        <ToyPicture kind="speaker" />
-        <span>{playing ? "停一下" : "听我说"}</span>
+        <LearningIcon kind="speaker" />
+        <span>{playing ? "停止提示" : "听提示"}</span>
       </button>
       {error && <span role="status">{error}</span>}
     </span>
