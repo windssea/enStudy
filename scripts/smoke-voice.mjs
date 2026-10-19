@@ -40,6 +40,29 @@ const provider = createServer(async (req, res) => {
     return;
   }
   res.writeHead(200, { "Content-Type": "application/json" });
+  if (req.url === "/api/v1/services/aigc/multimodal-generation/generation") {
+    res.end(
+      JSON.stringify(
+        mode === "native-error"
+          ? { code: "InvalidApiKey", message: key }
+          : {
+              output:
+                mode === "nested"
+                  ? { output: { sentence: { text: "I like apples." } } }
+                  : {
+                      text:
+                        mode === "echo-key"
+                          ? key
+                          : mode === "large"
+                            ? "a".repeat(9000)
+                            : "I like apples.",
+                    },
+              request_id: "fake-native-id",
+            },
+      ),
+    );
+    return;
+  }
   if (req.url.endsWith("/audio/transcriptions")) {
     res.end(
       JSON.stringify({
@@ -789,6 +812,183 @@ try {
     (await request(`/learning/conversations/${id}`, undefined, foreign))
       .status !== 200,
     "another household cannot read this child's transcript",
+  );
+  const nativePath = "/api/v1/services/aigc/multimodal-generation/generation";
+  const nativeCfg = {
+    ...cfg(""),
+    adapter: "dashscope-asr",
+    baseUrl: upstream + nativePath,
+  };
+  let native = (await request("/ai/connections", nativeCfg)).data;
+  check(
+    native.id && native.adapter === "dashscope-asr" && !native.tested,
+    "native ASR connection persists its separate adapter without claiming text support",
+  );
+  const nativeBefore = calls;
+  check(
+    (
+      await request(`/ai/connections/${native.id}/test`, {
+        version: native.version,
+        clientRequestId: crypto.randomUUID(),
+        currentPassword: "admin123123456",
+      })
+    ).status === 422 && calls === nativeBefore,
+    "native connection cannot dispatch a text probe or reserve provider usage",
+  );
+  check(
+    (
+      await request("/ai/connections", {
+        ...nativeCfg,
+        clientRequestId: crypto.randomUUID(),
+        baseUrl: upstream + "/v1",
+      })
+    ).status === 422,
+    "native adapter requires its exact generation path",
+  );
+  check(
+    (await save({ text_connection_id: native.id, text_enabled: false }))
+      .status === 422 &&
+      (await save({ tts_connection_id: native.id, tts_enabled: false }))
+        .status === 422,
+    "even disabled text and TTS slots reject an ASR-only connection",
+  );
+  check(
+    (
+      await save({
+        asr_connection_id: native.id,
+        asr_model: "qwen-audio-3.1-asr-flash",
+        asr_enabled: false,
+        text_enabled: false,
+        tts_enabled: false,
+      })
+    ).status === 200,
+    "native ASR settings save separately from the existing text and TTS connections",
+  );
+  check(
+    (
+      await save({
+        asr_connection_id: native.id,
+        asr_model: "qwen-audio-3.1-asr-flash",
+        asr_enabled: true,
+      })
+    ).status !== 200,
+    "native ASR cannot enable before its own successful capability test",
+  );
+  await save({
+    asr_connection_id: native.id,
+    asr_model: "qwen-audio-3.1-asr-flash",
+  });
+  const nativeTestId = crypto.randomUUID();
+  const nativeTest = (clientRequestId = crypto.randomUUID()) =>
+    request("/ai/voice/test/asr", {
+      version: settings.version,
+      currentPassword: "admin123123456",
+      clientRequestId,
+      audioBase64,
+    });
+  const nativeResult = await nativeTest(nativeTestId);
+  check(
+    nativeResult.status === 200 && nativeResult.data.text === "I like apples.",
+    "native output.text is parsed through the real workerd adapter and child content filter",
+  );
+  const nativeBody = JSON.parse(lastRequest.body);
+  check(
+    lastRequest.url === nativePath &&
+      lastRequest.headers["x-dashscope-sse"] === "disable" &&
+      lastRequest.headers["content-type"] === "application/json" &&
+      nativeBody.model === "qwen-audio-3.1-asr-flash" &&
+      nativeBody.parameters.format === "wav" &&
+      nativeBody.parameters.sample_rate === "16000" &&
+      nativeBody.input.messages[0].content[0].type === "input_audio" &&
+      nativeBody.input.messages[0].content[0].input_audio.data ===
+        `data:audio/wav;base64,${audioBase64}`,
+    "native ASR sends the provided JSON contract and inline 16k WAV without a public recording URL",
+  );
+  const nativeOnce = calls;
+  check(
+    (await nativeTest(nativeTestId)).data.cached && calls === nativeOnce,
+    "native ASR test replay reuses the encrypted receipt without a second provider request",
+  );
+  mode = "nested";
+  check(
+    (await nativeTest()).data.text === "I like apples.",
+    "documented nested native sentence text is accepted",
+  );
+  for (const failure of ["echo-key", "native-error", "large", "redirect"]) {
+    mode = failure;
+    const result = await nativeTest();
+    check(
+      result.status !== 200 && !JSON.stringify(result.data).includes(key),
+      `native ${failure} response is bounded and does not expose provider secrets`,
+    );
+  }
+  mode = "valid";
+  check(
+    (
+      await save({
+        asr_connection_id: native.id,
+        asr_model: "qwen-audio-3.1-asr-flash",
+        asr_enabled: true,
+      })
+    ).status === 200 &&
+      (await request("/learning/conversation-options")).data.asr,
+    "tested native ASR can be explicitly enabled with the existing child audio consent",
+  );
+  check(
+    (
+      await save({
+        asr_connection_id: native.id,
+        asr_model: "qwen-audio-3.1-asr-flash",
+        asr_enabled: true,
+        text_enabled: true,
+      })
+    ).status === 200,
+    "native ASR works alongside an independently tested text connection",
+  );
+  id = await open();
+  const nativeChildId = crypto.randomUUID();
+  const nativeChild = () =>
+    request(`/learning/conversations/${id}/transcribe`, {
+      clientRequestId: nativeChildId,
+      audioBase64,
+    });
+  const nativeChildResult = await nativeChild(),
+    nativeChildCalls = calls;
+  check(
+    nativeChildResult.status === 200 &&
+      nativeChildResult.data.text === "I like apples." &&
+      lastRequest.url === nativePath,
+    "child short dialogue uses the native adapter with its own grant and audio budget",
+  );
+  check(
+    (await nativeChild()).data.cached && calls === nativeChildCalls,
+    "native child transcription replay does not redispatch or bill a second attempt",
+  );
+  const nativeUpdated = await request(`/ai/connections/${native.id}`, {
+    ...nativeCfg,
+    apiKey: "",
+    version: native.version,
+    label: "更新后的识别连接",
+  });
+  native = nativeUpdated.data;
+  check(
+    nativeUpdated.status === 200 &&
+      native.adapter === "dashscope-asr" &&
+      native.version === 1 &&
+      !(await getSettings()).capabilities.asr,
+    "editing native configuration invalidates its old capability receipt",
+  );
+  check(
+    (await request("/ai/voice/settings", undefined, childOnly)).status ===
+      401 &&
+      (
+        await request(
+          `/ai/connections/${native.id}/storage`,
+          { version: native.version, currentPassword: foreignPassword },
+          foreign,
+        )
+      ).status === 404,
+    "child and foreign household cannot read or decrypt native provider configuration",
   );
   console.log(
     `Local isolated voice smoke passed (${checks} checks; fake provider only).`,

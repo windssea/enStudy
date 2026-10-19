@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   providerUrl,
+  connectionUrl,
+  dashscopeAsrPath,
   parseExplanation,
   validApiKey,
   validModel,
@@ -8,6 +10,36 @@ import {
 import { sealKey, unsealKey, keyStoreReady } from "../packages/server/aiCrypto";
 
 describe("AI destination policy", () => {
+  it("requires the native path and explicit adapter without widening exact-host approval", () => {
+    const url = "https://speech.example.com" + dashscopeAsrPath;
+    expect(connectionUrl(url, {}, "dashscope-asr").approved).toBe(false);
+    expect(
+      connectionUrl(
+        url,
+        { AI_HOST_ALLOWLIST: "speech.example.com" },
+        "dashscope-asr",
+      ).approved,
+    ).toBe(true);
+    expect(
+      connectionUrl(
+        "https://speech.example.com.attacker.example" + dashscopeAsrPath,
+        { AI_HOST_ALLOWLIST: "speech.example.com" },
+        "dashscope-asr",
+      ).approved,
+    ).toBe(false);
+    expect(() => connectionUrl(url, {}, "openai-chat")).toThrow(
+      "INVALID_BASE_URL",
+    );
+    expect(() =>
+      connectionUrl("https://speech.example.com/v1", {}, "dashscope-asr"),
+    ).toThrow("INVALID_BASE_URL");
+    expect(() => connectionUrl(url, {}, "arbitrary")).toThrow(
+      "INVALID_AI_ADAPTER",
+    );
+    expect(() =>
+      connectionUrl(url + "?next=internal", {}, "dashscope-asr"),
+    ).toThrow();
+  });
   it("normalizes an approved root and leaves other public domains pending", () => {
     expect(providerUrl("https://API.OPENAI.COM:443/v1/", {})).toEqual({
       baseUrl: "https://api.openai.com/v1",

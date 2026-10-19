@@ -125,14 +125,16 @@ export default function WritingAiSettings({
                 }}
               >
                 <option value="">请选择已测试的文本连接</option>
-                {connections.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.label}
-                    {c.tested && c.approved
-                      ? " · 已测试"
-                      : " · 需测试/核对域名"}
-                  </option>
-                ))}
+                {connections
+                  .filter((c) => c.adapter !== "dashscope-asr")
+                  .map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.label}
+                      {c.tested && c.approved
+                        ? " · 已测试"
+                        : " · 需测试/核对域名"}
+                    </option>
+                  ))}
               </select>
             </label>
             {selected && (

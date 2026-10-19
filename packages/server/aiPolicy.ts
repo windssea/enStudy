@@ -19,6 +19,26 @@ export const hosts = (env: AiConfig) =>
     .split(",")
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
+export const dashscopeAsrPath =
+  "/api/v1/services/aigc/multimodal-generation/generation";
+export function connectionUrl(
+  value: unknown,
+  env: AiConfig,
+  adapter = "openai-chat",
+) {
+  if (!["openai-chat", "dashscope-asr"].includes(adapter))
+    throw new AiFault("INVALID_AI_ADAPTER", "请选择支持的连接类型。");
+  const target = providerUrl(value, env);
+  const isNative = new URL(target.baseUrl).pathname === dashscopeAsrPath;
+  if ((adapter === "dashscope-asr") !== isNative)
+    throw new AiFault(
+      "INVALID_BASE_URL",
+      adapter === "dashscope-asr"
+        ? "阿里原生识别请填写以 /api/v1/services/aigc/multimodal-generation/generation 结尾的完整地址。"
+        : "此地址属于阿里原生识别，请选择对应连接类型。",
+    );
+  return target;
+}
 export function providerUrl(value: unknown, env: AiConfig) {
   if (
     typeof value !== "string" ||

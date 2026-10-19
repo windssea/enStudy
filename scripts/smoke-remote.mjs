@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { sameLessonRelease } from "./remote-release.mjs";
 import { responseCookieHeader } from "./response-cookies.mjs";
+import { releasedAsset } from "./remote-asset.mjs";
 const expectedCourse = JSON.parse(
   await readFile(
     new URL("../public/content/lessons.json", import.meta.url),
@@ -35,12 +36,22 @@ const check = (condition, message) => {
   checks += 1;
   console.log(`PASS ${message}`);
 };
-const request = (path, options = {}) =>
+const fetchOnce = (path, options = {}) =>
   fetch(new URL(path, base), {
     cache: "no-store",
     ...options,
     signal: AbortSignal.timeout(20000),
   });
+const request = async (path, options = {}) => {
+  if (
+    /^\/assets\/[a-zA-Z0-9_-]+\.js$/.test(path) &&
+    (!options.method || options.method === "GET")
+  ) {
+    const expected = await readFile(new URL("../dist" + path, import.meta.url));
+    return releasedAsset(() => fetchOnce(path, options), expected);
+  }
+  return fetchOnce(path, options);
+};
 const expectedGuides = JSON.parse(
   await readFile(
     new URL("../public/content/child-guides.v2.json", import.meta.url),

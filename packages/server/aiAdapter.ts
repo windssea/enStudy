@@ -1,5 +1,6 @@
 import { AiFault, providerUrl, type AiConfig } from "./aiPolicy";
 export interface TextConnection {
+  adapter?: "openai-chat" | "dashscope-asr";
   id: string;
   household_id: string;
   base_url: string;
@@ -18,6 +19,11 @@ export async function textCompletion(
   messages: { role: string; content: string }[],
   maxOutput: number,
 ) {
+  if (connection.adapter === "dashscope-asr")
+    throw new AiFault(
+      "INVALID_AI_CAPABILITY",
+      "这条连接只支持语音识别，请为文字选择其他连接。",
+    );
   const target = providerUrl(connection.base_url, env);
   if (!target.approved)
     throw new AiFault(

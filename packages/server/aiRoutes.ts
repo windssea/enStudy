@@ -11,6 +11,7 @@ import {
   AiFault,
   hosts,
   providerUrl,
+  connectionUrl,
   validApiKey,
   validModel,
   validPolicy,
@@ -68,6 +69,7 @@ function publicConnection(row: Connection, env: AiConfig) {
   return {
     id: row.id,
     label: row.label,
+    adapter: row.adapter ?? "openai-chat",
     baseUrl: row.base_url,
     model: row.model,
     tokenParameter: row.token_parameter,
@@ -103,6 +105,17 @@ const audit = (c: Ctx, adult: AdultSession, action: string) =>
     Date.now(),
   );
 function inputConfig(body: Record<string, unknown>, env: AiConfig) {
+  const adapter = body.adapter ?? "openai-chat";
+  if (
+    typeof adapter !== "string" ||
+    !["openai-chat", "dashscope-asr"].includes(adapter)
+  )
+    throw new AiFault("INVALID_AI_ADAPTER", "请选择支持的连接类型。");
+  if (adapter === "dashscope-asr" && body.model !== "")
+    throw new AiFault(
+      "INVALID_AI_MODEL",
+      "识别连接无需文本模型，请在下方语音识别中填写ASR模型。",
+    );
   if (
     typeof body.label !== "string" ||
     !body.label.trim() ||
@@ -120,12 +133,13 @@ function inputConfig(body: Record<string, unknown>, env: AiConfig) {
       "请填写连接名称、模型、有效数据政策链接与兼容参数。",
     );
   return {
+    adapter: adapter as NonNullable<Connection["adapter"]>,
     label: body.label.trim(),
     model: body.model,
     policyUrl: body.policyUrl,
     tokenParameter: body.tokenParameter as Connection["token_parameter"],
     instructionRole: body.instructionRole as Connection["instruction_role"],
-    ...providerUrl(body.baseUrl, env),
+    ...connectionUrl(body.baseUrl, env, adapter),
   };
 }
 function cached(row: AiRequestRow) {
@@ -331,11 +345,12 @@ export function createAiRoutes(
     );
     const result = await c.env.DB.batch([
       c.env.DB.prepare(
-        `INSERT OR IGNORE INTO ai_connections(id,household_id,label,adapter,base_url,model,key_ciphertext,key_iv,key_id,key_suffix,capabilities_json,state,created_at,config_hash,policy_url,token_parameter,instruction_role) SELECT ?,?,?,'openai-chat',?,?,?,?,?,?,?,'pending',?,?,?,?,? WHERE ${ownerSql} AND(SELECT count(*) FROM ai_connections WHERE household_id=?)<5`,
+        `INSERT OR IGNORE INTO ai_connections(id,household_id,label,adapter,base_url,model,key_ciphertext,key_iv,key_id,key_suffix,capabilities_json,state,created_at,config_hash,policy_url,token_parameter,instruction_role) SELECT ?,?,?,?,?,?,?,?,?,?,?,'pending',?,?,?,?,? WHERE ${ownerSql} AND(SELECT count(*) FROM ai_connections WHERE household_id=?)<5`,
       ).bind(
         body.clientRequestId,
         adult.householdId,
         cfg.label,
+        cfg.adapter,
         cfg.baseUrl,
         cfg.model,
         encrypted.ciphertext,
@@ -394,9 +409,10 @@ export function createAiRoutes(
       hash = await tokenHash(JSON.stringify([cfg, secret]));
     const result = await c.env.DB.batch([
       c.env.DB.prepare(
-        `UPDATE ai_connections SET label=?,base_url=?,model=?,key_ciphertext=?,key_iv=?,key_id=?,key_suffix=?,policy_url=?,token_parameter=?,instruction_role=?,config_hash=?,capabilities_json=?,tested_version=NULL,state='pending',version=version+1 WHERE id=? AND household_id=? AND version=? AND ${ownerSql}`,
+        `UPDATE ai_connections SET label=?,adapter=?,base_url=?,model=?,key_ciphertext=?,key_iv=?,key_id=?,key_suffix=?,policy_url=?,token_parameter=?,instruction_role=?,config_hash=?,capabilities_json=?,tested_version=NULL,state='pending',version=version+1 WHERE id=? AND household_id=? AND version=? AND ${ownerSql}`,
       ).bind(
         cfg.label,
+        cfg.adapter,
         cfg.baseUrl,
         cfg.model,
         encrypted.ciphertext,
@@ -502,6 +518,11 @@ export function createAiRoutes(
       conn = await connection(c, c.req.param("id"), adult.householdId),
       body: unknown = await c.req.json();
     if (!conn) return c.json(fault("NOT_FOUND", "找不到这个连接。"), 404);
+    if (conn.adapter === "dashscope-asr")
+      throw new AiFault(
+        "INVALID_AI_CAPABILITY",
+        "这条连接只做语音识别，请在下方语音设置录音测试。",
+      );
     if (!conn.model)
       return c.json(
         fault(

@@ -38,3 +38,5 @@ M3-05b,M3,低识字儿童听音认图与图卡学习,60词图片录音180变体�
 M0-09,M0,透明粘土角色与插画场景,两位原创角色四张原图六站大按钮及无WebGL前端,deployed-browser-and-runtime-verified-device-pending,docs/70-generated-clay-illustrations.md及481单元1416运行两站各54线上30附加功能27只读和四种尺寸及透明通道检查通过而Pad实机与儿童研究待验
 M4-04,M4,线上BYOK加密配置和站内保存检查,独立环境密钥安全复用及家长密码验证加解密且无供应商请求,deployed-browser-and-runtime-verified-provider-and-recovery-pending,docs/71-cloud-ai-key-stores.md及495单元1424运行两站各57线上22保存和18只读检查通过而真实供应商和恢复演练待验
 M3-01b,M3,八专题词形专用材料,480任务和阶段独立分池及各自版本撤题保护旧计划,deployed-forms-reviewed-ui-teaching-and-34-topics-pending,docs/72-reserved-word-forms.md及510单元1455运行两站各73线上和三域名18只读通过而首次CI静态校验失败后原源码Production完整复验且教研和其余34专题待完成
+
+M4-02b,M4,阿里原生短录音识别,独立协议和安全密钥及明确能力配置,local-native-asr-verified-deployment-and-real-provider-pending,docs/73-aliyun-native-asr.md及529单元1475运行79语音专项和响应式表单通过而真实Key声音质量和Pad实机待验

@@ -6,6 +6,7 @@ import { pagesProjectNames } from "./cloudflare-output.mjs";
 import { deploymentTarget } from "./cloudflare-target.mjs";
 import { buildPagesWorker } from "./build-pages-worker.mjs";
 import { configureCloudflareAi } from "./cloudflare-ai.mjs";
+import { configureCloudflareAiHosts } from "./cloudflare-ai-hosts.mjs";
 const action = process.argv[2] ?? "plan";
 const apply = process.argv.includes("--apply");
 const production = process.argv.includes("--production");
@@ -279,6 +280,15 @@ if (action === "provision") {
   });
   console.log(
     `AI key-store deployment: ${stage} ${aiStore.operation}. No family capability was enabled.`,
+  );
+  const aiHosts = await configureCloudflareAiHosts({
+    env: process.env,
+    project,
+    stage,
+    databaseId: config.d1_databases[0].database_id,
+  });
+  console.log(
+    `AI host deployment: ${stage} ${aiHosts.operation}. Exact hosts only.`,
   );
   run([
     "d1",

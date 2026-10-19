@@ -9,6 +9,7 @@ import AiVoiceSettings from "./AiVoiceSettings";
 import WritingAiSettings from "./WritingAiSettings";
 import { announceAiSettings } from "./aiSettingsSignal";
 const blank = {
+  adapter: "openai-chat" as AiConnectionSummary["adapter"],
   label: "",
   baseUrl: "",
   model: "",
@@ -214,6 +215,29 @@ export default function AiSettings() {
             >
               <div className="account-fields">
                 <label className="field">
+                  连接类型
+                  <select
+                    value={form.adapter}
+                    onChange={(e) => {
+                      setForm({
+                        ...form,
+                        adapter: e.target
+                          .value as AiConnectionSummary["adapter"],
+                        model: "",
+                        baseUrl: "",
+                      });
+                      createId.current = crypto.randomUUID();
+                    }}
+                  >
+                    <option value="openai-chat">
+                      OpenAI兼容（文本 / ASR / TTS）
+                    </option>
+                    <option value="dashscope-asr">
+                      阿里原生语音识别（Qwen-Audio ASR）
+                    </option>
+                  </select>
+                </label>
+                <label className="field">
                   连接昵称
                   <input
                     required
@@ -223,24 +247,32 @@ export default function AiSettings() {
                     placeholder="例如：家庭英语助手"
                   />
                 </label>
+                {form.adapter === "openai-chat" && (
+                  <label className="field">
+                    文本模型名称（仅语音连接可留空）
+                    <input
+                      maxLength={120}
+                      value={form.model}
+                      onChange={(e) => update("model", e.target.value)}
+                      placeholder="填写服务商提供的准确模型ID"
+                    />
+                  </label>
+                )}
                 <label className="field">
-                  文本模型名称（仅语音连接可留空）
-                  <input
-                    maxLength={120}
-                    value={form.model}
-                    onChange={(e) => update("model", e.target.value)}
-                    placeholder="填写服务商提供的准确模型ID"
-                  />
-                </label>
-                <label className="field">
-                  API根地址
+                  {form.adapter === "dashscope-asr"
+                    ? "阿里原生识别完整地址"
+                    : "API根地址"}
                   <input
                     type="url"
                     required
                     maxLength={260}
                     value={form.baseUrl}
                     onChange={(e) => update("baseUrl", e.target.value)}
-                    placeholder="https://服务商域名/v1"
+                    placeholder={
+                      form.adapter === "dashscope-asr"
+                        ? "https://工作空间域名/api/v1/services/aigc/multimodal-generation/generation"
+                        : "https://服务商域名/v1"
+                    }
                   />
                 </label>
                 <label className="field">
@@ -255,6 +287,13 @@ export default function AiSettings() {
                   />
                 </label>
               </div>
+              {form.adapter === "dashscope-asr" && (
+                <p className="footnote">
+                  保存后在下方“语音识别 ASR”选择此连接，填写
+                  qwen-audio-3.1-asr-flash，再录音测试。
+                  录音以Base64直接发送，无需公开音频链接；这条连接只把声音转成文字，对话与合成声音另行配置。
+                </p>
+              )}
               <label className="field">
                 {editing ? "新Key（留空保留现有Key）" : "API Key"}
                 <input
@@ -269,50 +308,52 @@ export default function AiSettings() {
                   }}
                 />
               </label>
-              <details className="ai-advanced">
-                <summary>兼容参数</summary>
-                <div className="account-fields">
-                  <label className="field">
-                    输出限制参数
-                    <select
-                      value={form.tokenParameter}
-                      onChange={(e) =>
-                        update(
-                          "tokenParameter",
-                          e.target.value as typeof form.tokenParameter,
-                        )
-                      }
-                    >
-                      <option value="max_completion_tokens">
-                        max_completion_tokens
-                      </option>
-                      <option value="max_tokens">
-                        max_tokens（部分兼容服务）
-                      </option>
-                    </select>
-                  </label>
-                  <label className="field">
-                    教学指令角色
-                    <select
-                      value={form.instructionRole}
-                      onChange={(e) =>
-                        update(
-                          "instructionRole",
-                          e.target.value as typeof form.instructionRole,
-                        )
-                      }
-                    >
-                      <option value="system">system（通用兼容）</option>
-                      <option value="developer">
-                        developer（服务商要求时）
-                      </option>
-                    </select>
-                  </label>
-                </div>
-                <p className="footnote">
-                  按服务商文档选择；不自动改参数并重复计费重试。
-                </p>
-              </details>
+              {form.adapter === "openai-chat" && (
+                <details className="ai-advanced">
+                  <summary>兼容参数</summary>
+                  <div className="account-fields">
+                    <label className="field">
+                      输出限制参数
+                      <select
+                        value={form.tokenParameter}
+                        onChange={(e) =>
+                          update(
+                            "tokenParameter",
+                            e.target.value as typeof form.tokenParameter,
+                          )
+                        }
+                      >
+                        <option value="max_completion_tokens">
+                          max_completion_tokens
+                        </option>
+                        <option value="max_tokens">
+                          max_tokens（部分兼容服务）
+                        </option>
+                      </select>
+                    </label>
+                    <label className="field">
+                      教学指令角色
+                      <select
+                        value={form.instructionRole}
+                        onChange={(e) =>
+                          update(
+                            "instructionRole",
+                            e.target.value as typeof form.instructionRole,
+                          )
+                        }
+                      >
+                        <option value="system">system（通用兼容）</option>
+                        <option value="developer">
+                          developer（服务商要求时）
+                        </option>
+                      </select>
+                    </label>
+                  </div>
+                  <p className="footnote">
+                    按服务商文档选择；不自动改参数并重复计费重试。
+                  </p>
+                </details>
+              )}
               <SecretField
                 label="当前家长登录密码"
                 value={password}
@@ -364,7 +405,9 @@ export default function AiSettings() {
                       ? "域名待部署者验证"
                       : item.tested
                         ? "文本协议已验证"
-                        : "需要测试"}{" "}
+                        : item.adapter === "dashscope-asr"
+                          ? "在下方录音测试ASR"
+                          : "需要测试"}{" "}
                     · 音频能力请在下方分别配置与测试
                   </p>
                 </div>
@@ -385,7 +428,12 @@ export default function AiSettings() {
                   </button>
                   <button
                     className="secondary"
-                    disabled={busy || !item.approved || !data.available}
+                    disabled={
+                      busy ||
+                      !item.approved ||
+                      !data.available ||
+                      item.adapter === "dashscope-asr"
+                    }
                     onClick={() => {
                       setTarget({
                         connection: item,
@@ -494,12 +542,14 @@ export default function AiSettings() {
                   }
                 >
                   <option value="">暂不选择</option>
-                  {data.items.map((item) => (
-                    <option value={item.id} key={item.id}>
-                      {item.label}
-                      {item.tested ? " · 文本已测试" : " · 待测试"}
-                    </option>
-                  ))}
+                  {data.items
+                    .filter((item) => item.adapter !== "dashscope-asr")
+                    .map((item) => (
+                      <option value={item.id} key={item.id}>
+                        {item.label}
+                        {item.tested ? " · 文本已测试" : " · 待测试"}
+                      </option>
+                    ))}
                 </select>
               </label>
               <div className="account-fields">

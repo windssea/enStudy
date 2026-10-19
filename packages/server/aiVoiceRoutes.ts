@@ -264,6 +264,7 @@ export function createVoiceRoutes(
     const { conn, hash } = await configHash(c, s, kind);
     return (
       !!conn &&
+      (kind === "asr" || conn.adapter !== "dashscope-asr") &&
       providerUrl(conn.base_url, c.env).approved &&
       !!(await c.env.DB.prepare(
         "SELECT 1 FROM ai_voice_capabilities WHERE household_id=? AND kind=? AND config_hash=?",
@@ -291,6 +292,7 @@ export function createVoiceRoutes(
         : s[`${kind}_enabled`] && s.audio_consent_at;
     if (
       !conn ||
+      (kind !== "asr" && conn.adapter === "dashscope-asr") ||
       !keyStoreReady(c.env) ||
       !providerUrl(conn.base_url, c.env).approved ||
       (requireEnabled && !enabled) ||
@@ -460,14 +462,22 @@ export function createVoiceRoutes(
       "asr_connection_id",
       "tts_connection_id",
     ] as const)
-      if (
-        next[field] &&
-        !(await access.connection(c, next[field]!, adult.householdId))
-      )
-        throw new AiFault(
-          "INVALID_VOICE_CONNECTION",
-          "请选择本家庭保存的连接。",
+      if (next[field]) {
+        const selected = await access.connection(
+          c,
+          next[field]!,
+          adult.householdId,
         );
+        if (
+          !selected ||
+          (field !== "asr_connection_id" &&
+            selected.adapter === "dashscope-asr")
+        )
+          throw new AiFault(
+            "INVALID_VOICE_CONNECTION",
+            "请选择本家庭支持此能力的连接；阿里原生识别只用于ASR。",
+          );
+      }
     for (const kind of ["text", "asr", "tts"] as const)
       if (next[`${kind}_enabled`]) {
         await ready(c, next, kind, false);

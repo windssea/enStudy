@@ -1,4 +1,4 @@
-import { AiFault, providerUrl, type AiConfig } from "./aiPolicy";
+import { AiFault, connectionUrl, type AiConfig } from "./aiPolicy";
 import type { TextConnection } from "./aiAdapter";
 import { voiceBase64 } from "../domain/voice";
 export async function audioRequest(
@@ -10,7 +10,13 @@ export async function audioRequest(
   input: Uint8Array | string,
   voice = "",
 ) {
-  const target = providerUrl(connection.base_url, env);
+  const native = connection.adapter === "dashscope-asr";
+  if (native && kind !== "asr")
+    throw new AiFault(
+      "INVALID_AI_CAPABILITY",
+      "阿里原生识别连接不能合成语音，请另选TTS连接。",
+    );
+  const target = connectionUrl(connection.base_url, env, connection.adapter);
   if (!target.approved)
     throw new AiFault("AI_HOST_PENDING", "语音服务域名仍待验证。");
   const abort = new AbortController(),
@@ -18,7 +24,29 @@ export async function audioRequest(
   try {
     let body: FormData | string;
     const headers: Record<string, string> = { Authorization: `Bearer ${key}` };
-    if (kind === "asr") {
+    if (native) {
+      headers["Content-Type"] = "application/json";
+      headers["X-DashScope-SSE"] = "disable";
+      body = JSON.stringify({
+        model,
+        input: {
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "input_audio",
+                  input_audio: {
+                    data: `data:audio/wav;base64,${voiceBase64(input as Uint8Array)}`,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        parameters: { format: "wav", sample_rate: "16000" },
+      });
+    } else if (kind === "asr") {
       const form = new FormData();
       form.set(
         "file",
@@ -35,7 +63,9 @@ export async function audioRequest(
       body = JSON.stringify({ model, voice, input, response_format: "mp3" });
     }
     const r = await fetch(
-      `${target.baseUrl}/audio/${kind === "asr" ? "transcriptions" : "speech"}`,
+      native
+        ? target.baseUrl
+        : `${target.baseUrl}/audio/${kind === "asr" ? "transcriptions" : "speech"}`,
       {
         method: "POST",
         headers,
@@ -92,17 +122,25 @@ export async function audioRequest(
     }
     if (kind === "asr") {
       const value = JSON.parse(new TextDecoder().decode(bytes));
+      if (native && value?.code)
+        throw new AiFault(
+          "AI_AUDIO_PROVIDER_ERROR",
+          "语音服务未完成识别，请家长检查模型和服务状态。",
+        );
+      const text = native
+        ? (value?.output?.text ?? value?.output?.output?.sentence?.text)
+        : value?.text;
       if (
-        typeof value?.text !== "string" ||
-        !value.text.trim() ||
-        value.text.length > 320 ||
-        value.text.includes(key)
+        typeof text !== "string" ||
+        !text.trim() ||
+        text.length > 320 ||
+        text.includes(key)
       )
         throw new AiFault(
           "AI_TRANSCRIPT_INVALID",
           "没有得到合适的识别文字，可重新录制或直接打字。",
         );
-      return { text: value.text.trim().replace(/\s+/g, " ") };
+      return { text: text.trim().replace(/\s+/g, " ") };
     }
     if (
       size < 32 ||

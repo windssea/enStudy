@@ -203,19 +203,35 @@ export default function AiVoiceSettings({
                       连接
                       <select
                         value={form[`${kind}_connection_id`] ?? ""}
-                        onChange={(e) =>
-                          update(
-                            `${kind}_connection_id`,
-                            e.target.value || null,
-                          )
-                        }
+                        onChange={(e) => {
+                          const id = e.target.value || null;
+                          const native =
+                            kind === "asr" &&
+                            connections.find((c) => c.id === id)?.adapter ===
+                              "dashscope-asr";
+                          setForm({
+                            ...form,
+                            [`${kind}_connection_id`]: id,
+                            [`${kind}_enabled`]: false,
+                            ...(native
+                              ? { asr_model: "qwen-audio-3.1-asr-flash" }
+                              : {}),
+                          });
+                          setDirty(true);
+                          setAudio("");
+                        }}
                       >
                         <option value="">暂不选择</option>
-                        {connections.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.label}
-                          </option>
-                        ))}
+                        {connections
+                          .filter(
+                            (c) =>
+                              kind === "asr" || c.adapter !== "dashscope-asr",
+                          )
+                          .map((c) => (
+                            <option key={c.id} value={c.id}>
+                              {c.label}
+                            </option>
+                          ))}
                       </select>
                     </label>
                     {kind === "text" ? (
@@ -229,6 +245,14 @@ export default function AiVoiceSettings({
                           <input
                             value={form[`${kind}_model`]}
                             maxLength={120}
+                            placeholder={
+                              kind === "asr" &&
+                              connections.find(
+                                (c) => c.id === form.asr_connection_id,
+                              )?.adapter === "dashscope-asr"
+                                ? "qwen-audio-3.1-asr-flash"
+                                : "服务商提供的模型ID"
+                            }
                             onChange={(e) =>
                               update(`${kind}_model`, e.target.value)
                             }
