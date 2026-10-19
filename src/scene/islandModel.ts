@@ -12,7 +12,8 @@ import {
 } from "three";
 import { roundedPanel } from "./foxModel";
 import { createClayGrain } from "./claySurface";
-export type IslandKind = "home" | "library" | "garden";
+export type IslandKind =
+  "home" | "library" | "garden" | "workshop" | "observatory" | "lighthouse";
 
 export function createIslandModel(kind: IslandKind, grass: string) {
   const root = new Group();
@@ -152,7 +153,7 @@ export function createIslandModel(kind: IslandKind, grass: string) {
       ball("spine-dot", "cream", [x, 0.79, -0.34], [0.055, 0.055, 0.02]);
     }
     tree(0.91, -0.65);
-  } else {
+  } else if (kind === "garden") {
     tree(-0.82, -0.51);
     const bunny = new Group();
     bunny.name = "little-bunny-friend";
@@ -201,6 +202,102 @@ export function createIslandModel(kind: IslandKind, grass: string) {
     }
     ball("bunny-nose", "pink", [0, 0.49, 0.244], [0.025, 0.02, 0.014], bunny);
     ball("bunny-tail", "white", [0.22, 0.12, -0.08], [0.09, 0.09, 0.09], bunny);
+  } else if (kind === "workshop") {
+    const desk = mesh(
+      "rounded-workbench",
+      house,
+      "wood",
+      [0, 0.68, -0.45],
+      [1.5, 0.18, 1.1],
+    );
+    desk.rotation.y = -0.12;
+    for (const side of [-1, 1]) {
+      mesh("bench-leg", twig, "wood", [side * 0.42, 0.47, -0.43], [1, 0.65, 1]);
+      const page = mesh(
+        "open-cream-page",
+        book,
+        "cream",
+        [side * 0.18, 0.8, -0.38],
+        [1.4, 0.48, 0.15],
+      );
+      page.rotation.set(-Math.PI / 2, 0, side * -0.14);
+    }
+    const block = roundedPanel(0.32, 0.32, 0.32, 0.05);
+    for (const [i, x] of [-0.37, 0, 0.37].entries()) {
+      const node = mesh("clay-story-block", block, i % 2 ? "blue" : "yellow", [
+        x,
+        0.5,
+        0.23,
+      ]);
+      node.rotation.y = i === 0 ? -0.16 : 0.12;
+      ball("story-block-dot", "cream", [x, 0.5, 0.41], [0.06, 0.06, 0.02]);
+    }
+    tree(0.88, -0.8);
+  } else if (kind === "observatory") {
+    const telescope = new Group();
+    telescope.name = "clay-telescope";
+    telescope.position.set(0, 0.96, -0.4);
+    telescope.rotation.z = -0.34;
+    root.add(telescope);
+    const tube = new CylinderGeometry(0.19, 0.24, 0.75, 24);
+    tube.rotateZ(-Math.PI / 2);
+    mesh("telescope-body", tube, "blue", [0, 0, 0], [1, 1, 1], telescope);
+    ball(
+      "telescope-lens-rim",
+      "cream",
+      [0.4, 0, 0],
+      [0.045, 0.24, 0.24],
+      telescope,
+    );
+    ball(
+      "telescope-lens",
+      "ink",
+      [0.436, 0, 0],
+      [0.018, 0.17, 0.17],
+      telescope,
+    );
+    ball("eyepiece", "yellow", [-0.45, 0, 0], [0.11, 0.085, 0.085], telescope);
+    mesh("telescope-pedestal", twig, "wood", [0, 0.58, -0.4], [1.4, 1.5, 1.4]);
+    for (const side of [-1, 1]) {
+      const leg = mesh(
+        "telescope-tripod",
+        twig,
+        "wood",
+        [side * 0.16, 0.45, -0.4],
+        [0.8, 0.85, 0.8],
+      );
+      leg.rotation.z = side * -0.5;
+    }
+    tree(-0.88, -0.72);
+  } else {
+    const tower = new CylinderGeometry(0.29, 0.42, 0.95, 24);
+    mesh("lighthouse-tower", tower, "cream", [0.04, 0.8, -0.47]);
+    const band = new CylinderGeometry(0.34, 0.37, 0.13, 24);
+    mesh("lighthouse-coral-band", band, "roof", [0.04, 0.76, -0.47]);
+    const balcony = new CylinderGeometry(0.42, 0.42, 0.1, 24);
+    mesh("lighthouse-balcony", balcony, "blue", [0.04, 1.25, -0.47]);
+    ball(
+      "lighthouse-lantern",
+      "yellow",
+      [0.04, 1.45, -0.47],
+      [0.24, 0.24, 0.24],
+    );
+    ball(
+      "lighthouse-rounded-roof",
+      "roof",
+      [0.04, 1.66, -0.47],
+      [0.37, 0.12, 0.37],
+    );
+    mesh("lighthouse-door", door, "blue", [0.04, 0.49, -0.06]);
+    for (const side of [-1, 1]) {
+      ball(
+        "lighthouse-window",
+        "blue",
+        [side * 0.2 + 0.04, 1, -0.2],
+        [0.06, 0.085, 0.025],
+      );
+    }
+    tree(-0.8, -0.77);
   }
   for (const [index, x] of [-0.87, 0.91].entries()) {
     mesh("flower-stem", twig, "leaf", [x, 0.42, 0.58], [0.35, 0.65, 0.35]);

@@ -151,7 +151,7 @@ check(
   "static shell matches this exact build",
 );
 const sceneAssets = expectedShell.assets.filter((path) =>
-  /\/(?:World|SceneRuntime|SceneCanvas|ConceptCanvas|WordObjectScene|WordObjectCanvas)-.*\.js$/.test(
+  /\/(?:CourseMapCanvas|SceneRuntime|SceneCanvas|ConceptCanvas|WordObjectScene|WordObjectCanvas)-.*\.js$/.test(
     path,
   ),
 );

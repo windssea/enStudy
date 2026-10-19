@@ -1,5 +1,4 @@
 import {
-  Component,
   lazy,
   Suspense,
   useEffect,
@@ -40,7 +39,7 @@ import {
 import FamilySpace from "./FamilySpace";
 import LessonView from "./LessonView";
 import SceneStage, { MotionShell } from "./SceneStage";
-import FlatMap from "./FlatMap";
+import CourseIslandMap from "./CourseIslandMap";
 import SessionAccess from "./SessionAccess";
 import { reconcileDraft } from "./sessionDraft";
 import { setOfflineIdentity, lockOffline } from "./offlineAccess";
@@ -52,7 +51,6 @@ import {
 const PhonicsCentre = lazy(() => import("./PhonicsCentre"));
 const WordAudioButton = lazy(() => import("./WordAudioButton"));
 const WritingWorkshop = lazy(() => import("./WritingWorkshop"));
-const World = lazy(() => import("./World"));
 const WordTraining = lazy(() => import("./WordTraining"));
 const PracticeLibrary = lazy(() => import("./PracticeLibrary"));
 const PatternPractice = lazy(() => import("./PatternPractice"));
@@ -113,28 +111,6 @@ function Icon({ kind = "compass" }: { kind?: string }) {
       {paths[kind] ?? paths.compass}
     </svg>
   );
-}
-class WorldBoundary extends Component<
-  { children: ReactNode; onLost: () => void },
-  { failed: boolean }
-> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  componentDidCatch() {
-    this.props.onLost();
-  }
-  render() {
-    return this.state.failed ? (
-      <div className="world-static">
-        <FlatMap />
-        <p>地图暂时使用2D模式，下方单元入口照常可用。</p>
-      </div>
-    ) : (
-      this.props.children
-    );
-  }
 }
 const message = (e: unknown) =>
   e instanceof Error ? e.message : "暂时没连上，请重试。";
@@ -247,15 +223,9 @@ export default function App() {
   );
   const [twoD, setTwoD] = useState(() => storedFlag("eq-2d")),
     [hidden, setHidden] = useState(document.hidden);
-  const [greet, setGreet] = useState(0);
-  const [mascotTurned, setMascotTurned] = useState(false);
   const partner = companionInfo(identity.child?.companionId);
-  useEffect(() => {
-    setGreet(0);
-    setMascotTurned(false);
-  }, [identity.child?.id, identity.child?.companionId]);
-  const [worldVisible, setWorldVisible] = useState(true);
-  const worldRef = useRef<HTMLDivElement>(null);
+  const mapUnitChoices = useRef(new Map<string, string>());
+  const mapScope = `${identity.child?.id ?? "guest"}:${grade}:${term}`;
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const listener = () => setReduced(media.matches);
@@ -270,15 +240,6 @@ export default function App() {
       /* preferences remain available in memory */
     }
   }, [quiet, twoD]);
-  useEffect(() => {
-    const element = worldRef.current;
-    if (!element) return;
-    const observer = new IntersectionObserver(([entry]) =>
-      setWorldVisible(entry.isIntersecting),
-    );
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [view]);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const [session, setSession] = useState<LearningSession | null>(null),
@@ -1145,46 +1106,22 @@ export default function App() {
                       {twoD ? "试试3D地图" : "切换2D"}
                     </button>
                   </div>
-                  <div className="world-scene" ref={worldRef}>
-                    {twoD ? (
-                      <FlatMap turned={mascotTurned} />
-                    ) : (
-                      <WorldBoundary onLost={() => setTwoD(true)}>
-                        <Suspense
-                          fallback={
-                            <div className="world-fallback">
-                              岛屿正在准备，课程入口已经可用。
-                            </div>
-                          }
-                        >
-                          <World
-                            quiet={quiet || reduced || hidden || !worldVisible}
-                            greet={greet}
-                            turned={mascotTurned}
-                            onLost={() => setTwoD(true)}
-                            completed={
-                              learning.completedLessons.filter((row) =>
-                                lessons.some(
-                                  (lesson) =>
-                                    lesson.id === row.lessonId &&
-                                    lesson.grade === grade,
-                                ),
-                              ).length
-                            }
-                          />
-                        </Suspense>
-                      </WorldBoundary>
-                    )}
-                    <div className="world-caption">
-                      <span role="status">
-                        {mascotTurned
-                          ? partner.backLine
-                          : greet
-                            ? "你好，小探险家！"
-                            : `${partner.name}和热气球，等你一起出发。`}
-                      </span>
-                    </div>
-                  </div>
+                  <CourseIslandMap
+                    key={`${grade}:${term}:${identity.child?.id ?? "guest"}:${partner.id}`}
+                    units={units}
+                    lessons={availableLessons}
+                    completed={learning.completedLessons}
+                    nextUnitId={
+                      mapUnitChoices.current.get(mapScope) ?? nextLesson?.unitId
+                    }
+                    onSelectUnit={(unitId) =>
+                      mapUnitChoices.current.set(mapScope, unitId)
+                    }
+                    quiet={quiet || reduced || hidden}
+                    flat={twoD}
+                    onLost={() => setTwoD(true)}
+                    onOpen={openLesson}
+                  />
                   <CompanionPicker
                     key={identity.child?.id ?? "guest"}
                     childId={identity.child?.id}
@@ -1196,25 +1133,6 @@ export default function App() {
                       );
                     }}
                   />
-                  <div className="unit-path" aria-label="本学期单元">
-                    {units.map((u, i) => {
-                      const available = lessons.find(
-                        (lesson) => lesson.unitId === u.unit_id,
-                      );
-                      return (
-                        <button
-                          className="unit-node"
-                          key={u.unit_id}
-                          disabled={!available}
-                          onClick={() => available && openLesson(available)}
-                        >
-                          <span>{i + 1}</span>
-                          <strong>{u.title}</strong>
-                          <small>{available ? "进入课程" : "规划中"}</small>
-                        </button>
-                      );
-                    })}
-                  </div>
                   <div className="map-footer">
                     <div>
                       {courseNavigation.allPractised && term === "B" ? (
@@ -1234,24 +1152,6 @@ export default function App() {
                           这批上学期微课都练过了，也可以去下学期的新起点看看。
                         </p>
                       )}
-                      <div className="scene-actions">
-                        <button
-                          className="text-button"
-                          onClick={() => {
-                            setMascotTurned(false);
-                            setGreet((value) => value + 1);
-                          }}
-                        >
-                          和{partner.name}打个招呼
-                        </button>
-                        <button
-                          className="text-button"
-                          aria-pressed={mascotTurned}
-                          onClick={() => setMascotTurned((value) => !value)}
-                        >
-                          {mascotTurned ? "转回正面" : partner.backAction}
-                        </button>
-                      </div>
                     </div>
                     {nextLesson && (
                       <button

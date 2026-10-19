@@ -27,7 +27,7 @@
 - WebGL 初始化错误或上下文丢失显示 SVG 2D 场景。Canvas 与 SVG 都是装饰；DOM 按钮、真实课表、例句、题干与状态文字可独立使用。
 - 动画只消费 UI 状态，不增加积分、不改复习算法、不写数据库。浇水和打招呼不产生掌握证据。
 
-主要代码：`SceneStage.tsx` 管理活动与降级，`SceneCanvas.tsx` 管理画面与相机，`SceneModels.tsx` 共用伙伴和道具，`SceneRuntime.tsx` 控制循环，`World.tsx` / `FlatMap.tsx` 提供地图，`speechActivity.ts` 管理朗读占用；动效样式在 `styles.css`。
+主要代码：`SceneStage.tsx` 管理活动与降级，`SceneCanvas.tsx` 管理画面与相机，`SceneModels.tsx` 共用伙伴和道具，`SceneRuntime.tsx` 控制循环，`CourseIslandMap.tsx` / `CourseMapCanvas.tsx` / `FlatMap.tsx` 提供地图，`speechActivity.ts` 管理朗读占用；动效样式在 `styles.css`。
 
 ## 验证与限制
 
@@ -46,3 +46,6 @@ gh workflow run cloudflare.yml --ref main --repo windssea/enStudy
 ```
 
 阻塞证据与免费额度恢复时间见 [单词特训发布状态](28-vocabulary-training.md#发布受免费写入额度阻挡)。用户随后确认保持免费，现已安排北京时间2026-10-18 08:05在本聊天跟进一次，部署最新main；本地开发继续。最新阶段见 [家庭账号管理](30-managed-family-accounts.md)。
+
+
+v0.42以六站课程地图替代旧三岛World，真实课程映射、路径、有限活动及2D降级详见[阶段记录64](64-six-station-clay-course-map.md)。地图不再持续漂浮；伙伴只响应操作短动，暂停后采用静态目标，不补播。
