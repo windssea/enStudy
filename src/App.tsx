@@ -41,6 +41,7 @@ import LessonView from "./LessonView";
 import { MotionShell } from "./SceneStage";
 import LearningIcon from "./LearningIcon";
 import { exerciseKind } from "./exerciseKind";
+import { modalityLabels } from "../packages/domain/report";
 import CourseIslandMap from "./CourseIslandMap";
 import SessionAccess from "./SessionAccess";
 import ChildNavigation from "./ChildNavigation";
@@ -1449,18 +1450,12 @@ export default function App() {
             <>
               {lastResult && (
                 <section className="completion-card" role="status">
-                  <span className="completion-sun" aria-hidden="true">
-                    ✓
-                  </span>
                   <div>
-                    <h2>这一小轮，完成啦！</h2>
+                    <h2>本轮练习完成</h2>
                     <p>
-                      完成{lastResult.total}步练习 · 独立答对
-                      {lastResult.independent}步 · 含辅助共答对
-                      {lastResult.correct}步
-                    </p>
-                    <p>
-                      休息一下，让记忆慢慢长大。完成练习不等于已经掌握，之后还会再见。
+                      完成{lastResult.total}题 · 独立答对
+                      {lastResult.independent}题 · 含辅助共答对
+                      {lastResult.correct}题
                     </p>
                   </div>
                   <button className="secondary" onClick={() => move("map")}>
@@ -1470,20 +1465,17 @@ export default function App() {
               )}
               <div className="discovery-hero">
                 <div>
-                  <h1>让记忆，慢慢长大。</h1>
-                  <p className="lead">隔几天独立想起来，才是记忆变稳的证据。</p>
+                  <h1>复习</h1>
                 </div>
               </div>
               <div className="review-start card">
                 <div>
                   <h2>
                     {learning.dueCount
-                      ? `今天有${learning.dueCount}项记忆可以照顾`
-                      : "今天还没有到期的记忆"}
+                      ? `今天有${learning.dueCount}项复习`
+                      : "今天没有到期复习"}
                   </h2>
-                  <p>
-                    按到期时间优先安排，每轮最多8题，尽量换一个情景再想一想。
-                  </p>
+                  <p>每轮最多8题。</p>
                 </div>
                 <button
                   className="primary"
@@ -1511,15 +1503,12 @@ export default function App() {
                     }
                   }}
                 >
-                  看看本机暂存的离线练习 →
+                  离线练习
                 </a>
               </p>
               <section className="card mistake-entry">
                 <div>
-                  <h2>打开错题小本，找一个线索</h2>
-                  <p>
-                    看看那次保存的答案和中文讲解。跟着讲解重做，隔天再用新材料想一想。
-                  </p>
+                  <h2>错题复练</h2>
                 </div>
                 <button
                   type="button"
@@ -1529,20 +1518,23 @@ export default function App() {
                   打开错题小本
                 </button>
               </section>
-              <div className="stats">
-                <div className="card">
-                  <strong>{progress.answered}</strong>
-                  <span>已保存的作答</span>
+              <details className="card">
+                <summary>累计练习记录</summary>
+                <div className="stats">
+                  <div className="card">
+                    <strong>{progress.answered}</strong>
+                    <span>已保存的作答</span>
+                  </div>
+                  <div className="card">
+                    <strong>{progress.cards.length}</strong>
+                    <span>记录中的学习目标</span>
+                  </div>
+                  <div className="card">
+                    <strong>{progress.stars}</strong>
+                    <span>完成奖励，不代表掌握</span>
+                  </div>
                 </div>
-                <div className="card">
-                  <strong>{progress.cards.length}</strong>
-                  <span>记录中的学习目标</span>
-                </div>
-                <div className="card">
-                  <strong>{progress.stars}</strong>
-                  <span>完成奖励，不代表掌握</span>
-                </div>
-              </div>
+              </details>
               {identity.child && (
                 <Suspense fallback={<p role="status">正在准备专题回访…</p>}>
                   <TrainingFollowUps
@@ -1560,7 +1552,8 @@ export default function App() {
                   </button>
                 </div>
               ) : progress.cards.length ? (
-                <div className="card review-list">
+                <details className="card review-list">
+                  <summary>复习安排</summary>
                   {progress.cards.map((card) => (
                     <div
                       className="review-row"
@@ -1574,20 +1567,7 @@ export default function App() {
                             : (card.label ?? "学习目标")}
                         </strong>
                         {card.modality && (
-                          <p>
-                            {(
-                              {
-                                "rule-classification": "词句分类",
-                                "sentence-editing": "句子修正",
-                                "listening-choice": "听音辨义 · 确认或辅助另记",
-                                "listening-picture":
-                                  "听音认图 · 确认或辅助另记",
-                                "reading-evidence": "阅读理解 · 原文找依据",
-                                recognition: "辨认练习",
-                                "controlled-production": "受控表达",
-                              } as Record<string, string>
-                            )[card.modality] ?? "词语与句子练习"}
-                          </p>
+                          <p>{modalityLabels[card.modality] ?? "练习"}</p>
                         )}
                         <p>
                           阶段{card.stage + 1} · 需要巩固{card.lapses}次
@@ -1602,20 +1582,14 @@ export default function App() {
                       </span>
                     </div>
                   ))}
-                  <p className="footnote">
-                    到期后会优先安排这些知识的复习；同一天跨课程和专题反复答对，也不会重复晋级。
-                  </p>
-                </div>
+                </details>
               ) : (
                 <div className="card empty-state">
                   <Icon kind="leaf" />
-                  <h2>小花园正在等第一颗种子</h2>
+                  <h2>还没有复习记录</h2>
                   <p>做一题，系统就会为相关知识安排下次复习。</p>
-                  <button
-                    className="primary"
-                    onClick={() => start("sample.pattern.about")}
-                  >
-                    试一题固定句式
+                  <button className="primary" onClick={() => move("map")}>
+                    选择课程
                   </button>
                 </div>
               )}

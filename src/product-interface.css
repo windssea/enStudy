@@ -9,6 +9,32 @@
   --control-border: #b6c2d3;
   --playground: #f5f7fb;
 }
+.app-shell.child-shell
+  :is(
+    button.primary,
+    button.secondary,
+    button.soft-button,
+    button.text-button,
+    button.child-play,
+    button.learning-start,
+    button.speech-button,
+    button.profile-button,
+    button.child-home-button
+  ) {
+  min-height: 52px;
+  font-size: 16px;
+  border-radius: 10px;
+  padding: 12px 18px;
+  box-shadow: none;
+  transform: none;
+}
+.app-shell.child-shell .completion-card {
+  background: #eef7f1;
+  border: 1px solid #cedfd4;
+  border-radius: 14px;
+  box-shadow: none;
+  padding: 24px;
+}
 .app-shell.child-shell button {
   min-height: 52px;
   max-width: 100%;
