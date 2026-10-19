@@ -24,6 +24,10 @@ async function request(path, body, cookies = jar, extra = {}) {
   const response = await fetch(base + "/api/v1" + path, {
     method: body === undefined ? "GET" : "POST",
     headers: {
+      // Fixture SQL runs synchronously in a separate Wrangler process. Do not
+      // reuse a socket that the local server may close while that CLI is busy;
+      // in particular, do not retry the following non-idempotent POST.
+      Connection: "close",
       Cookie: [...cookies].map(([k, v]) => `${k}=${v}`).join("; "),
       "X-EQ-Player-Version": "3",
       ...extra,
