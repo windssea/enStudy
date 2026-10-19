@@ -31,3 +31,15 @@ UI/UX Pro Max检索button consistency forms返回通用表单与返回导航建�
 最终浏览器一轮五题包含全部五种题型，故意选择了阅读题的错误依据但正确答案，结果正确记录为该题错误、全轮独立答对4/5；完成奖励属于参与记录，没有冒充答对或掌握。排序、改错与选择的已保存答案均可刷新恢复。五种复习能力分别显示语境辨析、填写、错误分析、阅读依据、结构组织，阅读依据目标显示需要巩固1次，其余0次。最终复习页控制台无错误、宽1265/scroll1265，截图artifacts/v0541-review-desktop.png；临时标签关闭、视口恢复、夹具stop退出0并通过72项专项。
 
 0ce896c的首次运行39278001205在GitHub尚无执行步骤时请求取消，取消状态与最新修正提交的实际发布结果随后补记；没有重跑旧提交覆盖修正。0.54.1的548项单元、类型、最后Vite构建通过，Worker仍19,389,200字节、SHA256 `087ec148a8421f406b4799b262e3f16390a9c6d6f0e6572579f0fc1415e928cd`。
+
+## 23:50发布检查点：本地完成，线上待执行
+
+最后内容修订为061c169：549项单元/66文件、完整构建、格式、类型与72项隔离运行通过；问句version 2与0049见78文档。最终Worker19,399,396字节，SHA256 `27caf7b30059d8f47024a749e33f0f6ffcecb901b0214d2117b908d029448335`；React入口`/assets/index-D8c6d11J.js`，SHA256 `019924dd6868841d449bd5fdafc6bbf23a5f72b056d08cc5478861bbcc05f97e`，离线壳`eq-shell-v1-1e3844dc51ffcdba`、122资产。
+
+用户本地D1成功追加0048/0049，原开发服务热更新正常；http://127.0.0.1:5173/#parent已实际打开新版，页面控制台无错误，截图artifacts/v0541-local-parent.png。原开发服务保留，隔离测试服务与临时标签均关闭，没有替换真实线上学习记录。
+
+[最新运行39279768155](https://github.com/windssea/enStudy/actions/runs/39279768155)仍queued，尚未构建或发布。39278001205已确认cancelled；较早的48fb5e7运行39278884620从queued进入启动状态，仍无执行步骤，取消接口返回409，尚不能称为已取消。后续需同时核对旧运行结论与最新运行，确保最终两站以061c169或包含相同代码的后续main为准，不重跑旧提交。
+
+本次线上迁移、80项每站检查和三域名18项只读核验尚未执行，不能引用此前版本的线上通过数。23:40实际读取Preview和Production仍为v0.53的`/assets/index-e-6LRdvf.js`。没有看到D1额度失败，当前阻碍是GitHub执行器排队/启动无步骤，原因未证实；没有改变GitHub部署方式、Cloudflare账户、免费计划或数据库。GitHub公共状态页当时为operational，不能据此宣布服务整体故障。
+
+证据artifacts/check-v0541-review.log/.exit0、build-v0541-review.log/.exit0、worker-v0541-review.log/.exit0、runtime-v0541-review.log/.exit0、local-v0541-migrate.log/.exit0、v0541-build-proof.json及v0541-review-desktop.png。旧运行的本地watch进程退出码不作为Actions最终结论。英文媒体没有在本阶段重新录制，真实声音听审与其余专题教研重构仍待完成。
