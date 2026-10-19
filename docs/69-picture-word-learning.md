@@ -39,3 +39,7 @@
 修复先用Wrangler的functions build --minify，再用esbuild输出语义相同的UTF-8 JS，避免中文被ASCII转义膨胀；产物18,582,741字节，SHA256 5b5c820bbb5bec51a176dc40b5887aa34fc2ea7dd41790262831b892b3458ed8。24MiB预算在远端迁移前检查，再以预编译_worker.js和--no-bundle发布，保留原API-only _routes和ASSETS回退；本机workerd实际加载最终文件通过health、1620项目录、匿名进度401和静态回退四项检查。[Cloudflare官方高级模式说明](https://developers.cloudflare.com/pages/functions/advanced-mode/)已核对。未改任何应用迁移，未升级资源。修复后的发布结果待后补。
 
 压缩修复提交aa1c2ae经[Actions 39227996119](https://github.com/windssea/enStudy/actions/runs/39227996119)再次通过477单元/1416运行检查，并于17:20完成Preview 17535059发布；云端压缩包同为18,582,741字节和上述SHA256。随后首次62个词汇媒体校验未通过，Production发布因此跳过。复查同一62个媒体全部大小/MIME/哈希一致；Preview补充12项真实功能检查通过，包括编译产物连接D1、图片分配、错答保存与正确图回执、刷新和同日示范，临时档案/登录已清理。没有把首次静态校验失败推定为永久内容错误，也不把尚未运行的Production称为同步成功。下一次发布与v0.47插画阶段合并推进；最终两站状态随后补记。
+
+## 最终同步状态
+
+v0.46的60词/180听音认图任务及60段英语音频已随v0.47共同发布成功，未将中间提交或首次部分上传作为上线。Actions 39229759594发布8f75fb4，两站各54线上检查、额外30功能及27只读检查通过；Preview和Production独立D1均至0045。实际部署与核验详见[插画阶段发布结果](70-generated-clay-illustrations.md)。两站及正式域名当前为v0.47.0、eq-shell-v1-97c3f51fd296bdf2。

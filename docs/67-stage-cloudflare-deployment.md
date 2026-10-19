@@ -43,3 +43,21 @@ CI通过57文件460项单元、格式、构建、Functions编译、本地初始�
 ## v0.46发布中间状态
 
 0045在Preview已应用。aa1c2ae的Actions 39227996119通过全部检查并发布Preview 17535059，但首次媒体校验失败后停止，Production仍为此前v0.45/0044。62个媒体后续复查一致，Preview另12项实际功能验收通过。压缩Functions修复与证据见[69阶段记录](69-picture-word-learning.md)；将与下一插画阶段一起继续正常main发布，保持两站独立D1，不改应用迁移、不升级资源。
+
+## v0.47插画与图片单词同步完成
+
+[Actions 39229759594](https://github.com/windssea/enStudy/actions/runs/39229759594)成功发布8f75fb46907c755b0cabe6f7b6b030a45a33f680（v0.47.0，包含v0.46图片单词功能）。北京时间17:24:01–17:34:07完成check，17:34:09–17:36:09完成deploy。格式、60文件481单元、构建、压缩Functions、本地初始化及1416项完整运行检查通过（48基础加1368行PASS）。未重跑旧提交。
+
+| 环境 | 发布 | D1与线上检查 |
+| --- | --- | --- |
+| [Preview](https://development.english-quest-dev.pages.dev/) | cd1a3874，17:34:56 | 沿用28fdeae4-7ebe-409f-9beb-2766122fa159，0045已在前次成功应用，本次无待用迁移；17:35:21完成54项线上检查 |
+| [Production](https://english-quest-dev.pages.dev/) | f3a8d1e0，17:35:41 | 沿用bfbbf58a-56fc-4173-bfa4-81442a15e257，0045于17:35:26成功应用；17:36:07完成54项线上检查 |
+| [正式域名](https://enstudy.nanokid.win/) | 同Production | 公开壳、主文件、60词图片清单与四张粘土原图均与两站一致；浏览器渲染通过 |
+
+两站发布同一Worker：18,582,744字节，SHA256 e90b6447949c72e7884db793cb2feca79212230686da97ef9f1e351a5769d633。主入口/assets/index-Di_5Akoc.js，SHA256 07b405a3b9031a484948fab6af62c007a75b747ce6cd873ea830dbda7361b537；离线壳eq-shell-v1-97c3f51fd296bdf2，122文件、13,912,784字节。当前构建没有GLB和旧WebGL运行模块。四张原图及全部词汇媒体大小、MIME和完整哈希通过校验。
+
+另有27项只读检查覆盖三个域名，并确认编译Worker没有被当成公开静态资源。两站各15项、共30项补充功能检查通过：创建仅用于验收的档案，保存第二位伙伴的兼容存储键并刷新确认，伙伴选择不增加作答数；新旧播放器图片兼容、听音门槛、错答保存、正确图回执、原答案恢复和同日示范均可用。两个临时档案均移除，验收登录均撤销，未读取其他儿童作答或调用真实AI供应商。听音确认在脚本中模拟，不冒充听审。
+
+内置浏览器实测正式域名小屋、狐狸透明图和六站地图加载，Canvas数量0，根宽1265且无横向溢出，控制台无错误。上线截图为artifacts/v047-production-home.png和v047-production-map.png；本地尺寸截图另覆盖768×1024、1024×768、375×812。Pad实机、儿童试用和教研门槛仍待验。
+
+证据位于忽略目录artifacts：actions-v047-complete.log、actions-v047-watch.log/.exit、v047-published-public.json/.log/.exit与v047-published-functional.json/.log/.exit。Cloudflare保持原免费资源、独立D1、注册关闭和指定管理员不变。0001–0045未修改；插画阶段没有新增迁移文件，Production补上此前待用0045。仅本发布记录补记使用[skip ci]，后续开发阶段仍正常推送发布。
