@@ -151,7 +151,26 @@ check(
 );
 check(
   health.developmentIdentityAvailable === false && health.aiEnabled === false,
-  "development identity and AI disabled",
+  "development identity disabled and AI defaults to no automatic calls",
+);
+check(
+  health.aiConfigurationProtocol === 1 &&
+    typeof health.aiKeyStoreAvailable === "boolean" &&
+    (process.env.CLOUDFLARE_AI_KEYSTORES_REQUIRED !== "true" ||
+      health.aiKeyStoreAvailable === true),
+  "AI deployment readiness protocol matches the required key-store state",
+);
+const anonymousStorage = await request(
+  "/api/v1/ai/connections/verification/storage",
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Origin: base.origin },
+    body: JSON.stringify({ version: 0 }),
+  },
+);
+check(
+  anonymousStorage.status === 401,
+  "anonymous AI storage verification rejected",
 );
 check(health.databaseBinding === true, "DB binding present");
 check(
@@ -459,6 +478,19 @@ try {
   check(
     login.status === 200 && cookie.includes("eq_account="),
     "administrator login accepted",
+  );
+  const aiSettings = await authenticated("/ai/connections");
+  check(
+    aiSettings.status === 200 &&
+      aiSettings.data.available === health.aiKeyStoreAvailable &&
+      Array.isArray(aiSettings.data.items) &&
+      aiSettings.data.items.every(
+        (item) =>
+          !Object.keys(item).some((name) =>
+            /^(apiKey|key_ciphertext|key_iv|key_id)$/.test(name),
+          ),
+      ),
+    "owner AI readiness agrees with health and lists masked connection metadata only",
   );
   const response = await request("/api/v1/admin/accounts", {
     headers: { Cookie: cookie },

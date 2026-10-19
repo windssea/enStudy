@@ -46,6 +46,7 @@ import platformFeatures from "../domain/platformFeatures.json";
 import { reportRoutes } from "./reports";
 import { createAiRoutes } from "./aiRoutes";
 import type { AiConfig } from "./aiPolicy";
+import { keyStoreReady } from "./aiCrypto";
 import { trainingRoutes, prepareTraining, TrainingFault } from "./training";
 import {
   mistakeRoutes,
@@ -227,6 +228,8 @@ app.get("/api/v1/health", (c) =>
     stage: c.env.APP_STAGE ?? "preview",
     developmentIdentityAvailable: devAllowed(c.env, c.req.url),
     aiEnabled: false,
+    aiConfigurationProtocol: 1,
+    aiKeyStoreAvailable: keyStoreReady(c.env),
     registrationOpen: false,
     accountLoginAvailable: true,
     offlineProtocol: 1,

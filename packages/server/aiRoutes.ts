@@ -427,6 +427,46 @@ export function createAiRoutes(
         )
       : c.json(fault("AI_CONFIG_CHANGED", "连接已变化，请刷新后再编辑。"), 409);
   });
+  routes.post("/ai/connections/:id/storage", async (c) => {
+    const adult = c.get("adult"),
+      body: unknown = await c.req.json(),
+      row = await connection(c, c.req.param("id"), adult.householdId);
+    if (!row) return c.json(fault("NOT_FOUND", "找不到这个连接。"), 404);
+    if (
+      !object(body) ||
+      !Number.isSafeInteger(body.version) ||
+      body.version !== row.version
+    )
+      return c.json(
+        fault("AI_CONFIG_CHANGED", "连接已变化，请刷新后再检查。"),
+        409,
+      );
+    const verified = await verifyAdultPassword(c, adult, body.currentPassword);
+    if ("response" in verified) return verified.response;
+    const secret = await unsealKey(c.env, adult.householdId, row.id, row);
+    if (!validApiKey(secret) || !secret.endsWith(row.key_suffix))
+      throw new AiFault(
+        "AI_KEY_UNAVAILABLE",
+        "密钥保存检查未通过，请重新保存连接。",
+      );
+    const current = await c.env.DB.prepare(
+      `SELECT id FROM ai_connections WHERE id=? AND household_id=? AND version=? AND key_ciphertext=? AND ${ownerSql}`,
+    )
+      .bind(
+        row.id,
+        adult.householdId,
+        row.version,
+        row.key_ciphertext,
+        ...ownerParams(adult, verified.credential),
+      )
+      .first();
+    if (!current)
+      return c.json(
+        fault("AI_CONFIG_CHANGED", "权限或连接已变化，请刷新后再检查。"),
+        409,
+      );
+    return c.json({ verified: true, version: row.version });
+  });
   routes.post("/ai/connections/:id/remove", async (c) => {
     const adult = c.get("adult"),
       body: unknown = await c.req.json(),

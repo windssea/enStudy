@@ -285,6 +285,83 @@ try {
       raw.key_id === "test",
     "D1 stores authenticated ciphertext and IV",
   );
+  const readiness = await request("/health");
+  check(
+    readiness.data.aiConfigurationProtocol === 1 &&
+      readiness.data.aiKeyStoreAvailable === true &&
+      !JSON.stringify(readiness.data).includes(master),
+    "health exposes key-store readiness without key material",
+  );
+  const beforeStorage = await list(),
+    beforeStorageCalls = calls;
+  const storageBody = {
+    version: conn.version,
+    currentPassword: "admin123123456",
+  };
+  const storage = await request(
+    `/ai/connections/${conn.id}/storage`,
+    storageBody,
+  );
+  check(
+    storage.status === 200 &&
+      storage.data.verified === true &&
+      JSON.stringify(storage.data) ===
+        JSON.stringify({ verified: true, version: conn.version }) &&
+      calls === beforeStorageCalls,
+    "owner storage check authenticates decryption without returning or sending the key",
+  );
+  const afterStorage = await list();
+  check(
+    JSON.stringify(beforeStorage) === JSON.stringify(afterStorage),
+    "storage check leaves settings, capabilities, connections and budgets unchanged",
+  );
+  check(
+    (
+      await request(`/ai/connections/${conn.id}/storage`, {
+        ...storageBody,
+        currentPassword: "incorrect-password",
+      })
+    ).status === 401,
+    "storage verification requires the current owner password",
+  );
+  check(
+    (
+      await request(`/ai/connections/${conn.id}/storage`, {
+        ...storageBody,
+        version: conn.version + 1,
+      })
+    ).status === 409,
+    "stale storage verification is rejected",
+  );
+  check(
+    (
+      await request(
+        `/ai/connections/${conn.id}/storage`,
+        storageBody,
+        childOnly,
+      )
+    ).status === 401,
+    "child grant cannot check stored provider keys",
+  );
+  await db
+    .prepare("UPDATE ai_connections SET key_ciphertext=? WHERE id=?")
+    .bind("tampered", conn.id)
+    .run();
+  const damaged = await request(
+    `/ai/connections/${conn.id}/storage`,
+    storageBody,
+  );
+  await db
+    .prepare("UPDATE ai_connections SET key_ciphertext=? WHERE id=?")
+    .bind(raw.key_ciphertext, conn.id)
+    .run();
+  check(
+    damaged.status === 503 &&
+      damaged.data.error?.code === "AI_KEY_UNAVAILABLE" &&
+      !JSON.stringify(damaged.data).includes(key) &&
+      calls === beforeStorageCalls,
+    "tampered ciphertext fails closed without an upstream request",
+  );
   check(
     (await request("/ai/connections", conf)).status === 200,
     "connection create retry reuses its identifier",
@@ -621,6 +698,16 @@ try {
     "other household cannot test and spend this API key",
   );
   const foreignMe = (await request("/me", undefined, foreign)).data;
+  check(
+    (
+      await request(
+        `/ai/connections/${conn.id}/storage`,
+        { version: conn.version, currentPassword: foreignPassword },
+        foreign,
+      )
+    ).status === 404,
+    "other household cannot authenticate or decrypt this connection",
+  );
   await db
     .prepare(
       "UPDATE household_members SET role='guardian' WHERE household_id=?",

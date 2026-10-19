@@ -29,7 +29,7 @@ export default function AiSettings() {
     [password, setPassword] = useState("");
   const [target, setTarget] = useState<{
       connection: AiConnectionSummary;
-      action: "test" | "remove";
+      action: "test" | "remove" | "storage";
       requestId: string;
     } | null>(null),
     [targetPassword, setTargetPassword] = useState("");
@@ -118,7 +118,7 @@ export default function AiSettings() {
     event.preventDefault();
     if (!target) return;
     void action(async () => {
-      const result = await api<{ pending?: boolean }>(
+      const result = await api<{ pending?: boolean; verified?: boolean }>(
         `/ai/connections/${target.connection.id}/${target.action}`,
         {
           version: target.connection.version,
@@ -127,12 +127,16 @@ export default function AiSettings() {
         },
         { timeoutMs: 25000 },
       );
+      if (target.action === "storage" && result.verified !== true)
+        throw new Error("密钥保存检查未通过，请刷新连接后重试。");
       setNotice(
         result.pending
           ? "测试仍在处理中，可继续读取本次测试结果。"
           : target.action === "test"
             ? "最小文本协议测试通过；尚未代表语音或教学质量已经验证。"
-            : "连接已移除，今天已使用的额度保留。",
+            : target.action === "storage"
+              ? "密钥保存检查通过，此检查只验证站内加解密。"
+              : "连接已移除，今天已使用的额度保留。",
       );
       if (!result.pending) setTarget(null);
     });
@@ -177,10 +181,14 @@ export default function AiSettings() {
           {notice}
         </p>
       )}
-      {data && !data.available && (
-        <p className="notice">
-          此部署尚未设置服务端密钥加密配置。请部署者先运行本地AI准备脚本或配置Cloudflare
-          Secret，再保存Key。
+      {data && (
+        <p
+          className={`notice${data.available ? " success" : ""}`}
+          role="status"
+        >
+          {data.available
+            ? "密钥加密已就绪。保存连接后先检查、测试，再选择为孩子开启的能力。"
+            : "此站点尚未准备好密钥存储，请联系管理员。"}
         </p>
       )}
       {data && (
@@ -363,6 +371,20 @@ export default function AiSettings() {
                 <div className="account-row-actions">
                   <button
                     className="secondary"
+                    disabled={busy || !data.available}
+                    onClick={() => {
+                      setTarget({
+                        connection: item,
+                        action: "storage",
+                        requestId: crypto.randomUUID(),
+                      });
+                      setTargetPassword("");
+                    }}
+                  >
+                    检查密钥保存
+                  </button>
+                  <button
+                    className="secondary"
                     disabled={busy || !item.approved || !data.available}
                     onClick={() => {
                       setTarget({
@@ -408,13 +430,19 @@ export default function AiSettings() {
           {target && (
             <form className="ai-target profile-form" onSubmit={executeTarget}>
               <h4>
-                {target.action === "test" ? "测试文本协议" : "移除连接"}：
-                {target.connection.label}
+                {target.action === "test"
+                  ? "测试文本协议"
+                  : target.action === "storage"
+                    ? "检查密钥保存"
+                    : "移除连接"}
+                ：{target.connection.label}
               </h4>
               <p>
                 {target.action === "test"
                   ? "会发送一条最小请求，使用你的供应商账户并计入家庭用量。重试本次结果不会重复调用。"
-                  : "会删除加密Key并停止使用这个连接；已经使用的今日额度不会清零。"}
+                  : target.action === "storage"
+                    ? "只在站内确认这条连接的密钥能正确解密，不发送请求给服务商，不占用AI调用额度。"
+                    : "会删除加密Key并停止使用这个连接；已经使用的今日额度不会清零。"}
               </p>
               <SecretField
                 label="当前家长登录密码"
@@ -428,7 +456,9 @@ export default function AiSettings() {
                     ? "正在处理…"
                     : target.action === "test"
                       ? "测试或读取本次结果"
-                      : "确认移除连接"}
+                      : target.action === "storage"
+                        ? "确认检查密钥"
+                        : "确认移除连接"}
                 </button>
                 <button
                   className="secondary"
