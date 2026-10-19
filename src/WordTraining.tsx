@@ -6,7 +6,6 @@ import type {
   VocabularySummary,
 } from "../packages/contracts/index";
 import { api } from "./api";
-import SceneStage from "./SceneStage";
 import WordStudyCard from "./WordStudyCard";
 import ToyPicture from "./ToyPicture";
 import WordPicture from "./WordPicture";
@@ -276,7 +275,6 @@ export default function WordTraining({
               </li>
             </ul>
           </div>
-          <SceneStage kind="partner" simple />
         </div>
       )}
       {!selected && (

@@ -1,5 +1,4 @@
 import LearningIcon from "./LearningIcon";
-import GuideButton from "./GuideButton";
 import type { View } from "./routes";
 export default function ChildHome({
   nickname,
@@ -53,7 +52,6 @@ export default function ChildHome({
                     : "开始学习"}
               </span>
             </button>
-            <GuideButton id="home" />
           </div>
           {!nickname && (
             <p className="learning-parent-hint">

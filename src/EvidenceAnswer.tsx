@@ -19,8 +19,7 @@ export default function EvidenceAnswer({
         className="evidence-passage"
         aria-label="故事原文，点选支持答案的一句"
       >
-        <p className="eyebrow">READ · FIND · ANSWER</p>
-        <h3>小故事里的线索</h3>
+        <h3>阅读材料</h3>
         {exercise.passage?.map((line, i) => (
           <button
             type="button"
@@ -35,9 +34,7 @@ export default function EvidenceAnswer({
           >
             <span aria-hidden="true">{i + 1}</span>
             <span lang="en">{line.text}</span>
-            <small>
-              {selected[0] === line.id ? "我找到的线索" : "选这句作线索"}
-            </small>
+            {selected[0] === line.id && <small>已选依据</small>}
           </button>
         ))}
       </section>

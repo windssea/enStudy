@@ -3,7 +3,6 @@ import type { WordCard } from "../packages/contracts/index";
 import { api } from "./api";
 import WordPicture, { pictureWord } from "./WordPicture";
 import WordAudioButton from "./WordAudioButton";
-import SpeechButton from "./SpeechButton";
 import ToyPicture from "./ToyPicture";
 import { wordObjectKind } from "./wordObjects";
 const WordObjectScene = lazy(() => import("./WordObjectScene"));
@@ -104,11 +103,6 @@ export default function PictureWordDeck({
                       url={media.audioUrl}
                       picture
                       label="听单词"
-                    />
-                    <SpeechButton
-                      text={current.meaning}
-                      language="zh-CN"
-                      label="听意思"
                     />
                   </div>
                   <p>{current.meaning}</p>

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import type { CourseLesson } from "../packages/contracts/index";
 import { writingForLesson } from "../packages/domain/writing";
 import SpeechButton from "./SpeechButton";
-import SceneStage from "./SceneStage";
 import { api } from "./api";
 import LessonConcepts from "./LessonConcepts";
 import ToyPicture from "./ToyPicture";
@@ -39,14 +38,12 @@ export default function LessonView({
     <div className="lesson-view child-lesson">
       <button className="secondary child-back" onClick={onBack}>
         <ToyPicture kind="map" />
-        <span>回小岛</span>
+        <span>返回课程</span>
       </button>
       <div className="child-lesson-title">
         <div>
-          <p>听一句，再试一试</p>
           <h1>{lesson.title}</h1>
         </div>
-        <SceneStage kind="lesson" compact />
       </div>
       <section className="card child-example" aria-label="例句观察卡">
         <div
@@ -67,17 +64,10 @@ export default function LessonView({
         </p>
         <div className="child-example-listen">
           <SpeechButton text={card.example} label="听英语" />
-          <SpeechButton
-            text={
-              card.translation.replace(/[。！？.!?]+$/, "") + "。" + card.rule
-            }
-            language="zh-CN"
-            label="听意思"
-          />
         </div>
         <p className="child-translation">{card.translation}</p>
         <details className="child-rule">
-          <summary>看看小发现</summary>
+          <summary>语法说明</summary>
           <p>{card.rule}</p>
         </details>
         <div className="child-example-controls">
@@ -113,7 +103,7 @@ export default function LessonView({
       <details className="lesson-extra card">
         <summary>
           <ToyPicture kind="help" />
-          更多小发现
+          课程资料
         </summary>
         <p>
           {lesson.subtitle} · {lesson.grade}年级
@@ -133,7 +123,7 @@ export default function LessonView({
           />
         )}
         <section className="word-shelf">
-          <h2>今天的小词袋</h2>
+          <h2>本课词汇</h2>
           <div className="word-chips">
             {lesson.vocabulary.map((word) => (
               <div key={word.word}>

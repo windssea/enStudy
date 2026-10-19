@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import type { Workshop } from "../packages/contracts/index";
-import SceneStage from "./SceneStage";
 export default function Workshops({
   busy,
   onStart,
@@ -32,16 +31,11 @@ export default function Workshops({
     <section className="workshops-page">
       <div className="discovery-hero">
         <div>
-          <span className="eyebrow">THINK · SORT · REPAIR</span>
-          <h1>英语互动工坊</h1>
-          <p className="lead">
-            把词句放进合适的篮子，找出一处需要调整的词块。多想一步，学会自己检查。
-          </p>
+          <h1>辨析与应用</h1>
           <button className="secondary" onClick={onBack}>
             返回专题特训
           </button>
         </div>
-        <SceneStage kind="sorting" />
       </div>
       <div className="filter-row">
         <label>
@@ -66,12 +60,11 @@ export default function Workshops({
           >
             {[5, 10, 20].map((n) => (
               <option key={n} value={n}>
-                {n}题 · 随时休息
+                {n}题
               </option>
             ))}
           </select>
         </label>
-        <p>可自由回补，年级只作建议。每题检查一整组或一处修改，不计速度。</p>
       </div>
       {error && (
         <p className="notice error" role="alert">
@@ -83,13 +76,18 @@ export default function Workshops({
           .filter((b) => !grade || b.grade <= grade)
           .map((b) => (
             <article className="card workshop-bank" key={b.id}>
-              <span className="badge">P{b.grade}起 · 分类与修正</span>
+              <span className="badge">{b.grade}年级起</span>
               <h2>{b.title}</h2>
-              <p>{b.description}</p>
               <p className="topic-bank-count">
                 <strong>{b.items}项任务</strong>
                 <span>
-                  {b.counts.sort}组卡片组合 · {b.counts.repair}句原创修正
+                  {Object.entries(b.counts)
+                    .filter(([, count]) => count > 0)
+                    .map(
+                      ([type, count]) =>
+                        `${({ sort: "分类", repair: "改错", choice: "选择", input: "填空", evidence: "阅读依据", order: "排序" } as Record<string, string>)[type]} ${count}`,
+                    )
+                    .join(" · ")}
                 </span>
               </p>
               <details>
@@ -101,14 +99,11 @@ export default function Workshops({
                 disabled={busy}
                 onClick={() => onStart(b.id, size)}
               >
-                随机抽{size}题
+                开始{Math.min(size, b.items)}题
               </button>
             </article>
           ))}
       </div>
-      <p className="footnote">
-        共12个工坊、288组分类组合与96句修正。组合会复用目标词，不等于384条不同语言知识。分类、句子修正与原有选择/拼写分别记录；刚看过示范或答案会记为辅助完成。
-      </p>
     </section>
   );
 }

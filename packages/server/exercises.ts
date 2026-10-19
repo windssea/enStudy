@@ -7,6 +7,7 @@ import patterns from "../../content/pattern-release.v1.json";
 import vocabulary from "../../content/vocabulary-release.v1.json";
 import workshop from "../../content/workshop-release.v1.json";
 import workshopLatest from "../../content/workshop-release.latest.json";
+import beActionContrast from "../../content/be-action-release.v1.json";
 import story from "../../content/story-course-release.v1.json";
 import wordListening from "../../content/word-listening-release.v1.json";
 import pictureWords from "../../content/picture-word-release.v1.json";
@@ -199,6 +200,7 @@ export const exercises = [
   ...patternRelease.items,
   ...vocabulary.items,
   ...workshopLatest.items,
+  ...beActionContrast.items,
   ...story.items,
   ...wordListening.items,
   ...pictureWords.items,
@@ -234,7 +236,13 @@ export const reservedTrainingRelease = reservedTraining as unknown as {
   >;
   items: PrivateExercise[];
 };
-export const workshopRelease = workshopLatest as unknown as {
+export const workshopRelease = {
+  ...workshopLatest,
+  id: "workshop-catalog-v3",
+  manifestHash: beActionContrast.catalogHash,
+  workshops: [beActionContrast.workshop, ...workshopLatest.workshops],
+  items: [...workshopLatest.items, ...beActionContrast.items],
+} as unknown as {
   id: string;
   manifestHash: string;
   workshops: import("../contracts/index").Workshop[];

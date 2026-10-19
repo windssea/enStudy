@@ -1,7 +1,5 @@
 import { useEffect, useRef } from "react";
-import SceneStage from "./SceneStage";
 import ToyPicture, { type ToyKind } from "./ToyPicture";
-import SpeechButton from "./SpeechButton";
 import PatternFrame from "./PatternFrame";
 import {
   gradeName,
@@ -98,24 +96,16 @@ export default function PracticeLibrary({
       {!hidden && !group && !searching && (
         <div className="discovery-hero library-hero">
           <div>
-            <p className="eyebrow">
-              {kind === "topic"
-                ? "专题探险 · 一次练一个小难点"
-                : "句式小剧场 · 一句话说出新想法"}
-            </p>
-            <h1>
-              {kind === "topic" ? "今天，想练哪一类？" : "你想用英语说什么？"}
-            </h1>
-            <p className="lead">
-              {kind === "topic"
-                ? "先选一类，再挑一个专题。每次只走一小步。"
-                : "先选一个生活场景，再挑一句来练。"}
-            </p>
+            <h1>{kind === "topic" ? "专题特训" : "固定句式"}</h1>
           </div>
-          <SceneStage kind="workshop" />
+          {onWorkshop && (
+            <button className="secondary" onClick={onWorkshop} disabled={busy}>
+              辨析与应用
+            </button>
+          )}
         </div>
       )}
-      <div className="library-location">
+      <div className="library-location" hidden={!group && !searching}>
         {group && (
           <button className="secondary" onClick={back} disabled={busy}>
             ← 换个{kind === "topic" ? "类别" : "场景"}
@@ -129,42 +119,26 @@ export default function PracticeLibrary({
       </div>
       <div className="library-heading">
         <div>
-          <p className="eyebrow">
-            {group || searching ? "挑一个，再看看怎么练" : "第1步 · 选个入口"}
-          </p>
           {group || searching ? (
             <h1 ref={heading} tabIndex={-1}>
               {selectedGroup?.title ?? "找到这些小挑战"}
             </h1>
           ) : (
             <h2 ref={heading} tabIndex={-1}>
-              {kind === "topic" ? "八类专题，慢慢探索" : "从熟悉的生活场景开始"}
+              {kind === "topic" ? "选择专题类别" : "选择句式场景"}
             </h2>
           )}
         </div>
         <p role="status">
           {group || searching
             ? `${visible.length}个可选${kind === "topic" ? "专题" : "句式"}`
-            : "不用一次都选，挑一个就好。"}
+            : ""}
         </p>
       </div>
-      {visible.some((i) => i.available) && (
-        <button
-          className="child-play library-surprise"
-          disabled={busy}
-          onClick={() => {
-            const first = visible.find((i) => i.available);
-            if (first) onOpen(first.id);
-          }}
-        >
-          <ToyPicture kind="play" />
-          <span>带我玩</span>
-        </button>
-      )}
       <details className="child-library-options">
         <summary>
           <ToyPicture kind="parent" />
-          大人帮我挑
+          搜索与年级筛选
         </summary>
         <div className="filter-row library-filters">
           <label>
@@ -244,7 +218,7 @@ export default function PracticeLibrary({
               </strong>
               <span>{item.description}</span>
               <span className="library-card-action">
-                看看怎么练 <span aria-hidden="true">→</span>
+                进入练习 <span aria-hidden="true">→</span>
               </span>
             </button>
           ))}
@@ -282,30 +256,11 @@ export default function PracticeLibrary({
                     <span aria-hidden="true"> →</span>
                   </span>
                 </button>
-                <SpeechButton
-                  language="zh-CN"
-                  text={entry.title + "。" + entry.description}
-                  label="听这里"
-                />
               </article>
             );
           })}
         </div>
       )}
-      {onWorkshop && (
-        <aside className="library-workshop-link">
-          <div>
-            <strong>想用词块动动手？</strong>
-            <p>到互动工坊，试试分类和句子修理。</p>
-          </div>
-          <button className="secondary" onClick={onWorkshop}>
-            看看互动工坊 →
-          </button>
-        </aside>
-      )}
-      <p className="footnote">
-        年级只是建议，可以回头补基础。题目按本轮保存，遇到不会的可以看提示。
-      </p>
     </section>
   );
 }

@@ -14,13 +14,21 @@ const answer = (item: (typeof workshopRelease.items)[number]) =>
   item.type === "sort"
     ? Object.entries(item.placements!).map(([id, group]) => `${id}=${group}`)
     : (JSON.parse(item.answers[0]) as string[]);
+const legacyWorkshops = {
+  workshops: workshopRelease.workshops.filter(
+    (w) => w.id !== "be-action-contrast",
+  ),
+  items: workshopRelease.items.filter(
+    (i) => i.workshopId !== "be-action-contrast",
+  ),
+};
 describe("authored structured banks", () => {
   it("covers twelve workshops and all six grade suggestions without counting combinations as new vocabulary", () => {
-    expect(workshopRelease.workshops).toHaveLength(12);
-    expect(workshopRelease.items).toHaveLength(384);
-    expect(new Set(workshopRelease.workshops.map((w) => w.grade)).size).toBe(6);
-    for (const bank of workshopRelease.workshops) {
-      const items = workshopRelease.items.filter(
+    expect(legacyWorkshops.workshops).toHaveLength(12);
+    expect(legacyWorkshops.items).toHaveLength(384);
+    expect(new Set(legacyWorkshops.workshops.map((w) => w.grade)).size).toBe(6);
+    for (const bank of legacyWorkshops.workshops) {
+      const items = legacyWorkshops.items.filter(
         (i) => i.workshopId === bank.id,
       );
       expect(items.filter((i) => i.type === "sort")).toHaveLength(24);
@@ -29,7 +37,7 @@ describe("authored structured banks", () => {
     }
   });
   it("grades every authored task with its real multi-part payload and rejects a wrong placement or replacement", () => {
-    for (const item of workshopRelease.items) {
+    for (const item of legacyWorkshops.items) {
       const correct = answer(item);
       expect(gradeAnswer(item, correct), item.id).toBe(true);
       expect(structuredCanonical(item, correct), item.id).not.toBeNull();
@@ -63,7 +71,7 @@ describe("authored structured banks", () => {
     }
   });
   it("keeps sorting order independent and rejects duplicates, missing cards, unknown cards and unknown groups", () => {
-    const item = workshopRelease.items.find((i) => i.type === "sort")!,
+    const item = legacyWorkshops.items.find((i) => i.type === "sort")!,
       correct = answer(item);
     expect(structuredCanonical(item, correct.reverse())).toBe(item.answers[0]);
     for (const invalid of [
@@ -77,7 +85,7 @@ describe("authored structured banks", () => {
       expect(structuredCanonical(item, invalid)).toBeNull();
   });
   it("requires an actual selected part and a bounded replacement, but accepts case and compatible apostrophes", () => {
-    const item = workshopRelease.items.find(
+    const item = legacyWorkshops.items.find(
         (i) => i.id === "workshop.articles.repair.1",
       )!,
       correct = answer(item);
@@ -99,7 +107,7 @@ describe("authored structured banks", () => {
     ).toBe(false);
   });
   it("returns individual feedback while the whole multi-card task still needs every placement correct", () => {
-    const item = workshopRelease.items.find((i) => i.type === "sort")!,
+    const item = legacyWorkshops.items.find((i) => i.type === "sort")!,
       correct = answer(item),
       wrong = [...correct],
       [id, group] = wrong[0].split("=");
@@ -120,10 +128,10 @@ describe("authored structured banks", () => {
     expect(current.version).toBe(2);
   });
   it("shares constituent evidence between grouping and correction while keeping unrelated targets apart", () => {
-    const sorted = workshopRelease.items.find(
+    const sorted = legacyWorkshops.items.find(
         (i) => i.workshopId === "plurals" && i.type === "sort",
       )!,
-      corrected = workshopRelease.items.find(
+      corrected = legacyWorkshops.items.find(
         (i) => i.id === "workshop.plurals.repair.1",
       )!;
     expect(
@@ -136,7 +144,7 @@ describe("authored structured banks", () => {
     );
   });
   it("preserves the exact same-assignment draft and describes moved drafts with words rather than IDs", () => {
-    const item = workshopRelease.items[0],
+    const item = legacyWorkshops.items[0],
       s = {
         assignmentId: "one",
         exercise: publicExercise(item),

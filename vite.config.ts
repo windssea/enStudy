@@ -52,6 +52,8 @@ export default defineConfig({
         "**/content/courses-*.mjs",
         "**/content/topic-release*.json",
         "**/content/topics-*.mjs",
+        "**/content/be-action-*.mjs",
+        "**/content/be-action-release*.json",
         "**/content/training-reserved-release*.json",
         "**/content/training-reserved-*.mjs",
         "**/content/pattern-release*.json",

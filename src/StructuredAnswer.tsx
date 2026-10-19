@@ -152,7 +152,6 @@ export default function StructuredAnswer({
       replacement = values[1] ?? "";
     return (
       <div className="repair-answer">
-        <p>先找到一处需要调整的词块。选中后，下面填写新词或短语。</p>
         <div className="repair-parts" aria-label="选择要修改的词块">
           {parts.map((p) => (
             <button

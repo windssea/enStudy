@@ -41,6 +41,7 @@ export default function FamilySpace({
   const [notice, setNotice] = useState("");
   const [aiOpen, setAiOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [panel, setPanel] = useState("profiles");
   const canManage = identity.adult?.role === "owner";
   const loadChildren = async () =>
     setChildren((await api<{ items: ChildProfile[] }>("/children")).items);
@@ -77,7 +78,7 @@ export default function FamilySpace({
       await api("/auth/login", { username, password });
       setPassword("");
       await refresh();
-      setNotice("登录成功，出发去探索吧。");
+      setNotice("登录成功。");
     });
   }
   function saveChild(e: FormEvent) {
@@ -92,21 +93,37 @@ export default function FamilySpace({
       setEditing(null);
       await loadChildren();
       await refresh();
-      setNotice("档案已保存，每位小探险家的进度都会单独记录。");
+      setNotice("档案已保存。");
     });
   }
   return (
-    <>
+    <div className="family-workspace">
       <h1>家长设置</h1>
-      <details className="card">
-        <summary>孩子的练习如何记录</summary>
-        <p>
-          答题后点绿色对勾保存，再点大箭头继续。重复提交同一份答案不会重复计分；联网失败时保留当前答案供重试。听讲解、使用提示和独立作答分别记录，家长可以在学习报告里查看。
-        </p>
-      </details>
+      {identity.adult && !identity.adult.mustChangePassword && (
+        <nav className="family-sections" aria-label="家长设置分区">
+          {[
+            ["profiles", "学习档案"],
+            ["reports", "学习报告"],
+            ["ai", "AI服务"],
+            ["accounts", "账号与数据"],
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={panel === id}
+              onClick={() => {
+                setPanel(id);
+                if (id === "ai") setAiOpen(true);
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+      )}
       {identity.adult && !identity.adult.mustChangePassword && (
         <>
-          <p className="notice">
+          <p className="family-context">
             当前家庭：{identity.adult.householdName || "尚未选择家庭"} ·{" "}
             {identity.adult.role === "owner"
               ? "管理家长"
@@ -129,17 +146,17 @@ export default function FamilySpace({
           {notice}
         </div>
       )}
-      <div className="family-layout">
+      <div
+        className="family-layout"
+        hidden={Boolean(
+          identity.adult &&
+          !identity.adult.mustChangePassword &&
+          panel !== "profiles",
+        )}
+      >
         {!identity.adult ? (
           <section className="card login-card">
-            <div className="login-emblem" aria-hidden="true">
-              <span> Aa </span>
-              <i />
-              <i />
-            </div>
-            <span className="badge">欢迎回到英语探险岛</span>
             <h2>家长登录</h2>
-            <p>登录后，孩子可以继续上次的练习，学习记录不会丢失。</p>
             <form onSubmit={login} className="profile-form">
               <label className="field">
                 账号
@@ -175,7 +192,7 @@ export default function FamilySpace({
                 </span>
               </label>
               <button className="primary" disabled={busy} type="submit">
-                {busy ? "正在登录…" : "登录，开始探索"}
+                {busy ? "正在登录…" : "登录"}
                 <span aria-hidden="true">→</span>
               </button>
             </form>
@@ -214,7 +231,7 @@ export default function FamilySpace({
                 </span>
                 <h2>
                   {identity.adult.householdId
-                    ? "谁来开始今天的探索？"
+                    ? "学习档案"
                     : "请先选择要进入的家庭"}
                 </h2>
               </div>
@@ -247,27 +264,24 @@ export default function FamilySpace({
                   <h3>{child.nickname}</h3>
                   <p>
                     {["一", "二", "三", "四", "五", "六"][child.grade - 1]}年级
-                    · 独立学习记录
                   </p>
-                  <button
-                    className={
-                      identity.child?.id === child.id
-                        ? "soft-button"
-                        : "primary"
-                    }
-                    disabled={busy || identity.child?.id === child.id}
-                    onClick={() =>
-                      void action(async () => {
-                        await api(`/children/${child.id}/select`, {});
-                        await refresh();
-                        setNotice(`已切换到${child.nickname}。`);
-                      })
-                    }
-                  >
-                    {identity.child?.id === child.id
-                      ? "正在使用"
-                      : "选这位探险家"}
-                  </button>
+                  {identity.child?.id === child.id ? (
+                    <span className="profile-selected">当前档案</span>
+                  ) : (
+                    <button
+                      className="primary"
+                      disabled={busy}
+                      onClick={() =>
+                        void action(async () => {
+                          await api(`/children/${child.id}/select`, {});
+                          await refresh();
+                          setNotice(`已切换到${child.nickname}。`);
+                        })
+                      }
+                    >
+                      选择档案
+                    </button>
+                  )}
                   {canManage && (
                     <button
                       className="text-button"
@@ -279,7 +293,7 @@ export default function FamilySpace({
                         setError("");
                       }}
                     >
-                      编辑昵称与年级
+                      编辑
                     </button>
                   )}
                   {canManage && children.length > 1 && (
@@ -311,7 +325,7 @@ export default function FamilySpace({
             </div>
             {canManage && (
               <form onSubmit={saveChild} className="profile-form child-form">
-                <h3>{editing ? "编辑探险档案" : "添加一位小探险家"}</h3>
+                <h3>{editing ? "编辑档案" : "添加档案"}</h3>
                 <p className="footnote">
                   用昵称就好，不需要孩子的真实姓名或生日。
                 </p>
@@ -368,42 +382,26 @@ export default function FamilySpace({
             )}
           </section>
         )}
-        <details className="card parent-guide">
-          <summary>陪伴建议与课程说明</summary>
-          <ol>
-            <li>
-              <strong>每天一小轮</strong>
-              <p>先从5～10分钟开始，学完就休息，不用一直刷题。</p>
-            </li>
-            <li>
-              <strong>先听，再开口</strong>
-              <p>联系家里、学校、公园里的真实情景，让句子有用起来的机会。</p>
-            </li>
-            <li>
-              <strong>错了也能长本领</strong>
-              <p>问问孩子“你是怎么想的”，一起找规律，再隔几天回来看。</p>
-            </li>
-          </ol>
-          <div className="notice">
-            当前有{lessons.length}
-            节原创微课，覆盖一至六年级；课程包含文字、听辨、阅读和部分分类修正互动。其余课程、完整听说读写与教材映射会按阶段更新。
-          </div>
-        </details>
       </div>
       {identity.adult &&
         !identity.adult.mustChangePassword &&
         identity.child && (
-          <Suspense fallback={<p role="status">正在准备学习报告…</p>}>
-            <LearningReport
-              key={`${identity.adult.username}:${identity.child.id}`}
-              childId={identity.child.id}
-              nickname={identity.child.nickname}
-              onReview={onReview}
-            />
-          </Suspense>
+          <div hidden={panel !== "reports"}>
+            <Suspense fallback={<p role="status">正在准备学习报告…</p>}>
+              <LearningReport
+                key={`${identity.adult.username}:${identity.child.id}`}
+                childId={identity.child.id}
+                nickname={identity.child.nickname}
+                onReview={onReview}
+              />
+            </Suspense>
+          </div>
         )}
       {identity.adult && !identity.adult.mustChangePassword && (
-        <details className="card account-security">
+        <details
+          className="card account-security"
+          hidden={panel !== "accounts"}
+        >
           <summary>账号与密码 · {identity.adult.username}</summary>
           <AccountSecurity
             username={identity.adult.username}
@@ -415,16 +413,19 @@ export default function FamilySpace({
         </details>
       )}
       {identity.adult?.isAdmin && !identity.adult.mustChangePassword && (
-        <Suspense fallback={<p role="status">正在准备家庭账号管理…</p>}>
-          <ManagedAccounts />
-        </Suspense>
+        <div hidden={panel !== "accounts"}>
+          <Suspense fallback={<p role="status">正在准备家庭账号管理…</p>}>
+            <ManagedAccounts />
+          </Suspense>
+        </div>
       )}
       {identity.adult && canManage && !identity.adult.mustChangePassword && (
         <details
           className="card data-export"
+          hidden={panel !== "accounts"}
           onToggle={(event) => setExportOpen(event.currentTarget.open)}
         >
-          <summary>家庭数据 · 导出学习资料</summary>
+          <summary>数据导出</summary>
           <Suspense fallback={<p role="status">正在准备家庭资料入口…</p>}>
             {exportOpen && (
               <DataExportPanel
@@ -438,22 +439,24 @@ export default function FamilySpace({
         </details>
       )}
       {identity.adult && canManage && !identity.adult.mustChangePassword && (
-        <details
+        <section
           className="card ai-settings-disclosure"
-          onToggle={(event) => setAiOpen(event.currentTarget.open)}
+          hidden={panel !== "ai"}
         >
-          <summary>家长设置 · AI解释、作品点评、对话与语音</summary>
+          <h2>AI服务</h2>
           <Suspense fallback={<p role="status">正在准备AI连接设置…</p>}>
             {aiOpen && <AiSettings key={identity.adult.username} />}
           </Suspense>
-        </details>
+        </section>
       )}
       {identity.adult &&
         !identity.adult.mustChangePassword &&
         identity.child && (
-          <details className="card learning-report">
+          <details
+            className="card learning-report"
+            hidden={panel !== "reports"}
+          >
             <summary>最近十轮原始记录与累计完成</summary>
-            <span className="eyebrow">每一步，都有迹可循</span>
             <h2>{identity.child.nickname}的学习足迹</h2>
             <p>
               已完成{learning.completedLessons.length}节微课，当前有
@@ -492,14 +495,16 @@ export default function FamilySpace({
       {identity.adult &&
         !identity.adult.mustChangePassword &&
         identity.child && (
-          <Suspense fallback={<p role="status">正在读取专题记录…</p>}>
-            <TrainingFollowUps
-              key={identity.child.id}
-              childId={identity.child.id}
-              all
-              onOpen={onOpenTraining}
-            />
-          </Suspense>
+          <div hidden={panel !== "reports"}>
+            <Suspense fallback={<p role="status">正在读取专题记录…</p>}>
+              <TrainingFollowUps
+                key={identity.child.id}
+                childId={identity.child.id}
+                all
+                onOpen={onOpenTraining}
+              />
+            </Suspense>
+          </div>
         )}
       {identity.developmentIdentityAvailable && (
         <details className="dev-tools">
@@ -525,6 +530,6 @@ export default function FamilySpace({
           </div>
         </details>
       )}
-    </>
+    </div>
   );
 }

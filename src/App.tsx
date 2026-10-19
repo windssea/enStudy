@@ -27,7 +27,6 @@ import { parseRoute, mapFragment, type View } from "./routes";
 import { courseStep } from "./courseNavigation";
 import CourseWrapUp from "./CourseWrapUp";
 import WordFormCue from "./WordFormCue";
-import CompanionPicker from "./CompanionPicker";
 import { companionInfo } from "../packages/domain/companions";
 import { applyCompanionChoice } from "./companionState";
 import {
@@ -39,16 +38,14 @@ import {
 } from "./practiceCatalog";
 import FamilySpace from "./FamilySpace";
 import LessonView from "./LessonView";
-import SceneStage, { MotionShell } from "./SceneStage";
+import { MotionShell } from "./SceneStage";
 import LearningIcon from "./LearningIcon";
+import { exerciseKind } from "./exerciseKind";
 import CourseIslandMap from "./CourseIslandMap";
 import SessionAccess from "./SessionAccess";
 import ChildNavigation from "./ChildNavigation";
 import ChildHome from "./ChildHome";
 import ToyPicture from "./ToyPicture";
-import GuideButton from "./GuideButton";
-import SpeechButton from "./SpeechButton";
-import type { ChildGuideId } from "./wordAudio";
 import PictureChoice from "./PictureChoice";
 import PictureFeedback from "./PictureFeedback";
 import { reconcileDraft } from "./sessionDraft";
@@ -935,19 +932,6 @@ export default function App() {
         : currentSection === "phonics"
           ? "words"
           : currentSection;
-  const routeGuide: ChildGuideId =
-    view === "exercise"
-      ? receipt
-        ? "saved"
-        : session?.exercise.pictureChoices
-          ? "picture"
-          : session?.exercise.type === "listen"
-            ? "choice"
-            : (session?.exercise.type ?? "choice")
-      : (view === "topics" && trainingTopic) ||
-          (view === "patterns" && patternId)
-        ? "start"
-        : view;
   return (
     <MotionShell
       quiet={quiet || reduced}
@@ -982,7 +966,7 @@ export default function App() {
                     : view === "offline"
                       ? "本机离线练习"
                       : view === "workshops"
-                        ? "英语互动工坊"
+                        ? "英语辨析与应用"
                         : view === "talk"
                           ? "英语小剧场"
                           : (nav.find((n) => n[0] === activeNav)?.[1] ??
@@ -993,15 +977,8 @@ export default function App() {
           <div className="toolbar">
             {view === "parent" && (
               <details className="display-settings" key={view}>
-                <summary>画面设置</summary>
+                <summary>显示偏好</summary>
                 <div className="display-settings-panel">
-                  <button
-                    className="soft-button"
-                    aria-pressed={twoD}
-                    onClick={() => setTwoD(!twoD)}
-                  >
-                    {twoD ? "静态插画" : "插画小动作"}
-                  </button>
                   <button
                     className="soft-button"
                     aria-pressed={quiet || reduced}
@@ -1011,25 +988,28 @@ export default function App() {
                     {reduced
                       ? "跟随系统减少动效"
                       : quiet
-                        ? "安静模式 · 开"
-                        : "安静模式 · 关"}
+                        ? "减少动效：开"
+                        : "减少动效：关"}
                   </button>
                 </div>
               </details>
             )}
-            {view !== "home" && <GuideButton id={routeGuide} />}
-            <span className="stars">
-              <Icon kind="star" />
-              {progress.stars}
-            </span>
-            <button
-              className="profile-button"
-              aria-label={`家长空间与档案：${identity.child?.nickname ?? "选择档案"}`}
-              onClick={() => move("parent")}
-            >
-              <LearningIcon kind="person" />
-              <span>家长设置</span>
-            </button>
+            {view !== "parent" && (
+              <>
+                <span className="stars">
+                  <Icon kind="star" />
+                  {progress.stars}
+                </span>
+                <button
+                  className="profile-button"
+                  aria-label={`家长空间与档案：${identity.child?.nickname ?? "选择档案"}`}
+                  onClick={() => move("parent")}
+                >
+                  <LearningIcon kind="person" />
+                  <span>家长设置</span>
+                </button>
+              </>
+            )}
           </div>
         </header>
         <main
@@ -1071,7 +1051,7 @@ export default function App() {
             <>
               <div className="page-head">
                 <div>
-                  <h1>今天，去英语岛探险！</h1>
+                  <h1>课程学习</h1>
                 </div>
                 <div className="filters">
                   <label>
@@ -1139,15 +1119,8 @@ export default function App() {
                         {journeys[grade - 1]}岛{" "}
                         <span className="badge">自主路线</span>
                       </h2>
-                      <p>先看小课，再做练习。下方课程卡可以自由选择。</p>
+                      <p></p>
                     </div>
-                    <button
-                      className="text-button"
-                      aria-pressed={twoD}
-                      onClick={() => setTwoD(!twoD)}
-                    >
-                      {twoD ? "开启地图小动作" : "地图静止"}
-                    </button>
                   </div>
                   <CourseIslandMap
                     key={`${grade}:${term}:${identity.child?.id ?? "guest"}:${partner.id}`}
@@ -1164,17 +1137,6 @@ export default function App() {
                     flat={twoD}
                     onLost={() => setTwoD(true)}
                     onOpen={openLesson}
-                  />
-                  <CompanionPicker
-                    key={identity.child?.id ?? "guest"}
-                    childId={identity.child?.id}
-                    current={partner.id}
-                    onNeedProfile={() => move("parent")}
-                    onSaved={(choice) => {
-                      setIdentity((previous) =>
-                        applyCompanionChoice(previous, choice),
-                      );
-                    }}
                   />
                   <div className="map-footer">
                     <div>
@@ -1511,7 +1473,6 @@ export default function App() {
                   <h1>让记忆，慢慢长大。</h1>
                   <p className="lead">隔几天独立想起来，才是记忆变稳的证据。</p>
                 </div>
-                <SceneStage kind="garden" />
               </div>
               <div className="review-start card">
                 <div>
@@ -1790,7 +1751,7 @@ export default function App() {
                 backup={draftBackup}
                 onRefresh={() => void refreshSession()}
                 onTakeover={() => void takeOver()}
-                leaveLabel={`返回${sessionHome === "mistakes" ? "错题小本" : sessionHome === "phonics" ? "拼读小路" : sessionHome === "workshops" ? "互动工坊" : (nav.find((n) => n[0] === sessionHome)?.[1] ?? "学习地图")}`}
+                leaveLabel={`返回${sessionHome === "mistakes" ? "错题小本" : sessionHome === "phonics" ? "拼读小路" : sessionHome === "workshops" ? "辨析与应用" : (nav.find((n) => n[0] === sessionHome)?.[1] ?? "学习地图")}`}
                 onLeave={() => move(sessionHome)}
               />
               {sessionNotice && (
@@ -1842,7 +1803,7 @@ export default function App() {
                     : session.source === "phonics"
                       ? "拼读小路"
                       : session.source === "workshop"
-                        ? "互动工坊"
+                        ? "辨析与应用"
                         : session.source === "vocabulary"
                           ? "单词特训"
                           : session.source === "pattern"
@@ -1854,7 +1815,7 @@ export default function App() {
                                 : "学习地图"}
                 </button>
                 <span className="badge">
-                  第{session.position ?? 1}步 / 共{session.total ?? 1}步
+                  第{session.position ?? 1}题 / 共{session.total ?? 1}题
                 </span>
               </div>
               <progress
@@ -1867,10 +1828,8 @@ export default function App() {
                 className={`card exercise-card${session.exercise.pictureChoices ? " picture-exercise" : ""}`}
                 data-saved={Boolean(receipt)}
               >
-                <p className="eyebrow">
-                  {session.source === "vocabulary"
-                    ? "单词小挑战 · 想一想，再回答"
-                    : "ONE STEP AT A TIME"}
+                <p className="exercise-kind">
+                  {exerciseKind(session.exercise)}
                 </p>
                 {session.training && (
                   <p className="badge">
@@ -1885,47 +1844,15 @@ export default function App() {
                   </p>
                 )}
                 <h1>{session.exercise.title}</h1>
-                {session.exercise.type === "sort" && (
-                  <span className="badge">分类工坊 · 一整组放好后检查</span>
-                )}
-                {session.exercise.type === "repair" && (
-                  <span className="badge">句子修理站 · 找一处，改一处</span>
-                )}
                 <p className="lead">{session.exercise.context}</p>
-                {!session.exercise.pictureChoices && (
-                  <SpeechButton
-                    text={
-                      session.exercise.wordFormCue
-                        ? `${session.exercise.context} ${session.exercise.prompt}`
-                        : session.exercise.context
-                    }
-                    language="zh-CN"
-                    label="听题目提示"
-                  />
-                )}
+
                 {session.exercise.wordFormCue && (
                   <WordFormCue
                     key={session.assignmentId}
                     cue={session.exercise.wordFormCue}
                   />
                 )}
-                {!session.exercise.pictureChoices &&
-                  !session.exercise.wordFormCue && (
-                    <SceneStage
-                      key={session.assignmentId}
-                      kind="feedback"
-                      compact
-                      animateReaction={
-                        canWriteSession &&
-                        receipt?.eventId === freshReceiptEvent
-                      }
-                      reaction={
-                        canWriteSession
-                          ? (receipt?.outcome ?? "thinking")
-                          : "thinking"
-                      }
-                    />
-                  )}
+
                 {session.exercise.reading && (
                   <section
                     className="reading-passage"
@@ -2012,14 +1939,6 @@ export default function App() {
                               revealed={Boolean(receipt)}
                             />
                           </button>
-                          {!session.exercise.pictureChoices &&
-                            /[\u4e00-\u9fff]/.test(o) && (
-                              <SpeechButton
-                                language="zh-CN"
-                                text={o}
-                                label="听选项"
-                              />
-                            )}
                         </div>
                       ))}
                     </div>
@@ -2073,7 +1992,7 @@ export default function App() {
                           <span>
                             {session.exercise.graphemeTokens
                               ? "点击字母块，拼成一个词。"
-                              : "点击词块，搭出句子。"}
+                              : "按顺序选择单词。"}
                           </span>
                         )}
                       </div>
@@ -2117,7 +2036,7 @@ export default function App() {
                   )}
                   {hint && (
                     <div className="notice" role="status">
-                      提示：{hint} 使用提示后，本题不作独立掌握证据。
+                      提示：{hint} 本题记为辅助练习。
                     </div>
                   )}
                   {receipt ? (
@@ -2142,7 +2061,7 @@ export default function App() {
                               ? "再看一看，听一听。"
                               : "跟着帮助，完成啦。"
                           : receipt.outcome === "correct"
-                            ? "这一步，想对了！"
+                            ? "回答正确"
                             : receipt.outcome === "hinted"
                               ? receipt.support === "offline"
                                 ? "离线练习已核对，另记练习证据。"
@@ -2158,11 +2077,6 @@ export default function App() {
                       ) : (
                         <>
                           <p>{receipt.feedback}</p>
-                          <SpeechButton
-                            language="zh-CN"
-                            text={receipt.feedback}
-                            label="听讲解"
-                          />
                         </>
                       )}
                       {receipt.correctedSentence && (
@@ -2194,10 +2108,7 @@ export default function App() {
                           ))}
                         </ul>
                       )}
-                      <small>
-                        学习记录已保存 · 下次复习{receipt.nextReviewDay} ·
-                        完成奖励+{receipt.rewardDelta}
-                      </small>
+                      <small>已保存</small>
                     </div>
                   ) : (
                     <div className="exercise-actions">
@@ -2207,14 +2118,14 @@ export default function App() {
                         disabled={busy || Boolean(hint)}
                       >
                         <ToyPicture kind="help" />
-                        <span>帮帮我</span>
+                        <span>查看提示</span>
                       </button>
                       <button
                         className="primary"
                         onClick={check}
                         disabled={busy}
                       >
-                        {busy ? "保存中…" : "答好了"}
+                        {busy ? "保存中…" : "提交答案"}
                         <ToyPicture kind="check" />
                       </button>
                     </div>
@@ -2227,7 +2138,7 @@ export default function App() {
                         key={session.assignmentId}
                         session={session}
                         allowed={canWriteSession}
-                        hideUnavailable={Boolean(receipt.correctedPicture)}
+                        hideUnavailable
                       />
                     </Suspense>
                   )}
@@ -2238,8 +2149,8 @@ export default function App() {
                       onClick={nextQuestion}
                     >
                       {(session.position ?? 1) < (session.total ?? 1)
-                        ? "下一小步"
-                        : "完成这轮，看看收获"}
+                        ? "下一题"
+                        : "完成练习"}
                       <ToyPicture kind="next" />
                     </button>
                   )}

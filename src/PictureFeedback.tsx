@@ -1,7 +1,6 @@
 import type { Receipt } from "../packages/contracts/index";
 import WordPicture from "./WordPicture";
 import WordAudioButton from "./WordAudioButton";
-import SpeechButton from "./SpeechButton";
 export default function PictureFeedback({ receipt }: { receipt: Receipt }) {
   const picture = receipt.correctedPicture;
   if (!picture) return null;
@@ -14,7 +13,6 @@ export default function PictureFeedback({ receipt }: { receipt: Receipt }) {
           <strong lang="en">{picture.word}</strong>
           <p>{picture.label}</p>
           <WordAudioButton url={picture.audioUrl} picture label="再听单词" />
-          <SpeechButton text={picture.label} language="zh-CN" label="听意思" />
         </div>
       </div>
       <details>

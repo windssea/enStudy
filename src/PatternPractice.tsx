@@ -2,7 +2,6 @@ import ToyPicture from "./ToyPicture";
 import { useEffect, useRef, useState } from "react";
 import type { PatternStats } from "../packages/contracts/index";
 import { gradeName } from "./practiceCatalog";
-import SceneStage from "./SceneStage";
 import { api } from "./api";
 import PatternFrame from "./PatternFrame";
 
@@ -77,15 +76,13 @@ export default function PatternPractice({
       </div>
       <div className="discovery-hero pattern-ready-hero">
         <div>
-          <p className="eyebrow">第2步 · 看看这句怎么用</p>
           <h1 ref={heading} tabIndex={-1}>
-            把这句话，用进生活里。
+            句式练习
           </h1>
           <span className="badge">
             {gradeName(Number(pattern.grade_min))}年级起 · {pattern.cluster}
           </span>
         </div>
-        <SceneStage kind="workshop" compact />
       </div>
       <section
         className="card pattern-mission"
@@ -94,7 +91,6 @@ export default function PatternPractice({
         <h2 id="pattern-mission-title" lang="en">
           <PatternFrame frame={pattern.frame} />
         </h2>
-        <p className="frame-help">彩色空位可以换词，组成你想说的话。</p>
         <p>{pattern.slot_rule}</p>
         <details
           className="library-disclosure"

@@ -21,6 +21,11 @@ export const interactionLabels: Record<string, string> = {
   sort: "分类",
 };
 export const modalityLabels: Record<string, string> = {
+  "contrast-choice": "语境与结构辨析",
+  "contrast-input": "对比语境中的填写",
+  "contrast-repair": "语法错误分析",
+  "contrast-evidence": "语义判断与阅读依据",
+  "contrast-order": "问句结构组织",
   recognition: "词义与结构辨认",
   spelling: "拼写与填写",
   "phonics-listening": "听词辨拼写",

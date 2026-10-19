@@ -6,7 +6,6 @@ import {
   trainingLabels,
   type TrainingPhase,
 } from "../packages/domain/training";
-import SceneStage from "./SceneStage";
 import { conceptLab } from "../packages/domain/concepts";
 import TrainingCoaching from "./TrainingCoaching";
 const ConceptLab = lazy(() => import("./ConceptLab"));
@@ -186,15 +185,10 @@ export default function TopicJourney({
       </button>
       <div className="discovery-hero training-hero">
         <div>
-          <p className="eyebrow">专题小计划 · 一次一小步</p>
           <h1 ref={heading} tabIndex={-1}>
             {title}
           </h1>
-          <p className="lead">
-            先看看会什么，再看规律、换材料。隔几天回来试一次，给记忆一点生长的时间。
-          </p>
         </div>
-        {!labOpen && <SceneStage kind="workshop" compact />}
       </div>
       {error && (
         <p className="notice error" role="alert">
@@ -247,8 +241,8 @@ export default function TopicJourney({
         ) : !childId ? (
           <div className="training-next">
             <div>
-              <h2>先选你的探险档案</h2>
-              <p>请家长登录并选好档案，就能保存自己的小计划。</p>
+              <h2>选择学习档案</h2>
+              <p>请家长登录并选择档案。</p>
             </div>
             <button
               className="primary"
@@ -256,15 +250,13 @@ export default function TopicJourney({
               aria-label="选择档案，再开始"
             >
               <ToyPicture kind="parent" />
-              请大人帮忙
+              选择档案
             </button>
           </div>
         ) : !cycle ? (
           <>
             <h2>先做5题，看看会哪些</h2>
-            <p>
-              不是考试，没有倒计时。不会的可以看提示，做到哪儿都会保存。先试一试，再慢慢找规律。
-            </p>
+
             <button
               className="primary"
               disabled={disabled}

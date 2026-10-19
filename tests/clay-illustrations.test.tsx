@@ -40,13 +40,13 @@ describe("illustrated clay scenery", () => {
     expect(pika).not.toContain(clayArt.fox.url);
     expect(fox + pika).not.toContain("<canvas");
   });
-  it("keeps six semantic touch markers, every course entry and selected unit on an illustrated map", () => {
+  it("keeps all six units and the requested selection in the course overview", () => {
     const html = renderToStaticMarkup(
       <CourseIslandMap
         units={catalog.units.slice(0, 6)}
         lessons={courseCatalog.lessons}
         completed={[]}
-        nextUnitId={catalog.units[5].id}
+        nextUnitId={catalog.units[5].unit_id}
         quiet={false}
         flat={false}
         onLost={() => {}}
@@ -54,11 +54,12 @@ describe("illustrated clay scenery", () => {
         onSelectUnit={() => {}}
       />,
     );
-    expect(html).toContain(clayArt.island.url);
-    expect(html.match(/class="painted-map-stop"/g)).toHaveLength(6);
-    expect(html.match(/class="course-map-station"/g)).toHaveLength(6);
-    expect(html).toContain('aria-label="图片地图上的六个单元站点"');
-    expect(html).toContain('aria-controls="course-map-selection"');
+    expect(html.match(/class="course-unit"/g)).toHaveLength(6);
+    expect(html.match(/aria-pressed="true"/g)).toHaveLength(1);
+    expect(html).toContain(`<h3>${catalog.units[5].title}</h3>`);
+    for (const unit of catalog.units.slice(0, 6))
+      expect(html).toContain(unit.title);
+    expect(html).toContain('aria-label="课程单元"');
     expect(html).not.toContain("<canvas");
   });
   it("renders an illustrated partner with real buttons and no fake turn or blink controls", () => {

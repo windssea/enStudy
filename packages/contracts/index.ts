@@ -13,7 +13,14 @@ export interface Workshop {
   grade: number;
   description: string;
   rule: string;
-  counts: { sort: number; repair: number };
+  counts: {
+    sort: number;
+    repair: number;
+    choice?: number;
+    input?: number;
+    evidence?: number;
+    order?: number;
+  };
   items: number;
 }
 export interface Exercise {

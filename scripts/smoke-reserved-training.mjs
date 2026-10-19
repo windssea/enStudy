@@ -35,7 +35,12 @@ const bank = JSON.parse(
     await readFile("content/training-reserved-release.catalog.json", "utf8"),
   ),
   old = JSON.parse(await readFile("content/topic-release.v1.json", "utf8"));
-const items = new Map([...old.items, ...bank.items].map((i) => [i.id, i])),
+const contrast = JSON.parse(
+  await readFile("content/be-action-release.v1.json", "utf8"),
+);
+const items = new Map(
+    [...old.items, ...bank.items, ...contrast.items].map((i) => [i.id, i]),
+  ),
   jar = new Map();
 let checks = 0,
   gateway;
@@ -781,6 +786,44 @@ try {
     "siblings cannot read or change each other's material editions",
   );
   await request(`/children/${child}/select`, {});
+  await migrate("0048_be_action_contrast.sql");
+  const contrastOpened = await request("/sessions", {
+    workshopId: "be-action-contrast",
+    roundSize: 20,
+    clientRequestId: crypto.randomUUID(),
+  });
+  check(
+    contrastOpened.status === 201 && contrastOpened.data.total === 12,
+    "contrast selection caps at twelve distinct authored cases instead of repeating to fill twenty",
+  );
+  const contrastTypes = new Set();
+  await finish(contrastOpened.data, false, {
+    answerFor: (item) =>
+      item.type === "repair" || item.type === "evidence"
+        ? JSON.parse(item.answers[0])
+        : item.type === "order"
+          ? ["Is", "your", "sister", "in", "the", "library", "?"]
+          : item.answers[0],
+    onSaved: (session, item, receipt) => {
+      contrastTypes.add(item.type);
+      check(
+        receipt.outcome === "correct" && Boolean(receipt.feedback),
+        `contrast ${item.id} saves a correct result with contextual explanation`,
+      );
+      assert.equal(
+        JSON.stringify(session.exercise).includes('"answers"'),
+        false,
+      );
+    },
+  });
+  check(
+    contrastTypes.size === 5,
+    "contrast player completes choice, input, repair, order and evidence through actual save/next APIs",
+  );
+  check(
+    (await read(cycle.id)).finished,
+    "new contrast practice preserves the finished historical training plan",
+  );
   if (browserMode) {
     // Disposable UI fixture only: one real course allows picture-home → cards → player.
     const course = JSON.parse(

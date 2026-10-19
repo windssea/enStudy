@@ -769,6 +769,56 @@ try {
       `${topic} assigns five reserved tasks from remote D1 without answer leakage`,
     );
   }
+  const contrastBank = JSON.parse(
+    await readFile("content/be-action-release.v1.json", "utf8"),
+  );
+  const contrast = await authenticated("/sessions", {
+    workshopId: "be-action-contrast",
+    roundSize: 5,
+    clientRequestId: crypto.randomUUID(),
+  });
+  check(
+    contrast.status === 201 && contrast.data.total === 5,
+    "authored contrast bank assigns from remote D1",
+  );
+  let contrastSession = contrast.data;
+  const contrastTypes = new Set();
+  for (let index = 0; index < 5; index++) {
+    const item = contrastBank.items.find(
+      (i) => i.id === contrastSession.exercise.id,
+    );
+    assert.ok(item);
+    contrastTypes.add(item.type);
+    const answer = ["repair", "evidence"].includes(item.type)
+      ? JSON.parse(item.answers[0])
+      : item.type === "order"
+        ? ["Is", "your", "sister", "in", "the", "library", "?"]
+        : item.answers[0];
+    const receipt = await authenticated("/attempts", {
+      sessionId: contrastSession.id,
+      assignmentId: contrastSession.assignmentId,
+      leaseId: contrastSession.leaseId,
+      eventId: crypto.randomUUID(),
+      answer,
+    });
+    check(
+      receipt.status === 201 &&
+        receipt.data.outcome === "correct" &&
+        Boolean(receipt.data.feedback),
+      `remote contrast ${item.type} saves and explains`,
+    );
+    const next = await authenticated(`/sessions/${contrastSession.id}/next`, {
+      assignmentId: contrastSession.assignmentId,
+      leaseId: contrastSession.leaseId,
+    });
+    assert.equal(next.status, 200);
+    if (index === 4) assert.equal(next.data.completed, true);
+    else contrastSession = next.data.session;
+  }
+  check(
+    contrastTypes.size === 5,
+    "five distinct contrast response types complete without duplicate families",
+  );
 } finally {
   try {
     if (temporaryChild) {

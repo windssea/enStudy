@@ -23,31 +23,31 @@ export type LibraryGroup = {
 export const topicGroups: LibraryGroup[] = [
   {
     id: "grammar",
-    title: "语法小工坊",
+    title: "基础语法",
     description: "给句子找到合适的词",
     symbol: "blocks",
   },
   {
     id: "tense",
-    title: "时态探险",
+    title: "时态",
     description: "分清现在、过去和将来",
     symbol: "clock",
   },
   {
     id: "forms",
-    title: "单词变形工厂",
+    title: "词形变化",
     description: "看看词尾怎样变",
     symbol: "change",
   },
   {
     id: "sentence",
-    title: "句子积木",
-    description: "把问句、句型搭起来",
+    title: "句型与句子",
+    description: "问句、句型与句子结构",
     symbol: "sentence",
   },
   {
     id: "vocabulary",
-    title: "词语小天地",
+    title: "词汇",
     description: "找词义、拼单词、看情景",
     symbol: "words",
   },
@@ -59,13 +59,13 @@ export const topicGroups: LibraryGroup[] = [
   },
   {
     id: "reading",
-    title: "阅读小侦探",
+    title: "阅读理解",
     description: "用文字情景练习找线索",
     symbol: "search",
   },
   {
     id: "expression",
-    title: "表达小练场",
+    title: "表达",
     description: "先练句框，口语和写作另练",
     symbol: "talk",
   },

@@ -12,3 +12,4 @@ createRoot(document.getElementById("root")!).render(
 
 import "./clay-illustrations.css";
 import "./modern-learning.css";
+import "./product-interface.css";

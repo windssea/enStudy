@@ -84,7 +84,7 @@ describe("family account entry states", () => {
         mustChangePassword: false,
       },
     });
-    expect(html).toContain("添加一位小探险家");
+    expect(html).toContain("添加档案");
     expect(html).toContain("账号与密码");
     expect(html).not.toContain("家庭账号管理");
     expect(html).not.toContain("交给家长的临时密码");
