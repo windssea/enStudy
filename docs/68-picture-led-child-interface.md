@@ -24,6 +24,24 @@
 
 同源 iframe 的实际 CSS 视口分别为 768×1024、1024×768 和 375×812，检查首页图画、导航和窄屏文字排布；这是浏览器响应式验收，不是 Pad 实机、触摸或性能结论。截图存于忽略目录 artifacts/v045-pad-portrait.png、v045-pad-landscape.png、v045-phone-narrow.png 和 v045-child-player.png。声音按钮的状态响应已验，完整听审、真实儿童识图研究和不识字儿童独立学习测试仍待完成。写作、阅读和语法任务本身仍需要相应语言能力，不能把图画导航等同于全部内容适合零识字使用。
 
+最终包另验“更多玩法”的七个入口齐全；在 521px 实际浏览窗口中，页面宽度和 scrollWidth 同为 521，五个导航按钮为 89×96px。听提示后 Tab 直接到达大开始按钮，Shift+Tab 返回后空格可停止音频。绿色开始文字对比度约 6.18:1。真实儿童验收应观察能否在家长选档案后找到开始、停止提示、选择单词和保存答案；记录误触、求助与放弃点，不能以成人浏览器操作代替儿童试用结果。
+
 本阶段不增加数据库迁移，不修改 0001–0044，不改变管理员和注册设置。按阶段规则正常推送 main，经 GitHub Actions 顺序发布 Preview 与 Production；云端真实结果另行补记，尚未完成的发布不能写成已上线。
 
 首轮运行 39213574582 的格式、467 单元、构建、Functions 与初始化通过，词卡回归在同步执行本机 Wrangler SQL 后出现 UND_ERR_SOCKET（闲置连接被关闭），未进入 deploy，两站仍 v0.44。修正该本地核验脚本为每次关闭 HTTP 连接，避免复用失效连接；没有重试写请求、绕过断言或修改生产接口。修正后以最新 main 新运行继续完整检查。
+
+## 同步发布完成：2026年10月19日15:22
+
+[GitHub Actions 39214309814](https://github.com/windssea/enStudy/actions/runs/39214309814) 对最新 main ef3cdc15a2e1bc8971bfce652d82cfccbed8a7e9 成功完成检查与部署，应用主体提交为 bbca407。check 15:10:43–15:20:13，deploy 15:20:14–15:22:09（北京时间）。467 项单元、格式、构建、Functions、初始化及 1390 项完整运行检查通过；两站各 56 项线上检查通过，其中新增全部 22 段操作音频的 MIME、字节数和 SHA256 校验。
+
+| 环境 | 结果 |
+| --- | --- |
+| [Preview](https://development.english-quest-dev.pages.dev/) | 部署 52a989f6，独立 D1 无待应用迁移，15:21:24 验收通过 |
+| [Production](https://english-quest-dev.pages.dev/) | 同一构建部署 3c076ed5，独立 D1 无待应用迁移，15:22:07 验收通过 |
+| [正式域名](https://enstudy.nanokid.win/) | 同 Production，儿童小屋与提示音浏览器验收通过 |
+
+三个域名均为 eq-shell-v1-6eee87d97461874e，入口 /assets/index-Zi4pCV82.js，SHA256 为 daebd8ad374b769abf209b6a403d15fbe8717dde3a39aa8f9dd54194b5cb29c6；288 课与注册关闭保持。两套 D1 保留 0001–0044，没有新增资源、升级计划或本阶段数据库写入迁移。
+
+补充 26 项不同只读检查：两站各 8 项、正式域名 8 项，覆盖健康、静态壳、主文件字节、声音清单及全部 22 段音频、288 课、身份响应与匿名进度拒绝；另核对正式域名狐狸、皮卡丘 GLB 与构建字节完全相同。首次并发抓取正式域名声音时遇一次 TLS 连接重置，随后仅对该域名串行只读检查全部通过，没有重新发布。相关证据 artifacts/v045-published-public.log、v045-published-custom.log/.json/.exit、v045-published-models.log/.exit。
+
+内置浏览器在正式域名验证中文提示音开始/停止、无控制台错误；1265px 桌面页面无横向溢出，截图 artifacts/v045-production-child-home-desktop.png，窄窗另存 v045-production-child-home.png。先前本机 Pad 尺寸验收不代替真机。完整日志 artifacts/actions-v045-complete.log、actions-v045-final-watch.log/.exit；首轮失败日志保留。仅本次发布结果补记以 [skip ci] 提交；下一开发阶段继续正常触发部署。
