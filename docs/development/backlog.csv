@@ -1,11 +1,11 @@
 id,milestone,task,acceptance,status,evidence
 M0-01,M0,React TypeScript Vite工程与依赖锁定,类型检查与生产构建通过,done,package-lock.json与npm run build
-M0-02,M0,真实Three.js地图模块与DOM降级,懒加载和2D切换实现且实机另验,implemented-unverified-visual,src/CourseMapCanvas.tsx
-M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,deployed-assets-and-data-verified-visual-pending,docs/51-position-lab-and-third-term-unit.md及位置实验和双伙伴与六种词语模型加线上模块摘要和17专题54示范通过而浏览器GPU实机未验
-M0-02c,M0,宝可梦元素伙伴与形象选择,具名卡通粘土角色多视角拓扑动作和选择持久化通过,local-v2-and-closed-eyes-rendered-live-v1-device-pending,docs/55-surface-safe-cartoon-blinks.md及354单元37离线与4贴面闭眼固体及8视角实渲通过而新模型动作表情未发布与网页实机待验
-M0-02d,M0,位置关系3D教学,同一实物位置与中文步骤及示范证据一致,deployed-assets-and-evidence-verified-device-pending,docs/51-position-lab-and-third-term-unit.md及13闭合网格四状态实渲和位置路径与三地址线上辅助证据通过而网页实机待验
-M0-02e,M0,分步拼读与可操作粘土词块,原拼写分组和合拢及2D与键盘替代一致,local-browser-representative-verified-device-pending,docs/62-guided-clay-phonics-workbench.md及420单元61拼读专项240任务与内置浏览器late和sunflower实物点击及键盘和2D安静模式通过而平板帧率完整音素声学与云端仍待验
-M0-02f,M0,六站粘土课程地图,六个真实单元对应实物与路径和返回站点保持及静态替代,local-browser-representative-verified-device-pending,docs/64-six-station-clay-course-map.md及437单元和25课程24账号检查通过与内置浏览器3D点击快速改选键盘课程往返皮卡丘2D安静核对而平板真机帧率与云端仍待验
+M0-02,M0,真实Three.js地图模块与DOM降级,懒加载和2D切换实现且实机另验,superseded-renderer-by-user-request-v047,docs/70-generated-clay-illustrations.md及用户改用透明狐狸和原创小熊与插画场景和准确SVG教学而历史Three源文件仅归档保留且当前前端不加载
+M0-02b,M0,全站动效与3D学习场景,地图单词句式复习和回执反馈且减少动效与离屏暂停,superseded-renderer-by-user-request-v047,docs/70-generated-clay-illustrations.md及用户改用透明狐狸和原创小熊与插画场景和准确SVG教学而历史Three源文件仅归档保留且当前前端不加载
+M0-02c,M0,宝可梦元素伙伴与形象选择,具名卡通粘土角色多视角拓扑动作和选择持久化通过,superseded-renderer-by-user-request-v047,docs/70-generated-clay-illustrations.md及用户改用透明狐狸和原创小熊与插画场景和准确SVG教学而历史Three源文件仅归档保留且当前前端不加载
+M0-02d,M0,位置关系3D教学,同一实物位置与中文步骤及示范证据一致,superseded-renderer-by-user-request-v047,docs/70-generated-clay-illustrations.md及用户改用透明狐狸和原创小熊与插画场景和准确SVG教学而历史Three源文件仅归档保留且当前前端不加载
+M0-02e,M0,分步拼读与可操作粘土词块,原拼写分组和合拢及2D与键盘替代一致,superseded-renderer-by-user-request-v047,docs/70-generated-clay-illustrations.md及用户改用透明狐狸和原创小熊与插画场景和准确SVG教学而历史Three源文件仅归档保留且当前前端不加载
+M0-02f,M0,六站粘土课程地图,六个真实单元对应实物与路径和返回站点保持及静态替代,superseded-renderer-by-user-request-v047,docs/70-generated-clay-illustrations.md及用户改用透明狐狸和原创小熊与插画场景和准确SVG教学而历史Three源文件仅归档保留且当前前端不加载
 M0-03,M0,课程专题句式目录,72单元60专题72句式可读且标明草稿,done,public/content/catalog.json与HTTP检查
 M0-04,M0,本地D1迁移和样课闭环,服务端判题保存调度与提示证据通过,done,npm run verify:local
 M0-05,M0,跨家庭与幂等保护,越权拒绝且并发重试只计一次,done,本地workerd HTTP验证
@@ -29,11 +29,11 @@ M3-03,M3,复习选题与延迟测验,积压保护与同日跨入口不重复晋�
 M3-04,M3,离线队列与报告,断网恢复且未确认进度不虚报,partial-local-offline-confirmation,docs/42-offline-practice-and-confirmation.md及当前轮加密七题型队列和两种丢响应恢复及显式重新授权加7和30日报告而真实缓存磁盘飞行模式多标签导出完整错因及云端验收待做
 M3-05,M3,独立单词特训,分级词库多模式随机与复习进度通过,partial-deployed-word-study,docs/49-word-study-and-b-term-unit-two.md及360词条18主题1440任务保留加六种粘土模型与词卡四模式示范16本机和两站22功能检查通过而真实设备与教研审核待验
 M3-06,M3,个人错题小本与辅助重做,历史版本七题型对照和筛选分页及授权证据零奖励通过,local-verified-runtime-and-browser-remote-and-device-pending,docs/65-private-mistake-notebook.md及440单元1344完整回归48隔离与内置浏览器对照分页筛选重做奖励0和返回已验而完整错因诊断平板和云端仍待完成
-M4-01,M4,BYOK与预算,加密限流出站控制及故障回退通过,partial-local-text-and-voice,docs/35-ai-dialogue-and-voice.md及文字音频独立配置预算加密与本地59项语音检查通过而真实供应商出题审核运营治理和生产主密钥待做
+M4-01,M4,BYOK与预算,加密限流出站控制及故障回退通过,partial-deployed-text-voice-and-key-store-provider-pending,docs/71-cloud-ai-key-stores.md及独立环境主密钥站内保存检查和CI文本语音专项已通过而真实供应商出题审核运营治理与恢复待完成
 M4-02,M4,轮流语音,真实iPad格式权限和取消验证,partial-local-turn-based-voice,docs/35-ai-dialogue-and-voice.md及六场景WAV识别确认短对话和MP3合成本地实现而真实供应商与PC平板权限播放和实时语音待验
 M4-03,M4,BYOK单段写作建议,独立同意和版本隔离及共用预算和失败回退通过,local-mock-browser-and-runtime-verified-provider-review-pending,docs/63-byok-writing-feedback.md及429单元1296完整本地回归49点评专项与隔离模拟浏览器确认返回改文后收起通过而真实供应商教学质量平板与云端待验
 M5-01,M5,真机性能隐私和运营,发布门槛全部通过且可恢复删除,todo,
 M0-08,M0,儿童看图和声音操作界面,图画导航大按钮和中文指令以及逐张双语例句与保存接续通过,deployed-browser-and-runtime-verified-device-pending,docs/68-picture-led-child-interface.md及467单元1390运行两站各56线上和26附加检查及正式域名浏览器通过而儿童研究听审和Pad实机待验
 M3-05b,M3,低识字儿童听音认图与图卡学习,60词图片录音180变体和真实保存复习隔离及反馈示范通过,deployed-browser-and-runtime-verified-device-pending,docs/69-picture-word-learning.md及阶段477单元26组专项180真实变体判分并随v047通过481单元1416运行两站线上而儿童听审和Pad实机待验
 M0-09,M0,透明粘土角色与插画场景,两位原创角色四张原图六站大按钮及无WebGL前端,deployed-browser-and-runtime-verified-device-pending,docs/70-generated-clay-illustrations.md及481单元1416运行两站各54线上30附加功能27只读和四种尺寸及透明通道检查通过而Pad实机与儿童研究待验
-M4-04,M4,线上BYOK加密配置和站内保存检查,独立环境密钥安全复用及家长密码验证加解密且无供应商请求,implementation-verified-deployment-pending,docs/71-cloud-ai-key-stores.md及14配置单元48隔离AI检查通过而真实供应商与恢复演练待验
+M4-04,M4,线上BYOK加密配置和站内保存检查,独立环境密钥安全复用及家长密码验证加解密且无供应商请求,deployed-browser-and-runtime-verified-provider-and-recovery-pending,docs/71-cloud-ai-key-stores.md及495单元1424运行两站各57线上22保存和18只读检查通过而真实供应商和恢复演练待验

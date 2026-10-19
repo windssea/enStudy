@@ -61,3 +61,7 @@ CI通过57文件460项单元、格式、构建、Functions编译、本地初始�
 内置浏览器实测正式域名小屋、狐狸透明图和六站地图加载，Canvas数量0，根宽1265且无横向溢出，控制台无错误。上线截图为artifacts/v047-production-home.png和v047-production-map.png；本地尺寸截图另覆盖768×1024、1024×768、375×812。Pad实机、儿童试用和教研门槛仍待验。
 
 证据位于忽略目录artifacts：actions-v047-complete.log、actions-v047-watch.log/.exit、v047-published-public.json/.log/.exit与v047-published-functional.json/.log/.exit。Cloudflare保持原免费资源、独立D1、注册关闭和指定管理员不变。0001–0045未修改；插画阶段没有新增迁移文件，Production补上此前待用0045。仅本发布记录补记使用[skip ci]，后续开发阶段仍正常推送发布。
+
+## v0.48线上AI加密配置同步完成
+
+2026年10月19日18:10，[运行39234125516](https://github.com/windssea/enStudy/actions/runs/39234125516)将58ec503同步到Preview 7a97ebd0与Production 7156c758；两站独立D1仍至0045，无新增迁移。495单元、1424运行、两站各57线上，以及20:23后补充22项站内保存和18项只读检查通过；正式域名构建一致。独立环境主密钥经GitHub Secret设置到各自Pages加密绑定，未启用家庭AI或调用真实供应商。完整证据与边界见[阶段记录](71-cloud-ai-key-stores.md)。
