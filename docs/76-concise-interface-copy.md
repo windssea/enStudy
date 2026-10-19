@@ -18,6 +18,12 @@
 
 首页桌面宽1265/scroll1265，768×1024宽768/scroll768，1024×768宽1009/scroll1009，375×812宽360/scroll360；主按钮64px，窄屏导航最小高度63.39px。均无横向溢出。证据为artifacts/v053-concise-home-desktop.png、v053-concise-home-pad.png和v053-concise-home-narrow.png。尺寸模拟不冒充真实Pad试用。
 
-Preview/Production实际结果在完成后补记；提交不等于已上线。使用现有GitHub正常发布流程、独立D1与免费资源。
+## 同步发布完成
+
+2026年10月19日22:57，[运行39271821692](https://github.com/windssea/enStudy/actions/runs/39271821692)完整成功，将814b3a5发布至Preview a0df5c5c、Production c09c7ba2。543单元/65文件、1483项完整运行（54基线与1429条PASS）、两站各73项线上检查通过；三个域名额外18项只读检查确认主入口SHA256与离线壳一致。两站无待应用迁移，独立D1仍0047，AI主密钥和精确主机配置均复用，没有新增资源或升级计划。
+
+内置浏览器另在已发布Preview首页确认精简文案实际出现、控制台无错误，截图artifacts/v053-published-home-preview.png。两轮隔离内存D1夹具均以stop正常退出，各57项检查通过、撤销夹具登录并释放服务；临时浏览器标签关闭，视口恢复。没有操作真实儿童记录。
+
+发布证据artifacts/actions-v053-full.log、actions-v053-complete.exit0、v053-published-public.json/.log/.exit0；本地证据check-v053-final.exit0、build-v053-final.exit0、worker-v053-final.exit0。随后仅发布记录使用[skip ci]补记，下一功能阶段继续正常CI与两站同步。
 
 设计检索尝试了UI/UX Pro Max的progressive disclosure helper text和收窄后的progressive disclosure；返回结果不匹配本次文案问题，因此未将其作为已验证的设计依据。采用技能已有的明确标签、大触控目标和错误反馈规则，按页面实际重复内容逐项精简。

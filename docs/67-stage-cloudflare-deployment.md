@@ -77,3 +77,11 @@ CI通过57文件460项单元、格式、构建、Functions编译、本地初始�
 ## v0.51 Qwen文字预设已同步发布
 
 2026年10月19日22:12，[运行39264895137](https://github.com/windssea/enStudy/actions/runs/39264895137)完整成功，cbcc7a7同步至Preview 4341fe4c与Production 2e82667a。539单元、1483完整运行、两站各73线上，以及额外18项Qwen预设站内保存/18只读检查通过。D1仍0047，环境主密钥和精确主机配置均复用，没有真实供应商请求或家庭AI开关变化。模型、参数、构建哈希、真实Key边界见[文字预设记录](74-qwen-text-profile.md)。
+
+## v0.52.1现代首页与导航已同步发布
+
+2026年10月19日22:49，[运行39270320049](https://github.com/windssea/enStudy/actions/runs/39270320049)成功，78efd14同步至Preview 66a34db7与Production 9ea01bbe。543单元、1483完整运行、两站各73线上与三域名18只读检查通过。D1仍0047，两个环境AI配置均复用。此前7a3d28f首次发布在Preview静态JSON传播期间核验失败、跳过Production，其原失败记录保留；此次为新main修正后的正常发布。见[首页与核验修订记录](75-modern-home-and-navigation.md)。
+
+## v0.53界面文案精简已同步发布
+
+2026年10月19日22:57，[运行39271821692](https://github.com/windssea/enStudy/actions/runs/39271821692)成功，814b3a5同步至Preview a0df5c5c与Production c09c7ba2。543单元、1483完整运行、两站各73线上及三域名18只读检查通过。首页重复小字、常用入口装饰口号移除，陪伴建议默认收起；必要状态、题目规则与AI同意保持。D1仍0047、AI配置均复用，免费资源和注册状态未改。构建哈希、尺寸与线上截图见[文案精简记录](76-concise-interface-copy.md)。

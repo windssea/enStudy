@@ -35,3 +35,7 @@ PC内容1265/scroll1265、主操作高64px；768×1024内容753/scroll753，底�
 UI/UX Pro Max教育产品检索给出的粘土和高饱和玩具建议与最新用户要求冲突，未继续采用；Flat Design检索支持清楚排版、线性图标与短反馈。本阶段按实际学习任务确定层级和内容，不引入销售转化模板或成人数据看板。保留大触控目标和中文说明，以便现代外观与儿童可用性同时成立。
 
 22:33以当前完整构建和修订后的GET核验流程复验Preview，73项全部通过，临时档案和登录清理完成。原首次Actions仍为失败状态，Production没有被标作已更新；新提交继续走正常发布。证据artifacts/v052-preview-recheck.log/.exit。
+
+## v0.52.1同步发布完成
+
+2026年10月19日22:49，[运行39270320049](https://github.com/windssea/enStudy/actions/runs/39270320049)成功，将78efd14同步发布至Preview 66a34db7和Production 9ea01bbe。543项单元、1483项完整运行（54基线与1429条PASS）、两站各73项线上检查通过；另三域名18项只读核验通过，主入口、SHA256、122资产离线壳均与上述构建一致。静态JSON核验修订正常通过，没有重跑旧提交。两环境D1仍0047，主密钥与精确主机配置均retained。证据artifacts/actions-v0521-full.log、actions-v0521-complete.exit0与v0521-published-public.log/.exit0。后续文案精简另见76阶段，不混同该次发布内容。
