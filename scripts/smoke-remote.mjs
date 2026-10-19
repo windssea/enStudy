@@ -140,7 +140,8 @@ check(
     currentHealth.writingProtocol === 1 &&
     currentHealth.writingReviewProtocol === 1 &&
     currentHealth.phonicsProtocol === 1 &&
-    currentHealth.exportProtocol === 1,
+    currentHealth.exportProtocol === 1 &&
+    currentHealth.mistakeProtocol === 1,
   "current offline confirmation and companion protocols delivered",
 );
 const shell = await shellResponse.json();
@@ -198,6 +199,26 @@ const exportModules = expectedShell.assets.filter((path) =>
 );
 const writingReviewModules = expectedShell.assets.filter((path) =>
   /\/WritingAiReview-.*\.js$/.test(path),
+);
+const mistakeModules = expectedShell.assets.filter((path) =>
+  /\/MistakeNotebook-.*\.js$/.test(path),
+);
+assert.equal(mistakeModules.length, 1);
+for (const path of mistakeModules) {
+  const r = await request(path),
+    actual = Buffer.from(await r.arrayBuffer()),
+    expected = await readFile(new URL("../dist" + path, import.meta.url));
+  check(
+    r.status === 200 &&
+      /javascript/.test(r.headers.get("content-type") ?? "") &&
+      createHash("sha256").update(actual).digest("hex") ===
+        createHash("sha256").update(expected).digest("hex"),
+    "private mistake notebook interface matches this build",
+  );
+}
+check(
+  (await request("/api/v1/learning/mistakes")).status === 401,
+  "anonymous mistake notebooks rejected",
 );
 assert.equal(writingReviewModules.length, 1);
 for (const path of writingReviewModules) {

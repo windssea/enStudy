@@ -187,7 +187,7 @@ export default function StructuredAnswer({
           />
         </label>
         <div className="repair-preview">
-          <small>我的修改预览 · 还没判题</small>
+          <small>我的修改预览</small>
           <p lang="en">
             {joinParts(
               parts.map((p) =>

@@ -74,6 +74,7 @@
 | 64 | [v0.40分步拼读与粘土词块](62-guided-clay-phonics-workbench.md) | 三步中文引导、直接点实物、长词块加宽、2D示意与浏览器实测 |
 | 65 | [v0.41自带AI的单段写作建议](63-byok-writing-feedback.md) | 独立同意、版本绑定、加密建议、共用预算、只读恢复与浏览器模拟验收 |
 - [六站粘土课程地图](64-six-station-clay-course-map.md)
+- [个人错题小本与辅助重做](65-private-mistake-notebook.md)
 
 配套资料：
 

@@ -40,6 +40,7 @@ export interface Exercise {
   editing?: { parts: { id: string; text: string }[] };
 }
 export interface LearningSession {
+  guidedRetry?: boolean;
   offlinePrepared?: boolean;
   id: string;
   leaseId: string | null;

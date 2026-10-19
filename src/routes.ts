@@ -4,6 +4,7 @@ export type View =
   | "patterns"
   | "words"
   | "review"
+  | "mistakes"
   | "parent"
   | "talk"
   | "workshops"
@@ -67,6 +68,7 @@ export function parseRoute(fragment: string): Route {
     "patterns",
     "words",
     "review",
+    "mistakes",
     "parent",
     "talk",
     "workshops",

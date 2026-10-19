@@ -47,6 +47,15 @@ import { reportRoutes } from "./reports";
 import { createAiRoutes } from "./aiRoutes";
 import type { AiConfig } from "./aiPolicy";
 import { trainingRoutes, prepareTraining, TrainingFault } from "./training";
+import {
+  mistakeRoutes,
+  mistakeEvent,
+  readMistake,
+  mistakeExists,
+  mistakeGuard,
+  mistakePublication,
+} from "./mistakes";
+import { isGuidedRetry } from "../domain/mistakes";
 import type { TrainingPhase } from "../domain/training";
 import { answerExposureKeys } from "../domain/exposure";
 import {
@@ -225,6 +234,7 @@ app.get("/api/v1/health", (c) =>
     writingReviewProtocol: 1,
     phonicsProtocol: 1,
     exportProtocol: 1,
+    mistakeProtocol: 1,
     householdProtocol: 1,
     householdSharingEnabled:
       c.env.APP_STAGE === "local" || platformFeatures.householdSharingEnabled,
@@ -423,6 +433,7 @@ app.route("/api/v1", companionRoutes);
 app.route("/api/v1", writingRoutes);
 app.route("/api/v1", phonicsRoutes);
 app.route("/api/v1", trainingRoutes);
+app.route("/api/v1", mistakeRoutes);
 interface Assignment {
   offline_prepared_at: number | null;
   id: string;
@@ -489,6 +500,7 @@ function sessionPayload(
     state: row.state,
     assignmentId: row.assignment_id,
     hintLevel: row.hint_level,
+    ...(isGuidedRetry(row.source_ref) ? { guidedRetry: true } : {}),
     ...(exercise.type === "listen"
       ? {
           listening: {
@@ -1010,6 +1022,40 @@ app.post("/api/v1/sessions", async (c) => {
   if (selectors.filter(Boolean).length !== 1)
     return c.json(fault("INVALID_SESSION", "请选择一种有效的学习任务。"), 422);
   if (
+    body.mistakeEventId !== undefined &&
+    (!body.exerciseId || !mistakeEvent(body.mistakeEventId))
+  )
+    return c.json(
+      fault("INVALID_MISTAKE_RETRY", "请从一条已保存的记录开始重做。"),
+      422,
+    );
+  const mistake = body.mistakeEventId
+    ? await readMistake(c.env.DB, actor, body.mistakeEventId)
+    : null;
+  const retryExercise =
+    mistake && mistake.available
+      ? exerciseById.get(mistake.item_id)
+      : undefined;
+  if (
+    body.mistakeEventId &&
+    (!retryExercise || retryExercise.id !== body.exerciseId)
+  )
+    return c.json(
+      fault("MISTAKE_NOT_FOUND", "这条记录暂时不能重做，请重新打开错题小本。"),
+      404,
+    );
+  if (
+    body.mistakeVersion !== undefined &&
+    (!retryExercise || body.mistakeVersion !== (retryExercise.version ?? 1))
+  )
+    return c.json(
+      fault(
+        "MISTAKE_VERSION_CHANGED",
+        "这题的讲解已更新，请重新打开错题小本。",
+      ),
+      409,
+    );
+  if (
     body.roundSize !== undefined &&
     (!(
       body.topicId ||
@@ -1072,7 +1118,7 @@ app.post("/api/v1/sessions", async (c) => {
       body.exerciseId ??
       "due",
   );
-  const sourceRef = `${source}:${reference}${["topic", "pattern", "vocabulary", "workshop", "phonics"].includes(source) ? `:${body.roundSize ?? 10}` : ""}${source === "vocabulary" ? `:${body.wordMode ?? "mixed"}` : ""}${body.trainingCycleId ? `:training:${body.trainingCycleId}:${body.trainingVersion}` : ""}`;
+  const sourceRef = `${source}:${reference}${["topic", "pattern", "vocabulary", "workshop", "phonics"].includes(source) ? `:${body.roundSize ?? 10}` : ""}${source === "vocabulary" ? `:${body.wordMode ?? "mixed"}` : ""}${body.trainingCycleId ? `:training:${body.trainingCycleId}:${body.trainingVersion}` : ""}${body.mistakeEventId ? `:v${retryExercise?.version ?? 1}:mistake:${body.mistakeEventId}` : ""}`;
   const existing = await loadSession(c.env.DB, actor, body.clientRequestId);
   if (existing) {
     if (
@@ -1108,7 +1154,9 @@ app.post("/api/v1/sessions", async (c) => {
     source === "lesson"
       ? exercises.filter((item) => item.lessonId === lesson?.id)
       : source === "single"
-        ? exercises.filter((item) => item.id === body.exerciseId)
+        ? retryExercise
+          ? [retryExercise]
+          : exercises.filter((item) => item.id === body.exerciseId)
         : [];
   if (source === "lesson" && !lesson) selected = [];
   if (training) selected = training.items;
@@ -1205,7 +1253,7 @@ app.post("/api/v1/sessions", async (c) => {
         now,
       ),
       c.env.DB.prepare(
-        `INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref,lease_grant_id) SELECT ?,?,?,?,?,'active',?,?,?,?,? WHERE ${grantAuthorization} AND NOT EXISTS(SELECT 1 FROM learning_sessions s WHERE s.household_id=? AND s.child_id=? AND s.state='active' AND (s.lease_grant_id IS NULL OR s.lease_grant_id<>?)) ${training ? `AND EXISTS(SELECT 1 FROM training_cycles WHERE id=? AND household_id=? AND child_id=? AND version=?) AND NOT EXISTS(SELECT 1 FROM session_items seen WHERE seen.household_id=? AND seen.child_id=? AND seen.item_id IN (${training.guardedItems.map(() => "?").join(",")})) AND NOT EXISTS(SELECT 1 FROM teaching_exposures e WHERE e.household_id=? AND e.child_id=? AND e.evidence_key IN (${training.guardedExposureKeys.map(() => "?").join(",")}))` : ""}`,
+        `INSERT INTO learning_sessions(id,household_id,child_id,release_id,lease_id,state,created_at,lesson_id,source,source_ref,lease_grant_id) SELECT ?,?,?,?,?,'active',?,?,?,?,? WHERE ${grantAuthorization} AND NOT EXISTS(SELECT 1 FROM learning_sessions s WHERE s.household_id=? AND s.child_id=? AND s.state='active' AND (s.lease_grant_id IS NULL OR s.lease_grant_id<>?)) ${training ? `AND EXISTS(SELECT 1 FROM training_cycles WHERE id=? AND household_id=? AND child_id=? AND version=?) AND NOT EXISTS(SELECT 1 FROM session_items seen WHERE seen.household_id=? AND seen.child_id=? AND seen.item_id IN (${training.guardedItems.map(() => "?").join(",")})) AND NOT EXISTS(SELECT 1 FROM teaching_exposures e WHERE e.household_id=? AND e.child_id=? AND e.evidence_key IN (${training.guardedExposureKeys.map(() => "?").join(",")}))` : ""}${retryExercise ? ` AND ${mistakeExists} AND ${mistakePublication}` : ""}`,
       ).bind(
         body.clientRequestId,
         actor.householdId,
@@ -1237,7 +1285,26 @@ app.post("/api/v1/sessions", async (c) => {
               ...training.guardedExposureKeys,
             ]
           : []),
+        ...(retryExercise
+          ? [
+              ...mistakeGuard(
+                actor,
+                body.mistakeEventId,
+                { id: mistake!.item_id, version: mistake!.item_version },
+                now,
+              ),
+              retryExercise.id,
+              retryExercise.version ?? 1,
+            ]
+          : []),
       ),
+      ...(retryExercise
+        ? [
+            c.env.DB.prepare(
+              "INSERT INTO session_activation_checks(request_id,household_id,child_id,ok) VALUES(?,?,?,changes())",
+            ).bind(body.clientRequestId, actor.householdId, actor.childId),
+          ]
+        : []),
       ...(training
         ? [
             c.env.DB.prepare(
@@ -1258,7 +1325,7 @@ app.post("/api/v1/sessions", async (c) => {
         : []),
       ...selected.map((item, index) =>
         c.env.DB.prepare(
-          `INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version,presentation_json,content_release_id) SELECT ?,?,?,?,?,?,?,?,? WHERE ${createdHere}`,
+          `INSERT INTO session_items(id,household_id,child_id,session_id,position,item_id,item_version,hint_level,presentation_json,content_release_id) SELECT ?,?,?,?,?,?,?,?,?,? WHERE ${createdHere}`,
         ).bind(
           crypto.randomUUID(),
           actor.householdId,
@@ -1267,6 +1334,7 @@ app.post("/api/v1/sessions", async (c) => {
           index,
           item.id,
           item.version ?? 1,
+          retryExercise ? 1 : 0,
           JSON.stringify({
             ...(item.choices ? { choices: shuffle(item.choices) } : {}),
             ...(item.tokens ? { tokens: shuffle(item.tokens) } : {}),
@@ -1847,7 +1915,7 @@ app.post("/api/v1/attempts", async (c) => {
       independentEvidence: outcome === "correct",
       feedback: exercise.explanation,
       nextReviewDay: next.dueDay,
-      rewardDelta: offline ? 0 : 1,
+      rewardDelta: offline || isGuidedRetry(row.source_ref) ? 0 : 1,
       serverSequence: sequence,
     };
     try {
@@ -1917,8 +1985,12 @@ app.post("/api/v1/attempts", async (c) => {
           actor.householdId,
           actor.childId,
           body.eventId,
-          offline ? 0 : 1,
-          offline ? "offline_practice" : "participation",
+          receipt.rewardDelta,
+          offline
+            ? "offline_practice"
+            : isGuidedRetry(row.source_ref)
+              ? "guided_retry"
+              : "participation",
         ),
       ]);
       return c.json(receipt, 201);

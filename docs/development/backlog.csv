@@ -28,6 +28,7 @@ M3-02,M3,72句式和词形规则,槽位与合法变体及错误归因通过,part
 M3-03,M3,复习选题与延迟测验,积压保护与同日跨入口不重复晋级,partial-local-delayed-checkpoints,docs/33-topic-training-journeys.md及1/3/7日共用卡片和逾期合并通过而专用评估池与跨入口任务合并待做
 M3-04,M3,离线队列与报告,断网恢复且未确认进度不虚报,partial-local-offline-confirmation,docs/42-offline-practice-and-confirmation.md及当前轮加密七题型队列和两种丢响应恢复及显式重新授权加7和30日报告而真实缓存磁盘飞行模式多标签导出完整错因及云端验收待做
 M3-05,M3,独立单词特训,分级词库多模式随机与复习进度通过,partial-deployed-word-study,docs/49-word-study-and-b-term-unit-two.md及360词条18主题1440任务保留加六种粘土模型与词卡四模式示范16本机和两站22功能检查通过而真实设备与教研审核待验
+M3-06,M3,个人错题小本与辅助重做,历史版本七题型对照和筛选分页及授权证据零奖励通过,local-verified-runtime-and-browser-remote-and-device-pending,docs/65-private-mistake-notebook.md及440单元1344完整回归48隔离与内置浏览器对照分页筛选重做奖励0和返回已验而完整错因诊断平板和云端仍待完成
 M4-01,M4,BYOK与预算,加密限流出站控制及故障回退通过,partial-local-text-and-voice,docs/35-ai-dialogue-and-voice.md及文字音频独立配置预算加密与本地59项语音检查通过而真实供应商出题审核运营治理和生产主密钥待做
 M4-02,M4,轮流语音,真实iPad格式权限和取消验证,partial-local-turn-based-voice,docs/35-ai-dialogue-and-voice.md及六场景WAV识别确认短对话和MP3合成本地实现而真实供应商与PC平板权限播放和实时语音待验
 M4-03,M4,BYOK单段写作建议,独立同意和版本隔离及共用预算和失败回退通过,local-mock-browser-and-runtime-verified-provider-review-pending,docs/63-byok-writing-feedback.md及429单元1296完整本地回归49点评专项与隔离模拟浏览器确认返回改文后收起通过而真实供应商教学质量平板与云端待验

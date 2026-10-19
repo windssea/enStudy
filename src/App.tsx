@@ -51,6 +51,7 @@ import {
 const PhonicsCentre = lazy(() => import("./PhonicsCentre"));
 const WordAudioButton = lazy(() => import("./WordAudioButton"));
 const WritingWorkshop = lazy(() => import("./WritingWorkshop"));
+const MistakeNotebook = lazy(() => import("./MistakeNotebook"));
 const WordTraining = lazy(() => import("./WordTraining"));
 const PracticeLibrary = lazy(() => import("./PracticeLibrary"));
 const PatternPractice = lazy(() => import("./PatternPractice"));
@@ -627,6 +628,9 @@ export default function App() {
       roundSize?: number;
       trainingCycleId?: string;
       trainingVersion?: number;
+      mistakeEventId?: string;
+      mistakeVersion?: number;
+      clientRequestId?: string;
     },
   ) {
     if (!identity.authenticated || !identity.child) {
@@ -644,8 +648,10 @@ export default function App() {
     const current = epoch.current;
     try {
       const data = await api<LearningSession>("/sessions", {
-        ...(task ?? { exerciseId }),
-        clientRequestId: crypto.randomUUID(),
+        ...(task?.mistakeEventId
+          ? { ...task, exerciseId }
+          : (task ?? { exerciseId })),
+        clientRequestId: task?.clientRequestId ?? crypto.randomUUID(),
       });
       if (epoch.current !== current) return;
       setLastResult(null);
@@ -763,7 +769,7 @@ export default function App() {
         setReceipt(null);
         await refreshProgress(current);
         if (topicReturn) openTraining(topicReturn);
-        else move("review");
+        else move(session.guidedRetry ? "mistakes" : "review");
       } else if (result.session) {
         setFreshReceiptEvent(null);
         setSession(result.session);
@@ -867,17 +873,18 @@ export default function App() {
     review: "再想一想学过的",
     parent: "档案与学习记录",
   };
-  const sessionHome: View =
-    (
-      {
-        vocabulary: "words",
-        topic: "topics",
-        pattern: "patterns",
-        workshop: "workshops",
-        phonics: "phonics",
-        review: "review",
-      } as Record<string, View>
-    )[session?.source ?? ""] ?? "map";
+  const sessionHome: View = session?.guidedRetry
+    ? "mistakes"
+    : ((
+        {
+          vocabulary: "words",
+          topic: "topics",
+          pattern: "patterns",
+          workshop: "workshops",
+          phonics: "phonics",
+          review: "review",
+        } as Record<string, View>
+      )[session?.source ?? ""] ?? "map");
   const currentSection =
     view === "exercise"
       ? sessionHome
@@ -885,11 +892,13 @@ export default function App() {
         ? "map"
         : view;
   const activeNav =
-    currentSection === "workshops"
-      ? "topics"
-      : currentSection === "phonics"
-        ? "words"
-        : currentSection;
+    currentSection === "mistakes"
+      ? "review"
+      : currentSection === "workshops"
+        ? "topics"
+        : currentSection === "phonics"
+          ? "words"
+          : currentSection;
   return (
     <MotionShell quiet={quiet || reduced} flat={twoD} companion={partner.id}>
       <a className="skip" href="#main">
@@ -946,18 +955,21 @@ export default function App() {
           <div>
             <small>你在这里</small>
             <strong>
-              {view === "phonics"
-                ? "拼读小路"
-                : view === "writing"
-                  ? "写作小工坊"
-                  : view === "offline"
-                    ? "本机离线练习"
-                    : view === "workshops"
-                      ? "英语互动工坊"
-                      : view === "talk"
-                        ? "英语小剧场"
-                        : (nav.find((n) => n[0] === activeNav)?.[1] ??
-                          "今天的小练习")}
+              {view === "mistakes" ||
+              (view === "exercise" && session?.guidedRetry)
+                ? "错题小本"
+                : view === "phonics"
+                  ? "拼读小路"
+                  : view === "writing"
+                    ? "写作小工坊"
+                    : view === "offline"
+                      ? "本机离线练习"
+                      : view === "workshops"
+                        ? "英语互动工坊"
+                        : view === "talk"
+                          ? "英语小剧场"
+                          : (nav.find((n) => n[0] === activeNav)?.[1] ??
+                            "今天的小练习")}
               {view === "exercise" && " · 练习中"}
             </strong>
           </div>
@@ -1515,6 +1527,21 @@ export default function App() {
                   看看本机暂存的离线练习 →
                 </a>
               </p>
+              <section className="card mistake-entry">
+                <div>
+                  <h2>打开错题小本，找一个线索</h2>
+                  <p>
+                    看看那次保存的答案和中文讲解。跟着讲解重做，隔天再用新材料想一想。
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => move("mistakes")}
+                >
+                  打开错题小本
+                </button>
+              </section>
               <div className="stats">
                 <div className="card">
                   <strong>{progress.answered}</strong>
@@ -1673,6 +1700,29 @@ export default function App() {
               </button>
             </div>
           )}
+          {view === "mistakes" && (
+            <Suspense fallback={<p role="status">正在打开错题小本…</p>}>
+              <MistakeNotebook
+                key={identity.child?.id ?? "guest"}
+                childId={identity.child?.id}
+                busy={busy}
+                onBack={() => move("review")}
+                onProfile={() => move("parent")}
+                onRetry={(
+                  exerciseId,
+                  mistakeEventId,
+                  clientRequestId,
+                  mistakeVersion,
+                ) =>
+                  void start(exerciseId, {
+                    mistakeEventId,
+                    clientRequestId,
+                    mistakeVersion,
+                  })
+                }
+              />
+            </Suspense>
+          )}
           {view === "parent" && (
             <FamilySpace
               key={`${identity.adult?.username}:${identity.adult?.householdId}:${identity.adult?.contextVersion}`}
@@ -1708,7 +1758,7 @@ export default function App() {
                 backup={draftBackup}
                 onRefresh={() => void refreshSession()}
                 onTakeover={() => void takeOver()}
-                leaveLabel={`返回${sessionHome === "phonics" ? "拼读小路" : sessionHome === "workshops" ? "互动工坊" : (nav.find((n) => n[0] === sessionHome)?.[1] ?? "学习地图")}`}
+                leaveLabel={`返回${sessionHome === "mistakes" ? "错题小本" : sessionHome === "phonics" ? "拼读小路" : sessionHome === "workshops" ? "互动工坊" : (nav.find((n) => n[0] === sessionHome)?.[1] ?? "学习地图")}`}
                 onLeave={() => move(sessionHome)}
               />
               {sessionNotice && (
@@ -1719,6 +1769,12 @@ export default function App() {
               {session.offlinePrepared && (
                 <p className="notice">
                   这轮题目已准备为本机练习；联网提交也另记离线练习证据，不增加独立掌握计数或星星。
+                </p>
+              )}
+              {session.guidedRetry && (
+                <p className="notice">
+                  跟着讲解重做 ·
+                  这一题按辅助练习保存，不追加星星，不增加独立掌握计数。之后再用新材料回想。
                 </p>
               )}
               <div className="exercise-top">
@@ -1749,19 +1805,21 @@ export default function App() {
                   }
                 >
                   返回
-                  {session.source === "phonics"
-                    ? "拼读小路"
-                    : session.source === "workshop"
-                      ? "互动工坊"
-                      : session.source === "vocabulary"
-                        ? "单词特训"
-                        : session.source === "pattern"
-                          ? "固定句式"
-                          : session.source === "topic"
-                            ? "专题特训"
-                            : session.source === "review"
-                              ? "复习花园"
-                              : "学习地图"}
+                  {session.guidedRetry
+                    ? "错题小本"
+                    : session.source === "phonics"
+                      ? "拼读小路"
+                      : session.source === "workshop"
+                        ? "互动工坊"
+                        : session.source === "vocabulary"
+                          ? "单词特训"
+                          : session.source === "pattern"
+                            ? "固定句式"
+                            : session.source === "topic"
+                              ? "专题特训"
+                              : session.source === "review"
+                                ? "复习花园"
+                                : "学习地图"}
                 </button>
                 <span className="badge">
                   第{session.position ?? 1}步 / 共{session.total ?? 1}步
