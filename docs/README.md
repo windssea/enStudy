@@ -90,3 +90,5 @@
 - [开发里程碑待办](development/backlog.csv)
 
 这些资料以仓库文件交付，方便后续版本管理。CSV、SQL 和算法参考均为开发起点，不能替代生产系统的审核、迁移和端到端验证。
+
+- [阶段完成后同步Cloudflare](67-stage-cloudflare-deployment.md)
