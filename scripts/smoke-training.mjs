@@ -349,8 +349,14 @@ try {
     record.total > 0 && record.total <= 2 && record.stage === 0,
     "all phases share the original cards without same-day repeated promotion",
   );
-  const lexical = (await create("forms.ing")).data,
-    ld = await finish((await open(lexical)).data),
+  const lexical = (await create("forms.ing")).data;
+  // This scenario deliberately exercises a pre-existing ordinary lexical plan.
+  // New word-form plans now use their dedicated edition, covered separately.
+  sql(
+    `UPDATE training_cycles SET material_release_id=NULL,material_adopted_at=NULL WHERE id=${quote(lexical.id)} AND child_id=${quote(child)};`,
+  );
+  Object.assign(lexical, await read(lexical.id));
+  const ld = await finish((await open(lexical)).data),
     lp = await finish((await open(await read(lexical.id))).data, {
       seen: ld.seen,
     }),
@@ -359,7 +365,7 @@ try {
     });
   check(
     (await read(lexical.id)).scope === "new-lexeme" && lt.seen.size === 20,
-    "lexical banks state their limited transfer scope and keep material disjoint",
+    "legacy lexical banks state their limited transfer scope and keep material disjoint",
   );
   await advanceAnchor(await read(lexical.id), 7);
   const late = await read(lexical.id);
