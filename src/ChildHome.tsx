@@ -25,17 +25,12 @@ export default function ChildHome({
         aria-labelledby="learning-home-title"
       >
         <div className="learning-welcome-copy">
-          <p className="learning-eyebrow">
-            {nickname ? nickname + "，欢迎回来" : "欢迎来到英语探险岛"}
-          </p>
+          {nickname && <p className="learning-eyebrow">{nickname}，欢迎回来</p>}
           <h1 id="learning-home-title">
             从一句话，
             <br />
             开始学英语。
           </h1>
-          <p className="learning-intro">
-            听懂例句，试着表达。每次完成一小步，学习进度会为你保存。
-          </p>
           <div className="learning-start-row">
             <button
               className="learning-start"
@@ -62,39 +57,29 @@ export default function ChildHome({
           </div>
           {!nickname && (
             <p className="learning-parent-hint">
-              首次使用，请家长先登录并选择学习档案。
+              首次使用，请家长登录并选择档案。
             </p>
           )}
         </div>
         <div className="learning-path-preview" aria-label="课程学习的三个步骤">
           <div className="learning-path-heading">
             <LearningIcon kind="book" />
-            <span>{grade ? grade + "年级课程" : "按年级循序学习"}</span>
+            <span>{grade ? grade + "年级课程" : "学习步骤"}</span>
           </div>
           <ol>
             <li>
               <span className="learning-step-number">1</span>
-              <div>
-                <strong>选一节课</strong>
-                <span>从当前年级的内容开始</span>
-              </div>
+              <strong>选一节课</strong>
             </li>
             <li>
               <span className="learning-step-number">2</span>
-              <div>
-                <strong>听一句，想一想</strong>
-                <span>先理解，再试着自己表达</span>
-              </div>
+              <strong>听一句，想一想</strong>
             </li>
             <li>
               <span className="learning-step-number">3</span>
-              <div>
-                <strong>完成一轮练习</strong>
-                <span>保留进度，下次接着学</span>
-              </div>
+              <strong>完成一轮练习</strong>
             </li>
           </ol>
-          <p>按自己的节奏，完成后就可以休息。</p>
         </div>
       </section>
       <section
@@ -103,16 +88,15 @@ export default function ChildHome({
       >
         <div className="learning-section-heading">
           <h2 id="learning-entries-title">选择学习内容</h2>
-          <span>课程、词汇与复习，按自己的节奏来</span>
         </div>
         <div className="learning-entry-grid">
           {(
             [
-              ["map", "课程学习", "按年级与学期，循序练习", "book"],
-              ["words", "单词训练", "认识词义、听音与拼写", "words"],
-              ["review", "间隔复习", "回顾到了复习时间的内容", "review"],
+              ["map", "课程学习", "book"],
+              ["words", "单词训练", "words"],
+              ["review", "复习", "review"],
             ] as const
-          ).map(([id, label, description, icon]) => (
+          ).map(([id, label, icon]) => (
             <button
               className="learning-entry"
               key={id}
@@ -122,33 +106,29 @@ export default function ChildHome({
                 <LearningIcon kind={icon} />
               </span>
               <strong>{label}</strong>
-              <span>{description}</span>
               <LearningIcon kind="arrow" />
             </button>
           ))}
         </div>
       </section>
       <details className="learning-more">
-        <summary>
-          专项与更多练习<span>语法、句式、拼读与表达</span>
-        </summary>
+        <summary>更多练习</summary>
         <div className="learning-more-grid">
           {(
             [
-              ["topics", "专题特训", "语法、时态与单词变形"],
-              ["patterns", "固定句式", "练习常用表达与句型"],
-              ["phonics", "自然拼读", "听音与字母组合"],
-              ["writing", "写作练习", "从提纲到一段话"],
-              ["talk", "对话练习", "在熟悉的场景里表达"],
-              ["workshops", "互动练习", "分类、排序与观察"],
-              ["offline", "离线练习", "先准备内容，再离线使用"],
+              ["topics", "专题特训"],
+              ["patterns", "固定句式"],
+              ["phonics", "自然拼读"],
+              ["writing", "写作练习"],
+              ["talk", "对话练习"],
+              ["workshops", "互动练习"],
+              ["offline", "离线练习"],
             ] as const
-          ).map(([id, label, description]) => (
+          ).map(([id, label]) => (
             <button key={id} onClick={() => onGo(id)}>
               <LearningIcon kind={id} />
               <span>
                 <strong>{label}</strong>
-                <span>{description}</span>
               </span>
               <LearningIcon kind="arrow" />
             </button>

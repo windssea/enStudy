@@ -97,9 +97,7 @@ export default function FamilySpace({
   }
   return (
     <>
-      <p className="eyebrow">A LITTLE HELP, A BIG ADVENTURE</p>
-      <h1>陪孩子，把每一步走扎实。</h1>
-      <p className="lead">先选好探险家，再把今天的小进步留在这里。</p>
+      <h1>家长设置</h1>
       <details className="card">
         <summary>孩子的练习如何记录</summary>
         <p>
@@ -370,13 +368,8 @@ export default function FamilySpace({
             )}
           </section>
         )}
-        <aside className="card parent-guide">
-          <span className="eyebrow">给家长的一点小建议</span>
-          <h2>
-            少一点催促，
-            <br />
-            多一点“我也来试试”。
-          </h2>
+        <details className="card parent-guide">
+          <summary>陪伴建议与课程说明</summary>
           <ol>
             <li>
               <strong>每天一小轮</strong>
@@ -395,7 +388,7 @@ export default function FamilySpace({
             当前有{lessons.length}
             节原创微课，覆盖一至六年级；课程包含文字、听辨、阅读和部分分类修正互动。其余课程、完整听说读写与教材映射会按阶段更新。
           </div>
-        </aside>
+        </details>
       </div>
       {identity.adult &&
         !identity.adult.mustChangePassword &&

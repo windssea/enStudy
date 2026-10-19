@@ -149,13 +149,6 @@
   letter-spacing: -0.025em;
   color: #172c50;
 }
-.learning-intro {
-  max-width: 400px;
-  margin: 22px 0 0;
-  color: #53637c;
-  font-size: 18px;
-  line-height: 1.8;
-}
 .learning-start-row {
   display: flex;
   flex-wrap: wrap;
@@ -213,12 +206,12 @@
   gap: 24px;
   list-style: none;
   padding: 0;
-  margin: 26px 0;
+  margin: 24px 0 0;
 }
 .learning-path-preview li {
   display: flex;
   gap: 14px;
-  align-items: flex-start;
+  align-items: center;
 }
 .learning-step-number {
   display: grid;
@@ -233,23 +226,9 @@
   font-size: 14px;
   font-weight: 700;
 }
-.learning-path-preview li div {
-  display: grid;
-  gap: 3px;
-}
 .learning-path-preview strong {
   font-size: 17px;
   color: #273c5d;
-}
-.learning-path-preview li div > span,
-.learning-path-preview > p {
-  color: #647187;
-  font-size: 14px;
-}
-.learning-path-preview > p {
-  padding-top: 15px;
-  margin: 0;
-  border-top: 1px solid #edf0f5;
 }
 .learning-entries {
   margin-top: 34px;
@@ -266,10 +245,6 @@
   font-size: 23px;
   letter-spacing: -0.02em;
   color: #243852;
-}
-.learning-section-heading > span {
-  color: #647187;
-  font-size: 15px;
 }
 .learning-entry-grid {
   display: grid;
@@ -310,14 +285,9 @@
   line-height: 1.4;
   color: #263d5e;
 }
-.learning-entry > span:not(.learning-entry-icon) {
-  grid-column: 1;
-  font-size: 15px;
-  line-height: 1.7;
-}
 .learning-entry > .learning-icon {
   grid-column: 2;
-  grid-row: 2 / 4;
+  grid-row: 2;
   align-self: center;
   width: 22px;
   color: #6681a6;
@@ -335,13 +305,6 @@
   cursor: pointer;
   font-size: 18px;
   font-weight: 700;
-}
-.learning-more > summary > span {
-  display: inline-block;
-  margin-left: 18px;
-  font-size: 14px;
-  color: #647187;
-  font-weight: 400;
 }
 .learning-more-grid {
   display: grid;
@@ -371,12 +334,15 @@
   font-size: 17px;
   color: #2c405f;
 }
-.learning-more-grid button span span {
-  font-size: 14px;
-  color: #647187;
-}
 .learning-more-grid button > .learning-icon:last-child {
   width: 20px;
+}
+.parent-guide > summary {
+  min-height: 52px;
+  align-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 700;
 }
 @media (max-width: 1100px) {
   .learning-welcome {
@@ -481,31 +447,23 @@
   }
   .learning-entry-icon {
     grid-column: 1;
-    grid-row: 1 / 3;
+    grid-row: 1;
     align-self: center;
     margin: 0;
   }
-  .learning-entry > strong,
-  .learning-entry > span:not(.learning-entry-icon) {
+  .learning-entry > strong {
     grid-column: 2;
+    align-self: center;
   }
   .learning-entry > .learning-icon {
     grid-column: 3;
-    grid-row: 1 / 3;
+    grid-row: 1;
   }
   .learning-section-heading {
     gap: 6px;
   }
-  .learning-section-heading > span {
-    flex-basis: 100%;
-  }
   .learning-more {
     padding: 16px;
-  }
-  .learning-more > summary > span {
-    display: block;
-    margin-left: 0;
-    margin-top: 4px;
   }
   .learning-more-grid {
     grid-template-columns: 1fr;

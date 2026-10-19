@@ -1071,11 +1071,7 @@ export default function App() {
             <>
               <div className="page-head">
                 <div>
-                  <p className="eyebrow">课程探险 · 一站一站学</p>
                   <h1>今天，去英语岛探险！</h1>
-                  <p className="lead">
-                    跟课程学新知识；想练单词或语法，从导航选特训。
-                  </p>
                 </div>
                 <div className="filters">
                   <label>
@@ -1109,7 +1105,6 @@ export default function App() {
               {session && identity.authenticated && (
                 <section className="resume-banner">
                   <div>
-                    <span className="eyebrow">YOUR ADVENTURE CONTINUES</span>
                     <h2>
                       {session.access === "takeover-required"
                         ? "换台设备，接着上次的探索"
@@ -1235,7 +1230,6 @@ export default function App() {
                 </section>
                 <aside className="right-rail">
                   <section className="card writing-entry">
-                    <span className="eyebrow">MAKE IT YOURS</span>
                     <h2>写下自己的小作品</h2>
                     <p>从一句配文到三段短文，保存草稿，换设备继续。</p>
                     <button
@@ -1246,7 +1240,6 @@ export default function App() {
                     </button>
                   </section>
                   <section className="card mint talk-entry">
-                    <span className="eyebrow">SAY A LITTLE</span>
                     <h2>英语小剧场</h2>
                     <p>当一回森林朋友，把学过的句子说出来。</p>
                     <button className="secondary" onClick={() => move("talk")}>
@@ -1254,7 +1247,6 @@ export default function App() {
                     </button>
                   </section>
                   <section className="card sunny">
-                    <p className="eyebrow">TODAY’S LITTLE ADVENTURE</p>
                     <h2>今天练一点什么？</h2>
                     <p>一题一个小发现，做完就能休息。</p>
                     <ol className="task-list">
@@ -1296,7 +1288,6 @@ export default function App() {
               <section className="course-section">
                 <div className="page-head">
                   <div>
-                    <p className="eyebrow">A SMALL LESSON, A REAL DISCOVERY</p>
                     <h2>这一站，学会用英语表达</h2>
                     <p>先读中文小讲解，再试着把英语说完整。</p>
                   </div>
@@ -1500,7 +1491,6 @@ export default function App() {
                     ✓
                   </span>
                   <div>
-                    <span className="eyebrow">ONE MORE LITTLE DISCOVERY</span>
                     <h2>这一小轮，完成啦！</h2>
                     <p>
                       完成{lastResult.total}步练习 · 独立答对
@@ -1518,7 +1508,6 @@ export default function App() {
               )}
               <div className="discovery-hero">
                 <div>
-                  <p className="eyebrow">YOUR MEMORY GARDEN</p>
                   <h1>让记忆，慢慢长大。</h1>
                   <p className="lead">隔几天独立想起来，才是记忆变稳的证据。</p>
                 </div>

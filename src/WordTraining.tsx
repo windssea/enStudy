@@ -210,9 +210,7 @@ export default function WordTraining({
       {!selected && (
         <div className="word-hero">
           <div>
-            <p className="eyebrow">单词探险岛 · WORD QUEST</p>
             <h1>一起玩单词</h1>
-            <p className="lead">点大三角开始，也可以选一张图片。</p>
             {recommended && (
               <div className="word-launch">
                 <p>
@@ -359,12 +357,11 @@ export default function WordTraining({
           >
             <div className="word-section-heading">
               <div>
-                <p className="eyebrow">先选主题 → 确认玩法 → 开始挑战</p>
                 <h2 id="word-chooser-title" ref={chooserHeading} tabIndex={-1}>
                   挑一个你感兴趣的主题
                 </h2>
               </div>
-              <p>{themes.length}个生活主题 · 选好后再开始</p>
+              <p>{themes.length}个主题</p>
             </div>
             <div className="filter-row">
               <label>
@@ -465,7 +462,6 @@ export default function WordTraining({
         >
           <div className="word-workshop-heading">
             <div>
-              <p className="eyebrow">主题选好啦 · 确认这轮怎么玩</p>
               <h1 id="word-workshop-title" ref={workshopHeading} tabIndex={-1}>
                 {selected.title}
               </h1>
