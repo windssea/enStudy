@@ -207,7 +207,10 @@ describe("first B-term core courses", () => {
       );
       expect(html).toContain("下学期");
       expect(html).toContain(`约${lesson.minutes}分钟`);
-      expect(html.match(/class="card teaching-card"/g)).toHaveLength(3);
+      expect(html.match(/class="card child-example"/g)).toHaveLength(1);
+      expect(html).toContain('aria-label="第1张，共3张"');
+      expect(html).toContain('aria-label="下一张例句"');
+      expect(html).toContain(lesson.cards[0].example);
       expect(html).toContain("开始这节课的练习");
       expect(html).not.toContain("<canvas");
     }

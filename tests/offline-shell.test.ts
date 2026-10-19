@@ -5,7 +5,7 @@ const source = readFileSync(
   new URL("../public/offline-sw.js", import.meta.url),
   "utf8",
 );
-function runtime(model = false, invalidModel = false) {
+function runtime(model = false, invalidModel = false, guide = false) {
   const stores = new Map<string, Map<string, Response>>(),
     handlers = new Map<string, (event: any) => void>(),
     requests: { url: string; options: any }[] = [];
@@ -47,10 +47,15 @@ function runtime(model = false, invalidModel = false) {
               "/assets/main-1.js",
               "/assets/main-1.css",
               ...(model ? ["/assets/fox-1.glb"] : []),
+              ...(guide ? ["/audio/guides/1234567890abcdef12345678.mp3"] : []),
             ],
       });
     if (badAsset && url.endsWith(".css"))
       return new Response("broken", { status: 503 });
+    if (url.endsWith(".mp3"))
+      return new Response(new Uint8Array(200), {
+        headers: { "Content-Type": "audio/mpeg" },
+      });
     if (url.endsWith(".glb")) {
       const data = new Uint8Array(20),
         view = new DataView(data.buffer);
@@ -125,6 +130,16 @@ function runtime(model = false, invalidModel = false) {
   };
 }
 describe("offline public shell policy", () => {
+  it("keeps hashed public navigation audio offline without caching identity APIs", async () => {
+    const r = runtime(false, false, true);
+    expect((await r.prepare()).prepared).toBe(true);
+    r.offline();
+    const audio = await r.request("/audio/guides/1234567890abcdef12345678.mp3");
+    expect(audio?.headers.get("content-type")).toBe("audio/mpeg");
+    expect((await audio!.arrayBuffer()).byteLength).toBe(200);
+    expect(await r.request("/api/v1/me")).toBeUndefined();
+    expect(await r.request("/audio/guides/private-name.mp3")).toBeUndefined();
+  });
   it("prepares a bounded public GLB and serves it offline without credentials", async () => {
     const r = runtime(true);
     expect((await r.prepare()).prepared).toBe(true);

@@ -15,6 +15,7 @@ import { CompanionContext } from "./CompanionContext";
 import { companionInfo, type CompanionId } from "../packages/domain/companions";
 import { isSpeechActive } from "./speechActivity";
 import CompanionActions from "./CompanionActions";
+import ToyPicture from "./ToyPicture";
 import {
   companionGesture,
   type CompanionGesture,
@@ -27,17 +28,23 @@ export function MotionShell({
   flat,
   children,
   companion = "fox",
+  childView,
 }: {
   quiet: boolean;
   flat: boolean;
   children: ReactNode;
   companion?: CompanionId;
+  childView?: string;
 }) {
   const preferences = useMemo(() => ({ quiet, flat }), [quiet, flat]);
   return (
     <CompanionContext.Provider value={companion}>
       <MotionContext.Provider value={preferences}>
-        <div className="app-shell" data-quiet={quiet}>
+        <div
+          className={`app-shell${childView ? " child-shell" : ""}`}
+          data-child-view={childView}
+          data-quiet={quiet}
+        >
           {children}
         </div>
       </MotionContext.Provider>
@@ -235,11 +242,13 @@ export default function SceneStage({
   reaction = "thinking",
   compact = false,
   animateReaction = true,
+  simple = false,
 }: {
   kind: SceneKind;
   reaction?: Reaction;
   compact?: boolean;
   animateReaction?: boolean;
+  simple?: boolean;
 }) {
   const { quiet, flat } = useContext(MotionContext);
   const companion = useContext(CompanionContext),
@@ -365,7 +374,17 @@ export default function SceneStage({
           </SceneBoundary>
         )}
       </div>
-      {script && (
+      {script && simple && (
+        <button
+          className="child-greet"
+          onClick={() => play("wave")}
+          aria-label={`和${info.name}打招呼`}
+        >
+          <ToyPicture kind="wave" />
+          <span>你好！</span>
+        </button>
+      )}
+      {script && !simple && (
         <div className="scene-controls">
           <div className="scene-actions">
             <button

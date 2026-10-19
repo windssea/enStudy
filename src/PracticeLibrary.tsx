@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import SceneStage from "./SceneStage";
+import ToyPicture, { type ToyKind } from "./ToyPicture";
+import SpeechButton from "./SpeechButton";
 import PatternFrame from "./PatternFrame";
 import {
   gradeName,
@@ -7,25 +9,6 @@ import {
   type LibraryItem,
   type LibraryBrowse,
 } from "./practiceCatalog";
-
-function CategorySymbol({ kind }: { kind: string }) {
-  const paths: Record<string, string> = {
-    blocks: "M12 3 3 8l9 5 9-5-9-5ZM3 8v9l9 5 9-5V8m-9 5v9",
-    clock: "M12 7v5l4 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
-    change: "M4 7h15l-4-4m4 4-4 4M20 17H5l4 4m-4-4 4-4",
-    sentence:
-      "M3 5h7v6H3V5Zm11 0h7v6h-7V5ZM7 16h10v5H7v-5ZM6 11v2h12v-2m-6 2v3",
-    words: "M4 5h14v16H4V5Zm4 0V2h13v16h-3M8 16l3-7 3 7m-5-2h4",
-    letters: "m3 19 6-14 6 14M5 14h8m5-4h4m-2-2v11",
-    search: "M15 15l6 6M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z",
-    talk: "M4 4h16v12h-9l-6 4v-4H4V4Zm4 5h8m-8 3h5",
-  };
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d={paths[kind] ?? paths.talk} />
-    </svg>
-  );
-}
 
 export default function PracticeLibrary({
   kind,
@@ -59,6 +42,19 @@ export default function PracticeLibrary({
   const previousHidden = useRef(hidden);
   const searching = Boolean(query.trim());
   const selectedGroup = groups.find((row) => row.id === group);
+  const picture = (symbol: string): ToyKind =>
+    (
+      ({
+        blocks: "topics",
+        clock: "clock",
+        change: "change",
+        sentence: "topics",
+        words: "words",
+        letters: "words",
+        search: "search",
+        talk: "patterns",
+      }) as Record<string, ToyKind>
+    )[symbol] ?? "patterns";
   const visible = items.filter(
     (item) =>
       (!group || item.group === group) &&
@@ -152,48 +148,67 @@ export default function PracticeLibrary({
             : "不用一次都选，挑一个就好。"}
         </p>
       </div>
-      <div className="filter-row library-filters">
-        <label>
-          找{kind === "topic" ? "专题" : "句式"}
-          <input
-            ref={searchInput}
-            type="search"
-            value={query}
-            onChange={(e) => update({ query: e.target.value })}
-            placeholder={
-              kind === "topic"
-                ? "例如：过去、复数、介词"
-                : "例如：邀请、would like"
-            }
-          />
-        </label>
-        <label>
-          建议年级
-          <select
-            value={year}
-            disabled={busy}
-            onChange={(e) => update({ year: Number(e.target.value) })}
-          >
-            <option value={0}>全部年级</option>
-            {[1, 2, 3, 4, 5, 6].map((value) => (
-              <option key={value} value={value}>
-                {gradeName(value)}年级及以下起步
-              </option>
-            ))}
-          </select>
-        </label>
-        {(searching || year > 0) && (
-          <button
-            className="text-button"
-            onClick={() => {
-              update({ query: "", year: 0 });
-              searchInput.current?.focus();
-            }}
-          >
-            清除筛选
-          </button>
-        )}
-      </div>
+      {visible.some((i) => i.available) && (
+        <button
+          className="child-play library-surprise"
+          disabled={busy}
+          onClick={() => {
+            const first = visible.find((i) => i.available);
+            if (first) onOpen(first.id);
+          }}
+        >
+          <ToyPicture kind="play" />
+          <span>带我玩</span>
+        </button>
+      )}
+      <details className="child-library-options">
+        <summary>
+          <ToyPicture kind="parent" />
+          大人帮我挑
+        </summary>
+        <div className="filter-row library-filters">
+          <label>
+            找{kind === "topic" ? "专题" : "句式"}
+            <input
+              ref={searchInput}
+              type="search"
+              value={query}
+              onChange={(e) => update({ query: e.target.value })}
+              placeholder={
+                kind === "topic"
+                  ? "例如：过去、复数、介词"
+                  : "例如：邀请、would like"
+              }
+            />
+          </label>
+          <label>
+            建议年级
+            <select
+              value={year}
+              disabled={busy}
+              onChange={(e) => update({ year: Number(e.target.value) })}
+            >
+              <option value={0}>全部年级</option>
+              {[1, 2, 3, 4, 5, 6].map((value) => (
+                <option key={value} value={value}>
+                  {gradeName(value)}年级及以下起步
+                </option>
+              ))}
+            </select>
+          </label>
+          {(searching || year > 0) && (
+            <button
+              className="text-button"
+              onClick={() => {
+                update({ query: "", year: 0 });
+                searchInput.current?.focus();
+              }}
+            >
+              清除筛选
+            </button>
+          )}
+        </div>
+      </details>
       {group || searching ? (
         <div className="library-item-grid">
           {visible.map((item) => (
@@ -246,26 +261,33 @@ export default function PracticeLibrary({
               (item) => item.group === entry.id,
             ).length;
             return (
-              <button
-                className={`library-group word-tone-${index % 4}`}
-                key={entry.id}
-                disabled={busy || !count}
-                ref={(node) => {
-                  if (node) buttons.current.set(`group:${entry.id}`, node);
-                  else buttons.current.delete(`group:${entry.id}`);
-                }}
-                onClick={() => chooseGroup(entry.id)}
-              >
-                <span className="library-symbol">
-                  <CategorySymbol kind={entry.symbol} />
-                </span>
-                <strong>{entry.title}</strong>
-                <span>{entry.description}</span>
-                <span className="library-card-action">
-                  {count}个{kind === "topic" ? "专题" : "句式"}
-                  <span aria-hidden="true"> →</span>
-                </span>
-              </button>
+              <article className="child-library-group" key={entry.id}>
+                <button
+                  className={`library-group word-tone-${index % 4}`}
+                  key={entry.id}
+                  disabled={busy || !count}
+                  ref={(node) => {
+                    if (node) buttons.current.set(`group:${entry.id}`, node);
+                    else buttons.current.delete(`group:${entry.id}`);
+                  }}
+                  onClick={() => chooseGroup(entry.id)}
+                >
+                  <span className="library-symbol">
+                    <ToyPicture kind={picture(entry.symbol)} />
+                  </span>
+                  <strong>{entry.title}</strong>
+                  <span>{entry.description}</span>
+                  <span className="library-card-action">
+                    {count}个{kind === "topic" ? "专题" : "句式"}
+                    <span aria-hidden="true"> →</span>
+                  </span>
+                </button>
+                <SpeechButton
+                  language="zh-CN"
+                  text={entry.title + "。" + entry.description}
+                  label="听这里"
+                />
+              </article>
             );
           })}
         </div>

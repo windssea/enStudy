@@ -1,4 +1,5 @@
 export type View =
+  | "home"
   | "map"
   | "topics"
   | "patterns"
@@ -34,6 +35,7 @@ export const mapFragment = (grade: number, term: string) => {
 };
 export function parseRoute(fragment: string): Route {
   const hash = fragment.replace(/^#/, "");
+  if (!hash || hash === "home") return { view: "home", lessonId: null };
   if (hash.startsWith("map?")) {
     const params = new URLSearchParams(hash.slice(4));
     const rawGrade = params.get("grade"),

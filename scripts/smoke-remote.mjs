@@ -40,6 +40,35 @@ const request = (path, options = {}) =>
     ...options,
     signal: AbortSignal.timeout(20000),
   });
+const expectedGuides = JSON.parse(
+  await readFile(
+    new URL("../public/content/child-guides.v1.json", import.meta.url),
+    "utf8",
+  ),
+);
+const guideManifestResponse = await request("/content/child-guides.v1.json");
+check(
+  guideManifestResponse.status === 200 &&
+    JSON.stringify(await guideManifestResponse.json()) ===
+      JSON.stringify(expectedGuides),
+  "published child guide manifest matches the build",
+);
+const guideResults = await Promise.all(
+  expectedGuides.items.map(async (clip) => {
+    const response = await request(clip.url);
+    const bytes = Buffer.from(await response.arrayBuffer());
+    return (
+      response.status === 200 &&
+      /audio\/(mpeg|mp3)/i.test(response.headers.get("content-type") ?? "") &&
+      bytes.length === clip.bytes &&
+      createHash("sha256").update(bytes).digest("hex") === clip.sha256
+    );
+  }),
+);
+check(
+  guideResults.length === 22 && guideResults.every(Boolean),
+  "all twenty-two child guide MP3 assets have expected MIME, size and SHA256",
+);
 const page = await request("/");
 check(
   page.status === 200 && (await page.text()).includes('id="root"'),

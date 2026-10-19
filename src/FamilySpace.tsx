@@ -100,6 +100,12 @@ export default function FamilySpace({
       <p className="eyebrow">A LITTLE HELP, A BIG ADVENTURE</p>
       <h1>陪孩子，把每一步走扎实。</h1>
       <p className="lead">先选好探险家，再把今天的小进步留在这里。</p>
+      <details className="card">
+        <summary>孩子的练习如何记录</summary>
+        <p>
+          答题后点绿色对勾保存，再点大箭头继续。重复提交同一份答案不会重复计分；联网失败时保留当前答案供重试。听讲解、使用提示和独立作答分别记录，家长可以在学习报告里查看。
+        </p>
+      </details>
       {identity.adult && !identity.adult.mustChangePassword && (
         <>
           <p className="notice">

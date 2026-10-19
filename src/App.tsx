@@ -41,6 +41,12 @@ import LessonView from "./LessonView";
 import SceneStage, { MotionShell } from "./SceneStage";
 import CourseIslandMap from "./CourseIslandMap";
 import SessionAccess from "./SessionAccess";
+import ChildNavigation from "./ChildNavigation";
+import ChildHome from "./ChildHome";
+import ToyPicture from "./ToyPicture";
+import GuideButton from "./GuideButton";
+import SpeechButton from "./SpeechButton";
+import type { GuideId } from "./wordAudio";
 import { reconcileDraft } from "./sessionDraft";
 import { setOfflineIdentity, lockOffline } from "./offlineAccess";
 import {
@@ -177,6 +183,7 @@ export default function App() {
   const selectedLesson = lessons.find((lesson) => lesson.id === lessonId);
   useEffect(() => {
     const pop = () => {
+      if (window.location.hash === "#main") return;
       const route = readRoute();
       if (
         currentView.current === "writing" &&
@@ -876,14 +883,6 @@ export default function App() {
     ["review", "复习花园", "leaf"],
     ["parent", "家长空间", "person"],
   ];
-  const navHints: Record<string, string> = {
-    map: "跟着课程一步步学",
-    words: "认词 · 听词 · 拼写",
-    topics: "语法 · 时态 · 词形",
-    patterns: "把常用表达练熟",
-    review: "再想一想学过的",
-    parent: "档案与学习记录",
-  };
   const sessionHome: View = session?.guidedRetry
     ? "mistakes"
     : ((
@@ -902,6 +901,9 @@ export default function App() {
       : view === "lesson" || view === "talk" || view === "writing"
         ? "map"
         : view;
+  useEffect(() => {
+    document.dispatchEvent(new Event("eq-stop-speech"));
+  }, [view, lessonId, trainingTopic, patternId]);
   const activeNav =
     currentSection === "mistakes"
       ? "review"
@@ -910,60 +912,39 @@ export default function App() {
         : currentSection === "phonics"
           ? "words"
           : currentSection;
+  const routeGuide: GuideId =
+    view === "exercise"
+      ? receipt
+        ? "saved"
+        : session?.exercise.type === "listen"
+          ? "choice"
+          : (session?.exercise.type ?? "choice")
+      : (view === "topics" && trainingTopic) ||
+          (view === "patterns" && patternId)
+        ? "start"
+        : view;
   return (
-    <MotionShell quiet={quiet || reduced} flat={twoD} companion={partner.id}>
+    <MotionShell
+      quiet={quiet || reduced}
+      flat={twoD}
+      companion={partner.id}
+      childView={view}
+    >
       <a className="skip" href="#main">
         跳到主要内容
       </a>
-      <aside className="sidebar">
-        <div className="brand">
-          <span className="brand-mark">
-            <Icon />
-          </span>
-          <span>
-            英语探险岛<small>ENGLISH QUEST</small>
-          </span>
-        </div>
-        <nav aria-label="主导航">
-          {nav.map(([id, label, icon]) => (
-            <div className="nav-entry" key={id} data-nav={id}>
-              {(id === "map" || id === "words" || id === "review") && (
-                <span className="nav-group-label">
-                  {id === "map"
-                    ? "跟着课程学"
-                    : id === "words"
-                      ? "自由特训"
-                      : "复习与记录"}
-                </span>
-              )}
-              <button
-                key={id}
-                data-nav={id}
-                aria-current={activeNav === id ? "page" : undefined}
-                onClick={() => {
-                  move(id);
-                }}
-              >
-                <span className="nav-symbol">
-                  <Icon kind={icon} />
-                </span>
-                <span className="nav-copy">
-                  {label}
-                  <small>{navHints[id]}</small>
-                </span>
-              </button>
-            </div>
-          ))}
-        </nav>
-        <div className="sidebar-note">
-          <strong>每天，一小步就很好。</strong>
-          <p>学完一小轮，就去生活里试试新学的英语。</p>
-        </div>
-        <span className="build-label">一起，慢慢进步。</span>
-      </aside>
+      <ChildNavigation active={activeNav} onGo={move} />
       <div className="workspace">
         <header className="topbar">
-          <div>
+          <button
+            className="child-home-button"
+            aria-label="回到小屋"
+            onClick={() => move("home")}
+          >
+            <ToyPicture kind="home" />
+            <span>小屋</span>
+          </button>
+          <div className="adult-location">
             <small>你在这里</small>
             <strong>
               {view === "mistakes" ||
@@ -985,30 +966,33 @@ export default function App() {
             </strong>
           </div>
           <div className="toolbar">
-            <details className="display-settings" key={view}>
-              <summary>画面设置</summary>
-              <div className="display-settings-panel">
-                <button
-                  className="soft-button"
-                  aria-pressed={twoD}
-                  onClick={() => setTwoD(!twoD)}
-                >
-                  {twoD ? "2D 场景" : "3D 场景"}
-                </button>
-                <button
-                  className="soft-button"
-                  aria-pressed={quiet || reduced}
-                  disabled={reduced}
-                  onClick={() => setQuiet(!quiet)}
-                >
-                  {reduced
-                    ? "跟随系统减少动效"
-                    : quiet
-                      ? "安静模式 · 开"
-                      : "安静模式 · 关"}
-                </button>
-              </div>
-            </details>
+            {view === "parent" && (
+              <details className="display-settings" key={view}>
+                <summary>画面设置</summary>
+                <div className="display-settings-panel">
+                  <button
+                    className="soft-button"
+                    aria-pressed={twoD}
+                    onClick={() => setTwoD(!twoD)}
+                  >
+                    {twoD ? "2D 场景" : "3D 场景"}
+                  </button>
+                  <button
+                    className="soft-button"
+                    aria-pressed={quiet || reduced}
+                    disabled={reduced}
+                    onClick={() => setQuiet(!quiet)}
+                  >
+                    {reduced
+                      ? "跟随系统减少动效"
+                      : quiet
+                        ? "安静模式 · 开"
+                        : "安静模式 · 关"}
+                  </button>
+                </div>
+              </details>
+            )}
+            {view !== "home" && <GuideButton id={routeGuide} />}
             <span className="stars">
               <Icon kind="star" />
               {progress.stars}
@@ -1018,7 +1002,8 @@ export default function App() {
               aria-label={`家长空间与档案：${identity.child?.nickname ?? "选择档案"}`}
               onClick={() => move("parent")}
             >
-              {identity.child?.nickname ?? "选择档案"}
+              <ToyPicture kind="parent" />
+              <span>大人帮忙</span>
             </button>
           </div>
         </header>
@@ -1041,6 +1026,20 @@ export default function App() {
                 关闭
               </button>
             </div>
+          )}
+          {view === "home" && (
+            <ChildHome
+              nickname={identity.child?.nickname}
+              busy={busy}
+              ready={Boolean(nextLesson) || !identity.child || Boolean(session)}
+              resume={Boolean(session && identity.authenticated)}
+              onGo={move}
+              onStart={() => {
+                if (!identity.child) move("parent");
+                else if (session && identity.authenticated) move("exercise");
+                else if (nextLesson) openLesson(nextLesson);
+              }}
+            />
           )}
           {view === "map" && (
             <>
@@ -1189,8 +1188,8 @@ export default function App() {
                       >
                         {courseNavigation.allPractised && term === "B"
                           ? "再看一节课"
-                          : "打开这节课"}
-                        <Icon kind="arrow" />
+                          : "出发"}
+                        <ToyPicture kind="play" />
                       </button>
                     )}
                     {courseNavigation.nextTerm && (
@@ -1517,6 +1516,7 @@ export default function App() {
                   }
                   onClick={() => start("", { mode: "review" })}
                 >
+                  <ToyPicture kind="play" />
                   开始今日复习
                 </button>
               </div>
@@ -1871,6 +1871,11 @@ export default function App() {
                   <span className="badge">句子修理站 · 找一处，改一处</span>
                 )}
                 <p className="lead">{session.exercise.context}</p>
+                <SpeechButton
+                  text={session.exercise.context}
+                  language="zh-CN"
+                  label="听题目提示"
+                />
                 <SceneStage
                   key={session.assignmentId}
                   kind="feedback"
@@ -1944,21 +1949,30 @@ export default function App() {
                     session.exercise.type === "listen") && (
                     <div className="answer-options">
                       {session.exercise.choices?.map((o) => (
-                        <button
-                          disabled={
-                            busy ||
-                            Boolean(receipt) ||
-                            (session.exercise.type === "listen" &&
-                              !session.listening?.heard &&
-                              !session.listening?.textSupport)
-                          }
-                          className="answer-option"
-                          aria-pressed={answer === o}
-                          key={o}
-                          onClick={() => setAnswer(o)}
-                        >
-                          {o}
-                        </button>
+                        <div className="child-answer-choice" key={o}>
+                          <button
+                            disabled={
+                              busy ||
+                              Boolean(receipt) ||
+                              (session.exercise.type === "listen" &&
+                                !session.listening?.heard &&
+                                !session.listening?.textSupport)
+                            }
+                            className="answer-option"
+                            aria-pressed={answer === o}
+                            key={o}
+                            onClick={() => setAnswer(o)}
+                          >
+                            {o}
+                          </button>
+                          {/[\u4e00-\u9fff]/.test(o) && (
+                            <SpeechButton
+                              language="zh-CN"
+                              text={o}
+                              label="听选项"
+                            />
+                          )}
+                        </div>
                       ))}
                     </div>
                   )}
@@ -2064,6 +2078,13 @@ export default function App() {
                       data-outcome={receipt.outcome}
                       role="status"
                     >
+                      <span className="child-receipt-symbol">
+                        <ToyPicture
+                          kind={
+                            receipt.outcome === "correct" ? "check" : "help"
+                          }
+                        />
+                      </span>
                       <strong>
                         {receipt.outcome === "correct"
                           ? "这一步，想对了！"
@@ -2078,6 +2099,11 @@ export default function App() {
                             : "先看看这个规律，再用新题练习。"}
                       </strong>
                       <p>{receipt.feedback}</p>
+                      <SpeechButton
+                        language="zh-CN"
+                        text={receipt.feedback}
+                        label="听讲解"
+                      />
                       {receipt.correctedSentence && (
                         <div>
                           <p>一种正确表达：</p>
@@ -2119,15 +2145,16 @@ export default function App() {
                         onClick={askHint}
                         disabled={busy || Boolean(hint)}
                       >
-                        给我一个提示
+                        <ToyPicture kind="help" />
+                        <span>帮帮我</span>
                       </button>
                       <button
                         className="primary"
                         onClick={check}
                         disabled={busy}
                       >
-                        {busy ? "正在保存…" : "检查并保存"}
-                        <Icon kind="arrow" />
+                        {busy ? "保存中…" : "答好了"}
+                        <ToyPicture kind="check" />
                       </button>
                     </div>
                   )}
@@ -2151,14 +2178,11 @@ export default function App() {
                       {(session.position ?? 1) < (session.total ?? 1)
                         ? "下一小步"
                         : "完成这轮，看看收获"}
-                      <Icon kind="leaf" />
+                      <ToyPicture kind="next" />
                     </button>
                   )}
                 </fieldset>
               </article>
-              <p className="footnote">
-                同一份答案重试不会重复计分；提示/示范后答对不晋级。每轮学完可以休息，完整课程会持续更新。
-              </p>
             </div>
           )}
           {view === "exercise" && !session && (

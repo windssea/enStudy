@@ -6,6 +6,7 @@ import type {
 } from "../packages/contracts/mistakes";
 import { mistakeCategories } from "../packages/domain/mistakes";
 import { api } from "./api";
+import SpeechButton from "./SpeechButton";
 import CompanionSticker from "./CompanionSticker";
 
 const labels: Record<string, string> = {
@@ -406,6 +407,13 @@ export default function MistakeNotebook({
                         ) : (
                           <p>{detail.feedback}</p>
                         )}
+                        <SpeechButton
+                          language="zh-CN"
+                          text={
+                            detail.currentTeaching?.feedback ?? detail.feedback
+                          }
+                          label="听讲解"
+                        />
                         <p>
                           可以指着句子里的主语、时间词或原文依据，说说为什么这样写。不确定时，请家长一起看看；一条作答记录不能说明唯一错因。
                         </p>

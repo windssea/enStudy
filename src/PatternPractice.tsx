@@ -1,3 +1,4 @@
+import ToyPicture from "./ToyPicture";
 import { useEffect, useRef, useState } from "react";
 import type { PatternStats } from "../packages/contracts/index";
 import { gradeName } from "./practiceCatalog";
@@ -160,7 +161,7 @@ export default function PatternPractice({
                 : !childId
                   ? "选择档案，再开始"
                   : `出发，练${size}题`}{" "}
-            <span aria-hidden="true">→</span>
+            <ToyPicture kind="play" />
           </button>
           <p>
             {childId

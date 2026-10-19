@@ -513,7 +513,9 @@ try {
       manifest.assets.some((p) => p.includes("OfflinePractice")) &&
       manifest.assets.every(
         (p) =>
-          p === "/index.html" || /^\/assets\/[\w.-]+\.(js|css|glb)$/.test(p),
+          p === "/index.html" ||
+          /^\/assets\/[\w.-]+\.(js|css|glb)$/.test(p) ||
+          /^\/audio\/guides\/[a-f0-9]{24}\.mp3$/.test(p),
       ),
     "built offline manifest contains its player modules and only public shell assets",
   );

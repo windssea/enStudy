@@ -9,7 +9,8 @@ self.addEventListener("activate", (event) =>
 function allowed(path) {
   return (
     path === "/index.html" ||
-    /^\/assets\/[a-zA-Z0-9_.-]+\.(js|css|glb)$/.test(path)
+    /^\/assets\/[a-zA-Z0-9_.-]+\.(js|css|glb)$/.test(path) ||
+    /^\/audio\/guides\/[a-f0-9]{24}\.mp3$/.test(path)
   );
 }
 self.addEventListener("message", (event) => {
@@ -53,10 +54,14 @@ self.addEventListener("message", (event) => {
               ? !mime.includes("text/css")
               : path.endsWith(".glb")
                 ? !/(model\/gltf-binary|application\/octet-stream)/.test(mime)
-                : !mime.includes("text/html")
+                : path.endsWith(".mp3")
+                  ? !/audio\/(mpeg|mp3)/.test(mime)
+                  : !mime.includes("text/html")
         )
           throw Error();
         const blob = await r.clone().blob();
+        if (path.endsWith(".mp3") && (blob.size < 100 || blob.size > 200000))
+          throw Error();
         if (path.endsWith(".glb")) {
           if (blob.size < 20 || blob.size > 1_700_000) throw Error();
           const header = new DataView(await blob.slice(0, 12).arrayBuffer());

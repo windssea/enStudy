@@ -1,3 +1,4 @@
+import ToyPicture from "./ToyPicture";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import type { TrainingCycle } from "../packages/contracts/index";
 import { api } from "./api";
@@ -249,8 +250,13 @@ export default function TopicJourney({
               <h2>先选你的探险档案</h2>
               <p>请家长登录并选好档案，就能保存自己的小计划。</p>
             </div>
-            <button className="primary" onClick={onProfile}>
-              选择档案，再开始
+            <button
+              className="primary"
+              onClick={onProfile}
+              aria-label="选择档案，再开始"
+            >
+              <ToyPicture kind="parent" />
+              请大人帮忙
             </button>
           </div>
         ) : !cycle ? (
@@ -264,6 +270,7 @@ export default function TopicJourney({
               disabled={disabled}
               onClick={() => void create()}
             >
+              <ToyPicture kind="play" />
               {saving || busy ? "正在准备…" : "开始5题小尝试"}
             </button>
           </>
@@ -307,6 +314,7 @@ export default function TopicJourney({
                   {cycle.next.sessionId
                     ? "继续这一步"
                     : `开始${cycle.next.size}题`}
+                  <ToyPicture kind="play" />
                 </button>
               )}
             </div>

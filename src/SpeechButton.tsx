@@ -4,9 +4,11 @@ import { acquireSpeech, releaseSpeech } from "./speechActivity";
 export default function SpeechButton({
   text,
   label = "听一听",
+  language = "en-GB",
 }: {
   text: string;
   label?: string;
+  language?: "en-GB" | "zh-CN";
 }) {
   const [playing, setPlaying] = useState(false),
     [error, setError] = useState("");
@@ -22,9 +24,14 @@ export default function SpeechButton({
       if (timer.current) clearTimeout(timer.current);
     };
     document.addEventListener("eq-stop-speech", stop);
+    const hide = () => {
+      if (document.hidden) stop();
+    };
+    document.addEventListener("visibilitychange", hide);
     return () => {
       generation.current++;
       document.removeEventListener("eq-stop-speech", stop);
+      document.removeEventListener("visibilitychange", hide);
       if (timer.current) clearTimeout(timer.current);
       if (releaseSpeech(owner.current) && "speechSynthesis" in window)
         window.speechSynthesis.cancel();
@@ -32,6 +39,7 @@ export default function SpeechButton({
   }, []);
   const play = () => {
     setError("");
+    if (document.hidden) return;
     if (!("speechSynthesis" in window)) {
       setError("这台设备暂不支持朗读，可以看着文字跟读。");
       return;
@@ -43,14 +51,20 @@ export default function SpeechButton({
     const current = generation.current;
     const voices = window.speechSynthesis.getVoices();
     const english =
-      voices.find((v) => v.lang === "en-GB") ??
-      voices.find((v) => /^en[-_]/i.test(v.lang));
+      voices.find((v) => v.lang === language) ??
+      voices.find((v) =>
+        (language === "zh-CN" ? /^zh[-_]/i : /^en[-_]/i).test(v.lang),
+      );
     if (voices.length && !english) {
-      setError("设备中没有可用的英语声音，可以先看文字练习。");
+      setError(
+        language === "zh-CN"
+          ? "设备里还没有中文声音，请大人帮忙读一读。"
+          : "设备中没有可用的英语声音，可以先看文字练习。",
+      );
       return;
     }
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = english?.lang ?? "en-GB";
+    utterance.lang = english?.lang ?? language;
     if (english) utterance.voice = english;
     utterance.rate = 0.82;
     utterance.onend = () => {
@@ -69,13 +83,18 @@ export default function SpeechButton({
     };
     setPlaying(true);
     acquireSpeech(owner.current);
-    timer.current = setTimeout(() => {
-      if (current !== generation.current) return;
-      window.speechSynthesis.cancel();
-      setPlaying(false);
-      releaseSpeech(owner.current);
-      setError("声音暂时没有响应，可以先看文字练习。");
-    }, 15000);
+    timer.current = setTimeout(
+      () => {
+        if (current !== generation.current) return;
+        window.speechSynthesis.cancel();
+        setPlaying(false);
+        releaseSpeech(owner.current);
+        setError("声音暂时没有响应，可以先看文字练习。");
+      },
+      language === "zh-CN"
+        ? Math.min(90000, Math.max(15000, text.length * 400))
+        : 15000,
+    );
     try {
       window.speechSynthesis.speak(utterance);
     } catch {

@@ -1,3 +1,4 @@
+import ToyPicture from "./ToyPicture";
 import { useEffect, useRef, useState } from "react";
 import type { PhonicsStage, PhonicsWord } from "../packages/contracts/phonics";
 import metadata from "../public/content/phonics.json";
@@ -193,6 +194,7 @@ export default function PhonicsCentre({
             disabled={busy || !childId}
             onClick={() => onStart(stage.id, round)}
           >
+            <ToyPicture kind="play" />
             {busy ? "正在准备…" : "开始这一站的练习"}
           </button>
         </div>

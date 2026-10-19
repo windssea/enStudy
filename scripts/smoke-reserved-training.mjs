@@ -606,6 +606,44 @@ try {
   );
   await request(`/children/${child}/select`, {});
   if (browserMode) {
+    // Disposable UI fixture only: one real course allows picture-home → cards → player.
+    const course = JSON.parse(
+      await readFile("content/course-release.v1.json", "utf8"),
+    );
+    const lesson = course.lessons.find((row) => row.id === "P3A-U01-L1");
+    await db
+      .prepare("INSERT INTO content_releases VALUES(?,'published',?,?)")
+      .bind(course.id, course.manifestHash, Date.now())
+      .run();
+    await db
+      .prepare("INSERT INTO lessons VALUES(?,1,?,3,'A',1,?,?)")
+      .bind(lesson.id, course.id, lesson.title, JSON.stringify(lesson))
+      .run();
+    for (const item of course.items.filter(
+      (row) => row.lessonId === lesson.id,
+    )) {
+      const { answers, hint, explanation, ...data } = item;
+      await db
+        .prepare("INSERT OR IGNORE INTO skills VALUES(?,'grammar',?)")
+        .bind(item.skill, item.title)
+        .run();
+      await db
+        .prepare("INSERT INTO items VALUES(?,1,?,1,?,?,?,?,?,'published')")
+        .bind(
+          item.id,
+          lesson.id,
+          item.skill,
+          item.modality,
+          item.type,
+          JSON.stringify(data),
+          JSON.stringify({ answers, hint, explanation }),
+        )
+        .run();
+      await db
+        .prepare("INSERT INTO release_items VALUES(?,?,1)")
+        .bind(course.id, item.id)
+        .run();
+    }
     await db
       .prepare("DELETE FROM children WHERE household_id=?")
       .bind(household)
@@ -634,11 +672,19 @@ try {
         ".json": "application/json",
         ".glb": "model/gltf-binary",
         ".wav": "audio/wav",
+        ".mp3": "audio/mpeg",
         ".svg": "image/svg+xml",
       };
     gateway = createServer(async (req, res) => {
       try {
         const url = new URL(req.url, `http://${host}:${port}`);
+        if (url.pathname === "/__layout") {
+          res.setHeader("Content-Type", "text/html;charset=utf-8");
+          res.end(
+            `<!doctype html><html lang="zh"><meta charset="utf-8"><title>儿童布局验收</title><style>body{margin:12px;font:18px system-ui;background:#ddd}button{padding:12px;margin:0 12px 12px 0}iframe{border:0;transform-origin:top left}#frame{overflow:hidden;background:white}</style><button onclick="size(768,1024,.58)">平板竖屏</button><button onclick="size(1024,768,.75)">平板横屏</button><button onclick="size(375,812,.72)">手机窄屏</button><div id="frame"><iframe title="儿童首页布局" src="/#home"></iframe></div><script>function size(w,h,s){const f=document.querySelector('iframe');f.style.width=w+'px';f.style.height=h+'px';f.style.transform='scale('+s+')';document.querySelector('#frame').style.cssText='width:'+w*s+'px;height:'+h*s+'px'}size(768,1024,.58)</script></html>`,
+          );
+          return;
+        }
         if (url.pathname.startsWith("/api/")) {
           const chunks = [];
           for await (const c of req) chunks.push(c);

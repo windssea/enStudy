@@ -8,6 +8,7 @@ import type {
 import { api } from "./api";
 import SceneStage from "./SceneStage";
 import WordStudyCard from "./WordStudyCard";
+import ToyPicture from "./ToyPicture";
 const themePaths: Record<string, string> = {
   animals:
     "M7 12 4 6l7 3h2l7-3-3 6v4a5 5 0 0 1-10 0v-4Zm2 2h.01M15 14h.01M10 18l2 1 2-1",
@@ -232,7 +233,7 @@ export default function WordTraining({
                             : `继续第${resume.position}题`
                         : "开始5题挑战"
                       : "选择档案，再开始"}{" "}
-                  <span aria-hidden="true">→</span>
+                  <ToyPicture kind="play" />
                 </button>
                 <small>
                   {childId
