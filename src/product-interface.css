@@ -706,6 +706,7 @@
   margin-bottom: 18px;
 }
 .app-shell.child-shell .exercise-top .offline-link {
+  display: inline-flex;
   margin-right: auto;
 }
 .app-shell.child-shell .child-receipt-symbol {
