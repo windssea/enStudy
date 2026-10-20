@@ -220,6 +220,26 @@ const progress = await request("/api/v1/progress");
 check(progress.status === 401, "anonymous progress rejected");
 const catalogResponse = await request("/content/catalog.json");
 const catalog = await catalogResponse.json();
+const privateGrade4 = await Promise.all(
+  [
+    "/content/grade4-tense-release.v1.json",
+    "/content/grade4-tense.v1.mjs",
+    "/migrations/0052_grade4_tense.sql",
+  ].map(async (path) => {
+    const response = await request(path),
+      text = await response.text();
+    return (
+      response.status >= 400 ||
+      (response.headers.get("content-type")?.includes("text/html") &&
+        text.includes('id="root"') &&
+        !text.includes('"answers"'))
+    );
+  }),
+);
+check(
+  privateGrade4.every(Boolean),
+  "new private question bank, authoring source and migration are not publicly served",
+);
 check(
   catalogResponse.status === 200 &&
     catalog.units?.length === 72 &&

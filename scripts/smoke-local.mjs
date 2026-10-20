@@ -38,6 +38,9 @@ const page = await fetch("http://127.0.0.1:5173", {
 checked("vite-app-http-200", () => assert.equal(page.status, 200));
 for (const path of [
   "/content/exercises.json",
+  "/content/grade4-tense-release.v1.json",
+  "/content/grade4-tense.v1.mjs",
+  "/migrations/0052_grade4_tense.sql",
   "/content/be-action-contrast.v1.mjs",
   "/content/be-action-release.v1.json",
   "/content/be-action-release.latest.json",
@@ -90,7 +93,7 @@ const catalog = await (
 checked("full-catalog-coverage", () =>
   assert.deepEqual(
     [catalog.units.length, catalog.topics.length, catalog.patterns.length],
-    [72, 60, 72],
+    [72, 64, 72],
   ),
 );
 const samples = await request("/exercises");

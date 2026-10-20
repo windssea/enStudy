@@ -51,3 +51,5 @@ ui-ux-pro-max的touch target spacing查询命中Touch Spacing和Text Reflow，�
 本地界面已核对1280×900、768×1024、1024×768、375×812；词形表每页10词，分组与翻页有效，控件52px，页面无横向溢出。375px采用三形并列、词义单独一行，不截断英文；课程实际显示5张卡，第二张took/taken对照与本课专项跳转正常。浏览器只用隔离库的游客页面；API用专用临时档案验证37项检查后删除，未改真实孩子的记录。
 
 测试同时覆盖新旧专题对应真实发布版本，避免合并目录标签替代不可变release ID；旧式训练接续与普通随机练习都能分配新题。原始60专题、课程题和迁移0001–0051保持。证据位于忽略目录artifacts的check-v063-final.log、runtime-grade4-v063-final.log、v063-browser.json、v063-grade4-lesson.png及四种尺寸截图。
+
+首轮Actions 39454833227在基础本地检查发现目录覆盖断言仍为60专题，未进入部署。修订为实际64专题后运行最新main，未重跑旧提交，也未进行Cloudflare重试。

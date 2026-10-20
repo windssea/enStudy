@@ -53,6 +53,8 @@ export default defineConfig({
         "**/content/course-expansion*.json",
         "**/content/courses-*.mjs",
         "**/content/topic-release*.json",
+        "**/content/grade4-tense*.json",
+        "**/content/grade4-tense*.mjs",
         "**/content/topics-*.mjs",
         "**/content/be-action-*.mjs",
         "**/content/be-action-release*.json",
