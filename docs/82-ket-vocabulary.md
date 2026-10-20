@@ -1,6 +1,6 @@
 # KET 词汇 · v0.58
 
-本阶段增加独立 KET 词库，保留小学18主题、360词条、1620道原题和既有进度。当前为待发布记录，实际发布结果在验证后补记。
+本阶段增加独立 KET 词库，保留小学18主题、360词条、1620道原题和既有进度。已同步Preview、Production与正式域名，实际发布证据见文末。
 
 ## 收录依据与数量
 
@@ -24,7 +24,7 @@
 
 ## 实现与版本
 
-`scripts/build-ket-vocabulary.mjs`校验来源覆盖、生成紧凑词库、发布清单及追加迁移0050。`packages/domain/ketVocabulary.ts`由构建脚本与Worker共享，按紧凑词库产生题目，避免把重复的大题目JSON塞进Worker；干扰项按固定规则选择并排除同义释义/相同拼写，选项展示沿用服务端洗牌。分组只用于练习，不赋予KET虚构的小学年级。
+`scripts/build-ket-vocabulary.mjs`校验来源覆盖、生成紧凑词库、发布清单及追加迁移0050。`packages/domain/ketVocabulary.ts`由构建脚本与Worker共享，按紧凑词库产生题目，避免把重复的大题目JSON塞进Worker；干扰项按固定规则选择并排除重复释义和相同拼写，选项展示沿用服务端洗牌。分组只用于练习，不赋予KET虚构的小学年级。
 
 旧 `vocabularyRelease` 导出保持原内容；实际API和示范记录使用合并目录。新词ID为ket.a/n/o/g系列，题目版本为1，复习技能位于lexeme.word.ket前缀。存储课程表的旧约束要求1–6年级，KET占位lesson存为1；公开词库元数据grade=0表示考试范围，不进入小学课程推荐或完成记录。已应用迁移不得修改，后续修订需新增版本和迁移。
 
@@ -32,7 +32,9 @@
 
 ## 验证
 
-本地已通过570项单元测试（70文件）及23项真实local workerd/D1词汇检查，涵盖逐行覆盖、附录边界、分组20词随机抽取、题目版本、变体判分、搜索翻页、旧记录保留、示范后辅助回执与复习。0050只追加数据；Worker小于既有24MiB发布预算。完整CI、两站发布与浏览器证据将在完成后补记。
+本地已通过570项单元测试（70文件）及23项真实local workerd/D1词汇检查，涵盖逐行覆盖、附录边界、分组20词随机抽取、题目版本、变体判分、搜索翻页、旧记录保留、示范后辅助回执与复习。0050只追加数据；Worker小于既有24MiB发布预算。完整CI、两站发布及正式域名浏览器验收均已通过，结果见下文。
+
+词头全覆盖不等于每个词的所有义项、搭配和语法用法都已完成测评；当前练习以词卡列明的含义为准。
 
 范围限制：词表对齐不等于Cambridge官方授权课程或考试通过保证；本阶段的词义/拼写题库不等于完整KET阅读、听力、口语、写作课程。真实儿童试用、Pad实机验证、全面教研和新词录音/情境题仍需继续。
 
@@ -41,3 +43,16 @@
 北京时间2026年10月20日18:41:51，[Actions 39408434246](https://github.com/windssea/enStudy/actions/runs/39408434246)完成570项单元和1519项完整运行回归，并将e0398c4上传至Preview 9cc14f8f，Preview D1成功应用0050。新增KET搜索、组卡和远程D1拼写分配均通过，但旧的“换伙伴不会创建学习会话”检查失败：新KET测试在该零会话断言之前创建了一轮练习，污染了原检查的前置条件。临时档案与登录已在finally中清理。
 
 修正只移动验收顺序，把KET会话分配放到所有零会话/零作答检查之后，保留原断言。首次Actions结果仍是失败，Production当时跳过，保留v0.57与0049；不能把这次Preview上传记作两站已发布。后续结果另行补记，不改已应用的0050。
+
+
+## 实际发布结果
+
+北京时间2026/10/20 18:54:45，[Actions 39410076380](https://github.com/windssea/enStudy/actions/runs/39410076380)成功发布582e7cef02af842dc2fd53bfa5cd0309ccdbd969到Preview 6d6ec6b6与Production faa99d8c，正式域名同版本。两个现有D1均应用0050；保持免费方案和原账号、项目、数据库，未修改已应用迁移。570项单元（70文件）、1519项完整运行检查（59基础与1460条PASS）、两站各88项线上与三域名42项只读检查通过。
+
+入口`/assets/index-odl1gaK8.js`，SHA256 `bcd4b50ea6d480ee110749b670f41291df4953af0550960e3f9c31cc3fcd31c3`；KET模块`/assets/KetVocabulary-THureyVQ.js`，SHA256 `b6e75bed43a373ef79aab48612830af581ae3d02a1e78f8cd86865a92b04e44b`。Worker 19990755字节，SHA256 `871cbc9f5d1ec62e0eb87487305f436c7a843511fd1ba5259f7f4f6bbb94434f`；离线壳`eq-shell-v1-f28efeffc7f725bc`共135资源、15397573字节，低于16MiB限制。词库数据在Worker内按需服务，不把整套私有题目送入浏览器或离线壳。
+
+内置浏览器在隔离内存D1走通找词、gray匹配grey、展开释义及其他写法、按所属组进入拼写、提交答案和刷新恢复原答与已保存回执。PC、768px平板及375px窄屏截图已保存；正式域名打开KET词库确认新版。隔离环境72项检查后关闭，未操作真实孩子的答题与示范记录。真实Pad和儿童试用、全面教研、新词录音与更深的语境任务仍未完成。
+
+首次失败运行和修正后88项Preview复验记录保留；修正后成功运行另存。
+
+本地证据在忽略目录：`actions-v058r2-complete.log`、`actions-v058r2-result.json`、`v058-published-public.json`、`v058-build-proof.json`、`vocabulary-v058.log`、`check-v058-final2.log`；截图`v058-ket-desktop.png`、`v058-ket-pad.png`、`v058-ket-pad-search.png`、`v058-ket-spelling-375.png`和`v058-production-ket.png`。
