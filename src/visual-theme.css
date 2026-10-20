@@ -547,6 +547,7 @@
 }
 .lesson-choice-copy {
   padding: 20px;
+  gap: 12px;
 }
 .lesson-choice-action {
   padding-top: 12px;
@@ -562,6 +563,54 @@
 .child-shell .child-example-controls {
   padding-top: 20px;
   border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.child-shell .child-example-controls > .secondary {
+  width: auto;
+  min-height: 56px;
+  padding: 10px 16px;
+  gap: 8px;
+  font-size: 17px;
+}
+.child-shell .child-example-controls .toy-picture {
+  width: 24px;
+  height: 24px;
+}
+.child-shell .child-example-controls .child-play {
+  min-width: 164px;
+  min-height: 56px;
+  font-size: 20px;
+}
+.child-shell .child-card-count {
+  justify-content: flex-end;
+  color: var(--muted);
+  font-size: 16px;
+}
+.child-shell .lesson-rule {
+  margin: 24px 0 0;
+  padding-left: 16px;
+  border-left: 3px solid var(--primary);
+  max-width: 42em;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--ink);
+}
+.child-shell .lesson-extra {
+  margin-top: 16px;
+  padding: 12px 20px;
+}
+.child-shell .lesson-extra > summary {
+  min-height: 52px;
+  justify-content: space-between;
+  font-size: 18px;
+}
+.child-shell .lesson-extra > summary .toy-picture {
+  width: 22px;
+  height: 22px;
+  transition: transform 150ms ease;
+}
+.child-shell .lesson-extra[open] > summary .toy-picture {
+  transform: rotate(90deg);
 }
 /* Topic, word and sentence libraries use the same component family. */
 .child-shell

@@ -6,6 +6,7 @@ import { api } from "./api";
 import LessonConcepts from "./LessonConcepts";
 import ToyPicture from "./ToyPicture";
 import { lessonExampleScene } from "./lessonScenes";
+import { courseLessonPath } from "./courseNavigation";
 export default function LessonView({
   lesson,
   coursePath,
@@ -46,7 +47,9 @@ export default function LessonView({
       </button>
       <div className="child-lesson-title">
         <div>
-          <p className="course-location">{coursePath ?? lesson.unitTitle}</p>
+          <p className="course-location">
+            {coursePath ?? courseLessonPath(lesson, [])}
+          </p>
           <h1>{lesson.title}</h1>
         </div>
       </div>
@@ -55,13 +58,8 @@ export default function LessonView({
           className="child-card-count"
           aria-label={`第${index + 1}张，共${lesson.cards.length}张`}
         >
-          <span aria-hidden="true">
-            {lesson.cards.map((_, i) => (
-              <i key={i} data-current={i === index} />
-            ))}
-          </span>
           <strong>
-            {index + 1}/{lesson.cards.length}
+            例句 {index + 1} / {lesson.cards.length}
           </strong>
         </div>
         <div
@@ -87,10 +85,7 @@ export default function LessonView({
               {card.example}
             </p>
             <p className="child-translation">{card.translation}</p>
-            <details className="child-rule">
-              <summary>语法说明</summary>
-              <p>{card.rule}</p>
-            </details>
+            <p className="lesson-rule">{card.rule}</p>
           </div>
         </div>
         <div className="child-example-controls">
@@ -103,6 +98,7 @@ export default function LessonView({
             <span className="toy-previous">
               <ToyPicture kind="next" />
             </span>
+            <span>上一例句</span>
           </button>
           <button
             className="secondary"
@@ -110,34 +106,25 @@ export default function LessonView({
             onClick={() => turn(1)}
             aria-label="下一张例句"
           >
+            <span>下一例句</span>
             <ToyPicture kind="next" />
           </button>
           <button
             className="child-play"
             disabled={busy}
             onClick={onStart}
-            aria-label={completed ? "再玩这一课的练习" : "开始这节课的练习"}
+            aria-label={completed ? "重新进行这节课的练习" : "开始这节课的练习"}
           >
             <ToyPicture kind="play" />
-            <span>{busy ? "准备中" : "试一试"}</span>
+            <span>{busy ? "准备中" : completed ? "重新练习" : "开始练习"}</span>
           </button>
         </div>
       </section>
       <details className="lesson-extra card">
         <summary>
-          <ToyPicture kind="help" />
-          课程资料
+          <span>本课词汇与拓展</span>
+          <ToyPicture kind="next" />
         </summary>
-        <p>
-          {lesson.subtitle} · {lesson.grade}年级
-          {lesson.term === "A" ? "上学期" : "下学期"}
-        </p>
-        <p>
-          {["一", "二", "三", "四", "五", "六"][lesson.grade - 1]}年级 ·{" "}
-          {lesson.term === "A" ? "上学期" : "下学期"} · 第
-          {lesson.unitLesson ?? lesson.order}课 · {lesson.unitTitle} · 约
-          {lesson.minutes}分钟
-        </p>
         {Boolean(lesson.conceptLabIds?.length) && (
           <LessonConcepts
             key={`${lesson.id}:${childId ?? "guest"}`}
@@ -180,10 +167,6 @@ export default function LessonView({
             </p>
           </details>
         )}
-        <p className="footnote">
-          {lesson.task} 本课有{lesson.itemCount}
-          个任务，完成后安排复习。听例句和看规律不会计为独立作答；设备朗读不做口语评分。
-        </p>
       </details>
     </div>
   );

@@ -191,7 +191,7 @@ describe("first B-term core courses", () => {
       for (const id of lesson.conceptLabIds ?? [])
         expect(conceptLab(id)).toBeDefined();
   });
-  it("renders B-term identity, duration and reading material in the existing lesson player", () => {
+  it("renders B-term identity and direct teaching material in the existing lesson player", () => {
     for (const grade of [1, 6]) {
       const lesson = nextTermRelease.lessons.find(
         (row) => row.grade === grade,
@@ -206,7 +206,9 @@ describe("first B-term core courses", () => {
         }),
       );
       expect(html).toContain("下学期");
-      expect(html).toContain(`约${lesson.minutes}分钟`);
+      expect(html).toContain('class="lesson-rule"');
+      expect(html).toContain(lesson.cards[0].rule);
+      expect(html).not.toContain("<summary>语法说明</summary>");
       expect(html.match(/class="card child-example"/g)).toHaveLength(1);
       expect(html).toContain('aria-label="第1张，共3张"');
       expect(html).toContain('aria-label="下一张例句"');

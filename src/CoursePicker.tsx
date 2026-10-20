@@ -156,7 +156,6 @@ export default function CoursePicker({
                     </span>
                   </span>
                   <h3>{lesson.title}</h3>
-                  <p>{lesson.subtitle}</p>
                   <span className="lesson-choice-action">
                     {practised ? "重新学习" : "学习这一课"}
                     <LearningIcon kind="arrow" />
