@@ -12,7 +12,6 @@ export default function ReviewOverview({
   onLearn,
   onParent,
   onMistakes,
-  onOffline,
 }: {
   progress: Progress;
   dueCount: number;
@@ -22,7 +21,6 @@ export default function ReviewOverview({
   onLearn: () => void;
   onParent: () => void;
   onMistakes: () => void;
-  onOffline: () => void;
 }) {
   const nextAt = progress.reviewPlan?.nextAt;
   return (
@@ -60,28 +58,14 @@ export default function ReviewOverview({
           {!ready ? "选择档案" : dueCount ? "开始复习" : "继续学习"}
         </button>
       </div>
-      <nav className="review-tools" aria-label="其他复习方式">
-        {ready && (
+      {ready && (
+        <nav className="review-tools" aria-label="其他复习方式">
           <button type="button" className="secondary" onClick={onMistakes}>
             <LearningIcon kind="book" />
             错题复练
           </button>
-        )}
-        <a
-          className="secondary"
-          href={
-            import.meta.env.DEV ? "http://127.0.0.1:8788/#offline" : "#offline"
-          }
-          onClick={(event) => {
-            if (!import.meta.env.DEV) {
-              event.preventDefault();
-              onOffline();
-            }
-          }}
-        >
-          离线练习
-        </a>
-      </nav>
+        </nav>
+      )}
       {ready && progress.cards.length > 0 && (
         <details className="card review-list">
           <summary>复习安排 · {progress.cards.length}</summary>

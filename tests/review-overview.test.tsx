@@ -45,7 +45,6 @@ function render(ready: boolean) {
       onLearn={noop}
       onParent={noop}
       onMistakes={noop}
-      onOffline={noop}
     />,
   );
 }

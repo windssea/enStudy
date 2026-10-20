@@ -97,7 +97,6 @@ export default function ChildHome({
               ["writing", "写作练习"],
               ["talk", "对话练习"],
               ["workshops", "互动练习"],
-              ["offline", "离线练习"],
             ] as const
           ).map(([id, label]) => (
             <button key={id} onClick={() => onGo(id)}>

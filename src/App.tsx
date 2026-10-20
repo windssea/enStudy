@@ -1336,7 +1336,6 @@ export default function App() {
                 onLearn={() => move("map")}
                 onParent={() => move("parent")}
                 onMistakes={() => move("mistakes")}
-                onOffline={() => move("offline")}
               />
             </>
           )}
@@ -1495,22 +1494,24 @@ export default function App() {
                 </p>
               )}
               <div className="exercise-top">
-                <a
-                  className="offline-link"
-                  href={
-                    import.meta.env.DEV
-                      ? "http://127.0.0.1:8788/#offline"
-                      : "#offline"
-                  }
-                  onClick={(event) => {
-                    if (!import.meta.env.DEV) {
-                      event.preventDefault();
-                      move("offline");
+                {session.offlinePrepared && (
+                  <a
+                    className="offline-link"
+                    href={
+                      import.meta.env.DEV
+                        ? "http://127.0.0.1:8788/#offline"
+                        : "#offline"
                     }
-                  }}
-                >
-                  本机离线练习
-                </a>
+                    onClick={(event) => {
+                      if (!import.meta.env.DEV) {
+                        event.preventDefault();
+                        move("offline");
+                      }
+                    }}
+                  >
+                    查看待同步记录
+                  </a>
+                )}
                 <button
                   className="secondary"
                   onClick={() =>
