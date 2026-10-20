@@ -7,6 +7,7 @@ const source = JSON.parse(
 );
 const paths = [
   "grade4-tense-release.v1.json",
+  "grade4-tense-release.latest.json",
   "exercises.json",
   "course-release.v1.json",
   "course-expansion.v1.json",

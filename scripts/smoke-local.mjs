@@ -39,6 +39,7 @@ checked("vite-app-http-200", () => assert.equal(page.status, 200));
 for (const path of [
   "/content/exercises.json",
   "/content/grade4-tense-release.v1.json",
+  "/content/grade4-tense-release.latest.json",
   "/content/grade4-tense.v1.mjs",
   "/migrations/0052_grade4_tense.sql",
   "/content/be-action-contrast.v1.mjs",

@@ -223,6 +223,7 @@ const catalog = await catalogResponse.json();
 const privateGrade4 = await Promise.all(
   [
     "/content/grade4-tense-release.v1.json",
+    "/content/grade4-tense-release.latest.json",
     "/content/grade4-tense.v1.mjs",
     "/migrations/0052_grade4_tense.sql",
   ].map(async (path) => {
@@ -897,13 +898,15 @@ try {
     );
   }
   const grade4 = JSON.parse(
-    await readFile("content/grade4-tense-release.v1.json", "utf8"),
+    await readFile("content/grade4-tense-release.latest.json", "utf8"),
   );
   check(
     course.lessons.filter((l) => l.grade === 4).length === 48 &&
       course.lessons.filter(
         (l) =>
-          l.releaseId === grade4.id && l.version === 2 && l.cards.length === 5,
+          l.releaseId === grade4.editionId &&
+          l.version === 2 &&
+          l.cards.length === 5,
       ).length === 28,
     "twenty-eight P4 tense lessons carry the additive teaching revision",
   );
@@ -932,6 +935,11 @@ try {
         [ordinary, continued].every(
           (r) =>
             r.data.exercise?.id?.startsWith(`g4.${topicId}.`) &&
+            JSON.stringify(r.data.exercise.wordFormCue) ===
+              JSON.stringify(
+                grade4.items.find((i) => i.id === r.data.exercise.id)
+                  ?.wordFormCue,
+              ) &&
             !Object.hasOwn(r.data.exercise, "answers"),
         ),
       `${topicId} random and continued tasks both assign from the migrated remote bank`,

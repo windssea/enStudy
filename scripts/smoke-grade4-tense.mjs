@@ -6,7 +6,7 @@ assert.ok(
   "synthetic-profile checks are local only",
 );
 const release = JSON.parse(
-    await readFile("content/grade4-tense-release.v1.json", "utf8"),
+    await readFile("content/grade4-tense-release.latest.json", "utf8"),
   ),
   byId = new Map(release.items.map((i) => [i.id, i]));
 const jar = new Map(),
@@ -92,8 +92,8 @@ try {
   const metadata = (await request("/lessons")).data;
   check(
     metadata.lessons.filter((l) => l.grade === 4).length === 48 &&
-      metadata.lessons.filter((l) => l.releaseId === release.id).length ===
-        28 &&
+      metadata.lessons.filter((l) => l.releaseId === release.editionId)
+        .length === 28 &&
       Object.keys(metadata.topicStats).length === 64,
     "P4 course enrichment and four topic banks are actually served",
   );
@@ -213,6 +213,16 @@ try {
       independent.nextReviewAt > Date.now() + 86300000 &&
       independent.nextReviewAt < Date.now() + 86500000,
     "another child has independent exposure and memory records",
+  );
+  const did = await open({
+    exerciseId: "g4.forms.irregular-past.did.go.question.input",
+  });
+  check(
+    did.status === 201 &&
+      did.data.exercise.wordFormCue?.word === "went" &&
+      !did.data.exercise.prompt.includes("（go）") &&
+      (await answer(did.data)).outcome === "correct",
+    "revised did task recalls go from went and grades the persisted v2 assignment",
   );
   console.log(`${checks} P4 tense runtime checks passed`);
 } finally {

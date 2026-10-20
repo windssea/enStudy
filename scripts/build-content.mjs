@@ -57,4 +57,5 @@ console.log(
   `Built public draft catalog: ${units.length} units, ${topics.length} topics, ${patterns.length} patterns. No private answers.`,
 );
 await import("./build-grade4-tense.mjs");
+await import("./build-grade4-cues.mjs");
 await import("./build-concept-labs.mjs");

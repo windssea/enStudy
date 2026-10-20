@@ -4,6 +4,7 @@ import expansion from "../../content/course-expansion.v1.json";
 import expansionLatest from "../../content/course-expansion.latest.json";
 import topics from "../../content/topic-release.v1.json";
 import grade4 from "../../content/grade4-tense-release.v1.json";
+import grade4Current from "../../content/grade4-tense-release.latest.json";
 import patterns from "../../content/pattern-release.v1.json";
 import vocabulary from "../../content/vocabulary-release.v1.json";
 import { ketRelease } from "../domain/ketVocabulary";
@@ -183,22 +184,24 @@ export const topicRelease = topics as unknown as {
     { items: number; families: number; roundSizes: number[]; mode: string }
   >;
 };
-export const grade4TenseRelease = grade4 as unknown as {
+export const grade4TenseRelease = grade4Current as unknown as {
   id: string;
+  editionId: string;
+  releases: string[];
   manifestHash: string;
   lessons: CourseLesson[];
   items: PrivateExercise[];
   stats: typeof topicRelease.stats;
 };
 export const topicCatalog = {
-  id: "topic-catalog-v2",
-  manifestHash: grade4.manifestHash,
+  id: "topic-catalog-v3",
+  manifestHash: grade4Current.manifestHash,
   items: [...topicRelease.items, ...grade4TenseRelease.items],
   stats: { ...topicRelease.stats, ...grade4TenseRelease.stats },
 };
 export const topicPublicationReleases = (topicId: string): string[] =>
   Object.hasOwn(grade4TenseRelease.stats, topicId)
-    ? [grade4TenseRelease.id]
+    ? grade4TenseRelease.releases
     : Object.hasOwn(topicRelease.stats, topicId)
       ? [topicRelease.id]
       : [];
@@ -325,6 +328,7 @@ export const phonicsRelease = phonics as unknown as {
 };
 const versionedExercises = new Map(
   [
+    ...grade4.items,
     ...reservedTrainingOriginal.items,
     ...reservedFormsOriginal.items,
     ...expansion.items,

@@ -63,4 +63,4 @@ M1-04l,M1,统一间隔复习,客观作答共用短时再练与扩展间隔并保
 M1-04m,M1,跨版本动态模块恢复,旧页面遇到已替换模块时提供可恢复界面且不丢失已保存学习记录,merged-with-M1-04c-deployed-device-pending,docs/88-loading-recovery-and-compact-review.md；保留外层编辑器和导航并提供主动重载
 M1-04n,M1,紧凑复习流程,一组真实任务与主操作并删除重复空卡和旧专题阶段面板,compact-review-deployed,docs/88-loading-recovery-and-compact-review.md；平板窄屏及真实保存与到期复习入口已验
 M1-04o,M1,撤下儿童离线推广入口,首页复习和普通答题不再推广离线且已有答案和同步路径保留,offline-child-promotion-removed-legacy-sync-retained-deployed,docs/89-offline-entry-cleanup.md；597项单元及本地原有档案只读入口核验通过
-M1-04p,M1,四年级时态和不规则动词,深化28课56张对照卡并新增4专题840变体及逐词复习,local-ui-runtime-verified-deployment-pending,docs/90-grade4-tense-and-irregular-verbs.md；602项单元与37专项运行和四种屏幕尺寸验收通过
+M1-04p,M1,四年级时态和不规则动词,深化28课56张对照卡并新增4专题840变体及逐词复习,local-ui-runtime-verified-deployment-pending,docs/90-grade4-tense-and-irregular-verbs.md；602项单元与38专项运行和四种屏幕尺寸验收通过

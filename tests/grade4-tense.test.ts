@@ -42,15 +42,21 @@ describe("P4 tense teaching and irregular-verb practice", () => {
     expect(topicRelease.items).toEqual(originalTopics.items);
     expect(Object.keys(topicCatalog.stats)).toHaveLength(64);
     expect(topicPublicationReleases("grammar.be")).toEqual(["topic-bank-v1"]);
-    expect(topicPublicationReleases("forms.irregular-past.core")).toEqual([
-      release.id,
-    ]);
+    expect(topicPublicationReleases("forms.irregular-past.core")).toEqual(
+      release.releases,
+    );
     expect(topicPublicationReleases("unknown")).toEqual([]);
     expect(release.items).toHaveLength(840);
     expect(new Set(release.items.map((i) => i.skill)).size).toBe(180);
     expect(new Set(release.items.map((i) => i.id)).size).toBe(840);
     for (const item of release.items) {
-      expect(exerciseVersion(item.id, 1)).toBe(item);
+      expect(exerciseVersion(item.id, item.version ?? 1)).toBe(item);
+      if (item.version === 2) {
+        const old = exerciseVersion(item.id, 1)!;
+        expect(old.family).toBe(item.family);
+        expect(old.answers).toEqual(item.answers);
+        expect(old.wordFormCue?.word).toBe(item.answers[0]);
+      }
       expect(gradeAnswer(item, item.answers[0]), item.id).toBe(true);
       const visible = publicExercise(item);
       expect(visible).not.toHaveProperty("answers");
@@ -85,8 +91,11 @@ describe("P4 tense teaching and irregular-verb practice", () => {
     expect(gradeAnswer(item("get", "participle"), "gotten")).toBe(true);
     expect(gradeAnswer(item("get", "past"), "gotten")).toBe(false);
     for (const i of release.items.filter((i) => i.topicId?.endsWith(".did"))) {
-      expect(i.answers[0]).toBe(i.wordFormCue?.word);
-      expect(i.wordFormCue?.instruction).toBe("did后，用原形");
+      expect(i.wordFormCue?.word).toBe(
+        irregularVerbs.find((w) => w.base === i.answers[0])?.past,
+      );
+      expect(i.wordFormCue?.instruction).not.toContain("原形");
+      expect(i.prompt).not.toContain(`（${i.answers[0]}）`);
       expect(i.prompt).not.toMatch(/Did you ___.*（be）/);
     }
   });
