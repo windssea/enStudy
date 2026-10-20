@@ -4,9 +4,9 @@ import {
   type DialogueReply,
 } from "../packages/domain/conversations";
 import { api } from "./api";
-import SpeechButton from "./SpeechButton";
 import WavRecorder, { type VoiceClip } from "./WavRecorder";
 import AiAudioPlayer from "./AiAudioPlayer";
+import LearningPageHeader from "./LearningPageHeader";
 interface Options {
   enabled: boolean;
   asr: boolean;
@@ -247,16 +247,7 @@ export default function ConversationPlayground({
     busy || uncertain || !conversation || conversation.turnCount >= 6;
   return (
     <section className="talk-page">
-      <div className="page-head">
-        <div>
-          <span className="eyebrow">ENGLISH LITTLE THEATRE</span>
-          <h1>英语小剧场</h1>
-          <p>扮演森林朋友，一次练一句。这里不评分，也不增加掌握度。</p>
-        </div>
-        <button className="secondary" onClick={onBack}>
-          返回探险地图
-        </button>
-      </div>
+      <LearningPageHeader title="英语对话" onBack={onBack} />
       {!conversation && (
         <div className="talk-scenes">
           {conversationScenes.map((s) => (
@@ -286,7 +277,6 @@ export default function ConversationPlayground({
           </span>
           <h2 lang="en">{scene.promptEnglish}</h2>
           <p>{scene.promptChinese}</p>
-          <SpeechButton text={scene.promptEnglish} label="听问题 · 设备朗读" />
           <div className="talk-history" aria-live="polite">
             {conversation?.turns.map((t) => (
               <div className="talk-turn" key={t.id}>
@@ -300,10 +290,6 @@ export default function ConversationPlayground({
                   <p>{t.assistant.meaningChinese}</p>
                   <p className="talk-hint">试一试：{t.assistant.hintChinese}</p>
                   <div className="voice-actions">
-                    <SpeechButton
-                      text={t.assistant.replyEnglish}
-                      label="设备朗读"
-                    />
                     {options?.tts && (
                       <button
                         className="secondary"
@@ -431,10 +417,6 @@ export default function ConversationPlayground({
               </>
             ) : (
               <>
-                <SpeechButton
-                  text={text || scene.starters[0]}
-                  label="听示范 · 设备朗读"
-                />
                 <button
                   className="primary"
                   disabled={
@@ -453,31 +435,28 @@ export default function ConversationPlayground({
             </p>
           )}
         </section>
-        <aside className="card talk-guide">
-          <h3>说一句，就是一小步</h3>
-          <ol>
-            <li>先听问题，选一句练习。</li>
-            <li>可以打字；开启语音后也能录音。</li>
-            <li>识别后先检查文字，再发送。</li>
-            <li>听回复，练一种新的表达。</li>
-          </ol>
-          <p>
-            AI可能理解错或说错。可以请家长一起检查，课程判题和复习仍按标准题库进行。
-          </p>
-          <p>
-            麦克风只在主动点击录音后申请。离开页面或切到后台会停止录音。服务可能收费，调用不会自动重试。
-          </p>
+        <aside className="talk-guide">
           {!options?.enabled && (
-            <>
-              <p>家长尚未开启此功能时，也可以用这里的示范句练习。</p>
+            <section className="card">
+              <h2>AI对话尚未开启</h2>
+              <p>现在可以练习示范句。</p>
               <button className="secondary" onClick={onParent}>
-                到家长空间设置AI
+                家长设置
               </button>
-            </>
+            </section>
           )}
-          <p className="footnote">
-            一段最多6轮，暂存30分钟。AI语音为合成声音；设备朗读使用浏览器能力，不是AI语音服务。暂不提供实时通话或发音分数。
-          </p>
+          <details className="learning-page-details">
+            <summary>对话与声音说明</summary>
+            <p>
+              一段最多6轮，暂存30分钟。对话不计课程评分或掌握度，AI回复需要核对。
+            </p>
+            <p>
+              麦克风仅在点击录音后申请，离开或切到后台即停止。识别文字由你确认后发送，服务可能收费，请求不会自动重试。
+            </p>
+            <p>
+              AI语音为合成声音，需家长单独配置。暂不提供实时通话或发音分数。
+            </p>
+          </details>
         </aside>
       </div>
     </section>

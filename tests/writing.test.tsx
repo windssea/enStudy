@@ -160,7 +160,8 @@ describe("private authored writing", () => {
     expect(html).toContain("&lt;img");
     expect(html).not.toContain("<script>");
     expect(html).not.toContain("<img");
-    expect(html).toContain("不自动判定内容或语法正确");
+    expect(html).toContain('aria-label="当前文字预览"');
+    expect(html).not.toMatch(/role="(?:progressbar|meter)"|data-score=/);
     const compared = renderToStaticMarkup(
       createElement(WritingPreview, {
         draft: d,
@@ -169,7 +170,7 @@ describe("private authored writing", () => {
       }),
     );
     expect(compared).toContain("保存版本（用于比较）");
-    expect(compared).toContain("当前编辑文字不会因此被替换");
+    expect(compared).toContain("当前文字不会被替换");
   });
   it("links relevant courses to authored work without changing the practice start", () => {
     const lesson = courseCatalog.lessons.find((l) => l.id === "P6B-U05-L2")!;

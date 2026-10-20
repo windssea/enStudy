@@ -12,7 +12,8 @@ function allowed(path) {
     /^\/assets\/[a-zA-Z0-9_.-]+\.(js|css|glb)$/.test(path) ||
     /^\/audio\/(guides|words)\/[a-f0-9]{24}\.mp3$/.test(path) ||
     /^\/pictures\/words\/[a-f0-9]{24}\.png$/.test(path) ||
-    /^\/art\/clay-v1\/[a-f0-9]{24}\.png$/.test(path)
+    /^\/art\/clay-v1\/[a-f0-9]{24}\.png$/.test(path) ||
+    /^\/art\/concepts\/sports-v1\/(telescope|stone)\.webp$/.test(path)
   );
 }
 self.addEventListener("message", (event) => {
@@ -60,10 +61,22 @@ self.addEventListener("message", (event) => {
                   ? !/audio\/(mpeg|mp3)/.test(mime)
                   : path.endsWith(".png")
                     ? !mime.includes("image/png")
-                    : !mime.includes("text/html")
+                    : path.endsWith(".webp")
+                      ? !mime.includes("image/webp")
+                      : !mime.includes("text/html")
         )
           throw Error();
         const blob = await r.clone().blob();
+        if (path.endsWith(".webp")) {
+          if (blob.size < 100 || blob.size > 300000) throw Error();
+          const header = new DataView(await blob.slice(0, 12).arrayBuffer());
+          if (
+            header.getUint32(0, true) !== 0x46464952 ||
+            header.getUint32(4, true) !== blob.size - 8 ||
+            header.getUint32(8, true) !== 0x50424557
+          )
+            throw Error();
+        }
         if (path.endsWith(".png")) {
           if (blob.size < 100 || blob.size > 2_500_000) throw Error();
           const header = new Uint8Array(await blob.slice(0, 8).arrayBuffer());

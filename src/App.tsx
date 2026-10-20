@@ -946,14 +946,18 @@ export default function App() {
       <ChildNavigation active={activeNav} onGo={move} />
       <div className="workspace">
         <header className="topbar">
-          <button
-            className="child-home-button"
-            aria-label="回到学习首页"
-            onClick={() => move("home")}
-          >
-            <LearningIcon kind="home" />
-            <span>首页</span>
-          </button>
+          {view === "home" ? (
+            <h1 className="home-page-title">学习</h1>
+          ) : (
+            <button
+              className="child-home-button"
+              aria-label="回到学习首页"
+              onClick={() => move("home")}
+            >
+              <LearningIcon kind="home" />
+              <span>首页</span>
+            </button>
+          )}
           <div className="adult-location">
             <small>你在这里</small>
             <strong>
@@ -1036,7 +1040,16 @@ export default function App() {
           {view === "home" && (
             <ChildHome
               nickname={identity.child?.nickname}
-              grade={identity.child?.grade}
+              taskTitle={
+                session && identity.authenticated
+                  ? session.exercise.title
+                  : nextLesson?.title
+              }
+              taskDetail={
+                session && identity.authenticated
+                  ? `第${session.position ?? 1} / ${session.total}题`
+                  : nextLesson?.unitTitle
+              }
               busy={busy}
               ready={Boolean(nextLesson) || !identity.child || Boolean(session)}
               resume={Boolean(session && identity.authenticated)}

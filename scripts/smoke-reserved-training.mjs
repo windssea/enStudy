@@ -87,7 +87,10 @@ function statements(sql) {
         else quote = "";
       }
     } else if (ch === "'" || ch === '"') quote = ch;
-    else if (ch === ";") {
+    else if (
+      ch === ";" &&
+      (!/^\s*CREATE\s+TRIGGER/i.test(part) || /\bEND\s*;\s*$/i.test(part))
+    ) {
       rows.push(part);
       part = "";
     }
@@ -178,6 +181,13 @@ try {
     "0033_household_member_lookup.sql",
   ])
     await migrate(name);
+  if (browserMode)
+    for (const name of [
+      "0038_writing_drafts.sql",
+      "0039_phonics_core_v1.sql",
+      "0041_writing_ai_review.sql",
+    ])
+      await migrate(name);
   check(
     (await request("/training/materials/grammar.be", undefined, new Map()))
       .status === 401,

@@ -470,6 +470,28 @@ for (const asset of Object.values(expectedArt.assets)) {
   validArt = validArt && valid;
 }
 check(validArt, "all generated clay PNG assets have exact bytes and MIME");
+const teachingArt = JSON.parse(
+  await readFile(
+    new URL("../public/content/learning-art.v1.json", import.meta.url),
+    "utf8",
+  ),
+);
+const teachingResponse = await request("/content/learning-art.v1.json");
+check(
+  teachingResponse.ok &&
+    JSON.stringify(await teachingResponse.json()) ===
+      JSON.stringify(teachingArt),
+  "unified sports 3D teaching-art manifest matches this release",
+);
+let validTeachingArt = true;
+for (const asset of Object.values(teachingArt.assets)) {
+  const valid = await verifiedStaticMedia({ ...asset, mime: "image/webp" });
+  validTeachingArt = validTeachingArt && valid;
+}
+check(
+  validTeachingArt,
+  "both transparent teaching illustrations have exact bytes and MIME",
+);
 check(
   (await request("/api/v1/admin/accounts")).status === 401,
   "anonymous account administration rejected",

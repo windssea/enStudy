@@ -11,6 +11,8 @@ function runtime(
   guide = false,
   pictures = false,
   invalidPicture = false,
+  webp = false,
+  invalidWebp = false,
 ) {
   const stores = new Map<string, Map<string, Response>>(),
     handlers = new Map<string, (event: any) => void>(),
@@ -52,6 +54,7 @@ function runtime(
               "/index.html",
               "/assets/main-1.js",
               "/assets/main-1.css",
+              ...(webp ? ["/art/concepts/sports-v1/telescope.webp"] : []),
               ...(model ? ["/assets/fox-1.glb"] : []),
               ...(guide ? ["/audio/guides/1234567890abcdef12345678.mp3"] : []),
               ...(pictures
@@ -65,6 +68,14 @@ function runtime(
       });
     if (badAsset && url.endsWith(".css"))
       return new Response("broken", { status: 503 });
+    if (url.endsWith(".webp")) {
+      const bytes = new Uint8Array(200),
+        header = new DataView(bytes.buffer);
+      header.setUint32(0, invalidWebp ? 0 : 0x46464952, true);
+      header.setUint32(4, bytes.length - 8, true);
+      header.setUint32(8, 0x50424557, true);
+      return new Response(bytes, { headers: { "Content-Type": "image/webp" } });
+    }
     if (url.endsWith(".png")) {
       const bytes = new Uint8Array(200);
       bytes.set(
@@ -152,6 +163,21 @@ function runtime(
   };
 }
 describe("offline public shell policy", () => {
+  it("keeps registered teaching art available offline and rejects a false WebP container", async () => {
+    const good = runtime(false, false, false, false, false, true);
+    expect((await good.prepare()).prepared).toBe(true);
+    good.offline();
+    expect(
+      (
+        await good.request("/art/concepts/sports-v1/telescope.webp")
+      )?.headers.get("Content-Type"),
+    ).toBe("image/webp");
+    expect(
+      await good.request("/art/concepts/sports-v1/unregistered.webp"),
+    ).toBeUndefined();
+    const bad = runtime(false, false, false, false, false, true, true);
+    expect((await bad.prepare()).prepared).toBe(false);
+  });
   it("caches only bounded hashed picture/audio assets and rejects a false PNG header", async () => {
     const good = runtime(false, false, false, true);
     expect((await good.prepare()).prepared).toBe(true);

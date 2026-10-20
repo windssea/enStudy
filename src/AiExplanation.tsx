@@ -4,7 +4,6 @@ import type {
   LearningSession,
 } from "../packages/contracts/index";
 import { api } from "./api";
-import SpeechButton from "./SpeechButton";
 export default function AiExplanation({
   session,
   allowed,
@@ -133,10 +132,6 @@ export default function AiExplanation({
                 {result.explanation.exampleEnglish}
               </p>
               <p>{result.explanation.exampleChinese}</p>
-              <SpeechButton
-                text={result.explanation.exampleEnglish}
-                label="听例句"
-              />
             </div>
           </>
         )}

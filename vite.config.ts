@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import childGuides from "./public/content/child-guides.v3.json" with { type: "json" };
 import pictureMedia from "./public/content/picture-words.v1.json" with { type: "json" };
 import clayArt from "./public/content/clay-art.v1.json" with { type: "json" };
+import learningArt from "./public/content/learning-art.v1.json" with { type: "json" };
 export default defineConfig({
   assetsInclude: ["**/*.glb"],
   plugins: [
@@ -18,6 +19,7 @@ export default defineConfig({
           ...pictureMedia.words.map((row) => row.audioUrl),
           ...pictureMedia.atlases.map((row) => row.url),
           ...Object.values(clayArt.assets).map((row) => row.url),
+          ...Object.values(learningArt.assets).map((row) => row.url),
           ...Object.keys(bundle)
             .filter((name) => /\.(js|css|glb)$/.test(name))
             .map((name) => `/${name}`),

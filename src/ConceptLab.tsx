@@ -6,7 +6,6 @@ import {
 } from "../packages/domain/concepts";
 import { api } from "./api";
 import ConceptScene from "./ConceptScene";
-import SpeechButton from "./SpeechButton";
 import MeasurementControls from "./MeasurementControls";
 export default function ConceptLab({
   lab,
@@ -77,7 +76,6 @@ export default function ConceptLab({
           <h3 id={titleId}>{lab.title}</h3>
           <p>{lab.description}</p>
         </div>
-        <span className="badge">{lab.cases.length}个小情景</span>
       </div>
       <div className="concept-choices" role="group" aria-label="选择演示例子">
         {lab.cases.map((row) => (
@@ -115,6 +113,7 @@ export default function ConceptLab({
                 data={scene}
                 revision={revision}
                 selectedMeasurement={selectedMeasurement}
+                context={{ labId: lab.id, caseId: example.id }}
               />
               {scene.measurement && (
                 <MeasurementControls
@@ -152,6 +151,12 @@ export default function ConceptLab({
                 </p>
               )}
               <p>{scene.note}</p>
+              {lab.kind === "timeline" && (
+                <div className="timeline-example">
+                  <p lang="en">{example.sentence}</p>
+                  <p>{example.translation}</p>
+                </div>
+              )}
               {lab.kind === "morph" && (
                 <p className="footnote">{example.note}</p>
               )}
@@ -182,11 +187,10 @@ export default function ConceptLab({
               <span>{step + 1} / 3</span>
             </div>
           )}
-          {(lab.kind === "timeline" || step === 2) && (
+          {lab.kind !== "timeline" && step === 2 && (
             <div className="concept-sentence">
               <p lang="en">{example.sentence}</p>
               <p>{example.translation}</p>
-              <SpeechButton text={example.sentence} label="听这个例句" />
             </div>
           )}
           <button
@@ -194,15 +198,16 @@ export default function ConceptLab({
             disabled={loading}
             onClick={() => setRevision((value) => value + 1)}
           >
-            {lab.kind === "timeline"
-              ? "从现在出发，看这件事的位置"
-              : "再看这一步"}
+            {lab.kind === "timeline" ? "再看时间关系" : "再看这一步"}
           </button>
         </>
       )}
-      <p className="footnote">
-        这里是示范，不加星星，也不代表已经掌握。看过的词形或相同句子会留下示范记录；练习和复习里仍可以慢慢想。
-      </p>
+      <details className="concept-teaching-notes">
+        <summary>演示说明</summary>
+        <p>
+          这里是示范，不加星星，也不代表已经掌握。看过的词形或相同句子会留下示范记录；练习和复习里仍可以慢慢想。
+        </p>
+      </details>
     </section>
   );
 }

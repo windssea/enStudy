@@ -76,7 +76,6 @@ export default function WordStudyCard({
               <h4>{preview.meaning}</h4>
               <p lang="en">{preview.example}</p>
               <SpeechButton text={preview.word} />
-              <SpeechButton text={preview.example} label="读例句" />
               {wordObjectKind(preview) && (
                 <Suspense fallback={<p role="status">粘土小物正在准备…</p>}>
                   <WordObjectScene word={preview} />

@@ -1,0 +1,25 @@
+/* Canonical runtime palette and material tokens: sports-clean-3d-v1.
+   Art direction: design-system/english-quest/ILLUSTRATION_STYLE.md. */
+:root {
+  --ink: #20324d;
+  --muted: #53657a;
+  --blue: #2563d8;
+  --primary: var(--blue);
+  --primary-soft: #edf4ff;
+  --border: #d7e5ee;
+  --control-border: #aec5d7;
+  --playground: #f5fbff;
+  --teal: #147d79;
+  --mint-soft: #eaf9f2;
+  --orange-soft: #fff3e2;
+  --violet: #7456ad;
+  --past-soft: #e6f5ff;
+  --future-soft: #f2f5fa;
+  --timeline-rail: #647c97;
+  --event: #bf5145;
+  --control-radius: 12px;
+  --control-surface: linear-gradient(180deg, #fff, #f4f9fd);
+  --primary-surface: linear-gradient(180deg, #326bd9, #2459c4);
+  --control-depth: 0 2px 0 #d7e4ef, inset 0 1px 0 #fff;
+  --primary-depth: 0 3px 0 #1e4798, inset 0 1px 0 #ffffff38;
+}

@@ -1,0 +1,21 @@
+{
+  "styleId": "sports-clean-3d-v1",
+  "assets": {
+    "telescope": {
+      "url": "/art/concepts/sports-v1/telescope.webp",
+      "width": 1186,
+      "height": 1327,
+      "alt": "收拾望远镜的情境示意",
+      "bytes": 204894,
+      "sha256": "88a20f9ea9abcd2ad41ae7d8f28b405a6945a082f1abccc4ca305686cd671382"
+    },
+    "stone": {
+      "url": "/art/concepts/sports-v1/stone.webp",
+      "width": 1374,
+      "height": 1145,
+      "alt": "两位孩子发现一块光滑石头的情境示意",
+      "bytes": 237072,
+      "sha256": "0e8d3994c849c59a93291b97ce0812d30dc0815a064f235ad0d2cba308a7dd16"
+    }
+  }
+}

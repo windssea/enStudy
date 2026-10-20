@@ -508,6 +508,10 @@ try {
   const shell = await fetchLocalRead(`${base}/offline-shell.json`);
   assert.equal(shell.status, 200);
   const manifest = await shell.json();
+  const learningArt = JSON.parse(
+    await readFile("public/content/learning-art.v1.json", "utf8"),
+  );
+  const teachingArtPaths = Object.values(learningArt.assets).map((a) => a.url);
   check(
     manifest.schema === 1 &&
       manifest.assets.some((p) => p.includes("OfflinePractice")) &&
@@ -516,6 +520,7 @@ try {
           p === "/index.html" ||
           /^\/assets\/[\w.-]+\.(js|css|glb)$/.test(p) ||
           /^\/audio\/(guides|words)\/[a-f0-9]{24}\.mp3$/.test(p) ||
+          teachingArtPaths.includes(p) ||
           /^\/(?:pictures\/words|art\/clay-v1)\/[a-f0-9]{24}\.png$/.test(p),
       ),
     "built offline manifest contains its player modules and only public shell assets",

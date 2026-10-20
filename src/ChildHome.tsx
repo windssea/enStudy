@@ -2,7 +2,8 @@ import LearningIcon from "./LearningIcon";
 import type { View } from "./routes";
 export default function ChildHome({
   nickname,
-  grade,
+  taskTitle,
+  taskDetail,
   busy,
   ready,
   resume,
@@ -10,7 +11,8 @@ export default function ChildHome({
   onGo,
 }: {
   nickname?: string;
-  grade?: number;
+  taskTitle?: string;
+  taskDetail?: string;
   busy: boolean;
   ready: boolean;
   resume: boolean;
@@ -20,73 +22,40 @@ export default function ChildHome({
   return (
     <div className="learning-home">
       <section
-        className="learning-welcome"
+        className="learning-current-task"
         aria-labelledby="learning-home-title"
       >
-        <div className="learning-welcome-copy">
-          {nickname && <p className="learning-eyebrow">{nickname}，欢迎回来</p>}
-          <h1 id="learning-home-title">
-            从一句话，
-            <br />
-            开始学英语。
-          </h1>
-          <div className="learning-start-row">
-            <button
-              className="learning-start"
-              disabled={busy || !ready}
-              onClick={onStart}
-              aria-label={
-                resume
-                  ? "继续上次的学习"
-                  : nickname
-                    ? "开始课程学习"
-                    : "请家长选择档案，再开始"
-              }
-            >
-              <LearningIcon kind={resume ? "arrow" : "play"} />
-              <span>
-                {busy || !ready
-                  ? "正在准备…"
-                  : resume
-                    ? "继续学习"
-                    : "开始学习"}
-              </span>
-            </button>
-          </div>
-          {!nickname && (
-            <p className="learning-parent-hint">
-              首次使用，请家长登录并选择档案。
-            </p>
-          )}
+        <div className="learning-task-copy">
+          <h2 id="learning-home-title">
+            {nickname ? taskTitle || "课程学习" : "选择学习档案"}
+          </h2>
+          {nickname && taskDetail && <p>{taskDetail}</p>}
         </div>
-        <div className="learning-path-preview" aria-label="课程学习的三个步骤">
-          <div className="learning-path-heading">
-            <LearningIcon kind="book" />
-            <span>{grade ? grade + "年级课程" : "学习步骤"}</span>
-          </div>
-          <ol>
-            <li>
-              <span className="learning-step-number">1</span>
-              <strong>选一节课</strong>
-            </li>
-            <li>
-              <span className="learning-step-number">2</span>
-              <strong>听一句，想一想</strong>
-            </li>
-            <li>
-              <span className="learning-step-number">3</span>
-              <strong>完成一轮练习</strong>
-            </li>
-          </ol>
-        </div>
+        <button
+          className="learning-start"
+          disabled={busy || !ready}
+          onClick={onStart}
+          aria-label={
+            resume
+              ? "继续上次的学习"
+              : nickname
+                ? "开始课程学习"
+                : "请家长选择档案，再开始"
+          }
+        >
+          <LearningIcon kind={resume ? "arrow" : "play"} />
+          <span>
+            {busy || !ready
+              ? "正在准备…"
+              : resume
+                ? "继续学习"
+                : nickname
+                  ? "开始学习"
+                  : "家长登录"}
+          </span>
+        </button>
       </section>
-      <section
-        className="learning-entries"
-        aria-labelledby="learning-entries-title"
-      >
-        <div className="learning-section-heading">
-          <h2 id="learning-entries-title">选择学习内容</h2>
-        </div>
+      <section className="learning-entries" aria-label="学习内容">
         <div className="learning-entry-grid">
           {(
             [

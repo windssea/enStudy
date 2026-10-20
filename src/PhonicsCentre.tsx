@@ -4,6 +4,7 @@ import type { PhonicsStage, PhonicsWord } from "../packages/contracts/phonics";
 import metadata from "../public/content/phonics.json";
 import { api } from "./api";
 import PhonicsWorkbench from "./PhonicsWorkbench";
+import LearningPageHeader from "./LearningPageHeader";
 type Stage = PhonicsStage & {
   progress?: { rounds: number; answers: number; independent: number };
 };
@@ -77,17 +78,11 @@ export default function PhonicsCentre({
   }
   return (
     <div className="phonics-centre">
-      <button className="secondary" onClick={onBack}>
-        ← 返回单词特训
-      </button>
-      <header className="card phonics-hero">
-        <span className="eyebrow">LISTEN. NOTICE. BUILD.</span>
-        <h1>拼读小路</h1>
-        <p>听完整单词，看看音和字母怎样合作，再自己试一小轮。</p>
-        <p className="footnote">
-          六站原创基础练习 · 不按年级锁题 · 整词声音为本地合成，不做儿童口语评分
-        </p>
-      </header>
+      <LearningPageHeader
+        title="自然拼读"
+        onBack={onBack}
+        backLabel="返回单词"
+      />
       <nav className="phonics-stages" aria-label="拼读学习站">
         {stages.map((s, i) => (
           <button
@@ -112,9 +107,7 @@ export default function PhonicsCentre({
           {stage.grade}起，可按基础回补
         </span>
         <h2>{stage.title}</h2>
-        <p>
-          先选一个示范观察，再练不同的词。第六站按词义块拆长词，不把它们当成单个音。
-        </p>
+        <p>选择示范，或直接开始练习。</p>
         {!childId ? (
           <div className="notice">
             <p>先选择探险档案，才能记录看过的示范并保存练习。</p>
@@ -162,15 +155,12 @@ export default function PhonicsCentre({
         )}
         <div className="phonics-start">
           <div>
-            <h3>换一组词，自己试试</h3>
-            <p>
-              听词辨拼写、补字母、拼合词块与分组判断随机搭配。提示和文字辅助分别记录，不计速度。
-            </p>
+            <h3>拼读练习</h3>
             {stage.progress && (
               <p>
                 已完成{stage.progress.rounds}轮，共保存
                 {stage.progress.answers}
-                次作答；这是已完成轮次的记录，不是掌握证明。
+                次作答。
               </p>
             )}
             <label htmlFor="phonics-round">

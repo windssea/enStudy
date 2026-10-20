@@ -62,9 +62,6 @@ export default function LessonView({
         <p className="teaching-english" lang="en">
           {card.example}
         </p>
-        <div className="child-example-listen">
-          <SpeechButton text={card.example} label="听英语" />
-        </div>
         <p className="child-translation">{card.translation}</p>
         <details className="child-rule">
           <summary>语法说明</summary>

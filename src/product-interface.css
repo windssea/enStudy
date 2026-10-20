@@ -1,13 +1,90 @@
 /* Shared product controls. Loaded after historical illustration/layout styles. */
-:root {
-  --ink: #20324d;
-  --muted: #56657b;
-  --blue: #244fb9;
-  --primary: var(--blue);
-  --primary-soft: #edf3ff;
-  --border: #dce3ed;
-  --control-border: #b6c2d3;
-  --playground: #f5f7fb;
+.app-shell.child-shell {
+  background: var(--playground);
+}
+.app-shell.child-shell .home-page-title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.35;
+}
+.learning-current-task {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--primary-soft);
+}
+.learning-task-copy {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+.app-shell.child-shell .learning-task-copy h2 {
+  margin: 0;
+  font-size: 21px;
+}
+.learning-task-copy p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+.learning-home .learning-entries {
+  margin-top: 20px;
+}
+.app-shell.child-shell .learning-entry {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 12px;
+  min-height: 80px;
+  padding: 16px;
+  text-align: left;
+}
+.learning-home .learning-entry-icon {
+  grid-column: 1;
+  grid-row: 1;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.learning-home .learning-entry > strong {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 18px;
+}
+.learning-home .learning-entry > .learning-icon {
+  grid-column: 3;
+  grid-row: 1;
+  width: 20px;
+}
+.learning-home .learning-more {
+  margin-top: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.learning-home .learning-more > summary {
+  min-height: 44px;
+}
+.learning-home .learning-more-grid {
+  margin-top: 12px;
+}
+.app-shell.child-shell .profile-button,
+.app-shell.child-shell .child-home-button {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.learning-home .learning-entry:nth-child(2) {
+  background: var(--mint-soft);
+}
+.learning-home .learning-entry:nth-child(3) {
+  background: var(--orange-soft);
 }
 .app-shell.child-shell
   :is(
@@ -23,9 +100,9 @@
   ) {
   min-height: 52px;
   font-size: 16px;
-  border-radius: 10px;
+  border-radius: var(--control-radius);
   padding: 12px 18px;
-  box-shadow: none;
+  box-shadow: var(--control-depth);
   transform: none;
 }
 .app-shell.child-shell .completion-card {
@@ -40,10 +117,10 @@
   max-width: 100%;
   padding: 12px 18px;
   border: 1px solid var(--border);
-  border-radius: 10px;
-  background: #fff;
+  border-radius: var(--control-radius);
+  background: var(--control-surface);
   color: var(--ink);
-  box-shadow: none;
+  box-shadow: var(--control-depth);
   transform: none;
   font-size: 16px;
   font-weight: 600;
@@ -59,9 +136,9 @@
   gap: 10px;
   min-height: 56px;
   border-color: var(--primary);
-  background: var(--primary);
+  background: var(--primary-surface);
   color: #fff;
-  box-shadow: none;
+  box-shadow: var(--primary-depth);
   font-size: 17px;
 }
 .app-shell.child-shell
@@ -182,6 +259,40 @@
 .family-workspace {
   max-width: 1000px;
   margin-inline: auto;
+}
+.learning-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.app-shell.child-shell .learning-page-header h1 {
+  margin: 4px 0 0;
+}
+.app-shell.child-shell .learning-page-header button {
+  width: auto;
+  flex: 0 0 auto;
+}
+.learning-page-details {
+  margin: 0 0 24px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 16px 20px;
+}
+.learning-page-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 28px;
+}
+.learning-page-details p {
+  margin: 16px 0 0;
+  line-height: 1.7;
+}
+.talk-guide > .card {
+  margin-bottom: 16px;
 }
 .family-workspace .family-layout {
   grid-template-columns: minmax(0, 1fr);
@@ -461,5 +572,129 @@
   }
   .app-shell.child-shell .exercise-actions > button {
     flex: 1;
+  }
+}
+.app-shell.child-shell button:active:enabled {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 2px #20324d18;
+}
+.app-shell.child-shell .concept-lab {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #fff;
+}
+.concept-scene[data-timeline="true"] {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(150deg, #f0fbff, #f5fdf9);
+}
+.concept-scene[data-timeline="true"] .concept-viewport {
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.teaching-timeline {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.timeline-story {
+  display: flex;
+  align-items: end;
+  justify-content: flex-start;
+  gap: 12px;
+  padding-left: 8%;
+  min-height: 158px;
+}
+.timeline-story img {
+  display: block;
+  width: min(60%, 200px);
+  height: 170px;
+  object-fit: contain;
+}
+.timeline-time-label {
+  padding: 7px 12px;
+  margin-bottom: 12px;
+  border: 1px solid #b9d9ec;
+  border-radius: 10px;
+  background: #fff;
+  color: #234a6e;
+  font-weight: 700;
+}
+.concept-diagram-key {
+  margin-top: 8px;
+  font-size: 14px;
+}
+.concept-diagram-key summary,
+.concept-teaching-notes summary {
+  cursor: pointer;
+  min-height: 44px;
+  align-content: center;
+}
+.concept-diagram-key p,
+.concept-teaching-notes p {
+  line-height: 1.7;
+}
+.concept-teaching-notes {
+  margin-top: 12px;
+}
+.timeline-example {
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+  padding-top: 12px;
+}
+.timeline-example p[lang="en"] {
+  font-size: 21px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.timeline-focus {
+  animation: timeline-emphasis 500ms ease-out both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes timeline-emphasis {
+  from {
+    opacity: 0.4;
+    scale: 0.75;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .timeline-focus {
+    animation: none;
+  }
+}
+.child-shell[data-quiet="true"] .timeline-focus {
+  animation: none;
+}
+@media (max-width: 700px) {
+  .learning-home .learning-entry-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .app-shell.child-shell .learning-entry {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 8px;
+    min-height: 92px;
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .learning-home .learning-entry-icon,
+  .learning-home .learning-entry > strong {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .learning-home .learning-entry > strong {
+    font-size: 16px;
+  }
+  .learning-home .learning-entry > .learning-icon {
+    display: none;
   }
 }

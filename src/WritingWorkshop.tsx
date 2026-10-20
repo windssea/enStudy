@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { api, ApiError } from "./api";
+import LearningPageHeader from "./LearningPageHeader";
 import type {
   WritingContent,
   WritingDraft,
@@ -51,11 +52,9 @@ export function WritingPreview({
           {p || `（${draft.prompt.sections[i].title}还没填写）`}
         </p>
       ))}
-      <small>
-        {savedVersion
-          ? "这是读取时的保存版本；当前编辑文字不会因此被替换。"
-          : "这里展示当前输入，保存状态请看编辑区；不自动判定内容或语法正确。"}
-      </small>
+      {savedVersion && (
+        <small>这是保存版本，供比较；当前文字不会被替换。</small>
+      )}
     </section>
   );
 }
@@ -222,9 +221,7 @@ export default function WritingWorkshop({
       setPromptId(result.draft.prompt.id);
       creating.current = null;
       setNotice(
-        command.content
-          ? "已新建一份，正在保存保留的文字。"
-          : "草稿已新建，可以慢慢写。",
+        command.content ? "已新建一份，正在保存保留的文字。" : "草稿已新建。",
       );
       await refreshList(token);
     } catch (e) {
@@ -388,19 +385,13 @@ export default function WritingWorkshop({
   }
   return (
     <div className="writing-workshop">
-      <button className="secondary" onClick={onBack}>
-        ← 返回探险地图
-      </button>
-      <header className="writing-hero card">
-        <span className="eyebrow">MY LITTLE WRITING STUDIO</span>
-        <h1>写作小工坊</h1>
+      <LearningPageHeader title="英语写作" onBack={onBack} />
+      <details className="learning-page-details">
+        <summary>作品保存与AI点评</summary>
         <p>
-          从一句配文开始，也可以写成三段作品。先想一想，再写下来，最后读回自己的文字。
-        </p>
-        <p className="footnote">
           作品只在当前档案保存，不公开发布。AI点评需家长单独开启，再由你核对并主动选择一段发送；保存和自查不会加星星，也不代表语法已正确。
         </p>
-      </header>
+      </details>
       {!childId ? (
         <section className="card">
           <h2>先选择一个探险档案</h2>
@@ -548,7 +539,7 @@ export default function WritingWorkshop({
                     />
                     <small>
                       {content.paragraphs[i].length}/{writingLimits.paragraph}{" "}
-                      字符 · 字数不代表成绩
+                      字符
                     </small>
                     <button
                       className="text-button writing-review-trigger"
@@ -560,7 +551,7 @@ export default function WritingWorkshop({
                         setReviewSection(reviewSection === i ? null : i)
                       }
                     >
-                      看看这一段的AI小建议（可选）
+                      AI建议
                     </button>
                     {reviewSection === i && (
                       <Suspense
@@ -612,7 +603,7 @@ export default function WritingWorkshop({
                   </button>
                 </div>
                 <p className="footnote">
-                  停止输入约2.5秒后尝试保存；失败后暂停自动重试。请以“确认保存”为准，尚未确认的文字只在当前页面，关闭可能丢失。
+                  停止输入后自动保存。未确认保存的修改，请先下载保留。
                 </p>
                 {conflict && (
                   <section
@@ -665,10 +656,7 @@ export default function WritingWorkshop({
                   }
                 >
                   <legend>读回作品，自己检查</legend>
-                  <p>
-                    先保存修改，再勾选。它记录你的自查，不是老师或 AI
-                    的评分；修改后会清空，需要重新检查。
-                  </p>
+                  <p>保存后可自查；再次修改会清空勾选。</p>
                   {draft.prompt.checklist.map((check) => (
                     <label className="writing-check" key={check.id}>
                       <input
@@ -691,15 +679,6 @@ export default function WritingWorkshop({
               </section>
               <aside className="writing-side">
                 <WritingPreview draft={draft} content={content} />
-                <section className="card mint">
-                  <h2>按自己的节奏</h2>
-                  <p>
-                    可以只写一格，休息后再回来。需要帮助时，先用中文讲清意思，再尝试英文表达。
-                  </p>
-                  <p>
-                    保存作品不会完成课程答题，也不会自动增加复习或独立掌握记录。
-                  </p>
-                </section>
               </aside>
             </div>
           )}
