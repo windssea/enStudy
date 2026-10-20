@@ -1,9 +1,10 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { featureLazy } from "./featureLazy";
+import { Suspense, useEffect, useState } from "react";
 import type { WordCard } from "../packages/contracts/index";
 import { api } from "./api";
 import SpeechButton from "./SpeechButton";
 import { wordObjectKind } from "./wordObjects";
-const WordObjectScene = lazy(() => import("./WordObjectScene"));
+const WordObjectScene = featureLazy(() => import("./WordObjectScene"));
 
 export default function WordStudyCard({
   word,

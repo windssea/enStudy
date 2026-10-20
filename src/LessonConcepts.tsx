@@ -1,7 +1,8 @@
-import { lazy, Suspense, useState } from "react";
+import { featureLazy } from "./featureLazy";
+import { Suspense, useState } from "react";
 import { conceptLab } from "../packages/domain/concepts";
-const ConceptLab = lazy(() => import("./ConceptLab"));
-const TenseComparison = lazy(() => import("./TenseComparison"));
+const ConceptLab = featureLazy(() => import("./ConceptLab"));
+const TenseComparison = featureLazy(() => import("./TenseComparison"));
 
 export default function LessonConcepts({
   ids,

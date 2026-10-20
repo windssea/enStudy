@@ -1,11 +1,12 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { featureLazy } from "./featureLazy";
+import { Suspense, useEffect, useRef, useState } from "react";
 import type { TrainingCycle } from "../packages/contracts/index";
 import { api } from "./api";
 import { conceptLab } from "../packages/domain/concepts";
 import { trainingContinuation } from "./topicPractice";
 import LearningIcon from "./LearningIcon";
-const ConceptLab = lazy(() => import("./ConceptLab"));
-const TenseComparison = lazy(() => import("./TenseComparison"));
+const ConceptLab = featureLazy(() => import("./ConceptLab"));
+const TenseComparison = featureLazy(() => import("./TenseComparison"));
 
 export default function TopicJourney({
   topicId,

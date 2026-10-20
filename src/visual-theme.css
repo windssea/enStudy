@@ -211,7 +211,9 @@
   gap: 12px;
 }
 /* One control material and state language across child and parent UI. */
-.child-shell button {
+.child-shell button,
+.child-shell a.secondary,
+.app-startup a.secondary {
   min-height: 52px;
   max-width: 100%;
   padding: 12px 18px;
@@ -227,6 +229,7 @@
     sans-serif;
   letter-spacing: normal;
   text-shadow: none;
+  text-decoration: none;
   transform: none;
   transition:
     transform 150ms ease,
@@ -259,7 +262,8 @@
   opacity: 0.55;
   transform: none;
 }
-.child-shell button:active:enabled {
+.child-shell button:active:enabled,
+.child-shell a.secondary:active {
   transform: translateY(2px);
   box-shadow: inset 0 1px 2px #19374718;
 }
@@ -1022,7 +1026,8 @@
   background: #e8f5f1;
 }
 @media (hover: hover) {
-  .child-shell button:hover:enabled {
+  .child-shell button:hover:enabled,
+  .child-shell a.secondary:hover {
     border-color: #69ada1;
     box-shadow: 0 3px 8px #185b6415;
   }
@@ -1261,7 +1266,7 @@
     transition: none !important;
     scroll-behavior: auto !important;
   }
-  .child-shell button {
+  .child-shell :is(button, a.secondary) {
     transform: none !important;
   }
 }
@@ -1271,6 +1276,25 @@
   animation: none !important;
   transition: none !important;
 }
-.child-shell[data-quiet="true"] button {
+.child-shell[data-quiet="true"] :is(button, a.secondary) {
   transform: none !important;
+}
+.feature-recovery {
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-radius);
+  background: var(--primary-soft);
+  color: var(--ink);
+}
+.feature-recovery p,
+.review-totals dt {
+  color: var(--muted);
+}
+.app-startup {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--panel-shadow);
+}
+.child-shell .review-overview > details > summary {
+  display: list-item;
 }

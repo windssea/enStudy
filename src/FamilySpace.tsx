@@ -1,4 +1,5 @@
-import { lazy, Suspense, useEffect, useState, type FormEvent } from "react";
+import { featureLazy } from "./featureLazy";
+import { Suspense, useEffect, useState, type FormEvent } from "react";
 import type {
   ChildProfile,
   Identity,
@@ -7,12 +8,12 @@ import type {
 } from "../packages/contracts/index";
 import { api } from "./api";
 import AccountSecurity from "./AccountSecurity";
-const ManagedAccounts = lazy(() => import("./ManagedAccounts"));
-const AiSettings = lazy(() => import("./AiSettings"));
-const TrainingFollowUps = lazy(() => import("./TrainingFollowUps"));
-const LearningReport = lazy(() => import("./LearningReport"));
-const HouseholdAccess = lazy(() => import("./HouseholdAccess"));
-const DataExportPanel = lazy(() => import("./DataExportPanel"));
+const ManagedAccounts = featureLazy(() => import("./ManagedAccounts"));
+const AiSettings = featureLazy(() => import("./AiSettings"));
+const TrainingFollowUps = featureLazy(() => import("./TrainingFollowUps"));
+const LearningReport = featureLazy(() => import("./LearningReport"));
+const HouseholdAccess = featureLazy(() => import("./HouseholdAccess"));
+const DataExportPanel = featureLazy(() => import("./DataExportPanel"));
 
 export default function FamilySpace({
   identity,

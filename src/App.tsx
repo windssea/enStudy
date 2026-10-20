@@ -1,11 +1,6 @@
-import {
-  lazy,
-  Suspense,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import ReviewOverview from "./ReviewOverview";
+import { featureLazy } from "./featureLazy";
+import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import type {
   Answer,
   Catalog,
@@ -41,9 +36,8 @@ import LessonView from "./LessonView";
 import { MotionShell } from "./SceneStage";
 import LearningIcon from "./LearningIcon";
 import { exerciseKind } from "./exerciseKind";
-import { modalityLabels } from "../packages/domain/report";
 import CoursePicker from "./CoursePicker";
-import { reviewDueLabel, reviewRefreshDelay } from "./reviewPresentation";
+import { reviewRefreshDelay } from "./reviewPresentation";
 import SessionAccess from "./SessionAccess";
 import ChildNavigation from "./ChildNavigation";
 import ChildHome from "./ChildHome";
@@ -57,22 +51,23 @@ import {
   structuredCanonical,
   joinParts,
 } from "../packages/domain/structured";
-const PhonicsCentre = lazy(() => import("./PhonicsCentre"));
-const WordAudioButton = lazy(() => import("./WordAudioButton"));
-const WritingWorkshop = lazy(() => import("./WritingWorkshop"));
-const MistakeNotebook = lazy(() => import("./MistakeNotebook"));
-const WordTraining = lazy(() => import("./WordTraining"));
-const PracticeLibrary = lazy(() => import("./PracticeLibrary"));
-const PatternPractice = lazy(() => import("./PatternPractice"));
-const AiExplanation = lazy(() => import("./AiExplanation"));
-const TopicJourney = lazy(() => import("./TopicJourney"));
-const TrainingFollowUps = lazy(() => import("./TrainingFollowUps"));
-const ConversationPlayground = lazy(() => import("./ConversationPlayground"));
-const Workshops = lazy(() => import("./Workshops"));
-const StructuredAnswer = lazy(() => import("./StructuredAnswer"));
-const ListeningPrompt = lazy(() => import("./ListeningPrompt"));
-const EvidenceAnswer = lazy(() => import("./EvidenceAnswer"));
-const OfflinePractice = lazy(() => import("./OfflinePractice"));
+const PhonicsCentre = featureLazy(() => import("./PhonicsCentre"));
+const WordAudioButton = featureLazy(() => import("./WordAudioButton"));
+const WritingWorkshop = featureLazy(() => import("./WritingWorkshop"));
+const MistakeNotebook = featureLazy(() => import("./MistakeNotebook"));
+const WordTraining = featureLazy(() => import("./WordTraining"));
+const PracticeLibrary = featureLazy(() => import("./PracticeLibrary"));
+const PatternPractice = featureLazy(() => import("./PatternPractice"));
+const AiExplanation = featureLazy(() => import("./AiExplanation"));
+const TopicJourney = featureLazy(() => import("./TopicJourney"));
+const ConversationPlayground = featureLazy(
+  () => import("./ConversationPlayground"),
+);
+const Workshops = featureLazy(() => import("./Workshops"));
+const StructuredAnswer = featureLazy(() => import("./StructuredAnswer"));
+const ListeningPrompt = featureLazy(() => import("./ListeningPrompt"));
+const EvidenceAnswer = featureLazy(() => import("./EvidenceAnswer"));
+const OfflinePractice = featureLazy(() => import("./OfflinePractice"));
 const grades = ["一", "二", "三", "四", "五", "六"];
 const readRoute = () => parseRoute(window.location.hash);
 const emptyLearning: LearningSummary = {
@@ -1332,147 +1327,17 @@ export default function App() {
                   </button>
                 </section>
               )}
-              <div className="discovery-hero">
-                <div>
-                  <h1>复习</h1>
-                </div>
-              </div>
-              <div className="review-start card">
-                <div>
-                  <h2>
-                    {!identity.child
-                      ? "选择学习档案"
-                      : dueCount
-                        ? `现在有${dueCount}项复习`
-                        : "今天没有到期复习"}
-                  </h2>
-                  {progress.reviewPlan?.nextAt && !dueCount ? (
-                    <p>
-                      下次复习：
-                      {reviewDueLabel(
-                        progress.reviewPlan.nextAt,
-                        progress.reviewPlan.timezone,
-                        progress.reviewPlan.generatedAt,
-                      )}
-                    </p>
-                  ) : dueCount ? (
-                    <p>每轮最多8题</p>
-                  ) : null}
-                </div>
-                <button
-                  className="primary"
-                  disabled={busy}
-                  onClick={() =>
-                    !identity.authenticated || !identity.child
-                      ? move("parent")
-                      : dueCount
-                        ? void start("", { mode: "review" })
-                        : move("map")
-                  }
-                >
-                  <ToyPicture kind="play" />
-                  {!identity.authenticated || !identity.child
-                    ? "选择档案"
-                    : dueCount
-                      ? "开始复习"
-                      : "继续学习"}
-                </button>
-              </div>
-              <p>
-                <a
-                  className="offline-link"
-                  href={
-                    import.meta.env.DEV
-                      ? "http://127.0.0.1:8788/#offline"
-                      : "#offline"
-                  }
-                  onClick={(event) => {
-                    if (!import.meta.env.DEV) {
-                      event.preventDefault();
-                      move("offline");
-                    }
-                  }}
-                >
-                  离线练习
-                </a>
-              </p>
-              <section className="card mistake-entry">
-                <div>
-                  <h2>错题复练</h2>
-                </div>
-                <button
-                  type="button"
-                  className="secondary"
-                  onClick={() => move("mistakes")}
-                >
-                  打开错题小本
-                </button>
-              </section>
-              <details className="card">
-                <summary>累计练习记录</summary>
-                <div className="stats">
-                  <div className="card">
-                    <strong>{progress.answered}</strong>
-                    <span>已保存的作答</span>
-                  </div>
-                  <div className="card">
-                    <strong>{progress.cards.length}</strong>
-                    <span>记录中的学习目标</span>
-                  </div>
-                  <div className="card">
-                    <strong>{progress.stars}</strong>
-                    <span>完成奖励，不代表掌握</span>
-                  </div>
-                </div>
-              </details>
-              {identity.child && (
-                <Suspense fallback={<p role="status">正在准备专题回访…</p>}>
-                  <TrainingFollowUps
-                    key={identity.child.id}
-                    childId={identity.child.id}
-                    onOpen={openTraining}
-                  />
-                </Suspense>
-              )}
-              {!identity.authenticated ? null : progress.cards.length ? (
-                <details className="card review-list">
-                  <summary>复习安排</summary>
-                  {progress.cards.map((card) => (
-                    <div
-                      className="review-row"
-                      key={`${card.skillId}:${card.modality ?? "legacy"}`}
-                    >
-                      <Icon kind="leaf" />
-                      <div>
-                        <strong>
-                          {card.modality === "listening-picture"
-                            ? "听音找图片"
-                            : (card.label ?? "学习目标")}
-                        </strong>
-                        {card.modality && (
-                          <p>{modalityLabels[card.modality] ?? "练习"}</p>
-                        )}
-                      </div>
-                      <span>
-                        {reviewDueLabel(
-                          card.dueAt,
-                          progress.reviewPlan?.timezone,
-                          progress.reviewPlan?.generatedAt,
-                        )}
-                      </span>
-                    </div>
-                  ))}
-                </details>
-              ) : (
-                <div className="card empty-state">
-                  <Icon kind="leaf" />
-                  <h2>还没有复习记录</h2>
-                  <p>做一题，系统就会为相关知识安排下次复习。</p>
-                  <button className="primary" onClick={() => move("map")}>
-                    选择课程
-                  </button>
-                </div>
-              )}
+              <ReviewOverview
+                progress={progress}
+                dueCount={dueCount}
+                ready={identity.authenticated && Boolean(identity.child)}
+                busy={busy}
+                onStart={() => void start("", { mode: "review" })}
+                onLearn={() => move("map")}
+                onParent={() => move("parent")}
+                onMistakes={() => move("mistakes")}
+                onOffline={() => move("offline")}
+              />
             </>
           )}
           {view === "talk" && (

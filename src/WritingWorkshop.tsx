@@ -1,4 +1,5 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { featureLazy } from "./featureLazy";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { api, ApiError } from "./api";
 import LearningPageHeader from "./LearningPageHeader";
 import type {
@@ -23,7 +24,7 @@ type SaveCommand = {
   expectedRevision: number;
   content: WritingContent;
 };
-const WritingAiReview = lazy(() => import("./WritingAiReview"));
+const WritingAiReview = featureLazy(() => import("./WritingAiReview"));
 const copy = (c: WritingContent): WritingContent => ({
   ...c,
   paragraphs: [...c.paragraphs],

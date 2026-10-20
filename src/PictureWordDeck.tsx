@@ -1,11 +1,12 @@
-import { lazy, Suspense, useEffect, useState, useRef } from "react";
+import { featureLazy } from "./featureLazy";
+import { Suspense, useEffect, useState, useRef } from "react";
 import type { WordCard } from "../packages/contracts/index";
 import { api } from "./api";
 import WordPicture, { pictureWord } from "./WordPicture";
 import WordAudioButton from "./WordAudioButton";
 import ToyPicture from "./ToyPicture";
 import { wordObjectKind } from "./wordObjects";
-const WordObjectScene = lazy(() => import("./WordObjectScene"));
+const WordObjectScene = featureLazy(() => import("./WordObjectScene"));
 export default function PictureWordDeck({
   words,
   childId,

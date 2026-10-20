@@ -1,4 +1,5 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { featureLazy } from "./featureLazy";
+import { Suspense, useEffect, useRef, useState } from "react";
 import type {
   WordTheme,
   WordCard,
@@ -10,7 +11,7 @@ import WordStudyCard from "./WordStudyCard";
 import ToyPicture from "./ToyPicture";
 import WordPicture from "./WordPicture";
 import PictureWordDeck from "./PictureWordDeck";
-const KetVocabulary = lazy(() => import("./KetVocabulary"));
+const KetVocabulary = featureLazy(() => import("./KetVocabulary"));
 const themePaths: Record<string, string> = {
   animals:
     "M7 12 4 6l7 3h2l7-3-3 6v4a5 5 0 0 1-10 0v-4Zm2 2h.01M15 14h.01M10 18l2 1 2-1",
