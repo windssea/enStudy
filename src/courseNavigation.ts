@@ -1,4 +1,25 @@
-import type { CourseLesson } from "../packages/contracts/index";
+import type { Catalog, CourseLesson } from "../packages/contracts/index";
+
+/** Use the curriculum registry for hierarchy, not global recommendation order. */
+export function courseLessonPath(
+  lesson: CourseLesson,
+  units: Catalog["units"],
+  lessons: readonly CourseLesson[] = [],
+) {
+  const unit = units.find((row) => row.unit_id === lesson.unitId);
+  const index = lessons
+    .filter((row) => row.unitId === lesson.unitId)
+    .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id))
+    .findIndex((row) => row.id === lesson.id);
+  const number = lesson.unitLesson ?? (index < 0 ? undefined : index + 1);
+  return [
+    `${lesson.grade}年级${lesson.term === "A" ? "上学期" : "下学期"}`,
+    unit ? `单元 ${unit.unit_in_term} · ${unit.title}` : lesson.unitTitle,
+    number ? `第${number}课` : undefined,
+  ]
+    .filter(Boolean)
+    .join(" / ");
+}
 
 export function courseStep(
   lessons: readonly CourseLesson[],

@@ -54,7 +54,7 @@ describe("illustrated clay scenery", () => {
     expect(html.match(/class="course-unit-choice"/g)).toHaveLength(6);
     expect(html.match(/aria-pressed="true"/g)).toHaveLength(1);
     expect(html).toContain(
-      `<h2 id="selected-unit-title">${catalog.units[5].title}</h2>`,
+      `<h2 id="selected-unit-title">单元 ${catalog.units[5].unit_in_term} · ${catalog.units[5].title}</h2>`,
     );
     for (const unit of catalog.units.slice(0, 6))
       expect(html).toContain(unit.title);

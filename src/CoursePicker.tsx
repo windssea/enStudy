@@ -9,6 +9,7 @@ export default function CoursePicker({
   lessons,
   completed,
   nextUnitId,
+  resume,
   onOpen,
   onSelectUnit,
 }: {
@@ -16,6 +17,15 @@ export default function CoursePicker({
   lessons: readonly CourseLesson[];
   completed: readonly { lessonId: string }[];
   nextUnitId?: string;
+  resume?: {
+    lessonId: string;
+    position: number;
+    total?: number;
+    saved: boolean;
+    takeover: boolean;
+    busy: boolean;
+    onResume: () => void;
+  };
   onOpen: (lesson: CourseLesson) => void;
   onSelectUnit: (id: string) => void;
 }) {
@@ -30,10 +40,14 @@ export default function CoursePicker({
   const selectedLessons = lessons
     .filter((l) => l.unitId === selected?.id)
     .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id));
+  const resumeLesson = selectedLessons.find((l) => l.id === resume?.lessonId);
+  const resumeNumber = resumeLesson
+    ? (resumeLesson.unitLesson ?? selectedLessons.indexOf(resumeLesson) + 1)
+    : undefined;
   return (
     <div className="course-picker">
       <label className="course-unit-select">
-        单元
+        选择单元
         <select
           aria-label="选择课程单元"
           value={selected?.id ?? ""}
@@ -50,6 +64,7 @@ export default function CoursePicker({
         </select>
       </label>
       <nav className="course-unit-list" aria-label="课程单元">
+        <h2 className="course-unit-list-title">选择单元</h2>
         {unitList.map((unit) => (
           <button
             key={unit.id}
@@ -62,6 +77,7 @@ export default function CoursePicker({
             }}
           >
             <span className="unit-number">
+              <span className="visually-hidden">单元</span>
               {String(unit.number).padStart(2, "0")}
             </span>
             <strong>{unit.title}</strong>
@@ -74,16 +90,40 @@ export default function CoursePicker({
       <section
         id="selected-unit-lessons"
         className="selected-unit"
+        data-unit-id={selected?.id}
         aria-labelledby="selected-unit-title"
       >
         <header className="selected-unit-heading">
-          <h2 id="selected-unit-title">{selected?.title ?? "课程"}</h2>
+          <h2 id="selected-unit-title">
+            {selected ? `单元 ${selected.number} · ${selected.title}` : "课程"}
+          </h2>
           {selected && (
             <span>
               {selected.practised}/{selected.total} 课已练习
             </span>
           )}
         </header>
+        {resume && resumeLesson && (
+          <section className="course-resume" aria-label="本单元上次练习">
+            <div>
+              <h3>
+                第{resumeNumber}课 · {resumeLesson.title}
+              </h3>
+              <p>
+                第{resume.position}/{resume.total ?? resumeLesson.itemCount}题
+                {resume.saved && " · 作答已保存"}
+              </p>
+            </div>
+            <button
+              className="primary"
+              onClick={resume.onResume}
+              disabled={resume.busy}
+            >
+              {resume.takeover ? "接续" : "继续"}第{resumeNumber}课
+              <LearningIcon kind="arrow" />
+            </button>
+          </section>
+        )}
         <div className="lesson-choice-grid">
           {selectedLessons.map((lesson, index) => {
             const cover = lessonCover(lesson),

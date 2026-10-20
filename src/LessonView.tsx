@@ -8,6 +8,7 @@ import ToyPicture from "./ToyPicture";
 import { lessonExampleScene } from "./lessonScenes";
 export default function LessonView({
   lesson,
+  coursePath,
   busy,
   onStart,
   onBack,
@@ -16,6 +17,7 @@ export default function LessonView({
   onWriting,
 }: {
   lesson: CourseLesson;
+  coursePath?: string;
   busy: boolean;
   onStart: () => void;
   onBack: () => void;
@@ -44,6 +46,7 @@ export default function LessonView({
       </button>
       <div className="child-lesson-title">
         <div>
+          <p className="course-location">{coursePath ?? lesson.unitTitle}</p>
           <h1>{lesson.title}</h1>
         </div>
       </div>

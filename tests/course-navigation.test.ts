@@ -1,9 +1,25 @@
 import { describe, expect, it } from "vitest";
 import { courseCatalog } from "../packages/server/exercises";
-import { courseStep } from "../src/courseNavigation";
+import { courseStep, courseLessonPath } from "../src/courseNavigation";
+import { readFileSync } from "node:fs";
+import type { Catalog } from "../packages/contracts/index";
 import { mapFragment, parseRoute } from "../src/routes";
 
 describe("course map across terms", () => {
+  it("identifies lesson hierarchy from the unit registry across terms, not the next recommended course", () => {
+    const { units }: Catalog = JSON.parse(
+      readFileSync("public/content/catalog.json", "utf8"),
+    );
+    const first = courseCatalog.lessons.find((l) => l.id === "P3A-U01-L1")!;
+    const fifth = courseCatalog.lessons.find((l) => l.id === "P3A-U05-L1")!;
+    expect(courseLessonPath(first, units, courseCatalog.lessons)).toBe(
+      "3年级上学期 / 单元 1 · 校园里的我们 / 第1课",
+    );
+    expect(courseLessonPath(fifth, units, courseCatalog.lessons)).toBe(
+      "3年级上学期 / 单元 5 · 寻找朋友 / 第1课",
+    );
+    expect(courseLessonPath(fifth, [])).not.toMatch(/undefined|NaN/);
+  });
   it("round-trips every grade and term for reload and browser history", () => {
     for (let grade = 1; grade <= 6; grade++)
       for (const term of ["A", "B"] as const)

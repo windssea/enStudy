@@ -24,7 +24,7 @@ import type {
 } from "../packages/contracts/index";
 import { api, setHouseholdContext, ApiError, setLearningChild } from "./api";
 import { parseRoute, mapFragment, type View } from "./routes";
-import { courseStep } from "./courseNavigation";
+import { courseStep, courseLessonPath } from "./courseNavigation";
 import CourseWrapUp from "./CourseWrapUp";
 import WordFormCue from "./WordFormCue";
 import { companionInfo } from "../packages/domain/companions";
@@ -254,6 +254,10 @@ export default function App() {
     [error, setError] = useState("");
   const [session, setSession] = useState<LearningSession | null>(null),
     [answer, setAnswer] = useState<Answer>("");
+  const sessionLesson =
+    session?.source === "lesson"
+      ? lessons.find((lesson) => lesson.id === session.lessonId)
+      : undefined;
   const [receipt, setReceipt] = useState<Receipt | null>(null),
     [hint, setHint] = useState("");
   const [sessionStopped, setSessionStopped] = useState(false);
@@ -333,6 +337,10 @@ export default function App() {
         mapTerm = origin.term;
         setGrade(origin.grade);
         setTerm(origin.term);
+        mapUnitChoices.current.set(
+          `${identity.child?.id ?? "guest"}:${origin.grade}:${origin.term}`,
+          origin.unitId,
+        );
       }
     }
     if (next !== "exercise") {
@@ -550,7 +558,7 @@ export default function App() {
     if (announce)
       setSessionNotice(
         !saved.session
-          ? "这轮学习已结束，可以回地图选择新任务。"
+          ? "这轮学习已结束，可以回课程列表选择新任务。"
           : saved.session.access === "owner"
             ? "最新进度已读取，可以在这台设备继续。"
             : "最新进度已读取，请选择在哪里接着学。",
@@ -1023,7 +1031,18 @@ export default function App() {
               }
               taskDetail={
                 session && identity.authenticated
-                  ? `第${session.position ?? 1} / ${session.total}题`
+                  ? [
+                      sessionLesson
+                        ? courseLessonPath(
+                            sessionLesson,
+                            catalog?.units ?? [],
+                            lessons,
+                          )
+                        : undefined,
+                      `第${session.position ?? 1} / ${session.total}题`,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")
                   : nextLesson?.unitTitle
               }
               busy={busy}
@@ -1071,37 +1090,6 @@ export default function App() {
                   </label>
                 </div>
               </div>
-              {session &&
-                session.source === "lesson" &&
-                identity.authenticated && (
-                  <section className="resume-banner">
-                    <div>
-                      <h2>
-                        {session.access === "takeover-required"
-                          ? "继续上次的练习"
-                          : receipt
-                            ? "上次练习已完成"
-                            : "继续上次的练习"}
-                      </h2>
-                      <p>
-                        {session.exercise.title}
-                        {receipt && " · 作答已保存"}
-                      </p>
-                    </div>
-                    <button
-                      className="primary"
-                      disabled={busy}
-                      onClick={() => move("exercise")}
-                    >
-                      {session.access === "takeover-required"
-                        ? "查看进度并接续"
-                        : receipt
-                          ? "查看上次练习"
-                          : "继续练习"}
-                      <Icon kind="arrow" />
-                    </button>
-                  </section>
-                )}
               <CoursePicker
                 key={`${grade}:${term}:${identity.child?.id ?? "guest"}`}
                 units={units}
@@ -1109,6 +1097,23 @@ export default function App() {
                 completed={learning.completedLessons}
                 nextUnitId={
                   mapUnitChoices.current.get(mapScope) ?? nextLesson?.unitId
+                }
+                resume={
+                  identity.authenticated &&
+                  session?.source === "lesson" &&
+                  session.lessonId &&
+                  session.access !== "ended" &&
+                  (session.state === "active" || session.state === "paused")
+                    ? {
+                        lessonId: session.lessonId,
+                        position: session.position ?? 1,
+                        total: session.total,
+                        saved: Boolean(receipt),
+                        takeover: session.access === "takeover-required",
+                        busy,
+                        onResume: () => move("exercise"),
+                      }
+                    : undefined
                 }
                 onSelectUnit={(unitId) =>
                   mapUnitChoices.current.set(mapScope, unitId)
@@ -1269,7 +1274,7 @@ export default function App() {
                     </p>
                   </div>
                   <button className="secondary" onClick={() => move("map")}>
-                    回到地图
+                    回到课程列表
                   </button>
                 </section>
               )}
@@ -1460,6 +1465,11 @@ export default function App() {
             <LessonView
               childId={identity.child?.id}
               lesson={selectedLesson}
+              coursePath={courseLessonPath(
+                selectedLesson,
+                catalog?.units ?? [],
+                lessons,
+              )}
               onWriting={(id) => move("writing", id)}
               busy={busy}
               onStart={() => start("", { lessonId: selectedLesson.id })}
@@ -1473,7 +1483,7 @@ export default function App() {
             <div className="card empty-state">
               <h1>这节课还在准备中</h1>
               <button className="primary" onClick={() => move("map")}>
-                回到探险地图
+                回到课程列表
               </button>
             </div>
           )}
@@ -1535,7 +1545,7 @@ export default function App() {
                 backup={draftBackup}
                 onRefresh={() => void refreshSession()}
                 onTakeover={() => void takeOver()}
-                leaveLabel={`返回${sessionHome === "mistakes" ? "错题小本" : sessionHome === "phonics" ? "拼读小路" : sessionHome === "workshops" ? "辨析与应用" : (nav.find((n) => n[0] === sessionHome)?.[1] ?? "学习地图")}`}
+                leaveLabel={`返回${sessionHome === "mistakes" ? "错题小本" : sessionHome === "phonics" ? "拼读小路" : sessionHome === "workshops" ? "辨析与应用" : (nav.find((n) => n[0] === sessionHome)?.[1] ?? "课程列表")}`}
                 onLeave={() => move(sessionHome)}
               />
               {sessionNotice && (
@@ -1596,7 +1606,7 @@ export default function App() {
                               ? "专题特训"
                               : session.source === "review"
                                 ? "复习花园"
-                                : "学习地图"}
+                                : "课程列表"}
                 </button>
                 <span className="badge">
                   第{session.position ?? 1}题 / 共{session.total ?? 1}题
@@ -1947,11 +1957,11 @@ export default function App() {
               <h1>准备好下一次小探索</h1>
               <p>
                 {sessionStopped
-                  ? "这轮学习已结束或已切换，可以回到地图选择课程。"
-                  : "正在恢复学习记录，也可以回到地图选择课程。"}
+                  ? "这轮学习已结束或已切换，可以回到课程列表选择课程。"
+                  : "正在恢复学习记录，也可以回到课程列表选择课程。"}
               </p>
               <button className="primary" onClick={() => move("map")}>
-                回到学习地图
+                回到课程列表
               </button>
             </section>
           )}

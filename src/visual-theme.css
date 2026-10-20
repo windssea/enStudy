@@ -466,11 +466,44 @@
   gap: 24px;
 }
 .course-unit-list {
-  gap: 10px;
+  gap: 6px;
+}
+.child-shell .course-unit-list-title {
+  margin: 0 0 4px;
+  padding-inline: 14px;
+  font-size: 16px;
+  color: var(--muted);
+}
+.course-resume {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border: 1px solid #a9d9cf;
+  border-radius: 18px;
+  background: var(--primary-soft);
+}
+.course-resume h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.course-resume p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+.course-location {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 16px;
+  overflow-wrap: anywhere;
 }
 .child-shell .course-unit-choice {
-  min-height: 80px;
-  padding: 14px;
+  min-height: 64px;
+  padding: 7px 14px;
+  gap: 2px 10px;
   border: 1px solid transparent;
   border-radius: 16px;
   background: transparent;
