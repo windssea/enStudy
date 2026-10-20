@@ -13,7 +13,10 @@ function allowed(path) {
     /^\/audio\/(guides|words)\/[a-f0-9]{24}\.mp3$/.test(path) ||
     /^\/pictures\/words\/[a-f0-9]{24}\.png$/.test(path) ||
     /^\/art\/clay-v1\/[a-f0-9]{24}\.png$/.test(path) ||
-    /^\/art\/concepts\/sports-v1\/(telescope|stone)\.webp$/.test(path)
+    /^\/art\/concepts\/sports-v1\/(telescope|stone)\.webp$/.test(path) ||
+    /^\/art\/courses\/sports-v1\/(students-v2|bag|classroom-v2|library-v2)\.webp$/.test(
+      path,
+    )
   );
 }
 self.addEventListener("message", (event) => {

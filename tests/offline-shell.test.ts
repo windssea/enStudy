@@ -54,7 +54,15 @@ function runtime(
               "/index.html",
               "/assets/main-1.js",
               "/assets/main-1.css",
-              ...(webp ? ["/art/concepts/sports-v1/telescope.webp"] : []),
+              ...(webp
+                ? [
+                    "/art/concepts/sports-v1/telescope.webp",
+                    "/art/courses/sports-v1/students-v2.webp",
+                    "/art/courses/sports-v1/bag.webp",
+                    "/art/courses/sports-v1/classroom-v2.webp",
+                    "/art/courses/sports-v1/library-v2.webp",
+                  ]
+                : []),
               ...(model ? ["/assets/fox-1.glb"] : []),
               ...(guide ? ["/audio/guides/1234567890abcdef12345678.mp3"] : []),
               ...(pictures
@@ -174,6 +182,16 @@ describe("offline public shell policy", () => {
     ).toBe("image/webp");
     expect(
       await good.request("/art/concepts/sports-v1/unregistered.webp"),
+    ).toBeUndefined();
+    for (const file of ["students-v2", "bag", "classroom-v2", "library-v2"]) {
+      expect(
+        (
+          await good.request(`/art/courses/sports-v1/${file}.webp`)
+        )?.headers.get("content-type"),
+      ).toBe("image/webp");
+    }
+    expect(
+      await good.request("/art/courses/sports-v1/unregistered.webp"),
     ).toBeUndefined();
     const bad = runtime(false, false, false, false, false, true, true);
     expect((await bad.prepare()).prepared).toBe(false);

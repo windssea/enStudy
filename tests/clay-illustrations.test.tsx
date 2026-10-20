@@ -6,7 +6,7 @@ import type { Catalog } from "../packages/contracts/index";
 import { courseCatalog } from "../packages/server/exercises";
 import { clayArt } from "../src/clayArt";
 import PaintedCompanion from "../src/PaintedCompanion";
-import CourseIslandMap from "../src/CourseIslandMap";
+import CoursePicker from "../src/CoursePicker";
 import SceneStage from "../src/SceneStage";
 const catalog: Catalog = JSON.parse(
   readFileSync(
@@ -42,21 +42,20 @@ describe("illustrated clay scenery", () => {
   });
   it("keeps all six units and the requested selection in the course overview", () => {
     const html = renderToStaticMarkup(
-      <CourseIslandMap
+      <CoursePicker
         units={catalog.units.slice(0, 6)}
         lessons={courseCatalog.lessons}
         completed={[]}
         nextUnitId={catalog.units[5].unit_id}
-        quiet={false}
-        flat={false}
-        onLost={() => {}}
         onOpen={() => {}}
         onSelectUnit={() => {}}
       />,
     );
-    expect(html.match(/class="course-unit"/g)).toHaveLength(6);
+    expect(html.match(/class="course-unit-choice"/g)).toHaveLength(6);
     expect(html.match(/aria-pressed="true"/g)).toHaveLength(1);
-    expect(html).toContain(`<h3>${catalog.units[5].title}</h3>`);
+    expect(html).toContain(
+      `<h2 id="selected-unit-title">${catalog.units[5].title}</h2>`,
+    );
     for (const unit of catalog.units.slice(0, 6))
       expect(html).toContain(unit.title);
     expect(html).toContain('aria-label="课程单元"');

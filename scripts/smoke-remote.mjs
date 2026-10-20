@@ -490,7 +490,20 @@ for (const asset of Object.values(teachingArt.assets)) {
 }
 check(
   validTeachingArt,
-  "both transparent teaching illustrations have exact bytes and MIME",
+  "all registered teaching and course illustrations have exact bytes and MIME",
+);
+const courseScenes = JSON.parse(
+  await readFile(
+    new URL("../public/content/course-scenes.v1.json", import.meta.url),
+    "utf8",
+  ),
+);
+const courseScenesResponse = await request("/content/course-scenes.v1.json");
+check(
+  courseScenesResponse.ok &&
+    JSON.stringify(await courseScenesResponse.json()) ===
+      JSON.stringify(courseScenes),
+  "course scene bindings match this release",
 );
 check(
   (await request("/api/v1/admin/accounts")).status === 401,

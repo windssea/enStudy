@@ -16,6 +16,38 @@
       "alt": "两位孩子发现一块光滑石头的情境示意",
       "bytes": 237072,
       "sha256": "0e8d3994c849c59a93291b97ce0812d30dc0815a064f235ad0d2cba308a7dd16"
+    },
+    "course-students": {
+      "url": "/art/courses/sports-v1/students-v2.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "两名学生各拿着一本课本",
+      "bytes": 188736,
+      "sha256": "de22cab378fef059fdddc232a6707d1eb72e8bc6ef38fdf477c09235a198dea5"
+    },
+    "course-bag": {
+      "url": "/art/courses/sports-v1/bag.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "课桌上的蓝色书包、铅笔和两把尺子",
+      "bytes": 159418,
+      "sha256": "ce382ced1d82adba9e36dfa6b8b26dc5bb08a9820f68a847c86e575f521eb186"
+    },
+    "course-classroom": {
+      "url": "/art/courses/sports-v1/classroom-v2.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "一位女老师站在两张独立课桌旁",
+      "bytes": 141476,
+      "sha256": "38e5d5deccc0549b5813887834db507ce98daeb5343de2e1f2cb819abde92fe5"
+    },
+    "course-library": {
+      "url": "/art/courses/sports-v1/library-v2.webp",
+      "width": 1186,
+      "height": 1327,
+      "alt": "两位学生在图书馆整理课本",
+      "bytes": 241648,
+      "sha256": "c27d833071029ff4c9f23e4cd97ce6f80f33da2e5decbccd739f288f58f4d44d"
     }
   }
 }

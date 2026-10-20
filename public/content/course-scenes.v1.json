@@ -1,0 +1,21 @@
+{
+  "styleId": "sports-clean-3d-v1",
+  "lessons": {
+    "P3A-U01-L1": {
+      "assetId": "course-students",
+      "examples": ["We are students.", "We have books."]
+    },
+    "P3A-U01-L2": {
+      "assetId": "course-bag",
+      "examples": ["I have a blue bag."]
+    },
+    "P3A-U01-L3": {
+      "assetId": "course-classroom",
+      "examples": ["There are two desks.", "She is our teacher."]
+    },
+    "P3A-U01-L4": {
+      "assetId": "course-library",
+      "examples": ["We are library helpers."]
+    }
+  }
+}

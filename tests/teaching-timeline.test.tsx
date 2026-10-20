@@ -56,7 +56,7 @@ describe("time relationships and unified authored illustrations", () => {
   it("ships original local art with one declared style, dimensions and content hashes", () => {
     expect(art.styleId).toBe("sports-clean-3d-v1");
     for (const asset of Object.values(art.assets)) {
-      expect(asset.url).toMatch(/^\/art\/concepts\/sports-v1\//);
+      expect(asset.url).toMatch(/^\/art\/(concepts|courses)\/sports-v1\//);
       const bytes = readFileSync("public" + asset.url);
       expect(bytes.length).toBe(asset.bytes);
       expect(bytes.length).toBeLessThan(300000);

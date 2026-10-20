@@ -5,6 +5,7 @@ import SpeechButton from "./SpeechButton";
 import { api } from "./api";
 import LessonConcepts from "./LessonConcepts";
 import ToyPicture from "./ToyPicture";
+import { lessonExampleScene } from "./lessonScenes";
 export default function LessonView({
   lesson,
   busy,
@@ -30,6 +31,7 @@ export default function LessonView({
   }, [childId, lesson.id]);
   const writing = writingForLesson(lesson.id),
     card = lesson.cards[Math.min(index, lesson.cards.length - 1)];
+  const scene = lessonExampleScene(lesson, card.example);
   function turn(step: number) {
     document.dispatchEvent(new Event("eq-stop-speech"));
     setIndex((n) => Math.max(0, Math.min(lesson.cards.length - 1, n + step)));
@@ -59,14 +61,35 @@ export default function LessonView({
             {index + 1}/{lesson.cards.length}
           </strong>
         </div>
-        <p className="teaching-english" lang="en">
-          {card.example}
-        </p>
-        <p className="child-translation">{card.translation}</p>
-        <details className="child-rule">
-          <summary>语法说明</summary>
-          <p>{card.rule}</p>
-        </details>
+        <div
+          className="lesson-example-layout"
+          data-illustrated={Boolean(scene)}
+        >
+          {scene && (
+            <figure
+              className="lesson-example-scene"
+              data-art-style={scene.styleId}
+            >
+              <img
+                src={scene.url}
+                width={scene.width}
+                height={scene.height}
+                alt={scene.alt}
+                decoding="async"
+              />
+            </figure>
+          )}
+          <div className="lesson-example-text">
+            <p className="teaching-english" lang="en">
+              {card.example}
+            </p>
+            <p className="child-translation">{card.translation}</p>
+            <details className="child-rule">
+              <summary>语法说明</summary>
+              <p>{card.rule}</p>
+            </details>
+          </div>
+        </div>
         <div className="child-example-controls">
           <button
             className="secondary"

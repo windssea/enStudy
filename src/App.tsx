@@ -42,7 +42,7 @@ import { MotionShell } from "./SceneStage";
 import LearningIcon from "./LearningIcon";
 import { exerciseKind } from "./exerciseKind";
 import { modalityLabels } from "../packages/domain/report";
-import CourseIslandMap from "./CourseIslandMap";
+import CoursePicker from "./CoursePicker";
 import SessionAccess from "./SessionAccess";
 import ChildNavigation from "./ChildNavigation";
 import ChildHome from "./ChildHome";
@@ -72,7 +72,7 @@ const StructuredAnswer = lazy(() => import("./StructuredAnswer"));
 const ListeningPrompt = lazy(() => import("./ListeningPrompt"));
 const EvidenceAnswer = lazy(() => import("./EvidenceAnswer"));
 const OfflinePractice = lazy(() => import("./OfflinePractice"));
-const journeys = ["萌芽", "探索", "成长", "远航", "发现", "创造"];
+const grades = ["一", "二", "三", "四", "五", "六"];
 const readRoute = () => parseRoute(window.location.hash);
 const emptyLearning: LearningSummary = {
   completedLessons: [],
@@ -897,7 +897,7 @@ export default function App() {
   const availableLessons = courseNavigation.available;
   const nextLesson = courseNavigation.next;
   const nav: [View, string, string][] = [
-    ["map", "探险地图", "map"],
+    ["map", "课程学习", "map"],
     ["words", "单词特训", "words"],
     ["topics", "专题特训", "blocks"],
     ["patterns", "固定句式", "book"],
@@ -1076,10 +1076,9 @@ export default function App() {
                         browseCourseMap(Number(e.target.value), term)
                       }
                     >
-                      {journeys.map((j, i) => (
-                        <option key={j} value={i + 1}>
-                          {["一", "二", "三", "四", "五", "六"][i]}年级 · {j}
-                          之旅
+                      {grades.map((label, i) => (
+                        <option key={label} value={i + 1}>
+                          {label}年级
                         </option>
                       ))}
                     </select>
@@ -1096,250 +1095,72 @@ export default function App() {
                   </label>
                 </div>
               </div>
-              {session && identity.authenticated && (
-                <section className="resume-banner">
-                  <div>
-                    <h2>
-                      {session.access === "takeover-required"
-                        ? "换台设备，接着上次的探索"
-                        : receipt
-                          ? "看看上次的小收获"
-                          : "接着上次的小脚印"}
-                    </h2>
-                    <p>
-                      {session.exercise.title} ·{" "}
-                      {receipt ? "作答已保存" : "上次停下的练习还在这里"}
-                    </p>
-                  </div>
-                  <button
-                    className="primary"
-                    disabled={busy}
-                    onClick={() => move("exercise")}
-                  >
-                    {session.access === "takeover-required"
-                      ? "查看进度并接续"
-                      : receipt
-                        ? "查看上次练习"
-                        : "继续练习"}
-                    <Icon kind="arrow" />
-                  </button>
-                </section>
-              )}
-              <div className="dashboard">
-                <section className="map-card">
-                  <div className="map-caption">
+              {session &&
+                session.source === "lesson" &&
+                identity.authenticated && (
+                  <section className="resume-banner">
                     <div>
                       <h2>
-                        {journeys[grade - 1]}岛{" "}
-                        <span className="badge">自主路线</span>
+                        {session.access === "takeover-required"
+                          ? "继续上次的练习"
+                          : receipt
+                            ? "上次练习已完成"
+                            : "继续上次的练习"}
                       </h2>
-                      <p></p>
+                      <p>
+                        {session.exercise.title} ·{" "}
+                        {receipt ? "作答已保存" : "上次停下的练习还在这里"}
+                      </p>
                     </div>
-                  </div>
-                  <CourseIslandMap
-                    key={`${grade}:${term}:${identity.child?.id ?? "guest"}:${partner.id}`}
-                    units={units}
-                    lessons={availableLessons}
-                    completed={learning.completedLessons}
-                    nextUnitId={
-                      mapUnitChoices.current.get(mapScope) ?? nextLesson?.unitId
-                    }
-                    onSelectUnit={(unitId) =>
-                      mapUnitChoices.current.set(mapScope, unitId)
-                    }
-                    quiet={quiet || reduced || hidden}
-                    flat={twoD}
-                    onLost={() => setTwoD(true)}
-                    onOpen={openLesson}
-                  />
-                  <div className="map-footer">
-                    <div>
-                      {courseNavigation.allPractised && term === "B" ? (
-                        <CourseWrapUp
-                          dueCount={learning.dueCount}
-                          onReview={() => move("review")}
-                        />
-                      ) : (
-                        <strong>
-                          {nextLesson
-                            ? `${courseNavigation.allPractised ? "再探一遍" : "下一站"}：${nextLesson.title}`
-                            : "这个学期的课程正在准备"}
-                        </strong>
-                      )}
-                      {courseNavigation.nextTerm && (
-                        <p>
-                          这批上学期微课都练过了，也可以去下学期的新起点看看。
-                        </p>
-                      )}
-                    </div>
-                    {nextLesson && (
-                      <button
-                        className={
-                          (session && identity.authenticated) ||
-                          (courseNavigation.allPractised && term === "B")
-                            ? "secondary"
-                            : "primary"
-                        }
-                        disabled={busy}
-                        onClick={() => openLesson(nextLesson)}
-                      >
-                        {courseNavigation.allPractised && term === "B"
-                          ? "再看一节课"
-                          : "出发"}
-                        <ToyPicture kind="play" />
-                      </button>
-                    )}
-                    {courseNavigation.nextTerm && (
-                      <button
-                        className="secondary"
-                        onClick={() => {
-                          browseCourseMap(grade, "B");
-                          window.scrollTo({ top: 0 });
-                          requestAnimationFrame(() => mainRef.current?.focus());
-                        }}
-                      >
-                        看看下学期新课
-                        <Icon kind="arrow" />
-                      </button>
-                    )}
-                  </div>
-                </section>
-                <aside className="right-rail">
-                  <section className="card writing-entry">
-                    <h2>写下自己的小作品</h2>
-                    <p>从一句配文到三段短文，保存草稿，换设备继续。</p>
                     <button
-                      className="secondary"
-                      onClick={() => move("writing")}
+                      className="primary"
+                      disabled={busy}
+                      onClick={() => move("exercise")}
                     >
-                      进入写作小工坊
-                    </button>
-                  </section>
-                  <section className="card mint talk-entry">
-                    <h2>英语小剧场</h2>
-                    <p>当一回森林朋友，把学过的句子说出来。</p>
-                    <button className="secondary" onClick={() => move("talk")}>
-                      去角色练习
-                    </button>
-                  </section>
-                  <section className="card sunny">
-                    <h2>今天练一点什么？</h2>
-                    <p>一题一个小发现，做完就能休息。</p>
-                    <ol className="task-list">
-                      <li>
-                        <span>1</span>给句子选一个伙伴
-                      </li>
-                      <li>
-                        <span>2</span>看看单词怎样变形
-                      </li>
-                      <li>
-                        <span>3</span>试一种新的表达
-                      </li>
-                    </ol>
-                    <button
-                      className="secondary"
-                      onClick={() => move("topics")}
-                    >
-                      去专题特训
+                      {session.access === "takeover-required"
+                        ? "查看进度并接续"
+                        : receipt
+                          ? "查看上次练习"
+                          : "继续练习"}
                       <Icon kind="arrow" />
                     </button>
                   </section>
-                  <section className="card">
-                    <Icon kind="leaf" />
-                    <h3>记忆也需要被照顾</h3>
-                    <p>
-                      {progress.cards.length
-                        ? `已经记录${progress.cards.length}项记忆，看看下次何时相见。`
-                        : "做过的题会安排下一次复习。课程与特训共用同一份记录。"}
-                    </p>
+                )}
+              <CoursePicker
+                key={`${grade}:${term}:${identity.child?.id ?? "guest"}`}
+                units={units}
+                lessons={availableLessons}
+                completed={learning.completedLessons}
+                nextUnitId={
+                  mapUnitChoices.current.get(mapScope) ?? nextLesson?.unitId
+                }
+                onSelectUnit={(unitId) =>
+                  mapUnitChoices.current.set(mapScope, unitId)
+                }
+                onOpen={openLesson}
+              />
+              {courseNavigation.allPractised && (
+                <div className="course-term-end">
+                  {term === "B" ? (
+                    <CourseWrapUp
+                      dueCount={learning.dueCount}
+                      onReview={() => move("review")}
+                    />
+                  ) : courseNavigation.nextTerm ? (
                     <button
                       className="secondary"
-                      onClick={() => move("review")}
+                      onClick={() => {
+                        browseCourseMap(grade, "B");
+                        window.scrollTo({ top: 0 });
+                        requestAnimationFrame(() => mainRef.current?.focus());
+                      }}
                     >
-                      看看复习安排
+                      下学期课程
+                      <Icon kind="arrow" />
                     </button>
-                  </section>
-                </aside>
-              </div>
-              <section className="course-section">
-                <div className="page-head">
-                  <div>
-                    <h2>这一站，学会用英语表达</h2>
-                    <p>先读中文小讲解，再试着把英语说完整。</p>
-                  </div>
-                  <span className="badge">
-                    {["一", "二", "三", "四", "五", "六"][grade - 1]}年级 ·
-                    {term === "B" ? "下学期" : "上学期"} ·
-                    {
-                      lessons.filter(
-                        (l) => l.grade === grade && l.term === term,
-                      ).length
-                    }
-                    节微课可体验 · 其余持续制作
-                  </span>
+                  ) : null}
                 </div>
-                <div className="course-grid">
-                  {lessons
-                    .filter((l) => l.grade === grade && l.term === term)
-                    .map((lesson) => {
-                      const completed = learning.completedLessons.find(
-                        (row) => row.lessonId === lesson.id,
-                      );
-                      return (
-                        <article className="card course-card" key={lesson.id}>
-                          <span className="lesson-index">
-                            {String(lesson.order).padStart(2, "0")}
-                          </span>
-                          <span className="badge">
-                            {completed
-                              ? "已完成练习"
-                              : `约${lesson.minutes}分钟`}
-                          </span>
-                          <h3>{lesson.title}</h3>
-                          <p className="footnote">{lesson.unitTitle}</p>
-                          <p>{lesson.subtitle}</p>
-                          <small>
-                            {lesson.itemCount}个练习任务 ·{" "}
-                            {completed
-                              ? `${completed.runs}次完成`
-                              : "中文讲解与英语例句"}
-                          </small>
-                          <button
-                            className="primary"
-                            onClick={() => openLesson(lesson)}
-                          >
-                            {completed ? "再来看看" : "进入小讲堂"}
-                            <Icon kind="arrow" />
-                          </button>
-                        </article>
-                      );
-                    })}
-                </div>
-                {!lessons.some((l) => l.grade === grade && l.term === term) && (
-                  <div className="card empty-state">
-                    <p>
-                      这一学期的课件正在制作。可以切到上学期体验已开放的微课，或去专题中心练习。
-                    </p>
-                  </div>
-                )}
-              </section>
-              <div className="feature-strip">
-                <div>
-                  <Icon kind="book" />
-                  <strong>72个课程单元</strong>
-                  <small>覆盖P1–P6的课程规划</small>
-                </div>
-                <div>
-                  <Icon kind="blocks" />
-                  <strong>60个专题</strong>
-                  <small>按具体难点定向练习</small>
-                </div>
-                <div>
-                  <Icon kind="compass" />
-                  <strong>72条固定句式</strong>
-                  <small>先懂场景，再换词块</small>
-                </div>
-              </div>
+              )}
             </>
           )}
           {view === "words" && (
