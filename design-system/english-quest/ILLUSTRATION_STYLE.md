@@ -26,7 +26,9 @@
 
 新素材必须使用imagegen内置工具。当前人物基准图为`art-source/course-students-v2-sports-v1.png`，统一浅肤色、现代发型和运动服；`art-source/telescope-sports-v1.png`保留为材质和光照参考。真实教学对象、行为和视角优先于装饰。透明图必须有真实alpha，无文字、徽标、水印或棋盘格。生产WebP保留原尺寸与完整alpha，单图目标小于300KB；PNG原件保存在本设计目录，不发进站点静态构建。
 
-生产素材登记于`public/content/learning-art.v1.json`，包含styleId、尺寸、大小、哈希及替代文字。当前两张为收拾望远镜与发现石头，完整提示见[ART_PROMPTS.md](ART_PROMPTS.md)。官方参考截图只在忽略的验收目录，不随项目发布。
+生产素材登记于`public/content/learning-art.v1.json`，包含styleId、尺寸、大小、哈希及替代文字。现有课程情境、望远镜/石头和苹果状态图都使用同一清单，完整提示见[ART_PROMPTS.md](ART_PROMPTS.md)。官方参考截图只在忽略的验收目录，不随项目发布。
+
+同一动作的状态组必须保持对象、容器、视角、光照与尺度一致。苹果时态组以`art-source/apple-whole-sports-v1.png`为对象基准，progress表示未吃完，finished表示本例吃完后的苹果核；照片不能替代准确的时间关系。参照点、现在、持续区间和将来设想由SVG与HTML说明，不能让单张结果图替代对时态含义的解释。
 
 课程插画另以`public/content/course-scenes.v1.json`按真实课程ID绑定素材，并明确列出可配图的原文例句。封面表达整课情境；例句页只在原文匹配时显示图，不把“有人拿文具”误画成“Mia有铅笔”或将疑问句当作肯定事实。没有适配图的课程使用完整文字课卡，不任意重复校园图，也不阻止进入课程。首批为三年级上学期第一单元四课，后续课程沿同一文件扩展，不能宣称288课已经全部绘制。
 
