@@ -179,6 +179,7 @@ try {
     "0030_child_companions.sql",
     "0032_household_membership.sql",
     "0033_household_member_lookup.sql",
+    "0051_spaced_review.sql",
   ])
     await migrate(name);
   if (browserMode)

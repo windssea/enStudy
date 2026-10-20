@@ -256,6 +256,7 @@ try {
     "0033_household_member_lookup.sql",
     "0038_writing_drafts.sql",
     "0041_writing_ai_review.sql",
+    "0051_spaced_review.sql",
   ])
     for (const sql of statements(await readFile("migrations/" + name, "utf8")))
       await db.prepare(sql).run();
