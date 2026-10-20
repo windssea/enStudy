@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { TrainingCycle } from "../packages/contracts/index";
 import { api } from "./api";
 import { trainingLabels } from "../packages/domain/training";
+import { trainingFollowUps } from "./topicPractice";
 export default function TrainingFollowUps({
   childId,
   onOpen,
@@ -34,26 +35,14 @@ export default function TrainingFollowUps({
       live = false;
     };
   }, [childId, revision]);
-  const followups = all
-    ? items
-    : items
-        .filter((i) => !i.finished && i.next.phase === "retest")
-        .sort((a, b) => a.next.readyAt - b.next.readyAt);
+  const followups = trainingFollowUps(items, all);
   if (!loading && !error && !followups.length) return null;
   return (
     <section
       className="card training-followups"
       aria-label={all ? "专题分步记录" : "专题回访计划"}
     >
-      <span className="eyebrow">
-        {all ? "看见每一步的依据" : "给记忆一点时间"}
-      </span>
-      <h2>{all ? "专题学习足迹" : "这些专题，记得回来看看。"}</h2>
-      <p>
-        {all
-          ? "这里只列实际完成的步骤与原始计数，不把一次完成当作长期掌握。"
-          : "回访共用原来的复习记录，逾期会合并。无需为了赶进度今天多做几轮。"}
-      </p>
+      <h2>{all ? "专题练习记录" : "专题复习"}</h2>
       {loading && <p role="status">正在读取专题足迹…</p>}
       {error && (
         <p className="notice error" role="alert">
@@ -96,7 +85,7 @@ export default function TrainingFollowUps({
                 className={due && !cycle.finished ? "primary" : "secondary"}
                 onClick={() => onOpen(cycle.topicId)}
               >
-                查看小计划
+                进入专题
               </button>
             </li>
           );
