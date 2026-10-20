@@ -52,6 +52,7 @@ export function midnight(day: string, zone: string): number {
   }
   throw new Error("Unable to resolve local midnight");
 }
+/** Historical day-based policy for compatibility fixtures. Live attempts use spacedReview.ts. */
 export function schedule(
   card: Card | null,
   day: string,

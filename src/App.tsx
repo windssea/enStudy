@@ -43,6 +43,7 @@ import LearningIcon from "./LearningIcon";
 import { exerciseKind } from "./exerciseKind";
 import { modalityLabels } from "../packages/domain/report";
 import CoursePicker from "./CoursePicker";
+import { reviewDueLabel, reviewRefreshDelay } from "./reviewPresentation";
 import SessionAccess from "./SessionAccess";
 import ChildNavigation from "./ChildNavigation";
 import ChildHome from "./ChildHome";
@@ -385,6 +386,47 @@ export default function App() {
     }
   };
   useEffect(() => {
+    if (
+      !identity.authenticated ||
+      !identity.child ||
+      !["home", "review"].includes(view)
+    )
+      return;
+    let live = true;
+    const refresh = () => {
+      if (live && !document.hidden) void refreshProgress().catch(() => {});
+    };
+    refresh();
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      live = false;
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [view, identity.authenticated, identity.child?.id]);
+  useEffect(() => {
+    if (
+      !identity.authenticated ||
+      !identity.child ||
+      !["home", "review"].includes(view)
+    )
+      return;
+    const delay = reviewRefreshDelay(progress.reviewPlan);
+    if (delay === null) return;
+    const current = epoch.current;
+    const timer = window.setTimeout(() => {
+      if (!document.hidden) void refreshProgress(current).catch(() => {});
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [
+    view,
+    identity.authenticated,
+    identity.child?.id,
+    progress.reviewPlan?.nextAt,
+    progress.reviewPlan?.generatedAt,
+  ]);
+  useEffect(() => {
     let cancelled = false;
     const initialEpoch = epoch.current;
     api<{
@@ -661,6 +703,7 @@ export default function App() {
   const canWriteSession = Boolean(
     session?.access === "owner" && session.leaseId && !sessionStopped,
   );
+  const dueCount = progress.reviewPlan?.dueCount ?? learning.dueCount;
   async function start(
     exerciseId: string,
     task?: {
@@ -909,7 +952,7 @@ export default function App() {
     ["words", "单词特训", "words"],
     ["topics", "专题特训", "blocks"],
     ["patterns", "固定句式", "book"],
-    ["review", "复习花园", "leaf"],
+    ["review", "复习", "leaf"],
     ["parent", "家长空间", "person"],
   ];
   const sessionHome: View = session?.guidedRetry
@@ -1027,7 +1070,9 @@ export default function App() {
               taskTitle={
                 session && identity.authenticated
                   ? session.exercise.title
-                  : nextLesson?.title
+                  : dueCount && identity.authenticated
+                    ? "复习已学内容"
+                    : nextLesson?.title
               }
               taskDetail={
                 session && identity.authenticated
@@ -1043,15 +1088,24 @@ export default function App() {
                     ]
                       .filter(Boolean)
                       .join(" · ")
-                  : nextLesson?.unitTitle
+                  : dueCount && identity.authenticated
+                    ? `${dueCount}项到期复习`
+                    : nextLesson?.unitTitle
               }
               busy={busy}
-              ready={Boolean(nextLesson) || !identity.child || Boolean(session)}
+              ready={
+                Boolean(nextLesson) ||
+                !identity.child ||
+                Boolean(session) ||
+                dueCount > 0
+              }
               resume={Boolean(session && identity.authenticated)}
+              review={Boolean(!session && identity.authenticated && dueCount)}
               onGo={move}
               onStart={() => {
                 if (!identity.child) move("parent");
                 else if (session && identity.authenticated) move("exercise");
+                else if (dueCount) void start("", { mode: "review" });
                 else if (nextLesson) openLesson(nextLesson);
               }}
             />
@@ -1286,21 +1340,42 @@ export default function App() {
               <div className="review-start card">
                 <div>
                   <h2>
-                    {learning.dueCount
-                      ? `今天有${learning.dueCount}项复习`
-                      : "今天没有到期复习"}
+                    {!identity.child
+                      ? "选择学习档案"
+                      : dueCount
+                        ? `现在有${dueCount}项复习`
+                        : "今天没有到期复习"}
                   </h2>
-                  <p>每轮最多8题。</p>
+                  {progress.reviewPlan?.nextAt && !dueCount ? (
+                    <p>
+                      下次复习：
+                      {reviewDueLabel(
+                        progress.reviewPlan.nextAt,
+                        progress.reviewPlan.timezone,
+                        progress.reviewPlan.generatedAt,
+                      )}
+                    </p>
+                  ) : dueCount ? (
+                    <p>每轮最多8题</p>
+                  ) : null}
                 </div>
                 <button
                   className="primary"
-                  disabled={
-                    busy || !identity.authenticated || !learning.dueCount
+                  disabled={busy}
+                  onClick={() =>
+                    !identity.authenticated || !identity.child
+                      ? move("parent")
+                      : dueCount
+                        ? void start("", { mode: "review" })
+                        : move("map")
                   }
-                  onClick={() => start("", { mode: "review" })}
                 >
                   <ToyPicture kind="play" />
-                  开始今日复习
+                  {!identity.authenticated || !identity.child
+                    ? "选择档案"
+                    : dueCount
+                      ? "开始复习"
+                      : "继续学习"}
                 </button>
               </div>
               <p>
@@ -1359,14 +1434,7 @@ export default function App() {
                   />
                 </Suspense>
               )}
-              {!identity.authenticated ? (
-                <div className="card empty-state">
-                  <p>先请家长登录，让每次进步都有自己的记录。</p>
-                  <button className="primary" onClick={() => move("parent")}>
-                    登录并选择档案
-                  </button>
-                </div>
-              ) : progress.cards.length ? (
+              {!identity.authenticated ? null : progress.cards.length ? (
                 <details className="card review-list">
                   <summary>复习安排</summary>
                   {progress.cards.map((card) => (
@@ -1384,16 +1452,13 @@ export default function App() {
                         {card.modality && (
                           <p>{modalityLabels[card.modality] ?? "练习"}</p>
                         )}
-                        <p>
-                          阶段{card.stage + 1} · 需要巩固{card.lapses}次
-                        </p>
                       </div>
                       <span>
-                        {new Date(card.dueAt).toLocaleDateString("zh-CN", {
-                          month: "long",
-                          day: "numeric",
-                        })}
-                        再见
+                        {reviewDueLabel(
+                          card.dueAt,
+                          progress.reviewPlan?.timezone,
+                          progress.reviewPlan?.generatedAt,
+                        )}
                       </span>
                     </div>
                   ))}
@@ -1605,7 +1670,7 @@ export default function App() {
                             : session.source === "topic"
                               ? "专题特训"
                               : session.source === "review"
-                                ? "复习花园"
+                                ? "复习"
                                 : "课程列表"}
                 </button>
                 <span className="badge">

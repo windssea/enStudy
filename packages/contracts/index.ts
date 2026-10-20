@@ -247,6 +247,8 @@ export interface Receipt {
   independentEvidence: boolean;
   feedback: string;
   nextReviewDay: string;
+  nextReviewAt?: number;
+  reviewAlgorithm?: string;
   rewardDelta: number;
   serverSequence: number;
 }
@@ -356,6 +358,19 @@ export interface AiExplanationResult {
   };
 }
 export interface Progress {
+  reviewPlan?: {
+    algorithm: string;
+    generatedAt: number;
+    timezone: string;
+    dueCount: number;
+    relearningDue: number;
+    nextAt: number | null;
+    policy: {
+      intervalDays: number[];
+      incorrectMinutes: number;
+      assistedMinutes: number;
+    };
+  };
   answered: number;
   correct: number;
   stars: number;

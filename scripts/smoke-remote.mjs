@@ -750,6 +750,21 @@ try {
   const unchangedProgress = await authenticated("/progress"),
     unchangedSession = await authenticated("/sessions/current");
   check(
+    unchangedProgress.status === 200 &&
+      unchangedProgress.data.reviewPlan?.algorithm === "ebbinghaus-v1" &&
+      unchangedProgress.data.reviewPlan.policy.intervalDays.join(",") ===
+        "1,3,7,14,30,60" &&
+      unchangedProgress.data.reviewPlan.policy.incorrectMinutes === 10 &&
+      unchangedProgress.data.reviewPlan.policy.assistedMinutes === 20,
+    "versioned expanding review policy is available on the deployed schema",
+  );
+  check(
+    unchangedProgress.data.reviewPlan.dueCount === 0 &&
+      unchangedProgress.data.reviewPlan.relearningDue === 0 &&
+      unchangedProgress.data.reviewPlan.nextAt === null,
+    "a new child has no fabricated review appointments or due work",
+  );
+  check(
     unchangedProgress.data.answered === 0 &&
       unchangedProgress.data.stars === 0 &&
       unchangedSession.data.session === null,

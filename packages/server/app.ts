@@ -1,13 +1,13 @@
 import { Hono, type Context, type MiddlewareHandler } from "hono";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import { bodyLimit } from "hono/body-limit";
+import { addDays, localDay } from "../domain/review";
 import {
-  addDays,
-  localDay,
-  midnight,
-  schedule,
-  type Card,
-} from "../domain/review";
+  scheduleSpacedReview,
+  reviewAlgorithm,
+  reviewPolicy,
+  type MemoryCard,
+} from "../domain/spacedReview";
 import {
   exercises,
   publicExercise,
@@ -999,7 +999,7 @@ app.post("/api/v1/sessions/:id/takeover", async (c) => {
 async function reviewTargets(db: D1Database, actor: Actor) {
   const cards = await db
     .prepare(
-      "SELECT skill_id AS skillId,modality,due_at AS dueAt FROM review_cards WHERE household_id=? AND child_id=? AND due_at<=? ORDER BY due_at LIMIT 40",
+      "SELECT skill_id AS skillId,modality,due_at AS dueAt,CASE WHEN relearning=1 THEN 0 ELSE 1 END AS priority FROM review_cards WHERE household_id=? AND child_id=? AND due_at<=? ORDER BY priority,due_at LIMIT 40",
     )
     .bind(actor.householdId, actor.childId, Date.now())
     .all<ReviewTarget>();
@@ -1846,6 +1846,8 @@ interface StoredCard {
   independent_successes: number;
   last_success_day: string | null;
   version: number;
+  last_review_at: number | null;
+  relearning: number;
 }
 app.post("/api/v1/attempts", async (c) => {
   const actor = c.get("actor");
@@ -1994,17 +1996,25 @@ app.post("/api/v1/attempts", async (c) => {
     )
       .bind(actor.householdId, actor.childId, exercise.skill, exercise.modality)
       .first<StoredCard>();
-    const card: Card | null = old
+    const card: MemoryCard | null = old
       ? {
           stage: old.stage,
-          dueDay: localDay(old.due_at, actor.timezone),
+          dueAt: old.due_at,
           lapses: old.lapses,
           independentSuccesses: old.independent_successes,
           lastSuccessDay: old.last_success_day,
           version: old.version,
+          lastReviewAt: old.last_review_at,
+          relearning: Boolean(old.relearning),
         }
       : null;
-    const next = schedule(card, day, offline ? "hinted" : outcome),
+    const next = scheduleSpacedReview(
+        card,
+        now,
+        actor.timezone,
+        outcome,
+        offline,
+      ),
       sequence = child!.stream_version + 1;
     const receipt: Receipt = {
       ...structuredFeedback(exercise, body.answer),
@@ -2013,7 +2023,9 @@ app.post("/api/v1/attempts", async (c) => {
       outcome,
       independentEvidence: outcome === "correct",
       feedback: exercise.explanation,
-      nextReviewDay: next.dueDay,
+      nextReviewDay: localDay(next.dueAt, actor.timezone),
+      nextReviewAt: next.dueAt,
+      reviewAlgorithm,
       rewardDelta: offline || isGuidedRetry(row.source_ref) ? 0 : 1,
       serverSequence: sequence,
     };
@@ -2042,7 +2054,7 @@ app.post("/api/v1/attempts", async (c) => {
           "INSERT INTO commit_assertions(event_id,household_id,child_id,ok) VALUES(?,?,?,changes())",
         ).bind(body.eventId, actor.householdId, actor.childId),
         c.env.DB.prepare(
-          `INSERT INTO attempts(event_id,household_id,child_id,assignment_id,server_sequence,answer_json,outcome,independent_evidence,evidence_source,received_at,client_occurred_at,algorithm_version,receipt_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,'rules-v3-offline',?)`,
+          `INSERT INTO attempts(event_id,household_id,child_id,assignment_id,server_sequence,answer_json,outcome,independent_evidence,evidence_source,received_at,client_occurred_at,algorithm_version,receipt_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,'ebbinghaus-v1',?)`,
         ).bind(
           body.eventId,
           actor.householdId,
@@ -2064,18 +2076,20 @@ app.post("/api/v1/attempts", async (c) => {
           now,
         )),
         c.env.DB.prepare(
-          `INSERT INTO review_cards(household_id,child_id,skill_id,modality,stage,due_at,lapses,independent_successes,last_success_day,version,algorithm_version) VALUES(?,?,?,?,?,?,?,?,?,?,'rules-v3-offline') ON CONFLICT(child_id,skill_id,modality) DO UPDATE SET stage=excluded.stage,due_at=excluded.due_at,lapses=excluded.lapses,independent_successes=excluded.independent_successes,last_success_day=excluded.last_success_day,version=excluded.version,algorithm_version=excluded.algorithm_version`,
+          `INSERT INTO review_cards(household_id,child_id,skill_id,modality,stage,due_at,lapses,independent_successes,last_success_day,version,algorithm_version,last_review_at,relearning) VALUES(?,?,?,?,?,?,?,?,?,?,'ebbinghaus-v1',?,?) ON CONFLICT(child_id,skill_id,modality) DO UPDATE SET stage=excluded.stage,due_at=excluded.due_at,lapses=excluded.lapses,independent_successes=excluded.independent_successes,last_success_day=excluded.last_success_day,version=excluded.version,algorithm_version=excluded.algorithm_version,last_review_at=excluded.last_review_at,relearning=excluded.relearning`,
         ).bind(
           actor.householdId,
           actor.childId,
           exercise.skill,
           exercise.modality,
           next.stage,
-          midnight(next.dueDay, actor.timezone),
+          next.dueAt,
           next.lapses,
           next.independentSuccesses,
           next.lastSuccessDay,
           next.version,
+          next.lastReviewAt,
+          Number(next.relearning),
         ),
         c.env.DB.prepare(
           "INSERT INTO reward_ledger(id,household_id,child_id,source_attempt_id,delta,reason) VALUES(?,?,?,?,?,?)",
@@ -2130,7 +2144,17 @@ app.post("/api/v1/attempts", async (c) => {
   return c.json(fault("VERSION_CONFLICT", "请重试保存。"), 409);
 });
 app.get("/api/v1/progress", async (c) => {
-  const { householdId, childId } = c.get("actor");
+  const { householdId, childId, timezone } = c.get("actor");
+  const generatedAt = Date.now();
+  const plan = await c.env.DB.prepare(
+    "SELECT coalesce(sum(due_at<=?),0) AS dueCount,coalesce(sum(relearning=1 AND due_at<=?),0) AS relearningDue,min(CASE WHEN due_at>? THEN due_at END) AS nextAt FROM review_cards WHERE household_id=? AND child_id=?",
+  )
+    .bind(generatedAt, generatedAt, generatedAt, householdId, childId)
+    .first<{
+      dueCount: number;
+      relearningDue: number;
+      nextAt: number | null;
+    }>();
   const summary = await c.env.DB.prepare(
     "SELECT COUNT(*) AS answered,COALESCE(SUM(CASE WHEN outcome IN ('correct','hinted') THEN 1 ELSE 0 END),0) AS correct FROM attempts WHERE household_id=? AND child_id=?",
   )
@@ -2154,6 +2178,13 @@ app.get("/api/v1/progress", async (c) => {
   return c.json({
     ...summary,
     ...reward,
+    reviewPlan: {
+      algorithm: reviewAlgorithm,
+      generatedAt,
+      timezone,
+      ...plan!,
+      policy: reviewPolicy,
+    },
     cards: cards.results,
     recent: recent.results,
   });

@@ -2,6 +2,7 @@ export interface ReviewTarget {
   skillId: string;
   modality: string;
   dueAt: number;
+  priority?: number;
   lastFamily?: string;
 }
 export interface Candidate {
@@ -88,7 +89,12 @@ export function selectReviewItems<T extends Candidate>(
   const seen = new Set<string>();
   for (const card of [...cards]
     .filter((card) => card.dueAt <= now)
-    .sort((a, b) => a.dueAt - b.dueAt || a.skillId.localeCompare(b.skillId))) {
+    .sort(
+      (a, b) =>
+        (a.priority ?? 1) - (b.priority ?? 1) ||
+        a.dueAt - b.dueAt ||
+        a.skillId.localeCompare(b.skillId),
+    )) {
     const candidates = items.filter(
       (item) =>
         item.skill === card.skillId &&

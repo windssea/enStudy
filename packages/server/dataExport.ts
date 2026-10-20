@@ -111,7 +111,7 @@ const sources = [
   ),
   simple(
     "review_cards",
-    "child_id,skill_id,modality,stage,due_at,lapses,independent_successes,last_success_day,version,algorithm_version",
+    "child_id,skill_id,modality,stage,due_at,lapses,independent_successes,last_success_day,version,algorithm_version,last_review_at,relearning",
     "t.child_id,t.skill_id,t.modality",
   ),
   simple("reward_ledger", "id,child_id,source_attempt_id,delta,reason", "t.id"),

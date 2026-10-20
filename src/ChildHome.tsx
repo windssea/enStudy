@@ -7,6 +7,7 @@ export default function ChildHome({
   busy,
   ready,
   resume,
+  review = false,
   onStart,
   onGo,
 }: {
@@ -16,6 +17,7 @@ export default function ChildHome({
   busy: boolean;
   ready: boolean;
   resume: boolean;
+  review?: boolean;
   onStart: () => void;
   onGo: (v: View) => void;
 }) {
@@ -39,9 +41,11 @@ export default function ChildHome({
           aria-label={
             resume
               ? "继续上次的学习"
-              : nickname
-                ? "开始课程学习"
-                : "请家长选择档案，再开始"
+              : review
+                ? "开始复习"
+                : nickname
+                  ? "开始课程学习"
+                  : "请家长选择档案，再开始"
           }
         >
           <LearningIcon kind={resume ? "arrow" : "play"} />
@@ -50,9 +54,11 @@ export default function ChildHome({
               ? "正在准备…"
               : resume
                 ? "继续学习"
-                : nickname
-                  ? "开始学习"
-                  : "家长登录"}
+                : review
+                  ? "开始复习"
+                  : nickname
+                    ? "开始学习"
+                    : "家长登录"}
           </span>
         </button>
       </section>
