@@ -43,7 +43,7 @@ M4-02b,M4,阿里原生短录音识别,独立协议和安全密钥及明确能力
 
 M4-01b,M4,Qwen文字连接预设,简短非思考协议与独立能力授权,deployed-qwen-chat-real-key-and-quality-pending,docs/74-qwen-text-profile.md及539单元与184项AI隔离检查通过而完整CI真实Key和教学质量待验
 M1-04b,M1,现代专业学习界面,统一NS运动系视觉并保留清晰核心流程和触控,partial-sports-theme-and-main-flows-deployed-legacy-assets-and-device-pending,docs/79-sports-theme-and-teaching-diagrams.md及统一插画规范；v055双站各82线上与三域名24只读和PC平板尺寸通过而旧素材仍待逐组替换
-M1-04c,M1,过期构建的友好恢复,模块加载失败提供保存说明与主动刷新并避免丢草稿,local-browser-verified-deployment-pending,docs/88-loading-recovery-and-compact-review.md；单词与写作模块404及入口脚本失败恢复和保存版本读取已验
+M1-04c,M1,过期构建的友好恢复,模块加载失败提供保存说明与主动刷新并避免丢草稿,deployed-module-load-recovery-native-dialog-device-pending,docs/88-loading-recovery-and-compact-review.md；单词与写作模块404及入口脚本失败恢复和保存版本读取已验
 M1-04d,M1,题型与内容深度整改,明确认知目标并用真实情境辨析和复测验收,pilot-12-contextual-tasks-deployed-remaining-topics-pending,docs/78-content-depth-and-contrast.md与549单元72隔离检查及双站各80线上；其余专题与真实教研仍待重写审核
 
 M1-04e,M1,课程选择与统一情境插画,直接选课且插画按真实课程例句绑定并统一人物风格,partial-four-course-scenes-deployed-remaining-284-pending,docs/80-course-selection-and-context-art.md；557单元和双站各83线上与三域名27只读及PC平板尺寸验收通过
@@ -60,5 +60,5 @@ M1-04j,M1,直接学习指导,移除泛化介绍并直接展示例句规则与明
 M1-04k,M1,专题直接练习,取消日期阻挡与多层指导并保持旧会话和到期复习,direct-topic-practice-deployed,docs/86-direct-topic-practice.md；578项单元测试1519运行双站各88线上及三域名54只读通过
 
 M1-04l,M1,统一间隔复习,客观作答共用短时再练与扩展间隔并保持旧进度和自由学习,ebbinghaus-inspired-review-deployed-calibration-pending,docs/87-ebbinghaus-spaced-review.md；595项单元测试1536运行双站各90线上及三域名57只读通过
-M1-04m,M1,跨版本动态模块恢复,旧页面遇到已替换模块时提供可恢复界面且不丢失已保存学习记录,local-browser-verified-deployment-pending,docs/88-loading-recovery-and-compact-review.md；保留外层编辑器和导航并提供主动重载
-M1-04n,M1,紧凑复习流程,一组真实任务与主操作并删除重复空卡和旧专题阶段面板,local-browser-verified-deployment-pending,docs/88-loading-recovery-and-compact-review.md；平板窄屏及真实保存与到期复习入口已验
+M1-04m,M1,跨版本动态模块恢复,旧页面遇到已替换模块时提供可恢复界面且不丢失已保存学习记录,merged-with-M1-04c-deployed-device-pending,docs/88-loading-recovery-and-compact-review.md；保留外层编辑器和导航并提供主动重载
+M1-04n,M1,紧凑复习流程,一组真实任务与主操作并删除重复空卡和旧专题阶段面板,compact-review-deployed,docs/88-loading-recovery-and-compact-review.md；平板窄屏及真实保存与到期复习入口已验

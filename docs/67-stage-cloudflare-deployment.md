@@ -137,3 +137,8 @@ CI通过57文件460项单元、格式、构建、Functions编译、本地初始�
 ## v0.61统一间隔复习同步发布
 
 北京时间2026/10/20 22:12:07，[运行39435550678](https://github.com/windssea/enStudy/actions/runs/39435550678)成功发布ddd2071至Preview 2599bc19与Production f66af94a，正式域名同版本。两套独立D1均应用0051追加字段，保留旧卡日期与旧成绩；仍用现有免费资源。595项单元测试、1536完整运行、两站各90线上与三域名57只读通过；新策略、回执幂等、离线与档案隔离均已验证，见[完整记录](87-ebbinghaus-spaced-review.md)。
+
+
+## v0.62加载恢复与紧凑复习同步发布
+
+北京时间2026/10/20 22:53:08，[运行39441637294](https://github.com/windssea/enStudy/actions/runs/39441637294)成功发布c3f25dc至Preview 160b4163与Production d0b19424，正式域名同版本。两套独立D1仍0051且无待用迁移；597项单元测试、1536完整运行、双站各90线上与三域名63只读通过，仍用现有免费资源。模块故障模拟仅发生于隔离测试环境，见[实际证据](88-loading-recovery-and-compact-review.md)。
