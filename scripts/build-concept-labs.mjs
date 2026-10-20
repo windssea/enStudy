@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { writeContent } from "./content-write.mjs";
+import { ketRelease } from "../packages/domain/ketVocabulary.ts";
 const source = JSON.parse(
   await readFile("content/concept-labs.v1.json", "utf8"),
 );
@@ -47,6 +48,7 @@ const items = [
       .map((item) => [`${item.id}:${item.version ?? 1}`, item]),
   ).values(),
 ];
+items.push(...ketRelease.items);
 const normalize = (value) =>
   value
     .normalize("NFKC")

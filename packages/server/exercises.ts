@@ -5,6 +5,7 @@ import expansionLatest from "../../content/course-expansion.latest.json";
 import topics from "../../content/topic-release.v1.json";
 import patterns from "../../content/pattern-release.v1.json";
 import vocabulary from "../../content/vocabulary-release.v1.json";
+import { ketRelease } from "../domain/ketVocabulary";
 import workshop from "../../content/workshop-release.v1.json";
 import workshopLatest from "../../content/workshop-release.latest.json";
 import beActionContrast from "../../content/be-action-release.v1.json";
@@ -200,6 +201,7 @@ export const exercises = [
   ...topicRelease.items,
   ...patternRelease.items,
   ...vocabulary.items,
+  ...ketRelease.items,
   ...workshopLatest.items,
   ...beActionCurrent.items,
   ...story.items,
@@ -279,6 +281,17 @@ export const vocabularyRelease = {
 export const wordThemes: WordTheme[] = vocabularyRelease.themes.map(
   ({ words, ...theme }) => theme,
 );
+export const vocabularyCatalog = {
+  id: "vocabulary-catalog-v4",
+  totalWords: vocabularyRelease.totalWords + ketRelease.totalWords,
+  totalItems: vocabularyRelease.totalItems + ketRelease.totalItems,
+  themes: [...vocabularyRelease.themes, ...ketRelease.themes],
+  items: [...vocabularyRelease.items, ...ketRelease.items] as PrivateExercise[],
+};
+export const allWordThemes: WordTheme[] = [
+  ...wordThemes,
+  ...ketRelease.themes.map(({ words, ...theme }) => theme),
+];
 export const exerciseById = new Map(exercises.map((item) => [item.id, item]));
 export const phonicsRelease = phonics as unknown as {
   id: string;

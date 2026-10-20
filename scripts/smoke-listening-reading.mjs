@@ -130,10 +130,14 @@ try {
     "public catalog exposes all twenty-four third-unit lessons alongside earlier courses",
   );
   check(
-    catalog.vocabulary.totalItems === 1620 &&
+    catalog.vocabulary.themes
+      .filter((t) => t.collection !== "ket")
+      .reduce((n, t) => n + t.items, 0) === 1620 &&
       catalog.vocabulary.themes.filter((t) => t.modes.includes("picture"))
         .length === 3 &&
-      catalog.vocabulary.themes.every((t) => t.modes.includes("listening")),
+      catalog.vocabulary.themes
+        .filter((t) => t.collection !== "ket")
+        .every((t) => t.modes.includes("listening")),
     "all eighteen word themes advertise actual listening mode and counts",
   );
   assert.equal(

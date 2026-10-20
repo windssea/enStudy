@@ -4,7 +4,7 @@ import { sentenceKey, answerExposureKeys } from "../domain/exposure";
 import {
   courseCatalog,
   patternRelease,
-  vocabularyRelease,
+  vocabularyCatalog as vocabularyRelease,
   type PrivateExercise,
 } from "./exercises";
 import catalog from "../../public/content/catalog.json";

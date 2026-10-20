@@ -1,0 +1,8646 @@
+{
+  "edition": "August 2025",
+  "url": "https://www.cambridgeenglish.org/Images/506886-a2-key-2020-vocabulary-list.pdf",
+  "sha256": "2abe174d067cd17ffa061cfc4bbbc0e5a55185ac696a5ef8ba49372c753a3ad6",
+  "alphabeticalPages": [
+    4,
+    23
+  ],
+  "rows": [
+    {
+      "headword": "a/an",
+      "pos": "det",
+      "page": 4
+    },
+    {
+      "headword": "a few",
+      "pos": "det, adj & pron",
+      "page": 4
+    },
+    {
+      "headword": "able",
+      "pos": "adj",
+      "page": 4
+    },
+    {
+      "headword": "about",
+      "pos": "adv & prep",
+      "page": 4
+    },
+    {
+      "headword": "above",
+      "pos": "adv & prep",
+      "page": 4
+    },
+    {
+      "headword": "accident",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "accommodation",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "across",
+      "pos": "adv & prep",
+      "page": 4
+    },
+    {
+      "headword": "act",
+      "pos": "v",
+      "page": 4
+    },
+    {
+      "headword": "action",
+      "pos": "adj",
+      "page": 4
+    },
+    {
+      "headword": "activity",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "actor",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "actually",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "ad",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "add",
+      "pos": "v",
+      "page": 4
+    },
+    {
+      "headword": "address",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "adult",
+      "pos": "adj & n",
+      "page": 4
+    },
+    {
+      "headword": "advanced",
+      "pos": "adj",
+      "page": 4
+    },
+    {
+      "headword": "adventure",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "advert",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "advertisement",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "advice",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "aeroplane",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "afraid",
+      "pos": "adj",
+      "page": 4
+    },
+    {
+      "headword": "after",
+      "pos": "adv & prep",
+      "page": 4
+    },
+    {
+      "headword": "afternoon",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "afterwards",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "again",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "against",
+      "pos": "prep",
+      "page": 4
+    },
+    {
+      "headword": "age",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "aged",
+      "pos": "adj",
+      "page": 4
+    },
+    {
+      "headword": "ago",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "agree",
+      "pos": "v",
+      "page": 4
+    },
+    {
+      "headword": "air",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "airport",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "alarm clock",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "album",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "all",
+      "pos": "adv, det & pron",
+      "page": 4
+    },
+    {
+      "headword": "all kinds of",
+      "pos": "det & pron",
+      "page": 4
+    },
+    {
+      "headword": "allow",
+      "pos": "v",
+      "page": 4
+    },
+    {
+      "headword": "all right/alright",
+      "pos": "adj, adv & exclam",
+      "page": 4
+    },
+    {
+      "headword": "all sorts of",
+      "pos": "det & pron",
+      "page": 4
+    },
+    {
+      "headword": "all the time",
+      "pos": "det",
+      "page": 4
+    },
+    {
+      "headword": "almost",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "alone",
+      "pos": "adj & adv",
+      "page": 4
+    },
+    {
+      "headword": "along",
+      "pos": "prep",
+      "page": 4
+    },
+    {
+      "headword": "already",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "alright",
+      "pos": "adj, adv & exclam",
+      "page": 4
+    },
+    {
+      "headword": "also",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "always",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "a.m.",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "amazed",
+      "pos": "adj",
+      "page": 4
+    },
+    {
+      "headword": "amazing",
+      "pos": "adj",
+      "page": 4
+    },
+    {
+      "headword": "ambulance",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "among",
+      "pos": "prep",
+      "page": 4
+    },
+    {
+      "headword": "an",
+      "pos": "det",
+      "page": 4
+    },
+    {
+      "headword": "and",
+      "pos": "conj",
+      "page": 4
+    },
+    {
+      "headword": "angry",
+      "pos": "adj",
+      "page": 4
+    },
+    {
+      "headword": "animal",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "another",
+      "pos": "det & pron",
+      "page": 4
+    },
+    {
+      "headword": "answer",
+      "pos": "n & v",
+      "page": 4
+    },
+    {
+      "headword": "any",
+      "pos": "det & pron",
+      "page": 4
+    },
+    {
+      "headword": "anybody",
+      "pos": "pron",
+      "page": 4
+    },
+    {
+      "headword": "anymore",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "anyone",
+      "pos": "pron",
+      "page": 4
+    },
+    {
+      "headword": "anything",
+      "pos": "pron",
+      "page": 4
+    },
+    {
+      "headword": "anyway",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "anywhere",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "apartment",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "apartment building",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "app",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "apple",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "appointment",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "April",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "area",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "arm",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "armchair",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "around",
+      "pos": "adv & prep",
+      "page": 4
+    },
+    {
+      "headword": "arrive",
+      "pos": "v",
+      "page": 4
+    },
+    {
+      "headword": "art",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "article",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "artist",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "as",
+      "pos": "conj & adv & prep",
+      "page": 4
+    },
+    {
+      "headword": "ask",
+      "pos": "v",
+      "page": 4
+    },
+    {
+      "headword": "assistant",
+      "pos": "n",
+      "page": 4
+    },
+    {
+      "headword": "as well",
+      "pos": "adv",
+      "page": 4
+    },
+    {
+      "headword": "as well (as)",
+      "pos": "prep",
+      "page": 4
+    },
+    {
+      "headword": "at",
+      "pos": "prep",
+      "page": 4
+    },
+    {
+      "headword": "at / @",
+      "pos": "prep",
+      "page": 5
+    },
+    {
+      "headword": "at all",
+      "pos": "prep phr",
+      "page": 5
+    },
+    {
+      "headword": "attractive",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "August",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "aunt",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "autumn",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "available",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "away",
+      "pos": "adv",
+      "page": 5
+    },
+    {
+      "headword": "awesome",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "awful",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "baby",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "back",
+      "pos": "n, adv & adj",
+      "page": 5
+    },
+    {
+      "headword": "backpack",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bad",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "badly",
+      "pos": "adv",
+      "page": 5
+    },
+    {
+      "headword": "badminton",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bag",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bake",
+      "pos": "v",
+      "page": 5
+    },
+    {
+      "headword": "ball",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "balloon",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "banana",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "band",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bank",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "barbecue/barbeque",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "baseball",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "basketball",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bat",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bath",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bathing suit",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bathroom",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bathtub",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "battery",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "be",
+      "pos": "av & v",
+      "page": 5
+    },
+    {
+      "headword": "beach",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bean",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bear",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "beard",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "beautiful",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "because",
+      "pos": "conj",
+      "page": 5
+    },
+    {
+      "headword": "because of",
+      "pos": "prep phr",
+      "page": 5
+    },
+    {
+      "headword": "become",
+      "pos": "v",
+      "page": 5
+    },
+    {
+      "headword": "bed",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bedroom",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bee",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "beetle",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "before",
+      "pos": "adv, conj & prep",
+      "page": 5
+    },
+    {
+      "headword": "begin",
+      "pos": "v",
+      "page": 5
+    },
+    {
+      "headword": "beginner",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "beginning",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "behind",
+      "pos": "adv & prep",
+      "page": 5
+    },
+    {
+      "headword": "believe",
+      "pos": "v",
+      "page": 5
+    },
+    {
+      "headword": "belong",
+      "pos": "v",
+      "page": 5
+    },
+    {
+      "headword": "below",
+      "pos": "adv & prep",
+      "page": 5
+    },
+    {
+      "headword": "belt",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "beside",
+      "pos": "prep",
+      "page": 5
+    },
+    {
+      "headword": "best",
+      "pos": "adj & adv",
+      "page": 5
+    },
+    {
+      "headword": "better",
+      "pos": "adj & adv",
+      "page": 5
+    },
+    {
+      "headword": "between",
+      "pos": "prep",
+      "page": 5
+    },
+    {
+      "headword": "bicycle",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "big",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "bike",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bill",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bin",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "biology",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bird",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "birth",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "birthday",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "biscuit",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bit",
+      "pos": "n & adv",
+      "page": 5
+    },
+    {
+      "headword": "black",
+      "pos": "adj & n",
+      "page": 5
+    },
+    {
+      "headword": "blackboard",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "blanket",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "block",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "blog",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "blond(e)",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "blood",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "blouse",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "blue",
+      "pos": "adj & n",
+      "page": 5
+    },
+    {
+      "headword": "board",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "board game",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "boat",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "body",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "boil",
+      "pos": "v",
+      "page": 5
+    },
+    {
+      "headword": "boiled",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "book",
+      "pos": "n & v",
+      "page": 5
+    },
+    {
+      "headword": "bookcase",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bookshelf",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bookshop",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bookstore",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "boot",
+      "pos": "n",
+      "page": 5
+    },
+    {
+      "headword": "bored",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "boring",
+      "pos": "adj",
+      "page": 5
+    },
+    {
+      "headword": "born",
+      "pos": "v",
+      "page": 5
+    },
+    {
+      "headword": "borrow",
+      "pos": "v",
+      "page": 6
+    },
+    {
+      "headword": "boss",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "both",
+      "pos": "pron & det",
+      "page": 6
+    },
+    {
+      "headword": "bother",
+      "pos": "v",
+      "page": 6
+    },
+    {
+      "headword": "bottle",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "bottom",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "bowl",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "box",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "boy",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "boyfriend",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "bracelet",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "brain",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "brave",
+      "pos": "adj",
+      "page": 6
+    },
+    {
+      "headword": "bread",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "break",
+      "pos": "n & v",
+      "page": 6
+    },
+    {
+      "headword": "break down",
+      "pos": "phr v",
+      "page": 6
+    },
+    {
+      "headword": "breakfast",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "bridge",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "bright",
+      "pos": "adj – for colours",
+      "page": 6
+    },
+    {
+      "headword": "brilliant",
+      "pos": "adj",
+      "page": 6
+    },
+    {
+      "headword": "bring",
+      "pos": "v",
+      "page": 6
+    },
+    {
+      "headword": "bring back",
+      "pos": "v",
+      "page": 6
+    },
+    {
+      "headword": "broken",
+      "pos": "adj",
+      "page": 6
+    },
+    {
+      "headword": "brother",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "brown",
+      "pos": "adj & n",
+      "page": 6
+    },
+    {
+      "headword": "brush",
+      "pos": "n & v",
+      "page": 6
+    },
+    {
+      "headword": "build",
+      "pos": "v",
+      "page": 6
+    },
+    {
+      "headword": "building",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "burger",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "bus",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "business",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "businessman",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "businesswoman",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "business person",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "bus station",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "bus stop",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "busy",
+      "pos": "adj",
+      "page": 6
+    },
+    {
+      "headword": "but",
+      "pos": "conj",
+      "page": 6
+    },
+    {
+      "headword": "butter",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "butterfly",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "buy",
+      "pos": "v",
+      "page": 6
+    },
+    {
+      "headword": "by",
+      "pos": "prep",
+      "page": 6
+    },
+    {
+      "headword": "by accident",
+      "pos": "prep phr",
+      "page": 6
+    },
+    {
+      "headword": "by the way",
+      "pos": "prep phr",
+      "page": 6
+    },
+    {
+      "headword": "by post",
+      "pos": "prep phr",
+      "page": 6
+    },
+    {
+      "headword": "bye",
+      "pos": "exclam",
+      "page": 6
+    },
+    {
+      "headword": "cabinet",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "cafe/café",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "cafeteria",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "cake",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "calendar",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "call",
+      "pos": "n & v",
+      "page": 6
+    },
+    {
+      "headword": "camel",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "camera",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "camp",
+      "pos": "v",
+      "page": 6
+    },
+    {
+      "headword": "camping",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "campsite",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "cap",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "capital",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "can",
+      "pos": "n & mv",
+      "page": 6
+    },
+    {
+      "headword": "candy",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "cannot",
+      "pos": "mv",
+      "page": 6
+    },
+    {
+      "headword": "car",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "card",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "career",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "careful",
+      "pos": "adj",
+      "page": 6
+    },
+    {
+      "headword": "carefully",
+      "pos": "adv",
+      "page": 6
+    },
+    {
+      "headword": "car park",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "carpet",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "carrot",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "carry",
+      "pos": "v",
+      "page": 6
+    },
+    {
+      "headword": "cartoon",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "case",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "cash",
+      "pos": "n & v",
+      "page": 6
+    },
+    {
+      "headword": "castle",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "cat",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "catch",
+      "pos": "v",
+      "page": 6
+    },
+    {
+      "headword": "CD",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "CD player",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "ceiling",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "cell phone",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "celebrate",
+      "pos": "v",
+      "page": 6
+    },
+    {
+      "headword": "celebrity",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "cent",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "centre/center",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "centimetre/centimeter (cm)",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "century",
+      "pos": "n",
+      "page": 6
+    },
+    {
+      "headword": "cereal",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "certainly",
+      "pos": "adv",
+      "page": 7
+    },
+    {
+      "headword": "chain",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "chair",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "change",
+      "pos": "v & n",
+      "page": 7
+    },
+    {
+      "headword": "channel",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "character",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "chat",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "chatroom",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "cheap",
+      "pos": "adj",
+      "page": 7
+    },
+    {
+      "headword": "check",
+      "pos": "v",
+      "page": 7
+    },
+    {
+      "headword": "cheese",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "chef",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "chemist",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "chemistry",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "cheque",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "chess",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "chicken",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "child",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "chilli",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "chips",
+      "pos": "n pl",
+      "page": 7
+    },
+    {
+      "headword": "chocolate",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "choose",
+      "pos": "v",
+      "page": 7
+    },
+    {
+      "headword": "cinema",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "circle",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "circus",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "city",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "city centre",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "class",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "classical",
+      "pos": "adj",
+      "page": 7
+    },
+    {
+      "headword": "classmate",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "classroom",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "clean",
+      "pos": "adj & v",
+      "page": 7
+    },
+    {
+      "headword": "cleaner",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "clear",
+      "pos": "adj",
+      "page": 7
+    },
+    {
+      "headword": "clearly",
+      "pos": "adv",
+      "page": 7
+    },
+    {
+      "headword": "clever",
+      "pos": "adj",
+      "page": 7
+    },
+    {
+      "headword": "click",
+      "pos": "n & v",
+      "page": 7
+    },
+    {
+      "headword": "climb",
+      "pos": "v",
+      "page": 7
+    },
+    {
+      "headword": "climbing",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "clock",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "close",
+      "pos": "adj & v",
+      "page": 7
+    },
+    {
+      "headword": "close to",
+      "pos": "prep phr",
+      "page": 7
+    },
+    {
+      "headword": "closed",
+      "pos": "adj",
+      "page": 7
+    },
+    {
+      "headword": "closet",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "clothes",
+      "pos": "n pl",
+      "page": 7
+    },
+    {
+      "headword": "cloud",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "cloudy",
+      "pos": "adj",
+      "page": 7
+    },
+    {
+      "headword": "clown",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "club",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "coach",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "coat",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "coast",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "coat",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "coffee",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "cola",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "cold",
+      "pos": "adj & n",
+      "page": 7
+    },
+    {
+      "headword": "colleague",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "collect",
+      "pos": "v",
+      "page": 7
+    },
+    {
+      "headword": "college",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "colour",
+      "pos": "n & v",
+      "page": 7
+    },
+    {
+      "headword": "comb",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "come",
+      "pos": "v",
+      "page": 7
+    },
+    {
+      "headword": "come back",
+      "pos": "v",
+      "page": 7
+    },
+    {
+      "headword": "comedy",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "comfortable",
+      "pos": "adj",
+      "page": 7
+    },
+    {
+      "headword": "comic",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "company",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "competition",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "complete",
+      "pos": "v",
+      "page": 7
+    },
+    {
+      "headword": "computer",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "concert",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "congratulations!",
+      "pos": "exclam",
+      "page": 7
+    },
+    {
+      "headword": "contact",
+      "pos": "n & v",
+      "page": 7
+    },
+    {
+      "headword": "continue",
+      "pos": "v",
+      "page": 7
+    },
+    {
+      "headword": "conversation",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "cook",
+      "pos": "n & v",
+      "page": 7
+    },
+    {
+      "headword": "cooker",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "cookie",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "cooking",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "cool",
+      "pos": "adj & exclam",
+      "page": 7
+    },
+    {
+      "headword": "copy",
+      "pos": "v",
+      "page": 7
+    },
+    {
+      "headword": "corner",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "correct",
+      "pos": "adj",
+      "page": 7
+    },
+    {
+      "headword": "cost",
+      "pos": "n & v",
+      "page": 7
+    },
+    {
+      "headword": "costume",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "could",
+      "pos": "mv",
+      "page": 7
+    },
+    {
+      "headword": "country",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "countryside",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "course",
+      "pos": "n",
+      "page": 7
+    },
+    {
+      "headword": "court",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "cousin",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "cover",
+      "pos": "v &n",
+      "page": 8
+    },
+    {
+      "headword": "cow",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "cream",
+      "pos": "adj & n",
+      "page": 8
+    },
+    {
+      "headword": "creature",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "credit card",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "cricket",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "crocodile",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "cross",
+      "pos": "n & v",
+      "page": 8
+    },
+    {
+      "headword": "crossing",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "crowd",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "crowded",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "cry",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "cup",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "cupboard",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "curry",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "curtain",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "customer",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "cut",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "cycle",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "cycling",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dad",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "daily",
+      "pos": "adj & adv",
+      "page": 8
+    },
+    {
+      "headword": "dance",
+      "pos": "n & v",
+      "page": 8
+    },
+    {
+      "headword": "dancer",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dancing",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "danger",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dangerous",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "dark",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "date",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "daughter",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "day",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dead",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "dear",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "December",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "decide",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "deep",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "degree",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "delay",
+      "pos": "n & v",
+      "page": 8
+    },
+    {
+      "headword": "delayed",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "delicious",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "deliver",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "dentist",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "department",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "department store",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "describe",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "desert",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "design",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "design (PLANNING)",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "design (PROCESS)",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "design (DRAWING)",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "desk",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dessert",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "details",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "diary",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dictionary",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "die",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "difference",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "different",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "difficult",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "digital",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "digital camera",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dining room",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dinner",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dinosaur",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "diploma",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "directions",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dirty",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "disco",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "discount",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "discover",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "discuss",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "dish",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dive",
+      "pos": "v",
+      "page": 8
+    },
+    {
+      "headword": "diving",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "do",
+      "pos": "av & v",
+      "page": 8
+    },
+    {
+      "headword": "doctor",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "document",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dog",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "doll",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dollar",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dolphin",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "donkey",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "door",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "dot",
+      "pos": "n",
+      "page": 8
+    },
+    {
+      "headword": "double",
+      "pos": "adj",
+      "page": 8
+    },
+    {
+      "headword": "down",
+      "pos": "adv & prep",
+      "page": 8
+    },
+    {
+      "headword": "download",
+      "pos": "n & v",
+      "page": 8
+    },
+    {
+      "headword": "downstairs",
+      "pos": "adv",
+      "page": 9
+    },
+    {
+      "headword": "Dr",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "draw",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "drawer",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "drawing",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "dream",
+      "pos": "n & v",
+      "page": 9
+    },
+    {
+      "headword": "dress",
+      "pos": "n & v",
+      "page": 9
+    },
+    {
+      "headword": "dressed",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "drink",
+      "pos": "n & v",
+      "page": 9
+    },
+    {
+      "headword": "drive",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "driver",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "driving/driver’s licence",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "drop",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "drugstore",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "drum",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "dry",
+      "pos": "adj & v",
+      "page": 9
+    },
+    {
+      "headword": "duck",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "during",
+      "pos": "prep",
+      "page": 9
+    },
+    {
+      "headword": "DVD",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "DVD player",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "each",
+      "pos": "det & pron",
+      "page": 9
+    },
+    {
+      "headword": "each other",
+      "pos": "pron",
+      "page": 9
+    },
+    {
+      "headword": "eagle",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "ear",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "early",
+      "pos": "adj & adv",
+      "page": 9
+    },
+    {
+      "headword": "earn",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "earring",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "easily",
+      "pos": "adv",
+      "page": 9
+    },
+    {
+      "headword": "east",
+      "pos": "n, adj & adv",
+      "page": 9
+    },
+    {
+      "headword": "easy",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "eat",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "egg",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "electric",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "electricity",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "elephant",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "elevator",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "else",
+      "pos": "adv",
+      "page": 9
+    },
+    {
+      "headword": "email",
+      "pos": "n & v",
+      "page": 9
+    },
+    {
+      "headword": "empty",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "end",
+      "pos": "v & n",
+      "page": 9
+    },
+    {
+      "headword": "engine",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "engineer",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "enjoy",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "enough",
+      "pos": "adv, det & pron",
+      "page": 9
+    },
+    {
+      "headword": "enter",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "entrance",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "envelope",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "environment",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "equipment",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "eraser",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "especially",
+      "pos": "adv",
+      "page": 9
+    },
+    {
+      "headword": "euro",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "even",
+      "pos": "adv",
+      "page": 9
+    },
+    {
+      "headword": "evening",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "event",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "ever",
+      "pos": "adv",
+      "page": 9
+    },
+    {
+      "headword": "every",
+      "pos": "det",
+      "page": 9
+    },
+    {
+      "headword": "everybody",
+      "pos": "pron",
+      "page": 9
+    },
+    {
+      "headword": "everyone",
+      "pos": "pron",
+      "page": 9
+    },
+    {
+      "headword": "everything",
+      "pos": "pron",
+      "page": 9
+    },
+    {
+      "headword": "everywhere",
+      "pos": "adv",
+      "page": 9
+    },
+    {
+      "headword": "exactly",
+      "pos": "adv",
+      "page": 9
+    },
+    {
+      "headword": "examination/exam",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "example",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "excellent",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "except",
+      "pos": "conj & prep",
+      "page": 9
+    },
+    {
+      "headword": "excited",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "exciting",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "excuse",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "exercise",
+      "pos": "n & v",
+      "page": 9
+    },
+    {
+      "headword": "exhibition",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "exit",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "expensive",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "experience",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "experiment",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "explain",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "explore",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "explorer",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "extinct",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "extra",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "eye",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "face",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "fact",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "factory",
+      "pos": "n",
+      "page": 9
+    },
+    {
+      "headword": "fail",
+      "pos": "v",
+      "page": 9
+    },
+    {
+      "headword": "fair",
+      "pos": "adj",
+      "page": 9
+    },
+    {
+      "headword": "fall",
+      "pos": "n & v",
+      "page": 9
+    },
+    {
+      "headword": "fall over",
+      "pos": "phr v",
+      "page": 10
+    },
+    {
+      "headword": "family",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "famous",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "fan",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "fantastic",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "far",
+      "pos": "adv",
+      "page": 10
+    },
+    {
+      "headword": "farm",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "farmer",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "fashion",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "fast",
+      "pos": "adj & adv",
+      "page": 10
+    },
+    {
+      "headword": "fast food",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "fat",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "father",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "favourite",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "February",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "feel",
+      "pos": "v",
+      "page": 10
+    },
+    {
+      "headword": "feelings",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "festival",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "few",
+      "pos": "det & adj",
+      "page": 10
+    },
+    {
+      "headword": "field",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "file",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "fill",
+      "pos": "v",
+      "page": 10
+    },
+    {
+      "headword": "fill in",
+      "pos": "phr v",
+      "page": 10
+    },
+    {
+      "headword": "film",
+      "pos": "n & v",
+      "page": 10
+    },
+    {
+      "headword": "final",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "finally",
+      "pos": "adv",
+      "page": 10
+    },
+    {
+      "headword": "find",
+      "pos": "v",
+      "page": 10
+    },
+    {
+      "headword": "find out",
+      "pos": "phr v",
+      "page": 10
+    },
+    {
+      "headword": "fine",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "finger",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "finish",
+      "pos": "v",
+      "page": 10
+    },
+    {
+      "headword": "fire",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "first",
+      "pos": "adv & adj",
+      "page": 10
+    },
+    {
+      "headword": "first name",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "first of all",
+      "pos": "adv",
+      "page": 10
+    },
+    {
+      "headword": "fish",
+      "pos": "n & v",
+      "page": 10
+    },
+    {
+      "headword": "fishing",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "fit",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "fix",
+      "pos": "v",
+      "page": 10
+    },
+    {
+      "headword": "flat",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "flight",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "floor",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "flower",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "fly",
+      "pos": "v",
+      "page": 10
+    },
+    {
+      "headword": "fog",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "foggy",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "folder",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "follow",
+      "pos": "v",
+      "page": 10
+    },
+    {
+      "headword": "follow (SOCIAL MEDIA)",
+      "pos": "v",
+      "page": 10
+    },
+    {
+      "headword": "food",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "foot",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "football",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "football player",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "footballer",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "for",
+      "pos": "prep",
+      "page": 10
+    },
+    {
+      "headword": "for sale",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "foreign",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "forest",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "forget",
+      "pos": "v",
+      "page": 10
+    },
+    {
+      "headword": "fork",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "form",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "free",
+      "pos": "adj & adv",
+      "page": 10
+    },
+    {
+      "headword": "French fries",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "fresh",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "fridge",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "Friday",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "fried",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "friend",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "friendly",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "frightened",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "frog",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "from",
+      "pos": "prep",
+      "page": 10
+    },
+    {
+      "headword": "front",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "fruit",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "full",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "fun",
+      "pos": "adj & n",
+      "page": 10
+    },
+    {
+      "headword": "funny",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "fur",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "furniture",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "further",
+      "pos": "adj",
+      "page": 10
+    },
+    {
+      "headword": "future",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "gallery",
+      "pos": "n",
+      "page": 10
+    },
+    {
+      "headword": "game",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "garage",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "garden",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "garlic",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "gas",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "gas station",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "gate",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "geography",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "get",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "get back",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "get dressed",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "get fit",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "get married",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "get off",
+      "pos": "phr v",
+      "page": 11
+    },
+    {
+      "headword": "get on",
+      "pos": "phr v",
+      "page": 11
+    },
+    {
+      "headword": "get up",
+      "pos": "phr v",
+      "page": 11
+    },
+    {
+      "headword": "gift",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "giraffe",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "girl",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "girlfriend",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "give",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "give back",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "give somebody a call/ring",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "glad",
+      "pos": "adj",
+      "page": 11
+    },
+    {
+      "headword": "glass",
+      "pos": "n & adj",
+      "page": 11
+    },
+    {
+      "headword": "glasses",
+      "pos": "n pl",
+      "page": 11
+    },
+    {
+      "headword": "glove",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "go",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "goal",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "goat",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "gold",
+      "pos": "n & adj",
+      "page": 11
+    },
+    {
+      "headword": "golden",
+      "pos": "adj",
+      "page": 11
+    },
+    {
+      "headword": "golf",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "good",
+      "pos": "adj",
+      "page": 11
+    },
+    {
+      "headword": "good afternoon",
+      "pos": "exclam",
+      "page": 11
+    },
+    {
+      "headword": "goodbye",
+      "pos": "exclam",
+      "page": 11
+    },
+    {
+      "headword": "good evening",
+      "pos": "exclam",
+      "page": 11
+    },
+    {
+      "headword": "good-looking",
+      "pos": "adj",
+      "page": 11
+    },
+    {
+      "headword": "good morning",
+      "pos": "exclam",
+      "page": 11
+    },
+    {
+      "headword": "good night",
+      "pos": "exclam",
+      "page": 11
+    },
+    {
+      "headword": "go out",
+      "pos": "phr v",
+      "page": 11
+    },
+    {
+      "headword": "grade",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "gram(me)",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grandchild",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grand(d)ad",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "granddaughter",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grandfather",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grandma",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grandmother",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grandpa",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grandparent",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grandson",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "granny",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grape",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grass",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "great",
+      "pos": "adj",
+      "page": 11
+    },
+    {
+      "headword": "green",
+      "pos": "adj",
+      "page": 11
+    },
+    {
+      "headword": "grey",
+      "pos": "adj & n",
+      "page": 11
+    },
+    {
+      "headword": "grilled",
+      "pos": "adj",
+      "page": 11
+    },
+    {
+      "headword": "grocery store",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "ground",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "group",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "grow",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "grow up",
+      "pos": "phr v",
+      "page": 11
+    },
+    {
+      "headword": "guess",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "Guess what?",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "guest",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "guest-house",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "guide",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "guidebook",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "guitar",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "guy",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "gym",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "hair",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "half",
+      "pos": "det, n & pron",
+      "page": 11
+    },
+    {
+      "headword": "half-price",
+      "pos": "adj",
+      "page": 11
+    },
+    {
+      "headword": "hall",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "hand",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "handbag",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "happen",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "happy",
+      "pos": "adj",
+      "page": 11
+    },
+    {
+      "headword": "harbour",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "hard",
+      "pos": "adj & adv",
+      "page": 11
+    },
+    {
+      "headword": "hat",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "hate",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "have",
+      "pos": "av & v",
+      "page": 11
+    },
+    {
+      "headword": "have got to",
+      "pos": "mv",
+      "page": 11
+    },
+    {
+      "headword": "have to",
+      "pos": "mv",
+      "page": 11
+    },
+    {
+      "headword": "he",
+      "pos": "pron",
+      "page": 11
+    },
+    {
+      "headword": "head",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "headache",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "headphones",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "headteacher",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "health",
+      "pos": "n",
+      "page": 11
+    },
+    {
+      "headword": "healthy",
+      "pos": "adj",
+      "page": 11
+    },
+    {
+      "headword": "hear",
+      "pos": "v",
+      "page": 11
+    },
+    {
+      "headword": "heart",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "heating",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "heavy",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "helicopter",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "hello",
+      "pos": "exclam",
+      "page": 12
+    },
+    {
+      "headword": "help",
+      "pos": "v & n",
+      "page": 12
+    },
+    {
+      "headword": "helpful",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "her",
+      "pos": "det & pron",
+      "page": 12
+    },
+    {
+      "headword": "here",
+      "pos": "adv",
+      "page": 12
+    },
+    {
+      "headword": "hers",
+      "pos": "pron",
+      "page": 12
+    },
+    {
+      "headword": "herself",
+      "pos": "pron",
+      "page": 12
+    },
+    {
+      "headword": "hey",
+      "pos": "exclam",
+      "page": 12
+    },
+    {
+      "headword": "hi",
+      "pos": "exclam",
+      "page": 12
+    },
+    {
+      "headword": "high",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "hill",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "him",
+      "pos": "pron",
+      "page": 12
+    },
+    {
+      "headword": "himself",
+      "pos": "pron",
+      "page": 12
+    },
+    {
+      "headword": "hip hop",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "hippo",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "his",
+      "pos": "det & pron",
+      "page": 12
+    },
+    {
+      "headword": "history",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "hit",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "hobby",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "hockey",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "hold",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "holiday",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "home",
+      "pos": "n & adv",
+      "page": 12
+    },
+    {
+      "headword": "homework",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "honey",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "hoodie",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "hope",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "horrible",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "horror",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "horse",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "hospital",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "hot",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "hotel",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "hour",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "house",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "housewife",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "how",
+      "pos": "adv",
+      "page": 12
+    },
+    {
+      "headword": "however",
+      "pos": "adv",
+      "page": 12
+    },
+    {
+      "headword": "huge",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "hungry",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "hurry",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "hurt",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "husband",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "I",
+      "pos": "pron",
+      "page": 12
+    },
+    {
+      "headword": "ice",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "ice cream",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "ice skating",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "ID",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "ID card",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "idea",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "identification",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "if",
+      "pos": "conj",
+      "page": 12
+    },
+    {
+      "headword": "ill",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "immediately",
+      "pos": "adv",
+      "page": 12
+    },
+    {
+      "headword": "important",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "impossible",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "improve",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "in",
+      "pos": "adv & prep",
+      "page": 12
+    },
+    {
+      "headword": "include",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "including",
+      "pos": "prep",
+      "page": 12
+    },
+    {
+      "headword": "indoor",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "indoors",
+      "pos": "adv",
+      "page": 12
+    },
+    {
+      "headword": "information",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "in front of",
+      "pos": "prep phr",
+      "page": 12
+    },
+    {
+      "headword": "ingredient",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "insect",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "inside",
+      "pos": "adv & prep",
+      "page": 12
+    },
+    {
+      "headword": "instead",
+      "pos": "adv",
+      "page": 12
+    },
+    {
+      "headword": "instead of",
+      "pos": "prep",
+      "page": 12
+    },
+    {
+      "headword": "instructions",
+      "pos": "n pl",
+      "page": 12
+    },
+    {
+      "headword": "instrument",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "interested",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "interesting",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "international",
+      "pos": "adj",
+      "page": 12
+    },
+    {
+      "headword": "internet",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "into",
+      "pos": "prep",
+      "page": 12
+    },
+    {
+      "headword": "invent",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "invention",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "invitation",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "invite",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "island",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "it",
+      "pos": "pron",
+      "page": 12
+    },
+    {
+      "headword": "IT",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "its",
+      "pos": "det",
+      "page": 12
+    },
+    {
+      "headword": "itself",
+      "pos": "pron",
+      "page": 12
+    },
+    {
+      "headword": "jacket",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "jam",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "January",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "jazz",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "jeans",
+      "pos": "n pl",
+      "page": 12
+    },
+    {
+      "headword": "jellyfish",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "jewellery",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "job",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "join",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "journalist",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "journey",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "juice",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "July",
+      "pos": "n",
+      "page": 12
+    },
+    {
+      "headword": "jump",
+      "pos": "v",
+      "page": 12
+    },
+    {
+      "headword": "jumper",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "June",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "just",
+      "pos": "adv",
+      "page": 13
+    },
+    {
+      "headword": "kangaroo",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "keep",
+      "pos": "v",
+      "page": 13
+    },
+    {
+      "headword": "key",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "keyboard",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "kick",
+      "pos": "n & v",
+      "page": 13
+    },
+    {
+      "headword": "kid(s)",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "kilogramme (kg)",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "kilometre (km)",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "kind",
+      "pos": "adj & n",
+      "page": 13
+    },
+    {
+      "headword": "king",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "kiss",
+      "pos": "n & v",
+      "page": 13
+    },
+    {
+      "headword": "kit",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "kitchen",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "kite",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "kitten",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "knife",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "know",
+      "pos": "v",
+      "page": 13
+    },
+    {
+      "headword": "lake",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "lamp",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "language",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "laptop (computer)",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "large",
+      "pos": "adj",
+      "page": 13
+    },
+    {
+      "headword": "last",
+      "pos": "adj & det",
+      "page": 13
+    },
+    {
+      "headword": "late",
+      "pos": "adv & adj",
+      "page": 13
+    },
+    {
+      "headword": "later",
+      "pos": "adv",
+      "page": 13
+    },
+    {
+      "headword": "latest",
+      "pos": "adj",
+      "page": 13
+    },
+    {
+      "headword": "laugh",
+      "pos": "v",
+      "page": 13
+    },
+    {
+      "headword": "lazy",
+      "pos": "adj",
+      "page": 13
+    },
+    {
+      "headword": "learn",
+      "pos": "v",
+      "page": 13
+    },
+    {
+      "headword": "least",
+      "pos": "adv",
+      "page": 13
+    },
+    {
+      "headword": "leather",
+      "pos": "n & adj",
+      "page": 13
+    },
+    {
+      "headword": "leave",
+      "pos": "v",
+      "page": 13
+    },
+    {
+      "headword": "left",
+      "pos": "adj, adv & n",
+      "page": 13
+    },
+    {
+      "headword": "left-hand",
+      "pos": "adj",
+      "page": 13
+    },
+    {
+      "headword": "leg",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "lemon",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "lemonade",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "lend",
+      "pos": "v",
+      "page": 13
+    },
+    {
+      "headword": "length",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "less",
+      "pos": "adj, det & pron",
+      "page": 13
+    },
+    {
+      "headword": "lesson",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "let",
+      "pos": "v",
+      "page": 13
+    },
+    {
+      "headword": "letter",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "level",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "library",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "licence",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "lie down",
+      "pos": "phr v",
+      "page": 13
+    },
+    {
+      "headword": "life",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "lift",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "light",
+      "pos": "n & adj",
+      "page": 13
+    },
+    {
+      "headword": "like",
+      "pos": "adv, prep & v",
+      "page": 13
+    },
+    {
+      "headword": "line",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "link (technology)",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "lion",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "list",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "listen (to)",
+      "pos": "v",
+      "page": 13
+    },
+    {
+      "headword": "litre",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "little",
+      "pos": "adj",
+      "page": 13
+    },
+    {
+      "headword": "live",
+      "pos": "v",
+      "page": 13
+    },
+    {
+      "headword": "living room",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "lizard",
+      "pos": "n",
+      "page": 13
+    },
+    {
+      "headword": "local",
+      "pos": "adj",
+      "page": 13
+    },
+    {
+      "headword": "long",
+      "pos": "adj",
+      "page": 13
+    },
+    {
+      "headword": "look",
+      "pos": "v",
+      "page": 14
+    },
+    {
+      "headword": "look after",
+      "pos": "phr v",
+      "page": 14
+    },
+    {
+      "headword": "look at",
+      "pos": "phr v",
+      "page": 14
+    },
+    {
+      "headword": "look for",
+      "pos": "phr v",
+      "page": 14
+    },
+    {
+      "headword": "look out",
+      "pos": "phr v",
+      "page": 14
+    },
+    {
+      "headword": "lorry",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "lose",
+      "pos": "v",
+      "page": 14
+    },
+    {
+      "headword": "lost",
+      "pos": "adj",
+      "page": 14
+    },
+    {
+      "headword": "lots / a lot",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "loud",
+      "pos": "adj",
+      "page": 14
+    },
+    {
+      "headword": "love",
+      "pos": "n & v",
+      "page": 14
+    },
+    {
+      "headword": "lovely",
+      "pos": "adj",
+      "page": 14
+    },
+    {
+      "headword": "low",
+      "pos": "adj",
+      "page": 14
+    },
+    {
+      "headword": "luck",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "luckily",
+      "pos": "adv",
+      "page": 14
+    },
+    {
+      "headword": "lucky",
+      "pos": "adj",
+      "page": 14
+    },
+    {
+      "headword": "luggage",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "lunch",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "lunchtime",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "machine",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mad",
+      "pos": "adj",
+      "page": 14
+    },
+    {
+      "headword": "magazine",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mail",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "main course",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "make",
+      "pos": "v",
+      "page": 14
+    },
+    {
+      "headword": "make sure (that)",
+      "pos": "v",
+      "page": 14
+    },
+    {
+      "headword": "make-up",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "man",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "manager",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mango",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "many",
+      "pos": "det & pron",
+      "page": 14
+    },
+    {
+      "headword": "map",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "March",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mark",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "market",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "married",
+      "pos": "adj",
+      "page": 14
+    },
+    {
+      "headword": "match",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "maths/mathematics",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "matter",
+      "pos": "n & v",
+      "page": 14
+    },
+    {
+      "headword": "May",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "may",
+      "pos": "mv",
+      "page": 14
+    },
+    {
+      "headword": "maybe",
+      "pos": "adv",
+      "page": 14
+    },
+    {
+      "headword": "me",
+      "pos": "pron",
+      "page": 14
+    },
+    {
+      "headword": "meal",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mean",
+      "pos": "v",
+      "page": 14
+    },
+    {
+      "headword": "meat",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mechanic",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "medicine",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "meet",
+      "pos": "v",
+      "page": 14
+    },
+    {
+      "headword": "meeting",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "melon",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "member",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "memory",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "menu",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "message",
+      "pos": "n, v",
+      "page": 14
+    },
+    {
+      "headword": "metal",
+      "pos": "n & adj",
+      "page": 14
+    },
+    {
+      "headword": "metre",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "microphone",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "midday",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "middle",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "midnight",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "might",
+      "pos": "mv",
+      "page": 14
+    },
+    {
+      "headword": "mile",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "milk",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "million",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mind",
+      "pos": "v",
+      "page": 14
+    },
+    {
+      "headword": "mine",
+      "pos": "pron",
+      "page": 14
+    },
+    {
+      "headword": "mineral water",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "minus",
+      "pos": "prep",
+      "page": 14
+    },
+    {
+      "headword": "minute",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mirror",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "Miss",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "miss",
+      "pos": "v",
+      "page": 14
+    },
+    {
+      "headword": "missing",
+      "pos": "adj",
+      "page": 14
+    },
+    {
+      "headword": "mistake",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mix",
+      "pos": "v",
+      "page": 14
+    },
+    {
+      "headword": "mobile (phone)",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "model",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "modern",
+      "pos": "adj",
+      "page": 14
+    },
+    {
+      "headword": "mom",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "moment",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "Monday",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "money",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "monkey",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "month",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "monthly",
+      "pos": "adj & adv",
+      "page": 14
+    },
+    {
+      "headword": "moon",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "more",
+      "pos": "adj, adv, det & pron",
+      "page": 14
+    },
+    {
+      "headword": "morning",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "most",
+      "pos": "adj, adv, det & pron",
+      "page": 14
+    },
+    {
+      "headword": "mother",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "motorbike",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "motorway",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mountain",
+      "pos": "n",
+      "page": 14
+    },
+    {
+      "headword": "mouse",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "mouth",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "move",
+      "pos": "v",
+      "page": 15
+    },
+    {
+      "headword": "movie",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "movie star",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "movie theater",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "Mr",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "Mrs",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "Ms",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "much",
+      "pos": "adj, adv, det & pron",
+      "page": 15
+    },
+    {
+      "headword": "mug",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "mum",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "museum",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "mushroom",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "music",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "musical",
+      "pos": "adj",
+      "page": 15
+    },
+    {
+      "headword": "musician",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "must",
+      "pos": "mv",
+      "page": 15
+    },
+    {
+      "headword": "my",
+      "pos": "det",
+      "page": 15
+    },
+    {
+      "headword": "myself",
+      "pos": "pron",
+      "page": 15
+    },
+    {
+      "headword": "name",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "national",
+      "pos": "adj",
+      "page": 15
+    },
+    {
+      "headword": "nationality",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "nature",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "natural (NOT ARTIFICIAL)",
+      "pos": "adj",
+      "page": 15
+    },
+    {
+      "headword": "near",
+      "pos": "adv & prep",
+      "page": 15
+    },
+    {
+      "headword": "nearly",
+      "pos": "adv",
+      "page": 15
+    },
+    {
+      "headword": "neck",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "necklace",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "need",
+      "pos": "v",
+      "page": 15
+    },
+    {
+      "headword": "neighbour",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "nervous",
+      "pos": "adj",
+      "page": 15
+    },
+    {
+      "headword": "nest",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "net",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "never",
+      "pos": "adv",
+      "page": 15
+    },
+    {
+      "headword": "new",
+      "pos": "adj",
+      "page": 15
+    },
+    {
+      "headword": "news",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "newspaper",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "next",
+      "pos": "adj & adv",
+      "page": 15
+    },
+    {
+      "headword": "next to",
+      "pos": "prep",
+      "page": 15
+    },
+    {
+      "headword": "nice",
+      "pos": "adj",
+      "page": 15
+    },
+    {
+      "headword": "night",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "no",
+      "pos": "adv, det & pron",
+      "page": 15
+    },
+    {
+      "headword": "nobody",
+      "pos": "pron",
+      "page": 15
+    },
+    {
+      "headword": "noise",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "noisy",
+      "pos": "adj",
+      "page": 15
+    },
+    {
+      "headword": "noon",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "no one",
+      "pos": "pron",
+      "page": 15
+    },
+    {
+      "headword": "normal",
+      "pos": "adj",
+      "page": 15
+    },
+    {
+      "headword": "north",
+      "pos": "n, adj & adv",
+      "page": 15
+    },
+    {
+      "headword": "nose",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "not",
+      "pos": "adv",
+      "page": 15
+    },
+    {
+      "headword": "note",
+      "pos": "n & v",
+      "page": 15
+    },
+    {
+      "headword": "notebook",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "nothing",
+      "pos": "pron",
+      "page": 15
+    },
+    {
+      "headword": "notice",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "November",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "now",
+      "pos": "adv",
+      "page": 15
+    },
+    {
+      "headword": "number",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "nurse",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "ocean",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "occupation",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "October",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "octopus",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "o'clock",
+      "pos": "adv",
+      "page": 15
+    },
+    {
+      "headword": "of",
+      "pos": "prep",
+      "page": 15
+    },
+    {
+      "headword": "of course (not)",
+      "pos": "adv",
+      "page": 15
+    },
+    {
+      "headword": "off",
+      "pos": "adv",
+      "page": 15
+    },
+    {
+      "headword": "offer",
+      "pos": "n & v",
+      "page": 15
+    },
+    {
+      "headword": "office",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "often",
+      "pos": "adv",
+      "page": 15
+    },
+    {
+      "headword": "oh",
+      "pos": "exclam",
+      "page": 15
+    },
+    {
+      "headword": "oh dear!",
+      "pos": "exclam",
+      "page": 15
+    },
+    {
+      "headword": "oil",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "OK/okay",
+      "pos": "exclam",
+      "page": 15
+    },
+    {
+      "headword": "old",
+      "pos": "adj",
+      "page": 15
+    },
+    {
+      "headword": "Olympic",
+      "pos": "adj",
+      "page": 15
+    },
+    {
+      "headword": "omelette",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "on",
+      "pos": "prep & adv",
+      "page": 15
+    },
+    {
+      "headword": "once",
+      "pos": "adv",
+      "page": 15
+    },
+    {
+      "headword": "one",
+      "pos": "det & pron",
+      "page": 15
+    },
+    {
+      "headword": "onion",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "online",
+      "pos": "adj & adv",
+      "page": 15
+    },
+    {
+      "headword": "only",
+      "pos": "adv & adj",
+      "page": 15
+    },
+    {
+      "headword": "open",
+      "pos": "adj & v",
+      "page": 15
+    },
+    {
+      "headword": "opera",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "opinion",
+      "pos": "n",
+      "page": 15
+    },
+    {
+      "headword": "opposite",
+      "pos": "prep",
+      "page": 15
+    },
+    {
+      "headword": "or",
+      "pos": "conj",
+      "page": 15
+    },
+    {
+      "headword": "orange",
+      "pos": "adj & n",
+      "page": 15
+    },
+    {
+      "headword": "order",
+      "pos": "n & v",
+      "page": 15
+    },
+    {
+      "headword": "other",
+      "pos": "det & pron",
+      "page": 15
+    },
+    {
+      "headword": "our",
+      "pos": "det",
+      "page": 15
+    },
+    {
+      "headword": "ours",
+      "pos": "pron",
+      "page": 15
+    },
+    {
+      "headword": "ourselves",
+      "pos": "pron",
+      "page": 15
+    },
+    {
+      "headword": "out",
+      "pos": "adv",
+      "page": 16
+    },
+    {
+      "headword": "outdoor",
+      "pos": "adj",
+      "page": 16
+    },
+    {
+      "headword": "outdoors",
+      "pos": "adv",
+      "page": 16
+    },
+    {
+      "headword": "out of",
+      "pos": "prep",
+      "page": 16
+    },
+    {
+      "headword": "outside",
+      "pos": "prep & adv",
+      "page": 16
+    },
+    {
+      "headword": "oven",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "over",
+      "pos": "prep & adv",
+      "page": 16
+    },
+    {
+      "headword": "own",
+      "pos": "adj",
+      "page": 16
+    },
+    {
+      "headword": "pack",
+      "pos": "v",
+      "page": 16
+    },
+    {
+      "headword": "page",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pain",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "paint",
+      "pos": "v & n",
+      "page": 16
+    },
+    {
+      "headword": "painter",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "painting",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pale",
+      "pos": "adj",
+      "page": 16
+    },
+    {
+      "headword": "pair",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "panda",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "paper",
+      "pos": "n & adj",
+      "page": 16
+    },
+    {
+      "headword": "paragraph",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pardon",
+      "pos": "exclam",
+      "page": 16
+    },
+    {
+      "headword": "parent",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "park",
+      "pos": "n & v",
+      "page": 16
+    },
+    {
+      "headword": "parking lot",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "parrot",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "part",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "partner",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "party",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pass",
+      "pos": "v",
+      "page": 16
+    },
+    {
+      "headword": "passenger",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "passport",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "password",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "past",
+      "pos": "prep & n",
+      "page": 16
+    },
+    {
+      "headword": "pasta",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "path",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pay",
+      "pos": "v",
+      "page": 16
+    },
+    {
+      "headword": "PC (personal computer)",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pear",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pen",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pence",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pencil",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pencil case",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "penfriend",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "penguin",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "penny",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "people",
+      "pos": "n pl",
+      "page": 16
+    },
+    {
+      "headword": "pepper",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "per",
+      "pos": "prep",
+      "page": 16
+    },
+    {
+      "headword": "perfect",
+      "pos": "adj",
+      "page": 16
+    },
+    {
+      "headword": "perform (ENTERTAIN)",
+      "pos": "v",
+      "page": 16
+    },
+    {
+      "headword": "performance (ENTERTAINMENT)",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "perfume",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "perhaps",
+      "pos": "adv",
+      "page": 16
+    },
+    {
+      "headword": "person",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pet",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "petrol",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "petrol station",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pharmacy",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "phone",
+      "pos": "v & n",
+      "page": 16
+    },
+    {
+      "headword": "photo(graph)",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "photographer",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "photography",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "physics",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "piano",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pick up",
+      "pos": "phr v",
+      "page": 16
+    },
+    {
+      "headword": "picnic",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "picture",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "piece",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pillow",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pilot",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pink",
+      "pos": "adj",
+      "page": 16
+    },
+    {
+      "headword": "pity",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pizza",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "place",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "plan",
+      "pos": "n & v",
+      "page": 16
+    },
+    {
+      "headword": "plane",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "plant",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "plastic",
+      "pos": "n & adj",
+      "page": 16
+    },
+    {
+      "headword": "plate",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "platform",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "play",
+      "pos": "v & n",
+      "page": 16
+    },
+    {
+      "headword": "player",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "playground",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "pleasant",
+      "pos": "adj",
+      "page": 16
+    },
+    {
+      "headword": "please",
+      "pos": "v & exclam",
+      "page": 16
+    },
+    {
+      "headword": "pleased",
+      "pos": "adj",
+      "page": 16
+    },
+    {
+      "headword": "plus",
+      "pos": "prep",
+      "page": 16
+    },
+    {
+      "headword": "p.m.",
+      "pos": "adv",
+      "page": 16
+    },
+    {
+      "headword": "pocket",
+      "pos": "n",
+      "page": 16
+    },
+    {
+      "headword": "point",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "polar bear",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "police",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "police car",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "police officer",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "police station",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "polite",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "pool",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "poor",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "poor thing/you",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "pop",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "popular",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "port",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "possible",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "possibly",
+      "pos": "adv",
+      "page": 17
+    },
+    {
+      "headword": "post",
+      "pos": "v & n",
+      "page": 17
+    },
+    {
+      "headword": "postcard",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "poster",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "post office",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "potato",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "pound (£)",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "practice",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "practise",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "prefer / would prefer",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "prepare",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "present",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "pretty",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "price",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "print",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "printer",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "prize",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "probably",
+      "pos": "adv",
+      "page": 17
+    },
+    {
+      "headword": "problem",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "program",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "programme",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "project",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "pull",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "pupil",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "puppy",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "purple",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "purse",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "push",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "put",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "put on",
+      "pos": "phr v",
+      "page": 17
+    },
+    {
+      "headword": "puzzle",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "quarter",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "queen",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "question",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "quick",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "quickly",
+      "pos": "adv",
+      "page": 17
+    },
+    {
+      "headword": "quiet",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "quite",
+      "pos": "adv",
+      "page": 17
+    },
+    {
+      "headword": "quiz",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "rabbit",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "race",
+      "pos": "n & v",
+      "page": 17
+    },
+    {
+      "headword": "racket",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "radio",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "railway (station)",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "rain",
+      "pos": "n & v",
+      "page": 17
+    },
+    {
+      "headword": "raincoat",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "rainforest",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "rap",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "read",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "reading",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "ready",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "real",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "really",
+      "pos": "adv",
+      "page": 17
+    },
+    {
+      "headword": "reason",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "receipt",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "receive",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "recently",
+      "pos": "adv",
+      "page": 17
+    },
+    {
+      "headword": "receptionist",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "recipe",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "record",
+      "pos": "v",
+      "page": 17
+    },
+    {
+      "headword": "red",
+      "pos": "adj",
+      "page": 17
+    },
+    {
+      "headword": "refrigerator",
+      "pos": "n",
+      "page": 17
+    },
+    {
+      "headword": "relax (become happy)",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "relaxing",
+      "pos": "adj",
+      "page": 18
+    },
+    {
+      "headword": "remember",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "rent",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "repair",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "repeat",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "rest",
+      "pos": "n & v",
+      "page": 18
+    },
+    {
+      "headword": "restaurant",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "return",
+      "pos": "n & v",
+      "page": 18
+    },
+    {
+      "headword": "review",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "rice",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "rich",
+      "pos": "adj",
+      "page": 18
+    },
+    {
+      "headword": "ride",
+      "pos": "n & v",
+      "page": 18
+    },
+    {
+      "headword": "riding",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "right",
+      "pos": "n, adj & adv",
+      "page": 18
+    },
+    {
+      "headword": "right hand",
+      "pos": "adj",
+      "page": 18
+    },
+    {
+      "headword": "ring",
+      "pos": "n & v",
+      "page": 18
+    },
+    {
+      "headword": "river",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "road",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "roast",
+      "pos": "v & adj",
+      "page": 18
+    },
+    {
+      "headword": "rock",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "roof",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "room",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "round",
+      "pos": "adj",
+      "page": 18
+    },
+    {
+      "headword": "roundabout",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "rubber",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "rubbish",
+      "pos": "unc n",
+      "page": 18
+    },
+    {
+      "headword": "rugby",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "ruler",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "run",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "runner",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "running",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "sad",
+      "pos": "adj",
+      "page": 18
+    },
+    {
+      "headword": "safe",
+      "pos": "adj",
+      "page": 18
+    },
+    {
+      "headword": "sail",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "sailing",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "salad",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "sale",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "salt",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "same",
+      "pos": "adj & pron",
+      "page": 18
+    },
+    {
+      "headword": "sandwich",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "Saturday",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "sauce",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "sausage",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "save",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "say",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "scared",
+      "pos": "adj",
+      "page": 18
+    },
+    {
+      "headword": "scarf",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "scary",
+      "pos": "adj",
+      "page": 18
+    },
+    {
+      "headword": "school",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "schoolchild",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "science",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "scientist",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "scissors",
+      "pos": "n pl",
+      "page": 18
+    },
+    {
+      "headword": "scooter",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "score",
+      "pos": "n, v",
+      "page": 18
+    },
+    {
+      "headword": "screen",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "sea",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "season",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "seat",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "second",
+      "pos": "adj, det & n",
+      "page": 18
+    },
+    {
+      "headword": "secretary",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "see",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "seem",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "selfie",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "sell",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "send",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "sentence",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "September",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "serious",
+      "pos": "adj",
+      "page": 18
+    },
+    {
+      "headword": "serve",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "set",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "several",
+      "pos": "det & pron",
+      "page": 18
+    },
+    {
+      "headword": "shall",
+      "pos": "mv",
+      "page": 18
+    },
+    {
+      "headword": "shame",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "shampoo",
+      "pos": "n & v",
+      "page": 18
+    },
+    {
+      "headword": "share",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "share (digitally)",
+      "pos": "v",
+      "page": 18
+    },
+    {
+      "headword": "shark",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "she",
+      "pos": "pron",
+      "page": 18
+    },
+    {
+      "headword": "sheep",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "sheet",
+      "pos": "n",
+      "page": 18
+    },
+    {
+      "headword": "shelf",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "ship",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "shirt",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "shoe",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "shop",
+      "pos": "n & v",
+      "page": 19
+    },
+    {
+      "headword": "shop assistant",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "shopper",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "shopping",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "shopping centre",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "short",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "shorts",
+      "pos": "n pl",
+      "page": 19
+    },
+    {
+      "headword": "should",
+      "pos": "mv",
+      "page": 19
+    },
+    {
+      "headword": "shout",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "show",
+      "pos": "v & n",
+      "page": 19
+    },
+    {
+      "headword": "shower",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "shut",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "shy",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "sick",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "side",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sightseeing",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sign",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "silver",
+      "pos": "n & adj",
+      "page": 19
+    },
+    {
+      "headword": "similar",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "simple",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "since",
+      "pos": "prep",
+      "page": 19
+    },
+    {
+      "headword": "sing",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "singer",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "singing",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "single",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "sink",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sister",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sit",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "sit down",
+      "pos": "phr v",
+      "page": 19
+    },
+    {
+      "headword": "site",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sitting room",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "size",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "skate",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "skateboard",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "skateboarding",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "skating",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "ski",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "skiing",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "skirt",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sky",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sleep",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "slice",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "slim",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "slow",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "slowly",
+      "pos": "adv",
+      "page": 19
+    },
+    {
+      "headword": "small",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "smart (stylish)",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "smart (clever)",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "smoke",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "smoking",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "snack",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "snail",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "snake",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "snow",
+      "pos": "n & v",
+      "page": 19
+    },
+    {
+      "headword": "snowboard",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "snowboarding",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "so",
+      "pos": "conj & adv",
+      "page": 19
+    },
+    {
+      "headword": "soap",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "soccer",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "social media",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sock",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sofa",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "soft",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "software",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "some",
+      "pos": "det & pron",
+      "page": 19
+    },
+    {
+      "headword": "somebody",
+      "pos": "pron",
+      "page": 19
+    },
+    {
+      "headword": "someone",
+      "pos": "pron",
+      "page": 19
+    },
+    {
+      "headword": "something",
+      "pos": "pron",
+      "page": 19
+    },
+    {
+      "headword": "sometimes",
+      "pos": "adv",
+      "page": 19
+    },
+    {
+      "headword": "somewhere",
+      "pos": "adv",
+      "page": 19
+    },
+    {
+      "headword": "son",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "song",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "soon",
+      "pos": "adv",
+      "page": 19
+    },
+    {
+      "headword": "sorry",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "sort",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sound",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "soup",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "south",
+      "pos": "n, adj & adv",
+      "page": 19
+    },
+    {
+      "headword": "space",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "spare",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "speak",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "speaker",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "special",
+      "pos": "adj",
+      "page": 19
+    },
+    {
+      "headword": "spell",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "spelling",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "spend",
+      "pos": "v",
+      "page": 19
+    },
+    {
+      "headword": "spider",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "spoon",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sport",
+      "pos": "n",
+      "page": 19
+    },
+    {
+      "headword": "sports centre",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "spring",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "square",
+      "pos": "n & adj",
+      "page": 20
+    },
+    {
+      "headword": "stadium",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "staff",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "stage",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "stairs",
+      "pos": "n pl",
+      "page": 20
+    },
+    {
+      "headword": "stamp",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "stand",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "star",
+      "pos": "n & v",
+      "page": 20
+    },
+    {
+      "headword": "start",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "station",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "stay",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "steak",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "steal",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "still",
+      "pos": "adv",
+      "page": 20
+    },
+    {
+      "headword": "stomach",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "stomach ache",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "stop",
+      "pos": "n & v",
+      "page": 20
+    },
+    {
+      "headword": "store",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "storm",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "story",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "straight",
+      "pos": "adj & adv",
+      "page": 20
+    },
+    {
+      "headword": "strange",
+      "pos": "adj",
+      "page": 20
+    },
+    {
+      "headword": "strawberry",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "street",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "striped",
+      "pos": "adj",
+      "page": 20
+    },
+    {
+      "headword": "stripes",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "strong",
+      "pos": "adj",
+      "page": 20
+    },
+    {
+      "headword": "student",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "studies",
+      "pos": "n pl",
+      "page": 20
+    },
+    {
+      "headword": "study",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "stuff",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "subject",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "success",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "successful",
+      "pos": "adj",
+      "page": 20
+    },
+    {
+      "headword": "such",
+      "pos": "det",
+      "page": 20
+    },
+    {
+      "headword": "suddenly",
+      "pos": "adv",
+      "page": 20
+    },
+    {
+      "headword": "sugar",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "suggest",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "suit",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "suitcase",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "summer",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "sun",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "Sunday",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "sunglasses",
+      "pos": "n pl",
+      "page": 20
+    },
+    {
+      "headword": "sunny",
+      "pos": "adj",
+      "page": 20
+    },
+    {
+      "headword": "supermarket",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "supper",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "suppose",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "sure",
+      "pos": "adj",
+      "page": 20
+    },
+    {
+      "headword": "surf",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "surfboard",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "surfboarding",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "surfing",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "surname",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "surprise",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "surprised",
+      "pos": "adj",
+      "page": 20
+    },
+    {
+      "headword": "surprising",
+      "pos": "adj",
+      "page": 20
+    },
+    {
+      "headword": "swan",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "sweater",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "sweet",
+      "pos": "n & adj",
+      "page": 20
+    },
+    {
+      "headword": "swim",
+      "pos": "v & n",
+      "page": 20
+    },
+    {
+      "headword": "swimming",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "swimming costume",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "swimming pool",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "swimsuit",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "table",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "table tennis",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "tablet",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "tail",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "take",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "take off",
+      "pos": "phr v",
+      "page": 20
+    },
+    {
+      "headword": "take part",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "talk",
+      "pos": "n & v",
+      "page": 20
+    },
+    {
+      "headword": "tall",
+      "pos": "adj",
+      "page": 20
+    },
+    {
+      "headword": "tasty",
+      "pos": "adj",
+      "page": 20
+    },
+    {
+      "headword": "taxi",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "tea",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "teach",
+      "pos": "v",
+      "page": 20
+    },
+    {
+      "headword": "teacher",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "team",
+      "pos": "n",
+      "page": 20
+    },
+    {
+      "headword": "technology",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "teenager",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "telephone",
+      "pos": "n & v",
+      "page": 21
+    },
+    {
+      "headword": "television (TV)",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tell",
+      "pos": "v",
+      "page": 21
+    },
+    {
+      "headword": "temperature",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tennis",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tennis player",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tent",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "term",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "terrible",
+      "pos": "adj",
+      "page": 21
+    },
+    {
+      "headword": "test",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "text",
+      "pos": "n & v",
+      "page": 21
+    },
+    {
+      "headword": "textbook",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "text message",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "than",
+      "pos": "prep & conj",
+      "page": 21
+    },
+    {
+      "headword": "thank",
+      "pos": "v",
+      "page": 21
+    },
+    {
+      "headword": "thanks",
+      "pos": "exclam",
+      "page": 21
+    },
+    {
+      "headword": "thank you",
+      "pos": "exclam",
+      "page": 21
+    },
+    {
+      "headword": "that",
+      "pos": "conj & pron",
+      "page": 21
+    },
+    {
+      "headword": "the",
+      "pos": "det",
+      "page": 21
+    },
+    {
+      "headword": "theatre",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "their",
+      "pos": "det",
+      "page": 21
+    },
+    {
+      "headword": "theirs",
+      "pos": "pron",
+      "page": 21
+    },
+    {
+      "headword": "them",
+      "pos": "pron",
+      "page": 21
+    },
+    {
+      "headword": "themselves",
+      "pos": "pron",
+      "page": 21
+    },
+    {
+      "headword": "then",
+      "pos": "adv",
+      "page": 21
+    },
+    {
+      "headword": "there",
+      "pos": "adv",
+      "page": 21
+    },
+    {
+      "headword": "these",
+      "pos": "det & pron",
+      "page": 21
+    },
+    {
+      "headword": "they",
+      "pos": "pron",
+      "page": 21
+    },
+    {
+      "headword": "thin",
+      "pos": "adj",
+      "page": 21
+    },
+    {
+      "headword": "thing",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "think",
+      "pos": "v",
+      "page": 21
+    },
+    {
+      "headword": "thirsty",
+      "pos": "adj",
+      "page": 21
+    },
+    {
+      "headword": "this",
+      "pos": "det & pron",
+      "page": 21
+    },
+    {
+      "headword": "those",
+      "pos": "det & pron",
+      "page": 21
+    },
+    {
+      "headword": "through",
+      "pos": "prep",
+      "page": 21
+    },
+    {
+      "headword": "throw",
+      "pos": "v",
+      "page": 21
+    },
+    {
+      "headword": "thunderstorm",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "Thursday",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "ticket",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tidy",
+      "pos": "adj & v",
+      "page": 21
+    },
+    {
+      "headword": "tidy up",
+      "pos": "v",
+      "page": 21
+    },
+    {
+      "headword": "tie",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tiger",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tights",
+      "pos": "n pl",
+      "page": 21
+    },
+    {
+      "headword": "till",
+      "pos": "prep",
+      "page": 21
+    },
+    {
+      "headword": "time",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "timetable",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tired",
+      "pos": "adj",
+      "page": 21
+    },
+    {
+      "headword": "title",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "to",
+      "pos": "prep",
+      "page": 21
+    },
+    {
+      "headword": "toast",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "today",
+      "pos": "n & adv",
+      "page": 21
+    },
+    {
+      "headword": "toe",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "together",
+      "pos": "adv",
+      "page": 21
+    },
+    {
+      "headword": "toilet",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tomato",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tomorrow",
+      "pos": "n & adv",
+      "page": 21
+    },
+    {
+      "headword": "tonight",
+      "pos": "n & adv",
+      "page": 21
+    },
+    {
+      "headword": "tortoise",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "too",
+      "pos": "adv",
+      "page": 21
+    },
+    {
+      "headword": "tooth",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "toothache",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "toothbrush",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "top",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "topic",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "total",
+      "pos": "adj & n",
+      "page": 21
+    },
+    {
+      "headword": "tour",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tour guide",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tourist",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tourist information centre",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "towel",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "town",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "toy",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "traffic",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "traffic light",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "train",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "train (transitive and intransitive)",
+      "pos": "v",
+      "page": 21
+    },
+    {
+      "headword": "training (transitive and intransitive)",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "trainer",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tram",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "transport",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "travel",
+      "pos": "v",
+      "page": 21
+    },
+    {
+      "headword": "tree",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "trip",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "trouble",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "trousers",
+      "pos": "n pl",
+      "page": 21
+    },
+    {
+      "headword": "true",
+      "pos": "adj",
+      "page": 21
+    },
+    {
+      "headword": "try",
+      "pos": "v",
+      "page": 21
+    },
+    {
+      "headword": "try on",
+      "pos": "phr v",
+      "page": 21
+    },
+    {
+      "headword": "T-shirt",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "Tuesday",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tune (music)",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "turn",
+      "pos": "v",
+      "page": 21
+    },
+    {
+      "headword": "turn off",
+      "pos": "phr v",
+      "page": 21
+    },
+    {
+      "headword": "turn on",
+      "pos": "phr v",
+      "page": 21
+    },
+    {
+      "headword": "twice",
+      "pos": "adv",
+      "page": 21
+    },
+    {
+      "headword": "type",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "tyre",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "umbrella",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "uncle",
+      "pos": "n",
+      "page": 21
+    },
+    {
+      "headword": "under",
+      "pos": "prep",
+      "page": 21
+    },
+    {
+      "headword": "underground",
+      "pos": "n & adj",
+      "page": 21
+    },
+    {
+      "headword": "understand",
+      "pos": "v",
+      "page": 22
+    },
+    {
+      "headword": "unfortunately",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "unhappy",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "uniform",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "university",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "until",
+      "pos": "prep",
+      "page": 22
+    },
+    {
+      "headword": "unusual",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "up",
+      "pos": "prep & adv",
+      "page": 22
+    },
+    {
+      "headword": "upload",
+      "pos": "v",
+      "page": 22
+    },
+    {
+      "headword": "upset",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "upstairs",
+      "pos": "adv",
+      "page": 22
+    },
+    {
+      "headword": "us",
+      "pos": "pron",
+      "page": 22
+    },
+    {
+      "headword": "use",
+      "pos": "v",
+      "page": 22
+    },
+    {
+      "headword": "useful",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "usual",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "usually",
+      "pos": "adv",
+      "page": 22
+    },
+    {
+      "headword": "v/versus",
+      "pos": "prep",
+      "page": 22
+    },
+    {
+      "headword": "variety",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "various",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "vegetable",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "very",
+      "pos": "adv",
+      "page": 22
+    },
+    {
+      "headword": "video",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "video game",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "view",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "village",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "violin",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "visit",
+      "pos": "v",
+      "page": 22
+    },
+    {
+      "headword": "visit",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "visitor",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "vocabulary",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "volleyball",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "wait",
+      "pos": "v",
+      "page": 22
+    },
+    {
+      "headword": "waiter",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "waitress",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "wake",
+      "pos": "v",
+      "page": 22
+    },
+    {
+      "headword": "wake up",
+      "pos": "phr v",
+      "page": 22
+    },
+    {
+      "headword": "walk",
+      "pos": "v & n",
+      "page": 22
+    },
+    {
+      "headword": "walking",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "wall",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "wallet",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "want",
+      "pos": "v",
+      "page": 22
+    },
+    {
+      "headword": "wardrobe",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "warm",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "wash",
+      "pos": "v",
+      "page": 22
+    },
+    {
+      "headword": "washing machine",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "washing-up",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "wash up",
+      "pos": "phr v",
+      "page": 22
+    },
+    {
+      "headword": "watch",
+      "pos": "n & v",
+      "page": 22
+    },
+    {
+      "headword": "water",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "way",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "we",
+      "pos": "pron",
+      "page": 22
+    },
+    {
+      "headword": "wear",
+      "pos": "v",
+      "page": 22
+    },
+    {
+      "headword": "weather",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "web",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "web page",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "website",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "Wednesday",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "week",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "weekday",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "weekend",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "weekly",
+      "pos": "adj & adv",
+      "page": 22
+    },
+    {
+      "headword": "welcome",
+      "pos": "adj & exclam",
+      "page": 22
+    },
+    {
+      "headword": "well",
+      "pos": "adv & adj",
+      "page": 22
+    },
+    {
+      "headword": "well known",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "west",
+      "pos": "n, adj & adv",
+      "page": 22
+    },
+    {
+      "headword": "wet",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "whale",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "what",
+      "pos": "det & pron",
+      "page": 22
+    },
+    {
+      "headword": "wheel",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "when",
+      "pos": "adv",
+      "page": 22
+    },
+    {
+      "headword": "where",
+      "pos": "adv",
+      "page": 22
+    },
+    {
+      "headword": "which",
+      "pos": "det & pron",
+      "page": 22
+    },
+    {
+      "headword": "while",
+      "pos": "conj",
+      "page": 22
+    },
+    {
+      "headword": "white",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "who",
+      "pos": "pron",
+      "page": 22
+    },
+    {
+      "headword": "whole",
+      "pos": "adj & n",
+      "page": 22
+    },
+    {
+      "headword": "whose",
+      "pos": "det & pron",
+      "page": 22
+    },
+    {
+      "headword": "why",
+      "pos": "adv",
+      "page": 22
+    },
+    {
+      "headword": "wide",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "wife",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "wifi",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "wild",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "wildlife",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "will ('ll)",
+      "pos": "mv",
+      "page": 22
+    },
+    {
+      "headword": "win",
+      "pos": "v",
+      "page": 22
+    },
+    {
+      "headword": "wind",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "window",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "windsurfing",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "windy",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "wing",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "winner",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "winter",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "wish",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "with",
+      "pos": "prep",
+      "page": 22
+    },
+    {
+      "headword": "without",
+      "pos": "prep",
+      "page": 22
+    },
+    {
+      "headword": "woman",
+      "pos": "n",
+      "page": 22
+    },
+    {
+      "headword": "wonderful",
+      "pos": "adj",
+      "page": 22
+    },
+    {
+      "headword": "wood",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "wooden",
+      "pos": "adj",
+      "page": 23
+    },
+    {
+      "headword": "wool",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "word",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "work",
+      "pos": "n & v",
+      "page": 23
+    },
+    {
+      "headword": "work out",
+      "pos": "phr v",
+      "page": 23
+    },
+    {
+      "headword": "worker",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "working hours",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "world",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "worried",
+      "pos": "adj",
+      "page": 23
+    },
+    {
+      "headword": "worry",
+      "pos": "v",
+      "page": 23
+    },
+    {
+      "headword": "worse",
+      "pos": "adj",
+      "page": 23
+    },
+    {
+      "headword": "worst",
+      "pos": "adj",
+      "page": 23
+    },
+    {
+      "headword": "would",
+      "pos": "mv",
+      "page": 23
+    },
+    {
+      "headword": "wow",
+      "pos": "exclam",
+      "page": 23
+    },
+    {
+      "headword": "write",
+      "pos": "v",
+      "page": 23
+    },
+    {
+      "headword": "write down",
+      "pos": "phr v",
+      "page": 23
+    },
+    {
+      "headword": "writer",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "writing",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "wrong",
+      "pos": "adj",
+      "page": 23
+    },
+    {
+      "headword": "Yeah!",
+      "pos": "exclam",
+      "page": 23
+    },
+    {
+      "headword": "year",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "yellow",
+      "pos": "adj",
+      "page": 23
+    },
+    {
+      "headword": "yes",
+      "pos": "adv",
+      "page": 23
+    },
+    {
+      "headword": "yesterday",
+      "pos": "adv",
+      "page": 23
+    },
+    {
+      "headword": "yet",
+      "pos": "adv",
+      "page": 23
+    },
+    {
+      "headword": "yog(h)urt",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "you",
+      "pos": "pron",
+      "page": 23
+    },
+    {
+      "headword": "young",
+      "pos": "adj",
+      "page": 23
+    },
+    {
+      "headword": "your",
+      "pos": "det",
+      "page": 23
+    },
+    {
+      "headword": "yours",
+      "pos": "pron",
+      "page": 23
+    },
+    {
+      "headword": "yourself",
+      "pos": "pron",
+      "page": 23
+    },
+    {
+      "headword": "zebra",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "zero",
+      "pos": "n",
+      "page": 23
+    },
+    {
+      "headword": "zoo",
+      "pos": "n",
+      "page": 23
+    }
+  ]
+}

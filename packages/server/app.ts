@@ -19,8 +19,8 @@ import {
   exerciseVersion,
   topicRelease,
   patternRelease,
-  vocabularyRelease,
-  wordThemes,
+  vocabularyCatalog as vocabularyRelease,
+  allWordThemes as wordThemes,
   workshopRelease,
   phonicsRelease,
   structuredFeedback,
@@ -34,6 +34,7 @@ import {
 } from "../domain/selection";
 import type { Answer, LearningSession, Receipt } from "../contracts/index";
 import { conceptLab } from "../domain/concepts";
+import { ketRelease, searchKetWords } from "../domain/ketVocabulary";
 import {
   comparisonRowsFor,
   comparisonSentence,
@@ -276,11 +277,33 @@ app.get("/api/v1/lessons", (c) =>
       totalWords: vocabularyRelease.totalWords,
       totalItems: vocabularyRelease.totalItems,
       themes: wordThemes,
+      ket: {
+        release: ketRelease.id,
+        source: ketRelease.source,
+        totalWords: ketRelease.totalWords,
+        totalItems: ketRelease.totalItems,
+        themes: ketRelease.themes.length,
+      },
     },
     workshops: workshopRelease.workshops,
   }),
 );
 
+app.get("/api/v1/vocabulary/ket/search", (c) => {
+  const query = c.req.query("q") ?? "";
+  const offset = Number(c.req.query("offset") ?? 0);
+  if (
+    query.length > 80 ||
+    !Number.isSafeInteger(offset) ||
+    offset < 0 ||
+    offset > 10000
+  )
+    return c.json(
+      fault("INVALID_SEARCH", "请缩短搜索词，或重新打开词库。"),
+      422,
+    );
+  return c.json(searchKetWords(query, offset));
+});
 app.get("/api/v1/vocabulary/:themeId", (c) => {
   const theme = vocabularyRelease.themes.find(
     (theme) => theme.id === c.req.param("themeId"),

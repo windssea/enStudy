@@ -11,6 +11,7 @@ await import("./build-reserved-forms.mjs");
 await import("./build-reserved-forms-review.mjs");
 await import("./build-patterns.mjs");
 await import("./build-vocabulary.mjs");
+await import("./build-ket-vocabulary.mjs");
 await import("./build-workshops.mjs");
 await import("./build-workshop-review.mjs");
 await import("./build-be-action-contrast.mjs");

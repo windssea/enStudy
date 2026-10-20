@@ -156,6 +156,7 @@ export interface WordCard {
   word: string;
   meaning: string;
   example: string;
+  alternatives?: string[];
 }
 export interface WordTheme {
   id: string;
@@ -165,6 +166,9 @@ export interface WordTheme {
   wordCount: number;
   items: number;
   modes: WordMode[];
+  collection?: "ket";
+  section?: string;
+  letters?: string[];
 }
 export interface VocabularySummary {
   practisedWords: number;

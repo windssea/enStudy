@@ -75,6 +75,12 @@ export default function WordStudyCard({
             <>
               <h4>{preview.meaning}</h4>
               <p lang="en">{preview.example}</p>
+              {!!preview.alternatives?.length && (
+                <p>
+                  其他写法：
+                  <span lang="en">{preview.alternatives.join(" / ")}</span>
+                </p>
+              )}
               <SpeechButton text={preview.word} />
               {wordObjectKind(preview) && (
                 <Suspense fallback={<p role="status">粘土小物正在准备…</p>}>

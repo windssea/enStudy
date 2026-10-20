@@ -249,12 +249,17 @@ const courseReady = () =>
     (stats) =>
       stats.items >= 120 && stats.contexts >= 40 && stats.families >= 20,
   ) &&
-  course.vocabulary?.totalWords === 360 &&
-  course.vocabulary?.themes?.length === 18 &&
-  course.vocabulary?.themes?.every(
-    (theme) =>
-      theme.modes?.includes("listening") && theme.modes?.includes("spelling"),
-  ) &&
+  course.vocabulary?.totalWords === 3144 &&
+  course.vocabulary?.ket?.totalWords === 2784 &&
+  course.vocabulary?.ket?.totalItems === 5568 &&
+  course.vocabulary?.themes?.filter((t) => t.collection !== "ket").length ===
+    18 &&
+  course.vocabulary?.themes
+    ?.filter((t) => t.collection !== "ket")
+    .every(
+      (theme) =>
+        theme.modes?.includes("listening") && theme.modes?.includes("spelling"),
+    ) &&
   !JSON.stringify(course).includes('"answers":');
 // Pages may report completion before the branch alias serves the new Functions
 // on every edge. Wait only for release propagation; all security checks above
@@ -636,6 +641,37 @@ try {
   check(
     made.status === 201 && selected.status === 200,
     "disposable release profile selected",
+  );
+  const ketSearchResponse = await request(
+    "/api/v1/vocabulary/ket/search?q=grey",
+  );
+  const ketSearch = await ketSearchResponse.json();
+  check(
+    ketSearchResponse.status === 200 &&
+      ketSearch.results.some((r) => r.word.word === "grey") &&
+      !JSON.stringify(ketSearch).includes('"answers":'),
+    "published KET search resolves a sourced word without quiz keys",
+  );
+  const ketCards = await request("/api/v1/vocabulary/ket.alphabet.01");
+  const ketCardData = await ketCards.json();
+  check(
+    ketCards.status === 200 &&
+      ketCardData.words.length === 39 &&
+      ketCardData.theme.collection === "ket",
+    "published KET group and immutable card IDs match the release",
+  );
+  const ketStart = await authenticated("/sessions", {
+    wordThemeId: "ket.alphabet.01",
+    wordMode: "spelling",
+    roundSize: 5,
+    clientRequestId: crypto.randomUUID(),
+  });
+  check(
+    ketStart.status === 201 &&
+      ketStart.data.total === 5 &&
+      ketStart.data.exercise.id.startsWith("word.ket.") &&
+      ketStart.data.exercise.type === "input",
+    "KET spelling assignments are published in the remote D1",
   );
   const comparison = await authenticated("/learning/tense-comparison/view", {
     reference: "past",

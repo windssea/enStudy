@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import type {
   WordTheme,
   WordCard,
@@ -10,6 +10,7 @@ import WordStudyCard from "./WordStudyCard";
 import ToyPicture from "./ToyPicture";
 import WordPicture from "./WordPicture";
 import PictureWordDeck from "./PictureWordDeck";
+const KetVocabulary = lazy(() => import("./KetVocabulary"));
 const themePaths: Record<string, string> = {
   animals:
     "M7 12 4 6l7 3h2l7-3-3 6v4a5 5 0 0 1-10 0v-4Zm2 2h.01M15 14h.01M10 18l2 1 2-1",
@@ -96,6 +97,11 @@ export default function WordTraining({
   onResume: () => void;
   onPhonics?: () => void;
 }) {
+  const [scope, setScope] = useState<"primary" | "ket">(
+    themes.find((t) => t.id === selectedId)?.collection === "ket"
+      ? "ket"
+      : "primary",
+  );
   const [year, setYear] = useState(grade),
     [query, setQuery] = useState(""),
     [wordQuery, setWordQuery] = useState("");
@@ -122,9 +128,17 @@ export default function WordTraining({
   const recommended = themes.find((theme) => theme.grade === grade);
   const effectiveMode =
     selected && !selected.modes.includes(mode) ? "meaning" : mode;
-  const selectedMode = modes.find((option) => option.id === effectiveMode)!;
+  const modeOptions = modes.map((option) =>
+    selected?.collection === "ket" && option.id === "mixed"
+      ? { ...option, description: "认词义与拼写交替练" }
+      : option,
+  );
+  const selectedMode = modeOptions.find(
+    (option) => option.id === effectiveMode,
+  )!;
   const visible = themes.filter(
     (theme) =>
+      theme.collection !== "ket" &&
       (year === 0 || theme.grade === year) &&
       `${theme.title} ${theme.description}`.includes(query.trim()),
   );
@@ -151,11 +165,16 @@ export default function WordTraining({
     onSelect(id);
   };
   const changeTheme = () => {
-    if (selected) returnTarget.current = selected.id;
+    if (selected)
+      returnTarget.current =
+        selected.collection === "ket" ? "ket" : selected.id;
     setChooserOpen(true);
     focusNext.current = "choose";
     onSelect(null);
   };
+  useEffect(() => {
+    if (selected?.collection === "ket") setScope("ket");
+  }, [selected?.collection]);
   useEffect(() => {
     let live = true;
     setSummary(null);
@@ -207,6 +226,40 @@ export default function WordTraining({
   return (
     <div className="word-training" data-stage={selected ? "ready" : "choose"}>
       {!selected && (
+        <div className="word-collections" role="group" aria-label="选择词库">
+          <button
+            className="secondary"
+            aria-pressed={scope === "primary"}
+            disabled={busy}
+            onClick={() => setScope("primary")}
+          >
+            小学主题
+          </button>
+          <button
+            className="secondary"
+            aria-pressed={scope === "ket"}
+            disabled={busy}
+            ref={(node) => {
+              if (node) themeButtons.current.set("ket", node);
+              else themeButtons.current.delete("ket");
+            }}
+            onClick={() => setScope("ket")}
+          >
+            KET 词汇
+          </button>
+        </div>
+      )}
+      {!selected && scope === "ket" && (
+        <Suspense fallback={<p role="status">正在打开 KET 词库…</p>}>
+          <KetVocabulary
+            themes={themes.filter((t) => t.collection === "ket")}
+            childId={childId}
+            busy={busy}
+            onChoose={(id) => choose(id, "ket")}
+          />
+        </Suspense>
+      )}
+      {!selected && scope === "primary" && (
         <div className="word-hero">
           <div>
             <h1>一起玩单词</h1>
@@ -277,7 +330,7 @@ export default function WordTraining({
           </div>
         </div>
       )}
-      {!selected && (
+      {!selected && scope === "primary" && (
         <section className="picture-theme-entry" aria-label="听音找图片主题">
           <h2>听一听，找图片</h2>
           <div>
@@ -306,7 +359,7 @@ export default function WordTraining({
           </div>
         </section>
       )}
-      {onPhonics && !selected && (
+      {onPhonics && !selected && scope === "primary" && (
         <section className="card phonics-entry">
           <h2>想把声音和字母连起来？</h2>
           <p>到拼读小路听整词、看粘土标记，再练字母块拼合。</p>
@@ -315,7 +368,7 @@ export default function WordTraining({
           </button>
         </section>
       )}
-      {selected && (
+      {selected && selected.collection !== "ket" && (
         <ol className="word-path" aria-label="单词探险步骤">
           {["主题已选", "确认玩法", "开始挑战"].map((label, index) => (
             <li
@@ -331,7 +384,7 @@ export default function WordTraining({
           ))}
         </ol>
       )}
-      {!selected && (
+      {!selected && scope === "primary" && (
         <details
           className="word-browse"
           open={chooserOpen}
@@ -343,7 +396,11 @@ export default function WordTraining({
             </span>
             <span>
               <strong>想换个主题？自己挑</strong>
-              <small>动物、校园、美食… {themes.length}个主题等你探索</small>
+              <small>
+                动物、校园、美食…{" "}
+                {themes.filter((t) => t.collection !== "ket").length}
+                个主题等你探索
+              </small>
             </span>
             <span className="word-browse-toggle" aria-hidden="true">
               {chooserOpen ? "收起 −" : "展开 +"}
@@ -426,7 +483,7 @@ export default function WordTraining({
           </section>
         </details>
       )}
-      {!selected && childId && (
+      {!selected && scope === "primary" && childId && (
         <div className="word-progress-strip" role="status">
           {summary ? (
             <>
@@ -464,7 +521,10 @@ export default function WordTraining({
                 {selected.title}
               </h1>
               <p>
-                这一站有{selected.wordCount}
+                {selected.collection === "ket"
+                  ? `${selected.description} · `
+                  : "这一站有"}
+                {selected.wordCount}
                 个单词，每轮随机抽题，同一轮不重复单词。
               </p>
             </div>
@@ -493,7 +553,7 @@ export default function WordTraining({
             </summary>
             <fieldset className="word-modes">
               <legend>今天想怎么练？</legend>
-              {modes
+              {modeOptions
                 .filter((option) => selected.modes.includes(option.id))
                 .map((option) => (
                   <label

@@ -1,3 +1,4 @@
+import { ketRelease } from "../packages/domain/ketVocabulary.ts";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { run } from "./runtime.mjs";
@@ -11,7 +12,10 @@ const bank = JSON.parse(
     await readFile("content/word-listening-release.v1.json", "utf8"),
   ),
   byId = new Map(
-    [...bank.items, ...listening.items].map((item) => [item.id, item]),
+    [...bank.items, ...listening.items, ...ketRelease.items].map((item) => [
+      item.id,
+      item,
+    ]),
   );
 const jar = new Map(),
   ip = `198.19.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 254) + 1}`;
@@ -92,13 +96,14 @@ async function finish(session) {
 try {
   const metadata = (await request("/lessons")).data.vocabulary;
   check(
-    metadata.totalWords === 360 &&
-      metadata.totalItems === 1620 &&
+    metadata.totalWords === 3144 &&
+      metadata.totalItems === 7188 &&
       metadata.themes.filter(
         (t) => t.modes.includes("picture") && t.items === 140,
       ).length === 3 &&
-      metadata.themes.length === 18,
-    "vocabulary catalog contains 360 entries and eighteen graded themes",
+      metadata.themes.filter((t) => t.collection !== "ket").length === 18 &&
+      metadata.ket.totalWords === 2784,
+    "vocabulary catalog preserves 360 primary entries and adds all 2784 KET cards",
   );
   const cards = await request("/vocabulary/animals");
   check(
@@ -245,6 +250,62 @@ try {
       "real due word evidence feeds the shared review selector",
     );
   }
+  const ketTheme = ketRelease.themes[0];
+  const found = await request("/vocabulary/ket/search?q=gray");
+  check(
+    found.status === 200 &&
+      found.data.results.some((r) => r.word.word === "grey") &&
+      !JSON.stringify(found.data).includes('"answers":'),
+    "KET search resolves regional spelling across groups without quiz records",
+  );
+  check(
+    (await request("/vocabulary/ket/search?offset=-1")).status === 422 &&
+      (await request("/vocabulary/ket/search?q=" + "a".repeat(81))).status ===
+        422,
+    "KET search bounds reject invalid offsets and overlong queries",
+  );
+  const ketCards = await request("/vocabulary/" + ketTheme.id);
+  check(
+    ketCards.status === 200 &&
+      ketCards.data.words.length === ketTheme.wordCount,
+    "KET group cards are available separately from primary themes",
+  );
+  const ketA = await finish((await open(ketTheme.id, "meaning")).data),
+    ketB = await finish((await open(ketTheme.id, "spelling")).data);
+  check(
+    ketB.every((id) => !ketA.includes(id)),
+    "KET rounds draw unique entries and prefer new words across modes",
+  );
+  check(
+    (await request("/learning/vocabulary")).data.practisedWords === 20,
+    "KET submitted evidence joins vocabulary review without replacing primary progress",
+  );
+  const viewed = ketTheme.words[0];
+  const view = await request("/learning/vocabulary/" + viewed.id + "/view", {});
+  check(
+    view.status === 200 &&
+      view.data.saved === true &&
+      view.data.word.id === viewed.id,
+    "KET card disclosure is acknowledged for the selected child",
+  );
+  const taught = await request("/sessions", {
+    exerciseId: "word." + viewed.id + ".spelling",
+    clientRequestId: crypto.randomUUID(),
+  });
+  const receipt = await request("/attempts", {
+    sessionId: taught.data.id,
+    assignmentId: taught.data.assignmentId,
+    leaseId: taught.data.leaseId,
+    eventId: crypto.randomUUID(),
+    answer: viewed.word,
+  });
+  check(
+    taught.status === 201 &&
+      receipt.status === 201 &&
+      receipt.data.independentEvidence === false &&
+      receipt.data.support === "example",
+    "KET viewed-word answers are not independent evidence",
+  );
   console.log(`${checks} vocabulary checks passed on ${url.origin}`);
 } finally {
   if (child && jar.has("eq_account"))
