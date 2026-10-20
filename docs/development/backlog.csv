@@ -54,3 +54,5 @@ M1-04g,M1,KET完整词表与练习,逐条对齐2025词表并接入搜索随机�
 M1-04h,M1,NS运动系全站公共界面,单一风格文件与CSS分层及PC平板导航和核心选择流统一,sports-interface-deployed-real-device-child-study-pending,docs/83-sports-interface.md；570单元1519运行与双站各88线上及三域名45只读通过
 
 M1-04i,M1,单元课程层级与续练范围,仅显示本单元课程和续练并保持真实路径与返回选择,unit-lesson-hierarchy-deployed,docs/84-course-unit-hierarchy.md；573项单元测试1519运行与双站各88线上及三域名48只读通过
+
+M1-04j,M1,直接学习指导,移除泛化介绍并直接展示例句规则与明确练习动作,direct-learning-guidance-deployed,docs/85-direct-learning-guidance.md；573项单元测试1519运行双站各88线上及三域名51只读通过

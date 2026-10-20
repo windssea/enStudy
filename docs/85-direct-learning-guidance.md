@@ -1,6 +1,6 @@
 # v0.59.2 直接学习指导
 
-状态：本地实现、573项单元测试及隔离浏览器验收通过，等待同步发布。
+状态：Preview、Production与正式域名同步发布及线上验收通过。
 
 ## 调整
 
@@ -20,4 +20,12 @@
 
 ## 发布
 
-待本阶段Actions完成后补记提交、Preview/Production部署编号与实际线上结果。复用现有免费资源与独立D1。
+北京时间2026/10/20 20:40:47，[Actions 39422345141](https://github.com/windssea/enStudy/actions/runs/39422345141)成功发布f744d9d8a82200ce62137366427de936bc9012e8到Preview db5d7675与Production 816be17a，正式域名同版本。两套独立D1仍0050且无待用迁移，继续使用现有免费资源。
+
+573项单元测试、1519完整运行检查（59基础+1460条PASS）、两站各88项线上及三域名51项额外只读检查通过。核对新JS/CSS、离线清单、教学图、KET与教学界面标记一致。Production部署链接的访客浏览器确认例句、翻译、规则直接可见，主操作明确；没有在真实儿童档案作答。
+
+入口`/assets/index-BO1PPbOe.js` SHA256 `8d15c23fb2ccdd23e6b1ec599eb1ddb6af89a52ac8cc85962430fab8bce2ab07`；样式`/assets/index-B-KsnsBJ.css` SHA256 `07152e13540a7463544105bad48155c1b7c8ac58d28703d7d7535b1b1b947571`。Worker 19990755字节，SHA256 `871cbc9f5d1ec62e0eb87487305f436c7a843511fd1ba5259f7f4f6bbb94434f`。离线壳`eq-shell-v1-8cede23ed8e1b47b`含135资源、15417360字节。
+
+正式域名浏览器确认当前单元恰有4课、课卡无副标题，截图中的四块宣传区不存在；证据为`artifacts/v0592-formal-course-ui.json`和`v0592-production-map.png`。
+
+发布证据在忽略目录`artifacts/actions-v0592-result.json`、`actions-v0592-complete.log`、`v0592-published-public.json`与`v0592-production-lesson.png`。
