@@ -1,6 +1,6 @@
 # v0.60 专题直接练习
 
-状态：本地实现、578项单元测试及隔离浏览器验收通过，等待同步发布。
+状态：已同步发布Preview、Production与正式域名，线上验证通过。
 
 ## 行为
 
@@ -22,4 +22,10 @@
 
 ## 发布
 
-待本阶段Actions完成后补记实际提交、Preview/Production部署与线上验证。继续使用现有免费资源和独立D1。
+北京时间2026/10/20 21:08:59，[Actions 39426343965](https://github.com/windssea/enStudy/actions/runs/39426343965)成功发布ed292bfc701e398a96acdaecc2ad4b4d83297dfd至Preview 33b12e5a与Production 9528a702，正式域名同版本。两套现有独立D1仍0050、无待用迁移，继续使用免费资源。
+
+578项单元测试/71文件、1519完整运行（59基础+1460条PASS）、两站各88线上及三域名54额外只读检查通过。核对主入口、样式、专题与接续策略模块SHA256、离线清单、教学插图、KET与时态模块一致；专题模块没有旧日期阻挡与引导折叠文案。
+
+入口`/assets/index-CgltrFup.js` SHA256 `9741226aa484d7e886591a0f6609a4ab767fa3228aeca94efa0ff30492a4ffac`；样式`/assets/index-DjR5kDL-.css` SHA256 `df784a4bbe296871b76610f91164d628c54cfa9b764b07417e57a2218461779a`。专题`/assets/TopicJourney-DBasQzrB.js` SHA256 `fccb7f50d790ff624aa632c5011ce818102cec764b9efa76c8dc3aa24c0641a4`；接续策略`/assets/topicPractice-8fdRmwwT.js` SHA256 `3db1c61b6f1f64bc9550591857d9dea9a43f8fddb468e954c6b0904232b644f7`。Worker 19990755字节，SHA256 `871cbc9f5d1ec62e0eb87487305f436c7a843511fd1ba5259f7f4f6bbb94434f`。离线壳`eq-shell-v1-1ce9c896164e6ffc`含136资源、15409371字节。
+
+线上浏览器只读确认专题标题、题量和可用操作，旧日期与多层指导入口不存在。没有在真实儿童档案作答。证据在忽略目录`artifacts/actions-v060-result.json`、`actions-v060-complete.log`、`v060-published-public.json`及`v060-published-topic.png`。
