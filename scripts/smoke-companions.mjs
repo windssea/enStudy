@@ -1,5 +1,12 @@
 import assert from "node:assert/strict";
 import { run } from "./runtime.mjs";
+// Query time is ephemeral; every learning value and review-policy field remains compared.
+function progressEvidence(progress) {
+  if (!progress.reviewPlan) return progress;
+  const { generatedAt, ...reviewPlan } = progress.reviewPlan;
+  assert.ok(Number.isSafeInteger(generatedAt));
+  return { ...progress, reviewPlan };
+}
 const base = "http://127.0.0.1:8788",
   a = new Map(),
   b = new Map(),
@@ -206,8 +213,8 @@ try {
     "partner changes do not replace the learning assignment or its device lease",
   );
   check(
-    JSON.stringify((await request("/progress")).data) ===
-      JSON.stringify(beforeProgress),
+    JSON.stringify(progressEvidence((await request("/progress")).data)) ===
+      JSON.stringify(progressEvidence(beforeProgress)),
     "choosing a partner grants no answer, star or review progress",
   );
   check(

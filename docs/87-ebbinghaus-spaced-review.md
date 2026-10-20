@@ -44,3 +44,5 @@
 
 待完整Actions与两站部署后补记实际发布结果。
 
+首轮[Actions 39432223350](https://github.com/windssea/enStudy/actions/runs/39432223350)在完整运行的伙伴偏好检查中失败，部署未开始：旧验证把每次查询生成的reviewPlan.generatedAt也作为持久进度进行JSON比较。已仅排除这个查询时间，继续比较所有学习值与策略字段，并检查时间类型；修正后31项本地伙伴验证通过。该失败不作为已发布记录。
+
