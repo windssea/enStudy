@@ -43,3 +43,9 @@ UI/UX Pro Max检索button consistency forms返回通用表单与返回导航建�
 本次线上迁移、80项每站检查和三域名18项只读核验尚未执行，不能引用此前版本的线上通过数。23:40实际读取Preview和Production仍为v0.53的`/assets/index-e-6LRdvf.js`。没有看到D1额度失败，当前阻碍是GitHub执行器排队/启动无步骤，原因未证实；没有改变GitHub部署方式、Cloudflare账户、免费计划或数据库。GitHub公共状态页当时为operational，不能据此宣布服务整体故障。
 
 证据artifacts/check-v0541-review.log/.exit0、build-v0541-review.log/.exit0、worker-v0541-review.log/.exit0、runtime-v0541-review.log/.exit0、local-v0541-migrate.log/.exit0、v0541-build-proof.json及v0541-review-desktop.png。旧运行的本地watch进程退出码不作为Actions最终结论。英文媒体没有在本阶段重新录制，真实声音听审与其余专题教研重构仍待完成。
+
+## 2026-10-20发布阻塞修正
+
+重新读取Actions最终状态：39279768155与39278884620均failure，check的完整运行检查在smoke-workshops.mjs仍断言12题库/384题，deploy均跳过；39278001205为cancelled。此前排队检查点只代表当时快照，当前已查明回归脚本未随目录扩展更新，两站仍为v0.53。
+
+修正保留旧12题库384题和旧播放器兼容覆盖，精确比对新增目录及总计13题库396题；新辨析题以当前播放器版本作答，验证其五种实际交互。54项真实本地D1/workerd检查通过，包含13轮完整保存、刷新快照、设备接管、复习、家庭隔离和私有源文件阻断。新main的完整Actions和线上验收结果随后补记，不将此本地通过记为已发布。

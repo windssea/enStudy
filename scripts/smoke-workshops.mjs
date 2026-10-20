@@ -8,7 +8,12 @@ let playerVersion = "2";
 const release = JSON.parse(
   await readFile("content/workshop-release.latest.json", "utf8"),
 );
-const byId = new Map(release.items.map((i) => [i.id, i]));
+const contrast = JSON.parse(
+  await readFile("content/be-action-release.latest.json", "utf8"),
+);
+const byId = new Map(
+  [...release.items, ...contrast.items].map((i) => [i.id, i]),
+);
 let child,
   archiveChild,
   checks = 0;
@@ -102,15 +107,34 @@ async function finish(session) {
   return result;
 }
 function correctAnswer(item) {
-  return item.type === "sort"
-    ? Object.entries(item.placements).map(([id, group]) => id + "=" + group)
-    : JSON.parse(item.answers[0]);
+  if (item.type === "sort")
+    return Object.entries(item.placements).map(
+      ([id, group]) => id + "=" + group,
+    );
+  if (item.type === "repair" || item.type === "evidence")
+    return JSON.parse(item.answers[0]);
+  if (item.type === "order") {
+    const answer = item.answers[0].match(/[a-z]+(?:'[a-z]+)?|\d+|[.,!?;:]/gi);
+    assert.deepEqual([...answer].sort(), [...item.tokens].sort());
+    return answer;
+  }
+  return item.answers[0];
 }
 try {
   const metadata = (await request("/lessons")).data.workshops;
+  assert.deepEqual(
+    [...metadata].sort((a, b) => a.id.localeCompare(b.id)),
+    [contrast.workshop, ...release.workshops].sort((a, b) =>
+      a.id.localeCompare(b.id),
+    ),
+  );
   check(
-    metadata.length === 12 && metadata.reduce((n, w) => n + w.items, 0) === 384,
-    "public workshop metadata exposes actual bank counts",
+    metadata.length === 13 &&
+      metadata.reduce((n, w) => n + w.items, 0) === 396 &&
+      metadata
+        .filter((w) => w.id !== contrast.workshop.id)
+        .reduce((n, w) => n + w.items, 0) === 384,
+    "public metadata preserves 12 legacy banks / 384 tasks and adds 12 contextual judgments",
   );
   check(
     !JSON.stringify(metadata).includes("placements") &&
@@ -331,9 +355,14 @@ try {
     "structured correction retains normal hint evidence rules",
   );
   let rounds = 0;
+  playerVersion = "5";
   for (const bank of metadata) {
     const opened = await open({ workshopId: bank.id, roundSize: 5 });
-    assert.equal(opened.status, 201);
+    assert.equal(
+      opened.status,
+      201,
+      `${bank.id}: ${JSON.stringify(opened.data)}`,
+    );
     const s = opened.data,
       result = await finish(s);
     check(
@@ -344,12 +373,17 @@ try {
     const types = sql(
       `SELECT DISTINCT i.type FROM session_items si JOIN items i ON i.id=si.item_id AND i.version=si.item_version WHERE si.session_id=${quote(s.id)}`,
     ).map((r) => r.type);
-    assert.ok(
-      types.includes("sort") && types.includes("repair"),
-      "mixed bank must expose both interactions",
+    assert.deepEqual(
+      types.sort(),
+      bank.id === contrast.workshop.id
+        ? ["choice", "evidence", "input", "order", "repair"]
+        : ["repair", "sort"],
     );
   }
-  check(rounds === 12, "all twelve workshop banks complete on real D1/workerd");
+  check(
+    rounds === 13,
+    "all thirteen banks complete with their actual response types on real D1/workerd",
+  );
   const second = new Map();
   await request(
     "/auth/login",
