@@ -142,3 +142,8 @@ CI通过57文件460项单元、格式、构建、Functions编译、本地初始�
 ## v0.62加载恢复与紧凑复习同步发布
 
 北京时间2026/10/20 22:53:08，[运行39441637294](https://github.com/windssea/enStudy/actions/runs/39441637294)成功发布c3f25dc至Preview 160b4163与Production d0b19424，正式域名同版本。两套独立D1仍0051且无待用迁移；597项单元测试、1536完整运行、双站各90线上与三域名63只读通过，仍用现有免费资源。模块故障模拟仅发生于隔离测试环境，见[实际证据](88-loading-recovery-and-compact-review.md)。
+
+
+## v0.62.1儿童入口精简同步发布
+
+北京时间2026/10/20 23:35:58，[运行39447798027](https://github.com/windssea/enStudy/actions/runs/39447798027)成功发布65aeab6至Preview 0b5a8d42与Production 7e705858，正式域名同版本。两套独立D1仍0051且无待用迁移；597项单元测试、1536完整运行、双站各90线上和三域名66只读通过。撤下离线推广入口，保留旧答案和同步，见[阶段证据](89-offline-entry-cleanup.md)。

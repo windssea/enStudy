@@ -46,3 +46,6 @@ ReviewOverview以当前任务为主，只显示一组状态与主操作；没有
 证据位于忽略目录`artifacts/actions-v062-result.json`、`actions-v062-complete.log`、`v062-published-public.json`、`v062-published-browser.json`及`v062-published-review.png`。
 
 线上Preview已登录空档案的复习主体高约264px，仅一组状态与主操作以及错题/离线次操作；正式域名未选档案时不展示学习记录。768px与375px分别无横向溢出，主操作56px、次操作52px；正式域名本次页面控制台无错误。两者入口均为index-D5RdHuJA.js，无真实儿童作答或日期修改。
+
+
+v0.62.1依用户反馈撤下本阶段仍保留的儿童离线练习入口，旧题包与同步保留，当前入口规则以[后续修订](89-offline-entry-cleanup.md)和MASTER为准。
