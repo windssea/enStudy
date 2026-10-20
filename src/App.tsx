@@ -946,38 +946,12 @@ export default function App() {
       <ChildNavigation active={activeNav} onGo={move} />
       <div className="workspace">
         <header className="topbar">
-          {view === "home" ? (
-            <h1 className="home-page-title">学习</h1>
-          ) : (
-            <button
-              className="child-home-button"
-              aria-label="回到学习首页"
-              onClick={() => move("home")}
-            >
-              <LearningIcon kind="home" />
-              <span>首页</span>
-            </button>
-          )}
-          <div className="adult-location">
-            <small>你在这里</small>
-            <strong>
-              {view === "mistakes" ||
-              (view === "exercise" && session?.guidedRetry)
-                ? "错题小本"
-                : view === "phonics"
-                  ? "拼读小路"
-                  : view === "writing"
-                    ? "写作小工坊"
-                    : view === "offline"
-                      ? "本机离线练习"
-                      : view === "workshops"
-                        ? "英语辨析与应用"
-                        : view === "talk"
-                          ? "英语小剧场"
-                          : (nav.find((n) => n[0] === activeNav)?.[1] ??
-                            "今天的小练习")}
-              {view === "exercise" && " · 练习中"}
-            </strong>
+          <div className="learner-context">
+            <LearningIcon kind="person" />
+            <strong>{identity.child?.nickname ?? "英语学习"}</strong>
+            {identity.child && (
+              <span>{grades[identity.child.grade - 1]}年级</span>
+            )}
           </div>
           <div className="toolbar">
             {view === "parent" && (
@@ -1003,7 +977,9 @@ export default function App() {
               <>
                 <span className="stars">
                   <Icon kind="star" />
-                  {progress.stars}
+                  <span aria-label={`累计${progress.stars}颗星`}>
+                    {progress.stars}
+                  </span>
                 </span>
                 <button
                   className="profile-button"
@@ -1108,8 +1084,8 @@ export default function App() {
                             : "继续上次的练习"}
                       </h2>
                       <p>
-                        {session.exercise.title} ·{" "}
-                        {receipt ? "作答已保存" : "上次停下的练习还在这里"}
+                        {session.exercise.title}
+                        {receipt && " · 作答已保存"}
                       </p>
                     </div>
                     <button

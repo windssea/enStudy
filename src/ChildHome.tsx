@@ -21,6 +21,7 @@ export default function ChildHome({
 }) {
   return (
     <div className="learning-home">
+      <h1>今天学什么？</h1>
       <section
         className="learning-current-task"
         aria-labelledby="learning-home-title"
@@ -61,11 +62,15 @@ export default function ChildHome({
             [
               ["map", "课程学习", "book"],
               ["words", "单词训练", "words"],
+              ["topics", "专题特训", "topics"],
+              ["patterns", "固定句式", "patterns"],
               ["review", "复习", "review"],
+              ["phonics", "自然拼读", "phonics"],
             ] as const
           ).map(([id, label, icon]) => (
             <button
               className="learning-entry"
+              data-entry={id}
               key={id}
               onClick={() => onGo(id)}
             >
@@ -83,9 +88,6 @@ export default function ChildHome({
         <div className="learning-more-grid">
           {(
             [
-              ["topics", "专题特训"],
-              ["patterns", "固定句式"],
-              ["phonics", "自然拼读"],
               ["writing", "写作练习"],
               ["talk", "对话练习"],
               ["workshops", "互动练习"],

@@ -1,0 +1,10 @@
+/* Explicit priority keeps historical feature layouts below the current system.
+   New visual decisions belong in visual-theme.css; feature geometry stays local. */
+@layer legacy, components, sports;
+@import "./styles.css" layer(legacy);
+@import "./child-interface.css" layer(legacy);
+@import "./picture-words.css" layer(legacy);
+@import "./clay-illustrations.css" layer(legacy);
+@import "./modern-learning.css" layer(legacy);
+@import "./product-interface.css" layer(components);
+@import "./visual-theme.css" layer(sports);

@@ -74,7 +74,7 @@ export default function KetVocabulary({
     <section className="ket-library" aria-labelledby="ket-title">
       <div className="ket-heading">
         <div>
-          <h1 id="ket-title">KET 词汇</h1>
+          <h2 id="ket-title">KET 词汇</h2>
           <p>
             A2 Key · 2025 版 · {themes.reduce((n, t) => n + t.wordCount, 0)}{" "}
             张词卡

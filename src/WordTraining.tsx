@@ -105,7 +105,7 @@ export default function WordTraining({
   const [year, setYear] = useState(grade),
     [query, setQuery] = useState(""),
     [wordQuery, setWordQuery] = useState("");
-  const [chooserOpen, setChooserOpen] = useState(false);
+  const [chooserOpen, setChooserOpen] = useState(true);
   const [mode, setMode] = useState<WordMode>(
       grade === 1 ? "picture" : "meaning",
     ),
@@ -226,28 +226,31 @@ export default function WordTraining({
   return (
     <div className="word-training" data-stage={selected ? "ready" : "choose"}>
       {!selected && (
-        <div className="word-collections" role="group" aria-label="选择词库">
-          <button
-            className="secondary"
-            aria-pressed={scope === "primary"}
-            disabled={busy}
-            onClick={() => setScope("primary")}
-          >
-            小学主题
-          </button>
-          <button
-            className="secondary"
-            aria-pressed={scope === "ket"}
-            disabled={busy}
-            ref={(node) => {
-              if (node) themeButtons.current.set("ket", node);
-              else themeButtons.current.delete("ket");
-            }}
-            onClick={() => setScope("ket")}
-          >
-            KET 词汇
-          </button>
-        </div>
+        <header className="word-library-heading">
+          <h1>单词训练</h1>
+          <div className="word-collections" role="group" aria-label="选择词库">
+            <button
+              className="secondary"
+              aria-pressed={scope === "primary"}
+              disabled={busy}
+              onClick={() => setScope("primary")}
+            >
+              小学主题
+            </button>
+            <button
+              className="secondary"
+              aria-pressed={scope === "ket"}
+              disabled={busy}
+              ref={(node) => {
+                if (node) themeButtons.current.set("ket", node);
+                else themeButtons.current.delete("ket");
+              }}
+              onClick={() => setScope("ket")}
+            >
+              KET 词汇
+            </button>
+          </div>
+        </header>
       )}
       {!selected && scope === "ket" && (
         <Suspense fallback={<p role="status">正在打开 KET 词库…</p>}>
@@ -262,7 +265,6 @@ export default function WordTraining({
       {!selected && scope === "primary" && (
         <div className="word-hero">
           <div>
-            <h1>一起玩单词</h1>
             {recommended && (
               <div className="word-launch">
                 <p>
@@ -305,84 +307,10 @@ export default function WordTraining({
                       : "选择档案，再开始"}{" "}
                   <ToyPicture kind="play" />
                 </button>
-                <small>
-                  {childId
-                    ? resume
-                      ? "进度已经保存，接着上次继续。"
-                      : recommended.modes.includes("picture")
-                        ? "听音找图片 · 随机5题 · 不计时"
-                        : "认词义 · 随机抽题 · 不计时"
-                    : "请家长登录并选好档案，保存你的学习进度。"}
-                </small>
               </div>
             )}
-            <ul className="word-loop" aria-label="这一轮怎么玩">
-              <li>
-                <span aria-hidden="true">1</span> 想一想
-              </li>
-              <li>
-                <span aria-hidden="true">2</span> 看解释
-              </li>
-              <li>
-                <span aria-hidden="true">3</span> 记得复习
-              </li>
-            </ul>
           </div>
         </div>
-      )}
-      {!selected && scope === "primary" && (
-        <section className="picture-theme-entry" aria-label="听音找图片主题">
-          <h2>听一听，找图片</h2>
-          <div>
-            {themes
-              .filter((t) => t.modes.includes("picture"))
-              .map((t) => (
-                <button
-                  key={t.id}
-                  className="picture-theme-button"
-                  disabled={busy}
-                  onClick={() => choose(t.id, t.id)}
-                >
-                  <WordPicture
-                    id={
-                      t.id === "animals"
-                        ? "animals.cat"
-                        : t.id === "school"
-                          ? "school.pencil"
-                          : "colours-shapes.star"
-                    }
-                  />
-                  <strong>{t.title}</strong>
-                  <ToyPicture kind="play" />
-                </button>
-              ))}
-          </div>
-        </section>
-      )}
-      {onPhonics && !selected && scope === "primary" && (
-        <section className="card phonics-entry">
-          <h2>想把声音和字母连起来？</h2>
-          <p>到拼读小路听整词、看粘土标记，再练字母块拼合。</p>
-          <button className="secondary" disabled={busy} onClick={onPhonics}>
-            进入拼读小路
-          </button>
-        </section>
-      )}
-      {selected && selected.collection !== "ket" && (
-        <ol className="word-path" aria-label="单词探险步骤">
-          {["主题已选", "确认玩法", "开始挑战"].map((label, index) => (
-            <li
-              key={label}
-              aria-current={index === (selected ? 1 : 0) ? "step" : undefined}
-              data-done={selected && index === 0}
-            >
-              <span aria-hidden="true">
-                {selected && index === 0 ? "✓" : index + 1}
-              </span>
-              <strong>{label}</strong>
-            </li>
-          ))}
-        </ol>
       )}
       {!selected && scope === "primary" && (
         <details
@@ -394,14 +322,10 @@ export default function WordTraining({
             <span className="word-browse-icon" aria-hidden="true">
               <ThemeSymbol id="learning" />
             </span>
-            <span>
-              <strong>想换个主题？自己挑</strong>
-              <small>
-                动物、校园、美食…{" "}
-                {themes.filter((t) => t.collection !== "ket").length}
-                个主题等你探索
-              </small>
-            </span>
+            <h2 id="word-chooser-title" ref={chooserHeading} tabIndex={-1}>
+              选择主题
+            </h2>
+            <span className="word-theme-count">{visible.length}个主题</span>
             <span className="word-browse-toggle" aria-hidden="true">
               {chooserOpen ? "收起 −" : "展开 +"}
             </span>
@@ -410,14 +334,6 @@ export default function WordTraining({
             className="word-chooser"
             aria-labelledby="word-chooser-title"
           >
-            <div className="word-section-heading">
-              <div>
-                <h2 id="word-chooser-title" ref={chooserHeading} tabIndex={-1}>
-                  挑一个你感兴趣的主题
-                </h2>
-              </div>
-              <p>{themes.length}个主题</p>
-            </div>
             <div className="filter-row">
               <label>
                 年级
@@ -459,7 +375,19 @@ export default function WordTraining({
                   key={theme.id}
                 >
                   <span className="word-theme-number" aria-hidden="true">
-                    <ThemeSymbol id={theme.id} />
+                    {theme.modes.includes("picture") ? (
+                      <WordPicture
+                        id={
+                          theme.id === "animals"
+                            ? "animals.cat"
+                            : theme.id === "school"
+                              ? "school.pencil"
+                              : "colours-shapes.star"
+                        }
+                      />
+                    ) : (
+                      <ThemeSymbol id={theme.id} />
+                    )}
                   </span>
                   <span>
                     <span className="eyebrow">
@@ -469,7 +397,7 @@ export default function WordTraining({
                     <strong>{theme.title}</strong>
                     <span>{theme.description}</span>
                     <span className="word-theme-action">
-                      选主题，再选玩法 <span aria-hidden="true">→</span>
+                      进入训练 <span aria-hidden="true">→</span>
                     </span>
                   </span>
                 </button>
@@ -482,6 +410,14 @@ export default function WordTraining({
             )}
           </section>
         </details>
+      )}
+      {onPhonics && !selected && scope === "primary" && (
+        <div className="word-secondary-links">
+          <button className="secondary" disabled={busy} onClick={onPhonics}>
+            <ToyPicture kind="words" /> 自然拼读
+            <ToyPicture kind="next" />
+          </button>
+        </div>
       )}
       {!selected && scope === "primary" && childId && (
         <div className="word-progress-strip" role="status">
@@ -537,7 +473,7 @@ export default function WordTraining({
               {roundSize}
             </span>
             <div>
-              <h2>这轮这样玩</h2>
+              <h2>训练方式</h2>
               <p>
                 {selectedMode.title} · {roundSize}道题
               </p>
@@ -606,11 +542,7 @@ export default function WordTraining({
                   : `开始${roundSize}题 · ${selectedMode.title}`}
               <ToyPicture kind="play" />
             </button>
-            <p>
-              {childId
-                ? "不用赶时间，想一想再回答。"
-                : "请家长登录并选好档案，就能保存你的进度。"}
-            </p>
+            {!childId && <p>请家长登录并选择学习档案。</p>}
           </div>
           {selected.modes.includes("picture") && data?.id === selectedId ? (
             <PictureWordDeck
@@ -625,8 +557,7 @@ export default function WordTraining({
               </summary>
               <div className="word-card-heading">
                 <div>
-                  <h3>先和单词打个招呼</h3>
-                  <p>点开词卡查看释义和例句，点击“听一听”才会播放。</p>
+                  <h3>单词卡</h3>
                 </div>
                 <label>
                   找词
