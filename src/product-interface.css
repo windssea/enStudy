@@ -705,6 +705,107 @@
   gap: 12px;
   margin-bottom: 18px;
 }
+.irregular-guide {
+  margin-block: 24px;
+}
+.irregular-guide header,
+.irregular-pages,
+.lesson-topic-practice > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.irregular-guide header label {
+  display: grid;
+  gap: 8px;
+}
+.irregular-sentences {
+  display: grid;
+  gap: 12px;
+  margin-block: 24px;
+}
+.irregular-sentences p {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 12px;
+  margin: 0;
+}
+.irregular-sentences strong {
+  font-size: clamp(18px, 2vw, 24px);
+}
+.irregular-sentences em {
+  color: var(--primary);
+  font-style: normal;
+}
+.irregular-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-block: 20px;
+}
+.irregular-table caption {
+  text-align: left;
+  padding-bottom: 16px;
+}
+.irregular-table th,
+.irregular-table td {
+  padding: 14px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+.irregular-table small {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.irregular-pages {
+  justify-content: center;
+}
+.irregular-meaning-label {
+  display: none;
+}
+.lesson-topic-practice {
+  margin-block: 24px;
+}
+.lesson-topic-practice > div {
+  justify-content: flex-start;
+}
+@media (max-width: 520px) {
+  .irregular-sentences p {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .irregular-table th,
+  .irregular-table td {
+    padding-inline: 4px;
+    border: 0;
+    overflow-wrap: normal;
+  }
+  .irregular-table thead,
+  .irregular-table tbody {
+    display: block;
+  }
+  .irregular-table tr {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-bottom: 1px solid var(--border);
+  }
+  .irregular-table thead th:last-child {
+    display: none;
+  }
+  .irregular-table tbody td:last-child {
+    grid-column: 1/-1;
+    padding-top: 0;
+  }
+  .irregular-meaning-label {
+    display: inline;
+  }
+}
 .app-shell.child-shell .exercise-top .offline-link {
   display: inline-flex;
   margin-right: auto;

@@ -7,6 +7,7 @@ import LessonConcepts from "./LessonConcepts";
 import ToyPicture from "./ToyPicture";
 import { lessonExampleScene } from "./lessonScenes";
 import { courseLessonPath } from "./courseNavigation";
+import { grade4PracticeTopics } from "../packages/domain/irregularVerbs";
 export default function LessonView({
   lesson,
   coursePath,
@@ -16,6 +17,7 @@ export default function LessonView({
   completed,
   childId,
   onWriting,
+  onTopic,
 }: {
   lesson: CourseLesson;
   coursePath?: string;
@@ -25,6 +27,7 @@ export default function LessonView({
   completed: boolean;
   childId?: string;
   onWriting?: (promptId: string) => void;
+  onTopic?: (topicId: string) => void;
 }) {
   const [index, setIndex] = useState(0);
   useEffect(() => {
@@ -120,6 +123,22 @@ export default function LessonView({
           </button>
         </div>
       </section>
+      {onTopic && grade4PracticeTopics(lesson.id).length > 0 && (
+        <section className="lesson-topic-practice" aria-label="本课专项练习">
+          <h2>本课专项</h2>
+          <div>
+            {grade4PracticeTopics(lesson.id).map((topic) => (
+              <button
+                className="secondary"
+                key={topic.id}
+                onClick={() => onTopic(topic.id)}
+              >
+                {topic.title}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
       <details className="lesson-extra card">
         <summary>
           <span>本课词汇与拓展</span>

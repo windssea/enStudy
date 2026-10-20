@@ -223,7 +223,7 @@ const catalog = await catalogResponse.json();
 check(
   catalogResponse.status === 200 &&
     catalog.units?.length === 72 &&
-    catalog.topics?.length === 60 &&
+    catalog.topics?.length === 64 &&
     catalog.patterns?.length === 72,
   "draft curriculum catalog available",
 );
@@ -240,7 +240,7 @@ const courseReady = () =>
     expectedFeatures.householdSharingEnabled &&
   lessonResponse.status === 200 &&
   sameLessonRelease(course, expectedCourse) &&
-  Object.keys(course.topicStats ?? {}).length === 60 &&
+  Object.keys(course.topicStats ?? {}).length === 64 &&
   Object.values(course.topicStats ?? {}).every(
     (stats) => stats.items >= 120 && stats.families >= 60,
   ) &&
@@ -876,6 +876,62 @@ try {
       `${topic} assigns five reserved tasks from remote D1 without answer leakage`,
     );
   }
+  const grade4 = JSON.parse(
+    await readFile("content/grade4-tense-release.v1.json", "utf8"),
+  );
+  check(
+    course.lessons.filter((l) => l.grade === 4).length === 48 &&
+      course.lessons.filter(
+        (l) =>
+          l.releaseId === grade4.id && l.version === 2 && l.cards.length === 5,
+      ).length === 28,
+    "twenty-eight P4 tense lessons carry the additive teaching revision",
+  );
+  for (const topicId of Object.keys(grade4.stats)) {
+    const ordinary = await authenticated("/sessions", {
+      topicId,
+      roundSize: 5,
+      clientRequestId: crypto.randomUUID(),
+    });
+    const cycle = await authenticated("/training/cycles", {
+      topicId,
+      clientRequestId: crypto.randomUUID(),
+    });
+    assert.equal(cycle.status, 201);
+    const continued = await authenticated("/sessions", {
+      topicId,
+      trainingCycleId: cycle.data.id,
+      trainingVersion: cycle.data.version,
+      clientRequestId: crypto.randomUUID(),
+    });
+    check(
+      ordinary.status === 201 &&
+        continued.status === 201 &&
+        ordinary.data.total === 5 &&
+        continued.data.total === 5 &&
+        [ordinary, continued].every(
+          (r) =>
+            r.data.exercise?.id?.startsWith(`g4.${topicId}.`) &&
+            !Object.hasOwn(r.data.exercise, "answers"),
+        ),
+      `${topicId} random and continued tasks both assign from the migrated remote bank`,
+    );
+  }
+  const forms = await authenticated("/learning/irregular-verbs/view", {
+    version: 1,
+    scope: "core",
+    group: "all",
+    page: 0,
+  });
+  check(
+    forms.status === 200 &&
+      forms.data.saved &&
+      forms.data.scope === "core" &&
+      forms.data.total === 30 &&
+      forms.data.words.length === 10 &&
+      forms.data.words[0].past === "went",
+    "scoped verb-table disclosure saves on remote D1",
+  );
   const contrastBank = JSON.parse(
     await readFile("content/be-action-release.latest.json", "utf8"),
   );

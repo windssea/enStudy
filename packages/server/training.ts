@@ -2,7 +2,8 @@ import { Hono } from "hono";
 import type { Actor, Env } from "./app";
 import {
   exerciseById,
-  topicRelease,
+  topicCatalog as topicRelease,
+  topicPublicationReleases,
   exercises,
   reservedTrainingRelease,
 } from "./exercises";
@@ -275,7 +276,7 @@ export async function prepareTraining(
   );
   const allowedReleases = usesReserved(cycle)
     ? reservedMaterial(topic).releases
-    : [topicRelease.id];
+    : topicPublicationReleases(topic);
   const publication = {
     sql: `${releaseReadiness(allowedReleases).sql} AND (SELECT count(*) FROM items p WHERE p.status='published' AND EXISTS(SELECT 1 FROM release_items r JOIN content_releases cr ON cr.id=r.release_id WHERE r.item_id=p.id AND r.item_version=p.version AND cr.status='published' AND r.release_id IN (${allowedReleases.map(() => "?").join(",")})) AND (${items.map(() => "(p.id=? AND p.version=?)").join(" OR ")}))=?`,
     params: [

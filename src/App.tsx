@@ -1246,6 +1246,7 @@ export default function App() {
                 <TopicJourney
                   key={`${identity.child?.id ?? "guest"}:${trainingTopic}`}
                   topicId={trainingTopic}
+                  onOpen={openTraining}
                   title={
                     catalog?.topics.find((t) => t.topic_id === trainingTopic)
                       ?.title ?? "专题小计划"
@@ -1394,6 +1395,7 @@ export default function App() {
             <LessonView
               childId={identity.child?.id}
               lesson={selectedLesson}
+              onTopic={openTraining}
               coursePath={courseLessonPath(
                 selectedLesson,
                 catalog?.units ?? [],

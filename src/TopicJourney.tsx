@@ -5,8 +5,10 @@ import { api } from "./api";
 import { conceptLab } from "../packages/domain/concepts";
 import { trainingContinuation } from "./topicPractice";
 import LearningIcon from "./LearningIcon";
+import { irregularTopics } from "../packages/domain/irregularVerbs";
 const ConceptLab = featureLazy(() => import("./ConceptLab"));
 const TenseComparison = featureLazy(() => import("./TenseComparison"));
+const IrregularVerbGuide = featureLazy(() => import("./IrregularVerbGuide"));
 
 export default function TopicJourney({
   topicId,
@@ -18,6 +20,7 @@ export default function TopicJourney({
   onResume,
   onPractice,
   onProfile,
+  onOpen,
 }: {
   topicId: string;
   title: string;
@@ -28,6 +31,7 @@ export default function TopicJourney({
   onResume: (id: string) => void;
   onPractice: (size: number) => void;
   onProfile: () => void;
+  onOpen?: (id: string) => void;
 }) {
   const [cycle, setCycle] = useState<TrainingCycle | null>(null);
   const [roundSize, setRoundSize] = useState(10);
@@ -169,6 +173,37 @@ export default function TopicJourney({
             重试
           </button>
         </p>
+      )}
+      {onOpen && topicId === "forms.irregular-past" && (
+        <nav className="lesson-topic-practice" aria-label="不规则动词专项">
+          <div>
+            {irregularTopics.map((t) => (
+              <button
+                key={t.id}
+                className="secondary"
+                onClick={() => onOpen(t.id)}
+              >
+                {t.title}
+              </button>
+            ))}
+          </div>
+        </nav>
+      )}
+      {(topicId.startsWith("forms.irregular-past") ||
+        topicId === "forms.past-participle") && (
+        <Suspense fallback={<p role="status">正在准备词形对照…</p>}>
+          <IrregularVerbGuide
+            key={`${topicId}:${childId ?? "guest"}`}
+            childId={childId}
+            scope={
+              topicId.endsWith(".core")
+                ? "core"
+                : topicId.endsWith(".extended")
+                  ? "extended"
+                  : "all"
+            }
+          />
+        </Suspense>
       )}
       {topicId.startsWith("tense.") && (
         <Suspense fallback={<p role="status">正在准备时态对比…</p>}>

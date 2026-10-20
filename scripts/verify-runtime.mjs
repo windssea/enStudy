@@ -56,6 +56,7 @@ try {
   await run("smoke-course.mjs");
   await run("smoke-course-expansion.mjs");
   await run("smoke-topics.mjs");
+  await run("smoke-grade4-tense.mjs");
   await run("smoke-training.mjs");
   await run("smoke-patterns.mjs");
   await run("smoke-vocabulary.mjs");

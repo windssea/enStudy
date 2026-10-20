@@ -3,6 +3,7 @@ import course from "../../content/course-release.v1.json";
 import expansion from "../../content/course-expansion.v1.json";
 import expansionLatest from "../../content/course-expansion.latest.json";
 import topics from "../../content/topic-release.v1.json";
+import grade4 from "../../content/grade4-tense-release.v1.json";
 import patterns from "../../content/pattern-release.v1.json";
 import vocabulary from "../../content/vocabulary-release.v1.json";
 import { ketRelease } from "../domain/ketVocabulary";
@@ -79,7 +80,7 @@ export const courseExpansion = expansionLatest as unknown as {
   items: PrivateExercise[];
 };
 export const courseCatalog = {
-  id: "course-catalog-v12",
+  id: "course-catalog-v13",
   lessons: [
     ...courseRelease.lessons,
     ...courseExpansion.lessons,
@@ -93,7 +94,10 @@ export const courseCatalog = {
     ...cooperationTerm.lessons,
     ...practicalTerm.lessons,
     ...portfolioTerm.lessons,
-  ] as CourseLesson[],
+  ].map(
+    (lesson) =>
+      grade4.lessons.find((revised) => revised.id === lesson.id) ?? lesson,
+  ) as CourseLesson[],
   items: [
     ...courseRelease.items,
     ...courseExpansion.items,
@@ -179,6 +183,25 @@ export const topicRelease = topics as unknown as {
     { items: number; families: number; roundSizes: number[]; mode: string }
   >;
 };
+export const grade4TenseRelease = grade4 as unknown as {
+  id: string;
+  manifestHash: string;
+  lessons: CourseLesson[];
+  items: PrivateExercise[];
+  stats: typeof topicRelease.stats;
+};
+export const topicCatalog = {
+  id: "topic-catalog-v2",
+  manifestHash: grade4.manifestHash,
+  items: [...topicRelease.items, ...grade4TenseRelease.items],
+  stats: { ...topicRelease.stats, ...grade4TenseRelease.stats },
+};
+export const topicPublicationReleases = (topicId: string): string[] =>
+  Object.hasOwn(grade4TenseRelease.stats, topicId)
+    ? [grade4TenseRelease.id]
+    : Object.hasOwn(topicRelease.stats, topicId)
+      ? [topicRelease.id]
+      : [];
 export const patternRelease = patterns as unknown as {
   id: string;
   manifestHash: string;
@@ -199,6 +222,7 @@ export const exercises = [
   ...courseRelease.items,
   ...courseExpansion.items,
   ...topicRelease.items,
+  ...grade4TenseRelease.items,
   ...patternRelease.items,
   ...vocabulary.items,
   ...ketRelease.items,

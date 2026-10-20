@@ -6,10 +6,39 @@ import {
   patternRelease,
   vocabularyCatalog as vocabularyRelease,
   type PrivateExercise,
+  exercises,
 } from "./exercises";
 import catalog from "../../public/content/catalog.json";
 import conceptExposure from "../../content/concept-exposure-map.json";
 import { conceptLabs } from "../domain/concepts";
+import {
+  irregularExamples,
+  type irregularVerbs,
+} from "../domain/irregularVerbs";
+export function irregularExampleKeys(words: (typeof irregularVerbs)[number][]) {
+  const forms = new Set(
+    words.flatMap((w) => [
+      w.base,
+      w.past,
+      w.participle,
+      ...w.participleAlternatives,
+    ]),
+  );
+  return [
+    ...new Set([
+      ...irregularExamples.map(sentenceKey),
+      ...exercises
+        .filter(
+          (i) =>
+            (i.category === "forms" ||
+              i.topicId === "tense.past-simple" ||
+              i.skill.startsWith("grammar.past-simple")) &&
+            i.answers.some((a) => forms.has(a)),
+        )
+        .map((i) => `family:${i.family ?? i.id}`),
+    ]),
+  ];
+}
 // Read aliases preserve demonstrations recorded before a later content release.
 // Never write these aliases as feedback: answering a task did not show a lab case.
 const historicalConceptKeys = new Map<string, Set<string>>();

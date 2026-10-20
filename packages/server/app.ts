@@ -1,4 +1,12 @@
 import { Hono, type Context, type MiddlewareHandler } from "hono";
+import {
+  irregularGroups,
+  irregularPage,
+  irregularVersion,
+  type IrregularGroup,
+  type IrregularScope,
+} from "../domain/irregularVerbs";
+import { irregularExampleKeys } from "./exposure";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import { bodyLimit } from "hono/body-limit";
 import { addDays, localDay } from "../domain/review";
@@ -17,7 +25,7 @@ import {
   courseCatalog,
   exerciseById,
   exerciseVersion,
-  topicRelease,
+  topicCatalog as topicRelease,
   patternRelease,
   vocabularyCatalog as vocabularyRelease,
   allWordThemes as wordThemes,
@@ -1705,6 +1713,61 @@ app.post("/api/v1/learning/tense-comparison/view", async (c) => {
     saved: true,
     version: comparisonVersion,
     reference: body.reference,
+  });
+});
+app.post("/api/v1/learning/irregular-verbs/view", async (c) => {
+  const body = await c.req.json();
+  if (
+    !body ||
+    Array.isArray(body) ||
+    body.version !== irregularVersion ||
+    typeof body.group !== "string" ||
+    !Object.hasOwn(irregularGroups, body.group) ||
+    !Number.isInteger(body.page) ||
+    body.page < 0 ||
+    body.page > 5 ||
+    (body.scope !== undefined &&
+      !["all", "core", "extended"].includes(body.scope))
+  )
+    return c.json(
+      fault("INVALID_IRREGULAR", "请选择当前版本的动词分组。"),
+      422,
+    );
+  const scope = (body.scope ?? "all") as IrregularScope;
+  const result = irregularPage(body.group as IrregularGroup, body.page, scope);
+  if (!result.words.length)
+    return c.json(fault("INVALID_IRREGULAR", "这一组没有更多单词。"), 422);
+  const actor = c.get("actor"),
+    keys = irregularExampleKeys(result.words);
+  await recordExposure(c.env.DB, actor, keys);
+  const [key] = await hashedExposureKeys(keys),
+    now = Date.now();
+  const saved = await c.env.DB.prepare(
+    `SELECT 1 FROM teaching_exposures WHERE household_id=? AND child_id=? AND evidence_key=? AND shown_day=? AND ${grantAuthorization}`,
+  )
+    .bind(
+      actor.householdId,
+      actor.childId,
+      key,
+      localDay(now, actor.timezone),
+      actor.grantId,
+      now,
+      now,
+    )
+    .first();
+  if (!saved)
+    return c.json(
+      fault("AUTH_CHANGED", "档案权限有变化，请重新打开词形表。"),
+      409,
+    );
+  return c.json({
+    saved: true,
+    version: irregularVersion,
+    childId: actor.childId,
+    group: body.group,
+    page: body.page,
+    scope,
+    ...result,
   });
 });
 app.post("/api/v1/learning/concepts/:id/view", async (c) => {

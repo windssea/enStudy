@@ -6,6 +6,7 @@ const source = JSON.parse(
   await readFile("content/concept-labs.v1.json", "utf8"),
 );
 const paths = [
+  "grade4-tense-release.v1.json",
   "exercises.json",
   "course-release.v1.json",
   "course-expansion.v1.json",

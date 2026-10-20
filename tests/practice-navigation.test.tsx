@@ -9,7 +9,7 @@ import {
   patternGroups,
   patternItems,
 } from "../src/practiceCatalog";
-import { patternRelease, topicRelease } from "../packages/server/exercises";
+import { patternRelease, topicCatalog } from "../packages/server/exercises";
 import { patternExampleKeys } from "../packages/server/exposure";
 import { answerExposureKeys, sentenceKey } from "../packages/domain/exposure";
 import PracticeLibrary from "../src/PracticeLibrary";
@@ -84,10 +84,13 @@ describe("practice navigation and demonstration boundaries", () => {
     const topics = topicItems(
       catalog.topics,
       Object.fromEntries(
-        Object.keys(topicRelease.stats).map((id) => [id, 120]),
+        Object.entries(topicCatalog.stats).map(([id, stats]) => [
+          id,
+          stats.items,
+        ]),
       ),
     );
-    expect(topics).toHaveLength(60);
+    expect(topics).toHaveLength(64);
     expect(
       topics.every(
         (row) =>

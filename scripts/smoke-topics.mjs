@@ -74,11 +74,11 @@ async function finish(session) {
 try {
   const metadata = await request("/lessons");
   check(
-    Object.keys(metadata.data.topicStats).length === 60 &&
+    Object.keys(metadata.data.topicStats).length === 64 &&
       Object.values(metadata.data.topicStats).every(
         (s) => s.items >= 120 && s.families >= 60,
       ),
-    "all 60 topics expose honest bank counts",
+    "all 64 topics expose honest bank counts",
   );
   check(
     !JSON.stringify(metadata.data.topicStats).includes('"answers":'),

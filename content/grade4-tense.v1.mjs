@@ -1,0 +1,36 @@
+// Additional contrast cards for the 28 existing P4 tense lessons. All original
+// cards and item versions remain available; these are original teaching texts.
+const data = [
+  ["P4A-U01-L1", "I walk to school every day.", "我每天步行上学。", "every day说明习惯，用一般现在时。I后用walk；换成she，walk变walks。", "She walks to school every day.", "她每天步行上学。", "一般现在时的肯定句中，he、she、it后的实义动词通常用三单形式。"],
+  ["P4A-U01-L2", "I am usually early.", "我通常很早到。", "频率副词usually通常放在be动词后：am usually。", "I usually arrive early.", "我通常很早到。", "在普通肯定句中，usually通常放在实义动词arrive前，不是所有动词后都放usually。"],
+  ["P4A-U01-L3", "Does Mia read after dinner?", "Mia晚饭后读书吗？", "主语是Mia，用Does提问；后面的read用原形，不能写reads。", "Mia does not read after dinner.", "Mia晚饭后不读书。", "does not / doesn't已经表示主语的变化，后面的实义动词用原形。"],
+  ["P4A-U01-L4", "I read comics on Saturdays.", "我每周六读漫画。", "on Saturdays表示反复发生的周六习惯；read这里是原形，读/riːd/。", "I am reading a comic now.", "我现在正在读一本漫画。", "now配合这里正在进行的情境，用am reading。习惯和此刻正在做的事要分开。"],
+  ["P4A-U02-L1", "I was at the sports centre yesterday.", "我昨天在体育中心。", "说过去的位置，I用was；这句话没有实义动词动作，不用did。", "We were at the sports centre yesterday.", "我们昨天在体育中心。", "过去的be要看主语：I/he/she/it用was，you/we/they用were。"],
+  ["P4A-U02-L2", "Where were you last Sunday?", "你上周日在哪里？", "问过去的位置，把were放到you前面；不是Where did you were。", "I was at the library last Sunday.", "我上周日在图书馆。", "last Sunday是已结束的过去时间，描述当时的位置用was，不用am。"],
+  ["P4A-U02-L3", "Was Ben tired yesterday?", "Ben昨天累吗？", "有be的过去问句直接把was提前，不加did。", "Yes, he was. No, he was not.", "是的，他累。不是，他不累。", "简短回答保留was；否定可说was not或wasn't。这里只是两种可能回答，不是同时成立。"],
+  ["P4A-U02-L4", "We were happy at the picnic.", "野餐时我们很开心。", "were描述过去的状态；happy是形容词，不是需要加-ed的动词。", "We played a game at the picnic.", "野餐时我们玩了一个游戏。", "played描述做了什么。过去状态用was/were；过去动作一般让实义动词变过去式。"],
+  ["P4A-U03-L1", "I visited the park yesterday.", "我昨天参观了公园。", "visit是规则动词，过去式加-ed。yesterday指出已结束的过去时间。", "I went to the park yesterday.", "我昨天去了公园。", "go是不规则动词，过去式是went，不能写goed。规则过去式和不规则过去式都能讲过去事件。"],
+  ["P4A-U03-L2", "I carried a small bag yesterday.", "我昨天提了一个小包。", "carry以辅音字母加y结尾，变y为i再加-ed，得到carried。", "I helped Ben with his bag.", "我帮Ben拿他的包。", "help直接加-ed。不要把carry的变化规则套在所有动词上。"],
+  ["P4A-U03-L3", "It rained yesterday morning.", "昨天早上下雨了。", "rain的过去式是rained。这里只报告过去发生的事。", "We stayed inside and drew pictures.", "我们待在室内，还画了画。", "stay变stayed；draw变drew。同一个过去故事中，两个动词都要与过去背景一致。"],
+  ["P4A-U03-L4", "First, we walked to the gate. Then, we saw a bird.", "首先，我们走到大门。然后，我们看见一只鸟。", "First和Then说明顺序；walked是规则过去式，saw是see的不规则过去式。", "Did you see the bird?", "你看见那只鸟了吗？", "肯定句用saw，Did问句后还原成see。did已经承担过去时的变化。"],
+  ["P4A-U04-L1", "I saw a little boat by the river.", "我在河边看见了一条小船。", "see → saw → seen。讲这次过去看见的事用saw；不能单独把seen当过去式。", "I took a photo of the boat.", "我给那条船拍了一张照片。", "take → took → taken。一般过去时的肯定句选中间一列took。"],
+  ["P4A-U04-L2", "Ben found the dog's red ball.", "Ben找到了那只狗的红球。", "find的过去式和过去分词都是found。这里直接讲过去的发现，用found。", "Did Ben find the red ball?", "Ben找到那个红球了吗？", "Did后用原形find，不能用found；主语换成Ben也不改变这条规则。"],
+  ["P4A-U04-L3", "I opened the box and found a map.", "我打开盒子，找到了一张地图。", "opened是规则过去式，found是不规则过去式。and连接的两个动作都发生在过去。", "I did not find a key in the box.", "我没有在盒子里找到钥匙。", "否定句用did not加原形find，不写did not found。"],
+  ["P4A-U04-L4", "I ate a sandwich and drank some water.", "我吃了一个三明治，还喝了些水。", "eat → ate → eaten；drink → drank → drunk。这里报告过去事件，用ate和drank。", "I did not eat the cake.", "我没有吃那个蛋糕。", "did not后恢复原形eat。ate、eaten和eat有各自的位置，不能随意互换。"],
+  ["P4B-U02-L1", "Did you buy a card at the fair?", "你在集市买卡片了吗？", "buy的过去式是bought，但Did问句后用buy，不写bought。", "Yes, I did. I bought a blue card.", "是的，我买了。我买了一张蓝色卡片。", "简答用did；接着说肯定的过去事件时，实义动词再用bought。"],
+  ["P4B-U02-L2", "I did not go to the fair.", "我没有去集市。", "did not / didn't后用go。went只能用于这里对应的肯定过去句。", "I went to the museum instead.", "我改去了博物馆。", "没有did的肯定过去句，go要变成went；不要写I go yesterday。"],
+  ["P4B-U02-L3", "Did Mia take a photo? Yes, she did.", "Mia拍照片了吗？是的，她拍了。", "Did加原形take提问；简答用she did，不重复took。", "Did the boys sing? No, they did not.", "男孩们唱歌了吗？没有。", "一般过去时Did不因主语单复数而变。否定简答也可以说No, they didn't。"],
+  ["P4B-U02-L4", "Were you at the show?", "你当时在演出现场吗？", "at the show描述位置，原句是You were…，直接提前were。", "Did you watch the show?", "你看了那场演出吗？", "watch是实义动词，过去问句用Did加原形watch。不要写Did you were或Were you watched。"],
+  ["P4B-U05-L1", "I am going to make a model tomorrow.", "我打算明天做一个模型。", "已有的打算可用be going to加原形make；主语I搭配am。", "Ben is going to make a model tomorrow.", "Ben打算明天做一个模型。", "主语改成Ben，be改成is，make仍是原形。不要因tomorrow把make变成过去式。"],
+  ["P4B-U05-L2", "We are not going to swim tomorrow.", "我们不打算明天游泳。", "be going to的否定把not放在be后；We搭配are。", "We will not swim tomorrow.", "我们明天不会游泳。", "will not也能表达将来的否定。will后用原形，不写will swam；两种结构不机械地等于相同语境。"],
+  ["P4B-U05-L3", "Is Ben going to bring a ball?", "Ben打算带一个球来吗？", "be going to问句把be提前；bring仍用原形。", "Will Ben bring a ball?", "Ben会带一个球来吗？", "will问句把will提前。两种问法都不能把bring写成过去式brought。"],
+  ["P4B-U05-L4", "The plan says we are going to meet at ten.", "计划写着我们打算十点见面。", "计划表说明意图，不证明事情必然已经发生。这里meet用原形。", "Yesterday, we met at ten.", "昨天，我们十点见了面。", "叙述已发生的过去事实时，meet变成met。时间背景改变，动词结构也改变。"],
+  ["P4B-U06-L1", "Yesterday, I wrote a postcard.", "昨天，我写了一张明信片。", "已结束的过去事件用wrote。write → wrote → written，written不能单独替代wrote。", "I did not write an email yesterday.", "我昨天没有写电子邮件。", "同样是昨天的事情，否定句里由did承担过去变化，write还原。"],
+  ["P4B-U06-L2", "I usually draw after school.", "我通常放学后画画。", "usually说明习惯，用一般现在时；I后用draw。", "Look! I am drawing a dragon now.", "看！我现在正在画一条龙。", "此刻正在进行，用am drawing；不是I drawing，也不是I drew now。"],
+  ["P4B-U06-L3", "I drew a dragon yesterday.", "我昨天画了一条龙。", "昨天的画已经是过去事件，draw用过去式drew。", "I am going to draw a robot tomorrow.", "我打算明天画一个机器人。", "明天的打算用am going to加原形draw。过去、现在、将来的背景不要混在一个结构里。"],
+  ["P4B-U06-L4", "Yesterday I swam. Now I am resting.", "昨天我游了泳。现在我正在休息。", "同一段文字可以换时间：yesterday配swam，now配am resting，各句各自有明确背景。", "Tomorrow I will swim again.", "明天我会再去游泳。", "will后用原形swim。swim、swam、swum是词形；过去式和过去分词不是两种独立的时间。"],
+];
+export const grade4Cards = Object.fromEntries(data.map(([id, a, at, ar, b, bt, br]) => [id, [
+  {title: "看清时间与结构", example:a, translation:at, rule:ar},
+  {title: "换一种表达", example:b, translation:bt, rule:br},
+]]));

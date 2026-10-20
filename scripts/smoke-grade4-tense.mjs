@@ -1,0 +1,226 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+const base = process.argv[2] ?? "http://127.0.0.1:8788";
+assert.ok(
+  ["127.0.0.1", "127.0.0.2", "localhost"].includes(new URL(base).hostname),
+  "synthetic-profile checks are local only",
+);
+const release = JSON.parse(
+    await readFile("content/grade4-tense-release.v1.json", "utf8"),
+  ),
+  byId = new Map(release.items.map((i) => [i.id, i]));
+const jar = new Map(),
+  children = [];
+let checks = 0;
+const check = (ok, label) => {
+  assert.ok(ok, label);
+  checks++;
+  console.log("PASS " + label);
+};
+async function request(path, body, origin = base) {
+  const r = await fetch(base + "/api/v1" + path, {
+    method: body === undefined ? "GET" : "POST",
+    headers: {
+      Cookie: [...jar].map(([k, v]) => `${k}=${v}`).join("; "),
+      "CF-Connecting-IP": "198.19.63.44",
+      ...(body === undefined
+        ? {}
+        : { Origin: origin, "Content-Type": "application/json" }),
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+    signal: AbortSignal.timeout(20000),
+  });
+  for (const h of r.headers.getSetCookie()) {
+    const [p] = h.split(";"),
+      at = p.indexOf("="),
+      k = p.slice(0, at),
+      v = p.slice(at + 1);
+    if (v) jar.set(k, v);
+    else jar.delete(k);
+  }
+  return { status: r.status, data: await r.json() };
+}
+const open = (body) =>
+  request("/sessions", { ...body, clientRequestId: crypto.randomUUID() });
+async function answer(session) {
+  const item = byId.get(session.exercise.id);
+  assert.ok(item);
+  const r = await request("/attempts", {
+    eventId: crypto.randomUUID(),
+    sessionId: session.id,
+    assignmentId: session.assignmentId,
+    leaseId: session.leaseId,
+    answer: item.answers[0],
+  });
+  assert.equal(r.status, 201);
+  return r.data;
+}
+async function create() {
+  const r = await request("/children", {
+    nickname: "四年级时态验证",
+    grade: 4,
+  });
+  assert.equal(r.status, 201);
+  children.push(r.data.id);
+  assert.equal(
+    (await request(`/children/${r.data.id}/select`, {})).status,
+    200,
+  );
+  return r.data.id;
+}
+try {
+  check(
+    (
+      await request("/learning/irregular-verbs/view", {
+        version: 1,
+        group: "all",
+        page: 0,
+      })
+    ).status === 401,
+    "anonymous table disclosure rejected",
+  );
+  assert.equal(
+    (
+      await request("/auth/login", {
+        username: "admin",
+        password: process.env.EQ_ADMIN_PASSWORD ?? "admin123123456",
+      })
+    ).status,
+    200,
+  );
+  const child = await create();
+  const metadata = (await request("/lessons")).data;
+  check(
+    metadata.lessons.filter((l) => l.grade === 4).length === 48 &&
+      metadata.lessons.filter((l) => l.releaseId === release.id).length ===
+        28 &&
+      Object.keys(metadata.topicStats).length === 64,
+    "P4 course enrichment and four topic banks are actually served",
+  );
+  for (const topic of Object.keys(release.stats)) {
+    const cycle = await request("/training/cycles", {
+      topicId: topic,
+      clientRequestId: crypto.randomUUID(),
+    });
+    assert.equal(cycle.status, 201);
+    const phase = await open({
+      topicId: topic,
+      trainingCycleId: cycle.data.id,
+      trainingVersion: cycle.data.version,
+    });
+    check(
+      phase.status === 201 && phase.data.total === 5,
+      "training continuation binds the actual immutable topic release",
+    );
+    let session = (await open({ topicId: topic, roundSize: 5 })).data;
+    const families = new Set();
+    for (let n = 0; n < 5; n++) {
+      check(
+        !Object.hasOwn(session.exercise, "answers") &&
+          byId.get(session.exercise.id)?.topicId === topic,
+        "new assignment has the intended scope without private answers",
+      );
+      families.add(byId.get(session.exercise.id).family);
+      const receipt = await answer(session);
+      assert.notEqual(receipt.outcome, "incorrect");
+      assert.equal(receipt.reviewAlgorithm, "ebbinghaus-v1");
+      const next = await request(`/sessions/${session.id}/next`, {
+        assignmentId: session.assignmentId,
+        leaseId: session.leaseId,
+      });
+      assert.equal(next.status, 200);
+      if (n < 4) session = next.data.session;
+      else assert.equal(next.data.result.total, 5);
+    }
+    check(
+      families.size === 5,
+      "one round has five distinct facts and feeds the shared review policy",
+    );
+  }
+  const progress = (await request("/progress")).data;
+  for (const body of [
+    { version: 9, group: "all", page: 0 },
+    { version: 1, group: "wrong", page: 0 },
+    { version: 1, group: "AAA", page: 5 },
+    { version: 1, group: "all", page: -1 },
+    { version: 1, group: "all", page: "0" },
+  ])
+    assert.equal(
+      (await request("/learning/irregular-verbs/view", body)).status,
+      422,
+    );
+  check(true, "table version, group and page validated before disclosure");
+  check(
+    (
+      await request(
+        "/learning/irregular-verbs/view",
+        { version: 1, group: "all", page: 0 },
+        "https://invalid.example",
+      )
+    ).status === 403,
+    "cross-origin table writes rejected",
+  );
+  const shown = await request("/learning/irregular-verbs/view", {
+    version: 1,
+    group: "all",
+    page: 0,
+    words: [{ base: "fake" }],
+    keys: ["fake-key"],
+  });
+  check(
+    shown.status === 200 &&
+      shown.data.childId === child &&
+      shown.data.words.length === 10 &&
+      shown.data.words[0].base === "go" &&
+      shown.data.words.every((w) => w.base !== "fake"),
+    "server owns disclosed words and ignores client answer replacement",
+  );
+  const after = (await request("/progress")).data;
+  const extended = await request("/learning/irregular-verbs/view", {
+    version: 1,
+    group: "all",
+    page: 0,
+    scope: "extended",
+  });
+  check(
+    extended.status === 200 &&
+      extended.data.total === 30 &&
+      extended.data.words[0].base === "begin",
+    "extended guide is scoped to its own thirty verbs",
+  );
+  check(
+    after.stars === progress.stars &&
+      JSON.stringify(after.cards) === JSON.stringify(progress.cards),
+    "viewing forms adds no memory strength, rewards or course completion",
+  );
+  const assisted = await open({
+    exerciseId: "g4.forms.irregular-past.core.go.form.input",
+  });
+  assert.equal(assisted.status, 201);
+  const receipt = await answer(assisted.data);
+  check(
+    receipt.outcome === "hinted" && !receipt.independentEvidence,
+    "a displayed verb form cannot count as independent recall",
+  );
+  await create();
+  const fresh = await open({
+    exerciseId: "g4.forms.irregular-past.core.go.form.input",
+  });
+  assert.equal(fresh.status, 201);
+  const independent = await answer(fresh.data);
+  check(
+    independent.independentEvidence &&
+      independent.nextReviewAt > Date.now() + 86300000 &&
+      independent.nextReviewAt < Date.now() + 86500000,
+    "another child has independent exposure and memory records",
+  );
+  console.log(`${checks} P4 tense runtime checks passed`);
+} finally {
+  for (const id of children)
+    assert.equal(
+      (await request(`/children/${id}/remove`, {})).status,
+      200,
+      "remove only synthetic P4 records",
+    );
+  if (jar.has("eq_account")) await request("/logout", {});
+}
