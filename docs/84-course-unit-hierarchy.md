@@ -1,6 +1,6 @@
 # v0.59.1 单元与课程层级澄清
 
-状态：本地实现、573项单元测试及隔离浏览器验收通过，等待同步发布。
+状态：已同步发布Preview、Production与正式域名，实际发布与线上验收通过。
 
 ## 问题与行为
 
@@ -25,4 +25,10 @@
 
 ## 发布
 
-待本阶段Actions完成后补记提交、Preview/Production部署编号与真实线上结果。继续使用现有免费资源与两套独立D1。
+北京时间2026/10/20 20:14:42，[Actions 39418944407](https://github.com/windssea/enStudy/actions/runs/39418944407)成功发布ba0bb50355e53b5af7d652bed3c25fef47c4eeb3至Preview 6e7941bd与Production 87922805，正式域名同版本。两套现有D1仍0050，没有待用迁移，保持免费资源与原AI配置。
+
+573项单元测试/70文件、1519完整运行（59基础+1460条PASS）、两站各88线上、三域名48只读检查通过。只读检查确认新的JS/CSS与离线清单、教学插图、KET及层级界面标记一致，旧“上次练习已完成”文案不存在。正式域名浏览器选单元5后确认恰有4节本单元课程，标题与选中项一致，无跨单元续练；未在真实儿童档案作答。
+
+入口`/assets/index-Bs9dhej4.js`，SHA256 `7c0df6ff7fd04f2c8617e37cd4d39290d950ab048a13ab7ee650126f0fd68d60`；样式`/assets/index-2NUd2eST.css`，SHA256 `778236c553f4fa1112990f91a01f61721c102001d42a0c454a476d4b997b8bc8`。Worker 19990755字节，SHA256 `871cbc9f5d1ec62e0eb87487305f436c7a843511fd1ba5259f7f4f6bbb94434f`；离线壳`eq-shell-v1-fc6fcb3aba8183ca`共135资源、15417050字节。
+
+证据在忽略目录`artifacts/actions-v0591-complete.log`、`actions-v0591-result.json`、`v0591-published-public.json`、`v0591-build-proof.json`与`v0591-production-unit5.png`。Actions线上检查使用自建测试数据并清理；本地浏览器测试仅在内存数据库进行。

@@ -52,3 +52,5 @@ M1-04f,M1,同一动作的时态对比,明确参照点并比较12种表达且示�
 M1-04g,M1,KET完整词表与练习,逐条对齐2025词表并接入搜索随机练习与复习,official-2025-wordlist-deployed-context-and-audio-expansion-pending,docs/82-ket-vocabulary.md；2784词卡5568任务与570单元1519运行及双站各88线上和三域名42只读通过
 
 M1-04h,M1,NS运动系全站公共界面,单一风格文件与CSS分层及PC平板导航和核心选择流统一,sports-interface-deployed-real-device-child-study-pending,docs/83-sports-interface.md；570单元1519运行与双站各88线上及三域名45只读通过
+
+M1-04i,M1,单元课程层级与续练范围,仅显示本单元课程和续练并保持真实路径与返回选择,unit-lesson-hierarchy-deployed,docs/84-course-unit-hierarchy.md；573项单元测试1519运行与双站各88线上及三域名48只读通过
