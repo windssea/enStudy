@@ -1,6 +1,6 @@
 # v0.59 全站 NS运动系界面
 
-当前阶段：本地实现与浏览器验收完成，等待GitHub Actions同步发布。发布成功后将补齐准确提交、运行、部署和线上校验结果。
+当前阶段：Preview、Production与正式域名均已同步发布，完整测试、线上静态资源及浏览器验收通过。
 
 ## 解决的问题
 
@@ -24,7 +24,7 @@
 
 ## 本地验收
 
-- 570项单元测试/70文件通过；完整Actions还会对同一提交重跑。
+- 570项单元测试/70文件通过；本地与同一提交的完整Actions均通过。
 - 格式、前端构建和Worker构建通过。没有新增或修改D1迁移。
 - 一次性Miniflare内存数据库执行全部0001–0050迁移，浏览器登录测试管理员。与真实本地和云端家庭数据隔离。
 - 走通课程→例句→开始题目→选中→提交→保存反馈，保留示范辅助标记。小学主题/KET切换、KET目录、专题菜单、减少动效开关正常。
@@ -36,4 +36,10 @@
 
 ## 发布记录
 
-待本阶段Actions完成。继续复用Preview/Production两套独立D1和免费资源，要求同一前端构建同步两站，线上检查通过后再记为已发布。
+北京时间2026/10/20 19:40:11，[Actions 39414862028](https://github.com/windssea/enStudy/actions/runs/39414862028)成功发布提交7fadfc2271916f1080cf934239f724e1fcaf2082。Preview部署f7525550，Production部署2ea7de0d，正式域名同版本。两套独立D1保持0050，没有新增或修改迁移，沿用免费资源与独立AI绑定，注册关闭。
+
+570项单元/70文件、1519项完整运行（59基础+1460条PASS）、双站各88项线上检查、三域名45项只读校验通过。额外校验同时比对入口JS、NS运动系分层CSS、KET与时态模块、离线清单和9张教学插图的精确SHA256。
+
+入口`/assets/index-DG_ql83D.js`，SHA256 `dfdcd06329815c41a976233e482a04a694e204a48d8857905a27dd6f7e592a54`；样式`/assets/index-BbKLvf9E.css`，SHA256 `1b40a16c50c228d7764858af625015bf5502a772fcc97ca171c16861f89d6d95`。Worker 19990755字节，SHA256 `871cbc9f5d1ec62e0eb87487305f436c7a843511fd1ba5259f7f4f6bbb94434f`；离线壳`eq-shell-v1-9204e10eacf61948`共135资源、15415358字节，低于16MiB。
+
+正式域名浏览器确认横向导航、当前版课程卡与插图；截图`artifacts/v059-production-map.png`。完整结果在`artifacts/actions-v059-complete.log`、`actions-v059-result.json`、`v059-published-public.json`与`v059-build-proof.json`。本地浏览器仅在隔离环境内作答；Actions线上检查使用自建测试数据并清理，正式网页验收没有操作真实孩子的学习记录。
