@@ -1,6 +1,6 @@
 # 生图交付记录
 
-模式：内置imagegen，透明背景；下列为最终选用版本的原始提示。先前写实/Pixar试稿未接入产品。本次只作WebP格式压缩，不裁剪、重绘或缩放，原尺寸与alpha通道逐字节核对保持。
+模式：内置imagegen，透明背景；下列保留生成与修订提示。实际选用版本以`public/content/learning-art.v1.json`登记为准；课程人物采用文末v2，首轮人物试稿未发布。先前写实/Pixar试稿未接入产品。生产图只作WebP格式压缩，不裁剪、重绘或缩放，原尺寸与alpha通道逐字节核对保持。
 
 ## telescope-sports-v1.png
 
@@ -19,7 +19,7 @@ Generate a NEW original teaching scene in our unified Nintendo Switch Sports-ins
 ```
 
 
-## v0.56 课程场景 · 内置 imagegen
+## v0.56 首轮课程试稿 · 人物未发布
 
 四张图均以 `art-source/telescope-sports-v1.png` 为同一风格参考，真实透明背景。只压缩为 WebP，原尺寸与 alpha 逐字节保持。
 

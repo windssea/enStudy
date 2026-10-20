@@ -24,7 +24,7 @@
 
 ## 素材交付与验收
 
-新素材必须使用imagegen内置工具，并引用同一基准图：`art-source/telescope-sports-v1.png`。真实教学对象、行为和视角优先于装饰。透明图必须有真实alpha，无文字、徽标、水印或棋盘格。生产WebP保留原尺寸与完整alpha，单图目标小于300KB；PNG原件保存在本设计目录，不发进站点静态构建。
+新素材必须使用imagegen内置工具。当前人物基准图为`art-source/course-students-v2-sports-v1.png`，统一浅肤色、现代发型和运动服；`art-source/telescope-sports-v1.png`保留为材质和光照参考。真实教学对象、行为和视角优先于装饰。透明图必须有真实alpha，无文字、徽标、水印或棋盘格。生产WebP保留原尺寸与完整alpha，单图目标小于300KB；PNG原件保存在本设计目录，不发进站点静态构建。
 
 生产素材登记于`public/content/learning-art.v1.json`，包含styleId、尺寸、大小、哈希及替代文字。当前两张为收拾望远镜与发现石头，完整提示见[ART_PROMPTS.md](ART_PROMPTS.md)。官方参考截图只在忽略的验收目录，不随项目发布。
 

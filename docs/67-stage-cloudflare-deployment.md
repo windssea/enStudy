@@ -97,3 +97,8 @@ CI通过57文件460项单元、格式、构建、Functions编译、本地初始�
 ## v0.55统一运动系视觉与紧凑流程同步发布
 
 2026年10月20日15:44，[运行39387027896](https://github.com/windssea/enStudy/actions/runs/39387027896)成功发布4c5711e至Preview 4fad404c与Production 179c5f52。554单元、1504完整运行、两站各82线上与三域名24只读检查通过，正式域名新版首页浏览器验收通过。D1仍0049，无待用迁移，环境主密钥和免费资源复用。125资产离线壳、NS运动系统一规范、两张教学图及最终PC/Pad尺寸截图见[本阶段证据](79-sports-theme-and-teaching-diagrams.md)。
+
+
+## v0.56课程选择与情境插画同步发布
+
+北京时间2026/10/20 16:37:28，[运行39393073596](https://github.com/windssea/enStudy/actions/runs/39393073596)成功发布e60e958至Preview 9a25c7f6与Production 0165dd44。557单元、1504完整运行、两站各83线上和三域名27只读检查通过；独立D1仍0049，免费资源与AI配置复用。课程直接按单元选择，首批四课提供统一运动系情境图；其余插画和教研继续，见[实际证据](80-course-selection-and-context-art.md)。
