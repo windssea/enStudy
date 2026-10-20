@@ -34,6 +34,13 @@ import {
 } from "../domain/selection";
 import type { Answer, LearningSession, Receipt } from "../contracts/index";
 import { conceptLab } from "../domain/concepts";
+import {
+  comparisonRowsFor,
+  comparisonSentence,
+  comparisonVersion,
+  isTimeReference,
+} from "../domain/tenseComparison";
+import { sentenceKey } from "../domain/exposure";
 import { companionRoutes, readCompanion } from "./companions";
 import { writingRoutes } from "./writing";
 import { phonicsRoutes } from "./phonics";
@@ -1633,6 +1640,49 @@ app.post("/api/v1/learning/vocabulary/:id/view", async (c) => {
       409,
     );
   return c.json({ saved: true, word });
+});
+app.post("/api/v1/learning/tense-comparison/view", async (c) => {
+  const body = await c.req.json();
+  if (
+    !body ||
+    Array.isArray(body) ||
+    typeof body !== "object" ||
+    !isTimeReference(body.reference) ||
+    body.version !== comparisonVersion
+  )
+    return c.json(
+      fault("INVALID_COMPARISON", "请选择当前版本的时间对比。"),
+      422,
+    );
+  const actor = c.get("actor"),
+    rows = comparisonRowsFor(body.reference);
+  const keys = rows.map((row) => sentenceKey(comparisonSentence(row)));
+  await recordExposure(c.env.DB, actor, keys);
+  const [key] = await hashedExposureKeys(keys),
+    now = Date.now();
+  const saved = await c.env.DB.prepare(
+    `SELECT 1 FROM teaching_exposures WHERE household_id=? AND child_id=? AND evidence_key=? AND shown_day=? AND ${grantAuthorization}`,
+  )
+    .bind(
+      actor.householdId,
+      actor.childId,
+      key,
+      localDay(now, actor.timezone),
+      actor.grantId,
+      now,
+      now,
+    )
+    .first();
+  if (!saved)
+    return c.json(
+      fault("AUTH_CHANGED", "档案权限有变化，请重新打开时态对比。"),
+      409,
+    );
+  return c.json({
+    saved: true,
+    version: comparisonVersion,
+    reference: body.reference,
+  });
 });
 app.post("/api/v1/learning/concepts/:id/view", async (c) => {
   const lab = conceptLab(c.req.param("id"));

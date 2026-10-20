@@ -75,3 +75,26 @@ Update this original school-library scene to match our new student cast and fash
 ```text
 Generate one original educational course still-life illustration, not a UI. Style reference is the attached image: the same clean high quality stylized console sports game 3D, carefully bevelled forms, matte and satin materials, soft broad upper-left lighting, aqua cyan mint navy colors with a restrained coral accent. Scene: a single clearly blue school backpack, one graphite pencil, two school rulers with simple unlabelled tick marks, and one closed mint notebook neatly arranged on a small pale oak school desk. The blue bag must be the most prominent object, the pencil and rulers clearly recognizable. No people or animals, no mascots, no island, no photorealism, no clay, no clutter. Full objects inside a balanced landscape composition. No text, numbers, logos or watermark. Transparent background genuine alpha, only objects, the desk and subtle contact shadows. Intended as the course scene for a lesson about school belongings and have/has; visually match the reference lighting and materials.
 ```
+
+
+## v0.57 苹果时态对比 · 内置 imagegen
+
+whole以最新运动服学生图为材质/光照参考；progress和finished均编辑whole保持同一苹果和盘子。PNG原件保留，WebP仅格式压缩，原尺寸与alpha逐字节一致。
+
+### apple-whole-sports-v1.png
+
+```text
+Create ONE original educational object illustration in our clean console sports-game 3D style. Attached image is STYLE REFERENCE ONLY, use its carefully modelled matte/satin materials, clean cyan/mint palette, soft broad upper-left lighting, no photo textures or clay. Subject: one fresh red apple with a short brown stem and one small green leaf, sitting centered on one plain small white ceramic snack plate with a thin mint rim. Simple readable whole apple silhouette. No bite, no cut, no other food, no utensils, no human or mascot. Complete plate and apple fully visible with comfortable margin. Three-quarter view slightly above plate, clean high-quality rounded modelling, subtle contact shadow. Transparent background genuine alpha, no backdrop glow, no words, numerals, timeline, labels, logo or watermark. This is the intact apple state in a coherent English tense teaching sequence; later images must match the same apple, plate, camera and light.
+```
+
+### apple-progress-sports-v1.png
+
+```text
+Make the middle eating-progress state of this same educational apple illustration. Keep exactly the same red apple identity, stem, green leaf, white plate with thin mint rim, camera angle, scale, soft upper-left lighting, clean stylized console-game 3D materials and genuine transparent background. Change only the apple: several substantial rounded bite marks have removed about half the edible flesh from the front/right side, clearly revealing pale cream flesh, while enough red flesh remains to show it is not finished. Must look bitten, not sliced cleanly or cut in half by a knife. Keep it upright on the plate, one single apple only, no extra fruit, no human or hand, no utensils, no text, logos, arrows, timeline, or UI. Full plate visible with margin. No photorealistic noise; smooth refined modelled forms. This represents 'in progress', not 'finished'. Genuine transparent alpha, no background glow.
+```
+
+### apple-finished-sports-v1.png
+
+```text
+Create the finished eating state of the SAME educational apple sequence from this reference image. Preserve the same plate (white with thin mint rim), camera angle, overall framing, soft upper-left light, clean stylized console sports game 3D modelled materials and genuine transparent alpha. Change only the apple to a clearly eaten apple core: almost all edible flesh has been bitten away on all sides, leaving a slim upright pale core with small red skin caps at top and bottom, original short brown stem and one green leaf. Recognizable central apple core, not half an apple, no knife cuts, no extra apples, human, hand, utensils or crumbs. Full plate inside frame, generous margin. Smooth refined modelling, no photorealistic noise or clay. No text, numerals, labels, logos, arrows, timeline, UI or backdrop glow. This represents the result 'the apple has been eaten' for teaching, with the plate and lighting consistent with previous stages.
+```

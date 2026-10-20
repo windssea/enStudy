@@ -84,6 +84,16 @@ try {
     (await view("forms.ing", "sit", new Map())).status === 401,
     "anonymous demonstration logging is denied",
   );
+  check(
+    (
+      await request(
+        "/learning/tense-comparison/view",
+        { reference: "past", version: 1 },
+        new Map(),
+      )
+    ).status === 401,
+    "anonymous tense comparison disclosure is denied",
+  );
   assert.equal(
     (
       await request("/auth/login", {
@@ -126,6 +136,66 @@ try {
     "foreign origin cannot reveal or stamp a concept demonstration",
   );
   const started = await single("sample.be.1");
+  const comparisonCount = () =>
+    sql(
+      `SELECT COUNT(*) AS n FROM teaching_exposures WHERE child_id=${quote(child)}`,
+    )[0].n;
+  for (const body of [
+    null,
+    [],
+    {},
+    { reference: "yesterday", version: 1 },
+    { reference: "past", version: 0 },
+  ])
+    assert.equal(
+      (await request("/learning/tense-comparison/view", body)).status,
+      422,
+    );
+  check(
+    comparisonCount() === 0,
+    "invalid comparison references and stale versions write no exposure",
+  );
+  check(
+    (
+      await request(
+        "/learning/tense-comparison/view",
+        { reference: "past", version: 1 },
+        jar,
+        { Origin: "https://unrelated.example" },
+      )
+    ).status === 403,
+    "foreign origin cannot disclose tense comparison",
+  );
+  for (const [reference, expected] of [
+    ["past", 4],
+    ["present", 8],
+    ["future", 12],
+    ["all", 12],
+  ]) {
+    const result = await request("/learning/tense-comparison/view", {
+      reference,
+      version: 1,
+      keys: ["family:invented"],
+      sentence: "invented",
+    });
+    check(
+      result.status === 200 &&
+        result.data.saved &&
+        result.data.reference === reference &&
+        result.data.version === 1 &&
+        comparisonCount() === expected,
+      `comparison ${reference} records only its authoritative examples without rewards`,
+    );
+  }
+  check(
+    (
+      await request("/learning/tense-comparison/view", {
+        reference: "past",
+        version: 1,
+      })
+    ).status === 200 && comparisonCount() === 12,
+    "reopening comparison does not duplicate teaching records",
+  );
   let viewed = 0;
   for (const lab of source.labs)
     for (const example of lab.cases) {

@@ -57,6 +57,9 @@ function runtime(
               ...(webp
                 ? [
                     "/art/concepts/sports-v1/telescope.webp",
+                    "/art/concepts/sports-v1/apple-whole.webp",
+                    "/art/concepts/sports-v1/apple-progress.webp",
+                    "/art/concepts/sports-v1/apple-finished.webp",
                     "/art/courses/sports-v1/students-v2.webp",
                     "/art/courses/sports-v1/bag.webp",
                     "/art/courses/sports-v1/classroom-v2.webp",
@@ -193,6 +196,12 @@ describe("offline public shell policy", () => {
     expect(
       await good.request("/art/courses/sports-v1/unregistered.webp"),
     ).toBeUndefined();
+    for (const file of ["apple-whole", "apple-progress", "apple-finished"])
+      expect(
+        (
+          await good.request(`/art/concepts/sports-v1/${file}.webp`)
+        )?.headers.get("content-type"),
+      ).toBe("image/webp");
     const bad = runtime(false, false, false, false, false, true, true);
     expect((await bad.prepare()).prepared).toBe(false);
   });

@@ -9,6 +9,7 @@ import {
 import { conceptLab } from "../packages/domain/concepts";
 import TrainingCoaching from "./TrainingCoaching";
 const ConceptLab = lazy(() => import("./ConceptLab"));
+const TenseComparison = lazy(() => import("./TenseComparison"));
 export default function TopicJourney({
   topicId,
   title,
@@ -190,6 +191,14 @@ export default function TopicJourney({
           </h1>
         </div>
       </div>
+      {topicId.startsWith("tense.") && (
+        <Suspense fallback={<p role="status">正在准备时态对比…</p>}>
+          <TenseComparison
+            key={`${topicId}:${childId ?? "guest"}`}
+            childId={childId}
+          />
+        </Suspense>
+      )}
       {error && (
         <p className="notice error" role="alert">
           {error}

@@ -513,6 +513,16 @@ check(
   (await request("/api/v1/learning/writing/drafts")).status === 401,
   "anonymous writing work is protected",
 );
+check(
+  (
+    await request("/api/v1/learning/tense-comparison/view", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Origin: base.origin },
+      body: JSON.stringify({ reference: "past", version: 1 }),
+    })
+  ).status === 401,
+  "anonymous tense comparison disclosure rejected",
+);
 const login = await request("/api/v1/auth/login", {
   method: "POST",
   headers: { "Content-Type": "application/json", Origin: base.origin },
@@ -626,6 +636,17 @@ try {
   check(
     made.status === 201 && selected.status === 200,
     "disposable release profile selected",
+  );
+  const comparison = await authenticated("/learning/tense-comparison/view", {
+    reference: "past",
+    version: 1,
+  });
+  check(
+    comparison.status === 200 &&
+      comparison.data.saved === true &&
+      comparison.data.version === 1 &&
+      comparison.data.reference === "past",
+    "versioned tense comparison disclosure saves for disposable child",
   );
   const writing = await authenticated("/learning/writing/drafts", {
     childId: temporaryChild,

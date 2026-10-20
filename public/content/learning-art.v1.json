@@ -48,6 +48,30 @@
       "alt": "两位学生在图书馆整理课本",
       "bytes": 241648,
       "sha256": "c27d833071029ff4c9f23e4cd97ce6f80f33da2e5decbccd739f288f58f4d44d"
+    },
+    "apple-whole": {
+      "url": "/art/concepts/sports-v1/apple-whole.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "盘子上的完整苹果，用于表示习惯或将来的活动对象",
+      "bytes": 85202,
+      "sha256": "74a9d92221c57fc5a4c398fe487d873b7205294794be6d507cfc86fd2b277c64"
+    },
+    "apple-progress": {
+      "url": "/art/concepts/sports-v1/apple-progress.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "尚未吃完的苹果，示意正在进行的过程",
+      "bytes": 113022,
+      "sha256": "8d40162457024d2b3a70ef0716adcbca3bc30673e4310f22c5b15f3b503c95b2"
+    },
+    "apple-finished": {
+      "url": "/art/concepts/sports-v1/apple-finished.webp",
+      "width": 1536,
+      "height": 1024,
+      "alt": "吃完后留下的苹果核，示意本例中吃完的结果",
+      "bytes": 89748,
+      "sha256": "f8d3371db344990bd97ac1fd6774a6c30a974155b622acf8dc380f154b279e6b"
     }
   }
 }

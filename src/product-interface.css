@@ -1,4 +1,212 @@
 /* Shared product controls. Loaded after historical illustration/layout styles. */
+.tense-comparison {
+  margin-block: 20px;
+  padding: 24px;
+}
+.tense-comparison-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.tense-comparison-heading h2 {
+  margin: 0;
+  font-size: 25px;
+}
+.tense-comparison-heading p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+.tense-clock {
+  padding: 12px 16px;
+  background: var(--primary-soft);
+  border-radius: 12px;
+  margin-block: 20px 16px;
+}
+.tense-reference-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.tense-rows {
+  display: grid;
+  gap: 18px;
+}
+.tense-comparison-row {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.tense-row-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tense-row-heading h3 {
+  margin: 0;
+  font-size: 21px;
+}
+.tense-row-heading > span {
+  color: var(--muted);
+  font-size: 14px;
+}
+.tense-row-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 24px;
+  align-items: center;
+}
+.tense-row-sentence p[lang="en"] {
+  font-size: 23px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  margin: 14px 0 10px;
+}
+.tense-row-sentence p[lang="en"] strong {
+  color: var(--primary);
+}
+.tense-row-sentence p {
+  margin: 10px 0 16px;
+}
+.tense-focus {
+  color: var(--teal);
+  font-size: 17px;
+  line-height: 1.6;
+}
+.tense-row-visual {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  justify-items: center;
+  min-width: 0;
+  background: var(--primary-soft);
+  border-radius: 12px;
+  padding: 8px;
+}
+.tense-row-visual img {
+  display: block;
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+.tense-prediction {
+  grid-column: 1 / -1;
+  justify-self: start;
+  color: var(--muted);
+  font-size: 14px;
+}
+.tense-comparison-diagram {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.tense-comparison-row details {
+  margin-top: 14px;
+}
+.tense-comparison summary {
+  min-height: 44px;
+  align-content: center;
+  cursor: pointer;
+}
+.tense-comparison-row details p {
+  line-height: 1.7;
+}
+.tense-comparison-summary {
+  margin-block: 24px 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--mint-soft);
+}
+.tense-comparison-summary p {
+  margin-bottom: 0;
+  line-height: 1.7;
+}
+.tense-usage-notes {
+  margin-block: 12px;
+}
+.tense-usage-notes p {
+  line-height: 1.7;
+}
+.tense-overview {
+  margin-top: 20px;
+}
+.tense-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+.tense-overview-grid section {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.tense-overview-grid h3 {
+  color: var(--primary);
+  margin: 0 0 16px;
+}
+.tense-overview-grid h4 {
+  font-size: 17px;
+  margin: 16px 0 8px;
+}
+.tense-overview-grid p {
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.tense-overview-grid p[lang="en"] {
+  font-size: 18px;
+}
+@media (max-width: 850px) {
+  .tense-row-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .tense-row-visual {
+    grid-template-columns: 90px minmax(0, 1fr);
+  }
+  .tense-row-visual img {
+    width: 90px;
+    height: 90px;
+  }
+  .tense-prediction {
+    grid-column: 1/-1;
+  }
+  .tense-overview-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 550px) {
+  .tense-comparison {
+    padding: 16px;
+  }
+  .tense-comparison-heading h2 {
+    font-size: 22px;
+  }
+  .tense-reference-controls {
+    gap: 8px;
+  }
+  .app-shell.child-shell .tense-reference-controls button {
+    font-size: 14px;
+    padding: 10px 6px;
+  }
+  .tense-row-sentence p[lang="en"] {
+    font-size: 21px;
+  }
+  .tense-comparison-row {
+    padding: 14px;
+  }
+  .tense-row-visual {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tense-row-visual img {
+    width: 120px;
+    height: 85px;
+  }
+}
 .app-shell.child-shell {
   background: var(--playground);
 }
