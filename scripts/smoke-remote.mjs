@@ -660,19 +660,6 @@ try {
       ketCardData.theme.collection === "ket",
     "published KET group and immutable card IDs match the release",
   );
-  const ketStart = await authenticated("/sessions", {
-    wordThemeId: "ket.alphabet.01",
-    wordMode: "spelling",
-    roundSize: 5,
-    clientRequestId: crypto.randomUUID(),
-  });
-  check(
-    ketStart.status === 201 &&
-      ketStart.data.total === 5 &&
-      ketStart.data.exercise.id.startsWith("word.ket.") &&
-      ketStart.data.exercise.type === "input",
-    "KET spelling assignments are published in the remote D1",
-  );
   const comparison = await authenticated("/learning/tense-comparison/view", {
     reference: "past",
     version: 1,
@@ -780,6 +767,19 @@ try {
       afterDemo.data.answered === 0 &&
       afterDemo.data.stars === 0,
     "position lab returns its authored scene without creating a score",
+  );
+  const ketStart = await authenticated("/sessions", {
+    wordThemeId: "ket.alphabet.01",
+    wordMode: "spelling",
+    roundSize: 5,
+    clientRequestId: crypto.randomUUID(),
+  });
+  check(
+    ketStart.status === 201 &&
+      ketStart.data.total === 5 &&
+      ketStart.data.exercise.id.startsWith("word.ket.") &&
+      ketStart.data.exercise.type === "input",
+    "KET spelling assignments are published in the remote D1",
   );
   const courseStart = await authenticated("/sessions", {
     lessonId: "P6B-U06-L1",
