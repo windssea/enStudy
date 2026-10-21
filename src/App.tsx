@@ -1571,13 +1571,14 @@ export default function App() {
                   </p>
                 )}
                 <h1>{session.exercise.title}</h1>
-                <p className="lead">{session.exercise.context}</p>
-
-                {session.exercise.wordFormCue && (
+                {session.exercise.wordFormCue ? (
                   <WordFormCue
                     key={session.assignmentId}
                     cue={session.exercise.wordFormCue}
+                    context={session.exercise.context}
                   />
+                ) : (
+                  <p className="lead">{session.exercise.context}</p>
                 )}
 
                 {session.exercise.reading && (

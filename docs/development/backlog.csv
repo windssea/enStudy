@@ -64,4 +64,5 @@ M1-04m,M1,跨版本动态模块恢复,旧页面遇到已替换模块时提供可
 M1-04n,M1,紧凑复习流程,一组真实任务与主操作并删除重复空卡和旧专题阶段面板,compact-review-deployed,docs/88-loading-recovery-and-compact-review.md；平板窄屏及真实保存与到期复习入口已验
 M1-04o,M1,撤下儿童离线推广入口,首页复习和普通答题不再推广离线且已有答案和同步路径保留,offline-child-promotion-removed-legacy-sync-retained-deployed,docs/89-offline-entry-cleanup.md；597项单元及本地原有档案只读入口核验通过
 M1-04p,M1,四年级时态和不规则动词,深化28课56张对照卡并新增4专题840变体及逐词复习,grade4-tense-irregular-deployed-teaching-review-pending,docs/90-grade4-tense-and-irregular-verbs.md；602项单元与38专项运行和四种屏幕尺寸验收通过
-M1-04q,M1,共享词形卡视觉和文案治理,移除WordFormCue旧伙伴贴图并合并重复要求且保留词形信息与辅助证据规则,observed-pending,src/WordFormCue.tsx；artifacts/v063-did-recall.png和docs/90-grade4-tense-and-irregular-verbs.md记录实际差距
+M1-04q,M1,共享词形卡与图标治理,移除旧伙伴贴图和重复要求并用单一Lucide来源统一公共图标,local-ui-verified-deployment-pending,docs/91-shared-word-cue-and-icons.md；603项单元和四尺寸答题保存恢复验收通过
+M1-04r,M1,四年级题目语境审校,核对问句与否定句的主语人称所有格及自然表达并保持旧版本,observed-content-review-pending,docs/91-shared-word-cue-and-icons.md；当前发现Did you keep my promise等人称语境需审校

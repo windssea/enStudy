@@ -44,6 +44,20 @@
   --sport-accent: #087d77;
   --sport-soft: #e3f5f1;
 }
+/* Shared word-form task uses the same surface and emphasis tokens. */
+.word-form-cue {
+  border: 1px solid var(--border);
+  border-radius: var(--control-radius);
+  background: var(--primary-soft);
+  color: var(--ink);
+}
+.word-form-cue-word,
+.word-form-cue-goal {
+  font-weight: 800;
+}
+.word-form-cue-arrow {
+  color: var(--primary);
+}
 /* One navigation, a small identity strip, then learning content. */
 .app-shell.child-shell {
   display: block;

@@ -612,6 +612,39 @@
   max-width: 900px;
   margin-inline: auto;
 }
+.word-form-cue {
+  display: grid;
+  grid-template-columns: minmax(0, auto) 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  margin-block: 24px;
+  padding: 18px 20px;
+}
+.word-form-cue-word {
+  font-size: clamp(32px, 4vw, 40px);
+  overflow-wrap: anywhere;
+}
+.word-form-cue-arrow {
+  display: flex;
+}
+.word-form-cue-goal {
+  font-size: 18px;
+  line-height: 1.5;
+}
+.app-shell.child-shell .question.word-form-context {
+  font-size: clamp(25px, 2.5vw, 32px);
+  line-height: 1.5;
+}
+@media (max-width: 520px) {
+  .word-form-cue {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 16px;
+  }
+  .word-form-cue-arrow {
+    display: none;
+  }
+}
 .app-shell.child-shell .exercise-card {
   padding: clamp(24px, 4vw, 40px);
   text-align: left;

@@ -1,6 +1,6 @@
 {
   "name": "english-quest",
-  "version": "0.63.0",
+  "version": "0.64.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -70,6 +70,7 @@
   "dependencies": {
     "@react-three/fiber": "9.8.2",
     "hono": "4.13.13",
+    "lucide-react": "1.60.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "three": "0.186.1"
@@ -81,7 +82,7 @@
     "@types/react-dom": "^19.0.0",
     "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "6.1.2",
-    "csv-parse": "^6.0.0",
+    "csv-parse": "7.0.3",
     "esbuild": "0.28.2",
     "jsonc-parser": "3.3.1",
     "miniflare": "5.20261012.1-beta",
