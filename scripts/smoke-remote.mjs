@@ -225,11 +225,13 @@ const privateGrade4 = await Promise.all(
     "/content/grade4-tense-release.v1.json",
     "/content/grade4-tense-release.latest.json",
     "/content/grade4-tense-release.cues-v2.json",
+    "/content/grade4-tense-concepts.v1.json",
     "/content/grade4-tense.v1.mjs",
     "/content/grade4-language-review.v1.json",
     "/content/grade4-language-review.v1.mjs",
     "/migrations/0052_grade4_tense.sql",
     "/migrations/0054_grade4_language_review.sql",
+    "/migrations/0055_grade4_tense_concepts.sql",
   ].map(async (path) => {
     const response = await request(path),
       text = await response.text();
@@ -937,6 +939,17 @@ try {
       revisedAssignment.data.exercise?.prompt === revisedTask.prompt &&
       !Object.hasOwn(revisedAssignment.data.exercise, "answers"),
     "reviewed teach-how-to example is assignable from the migrated D1",
+  );
+  const concept = await authenticated("/sessions", {
+    exerciseId: "bank.tense.past-contrast.37.input",
+    clientRequestId: crypto.randomUUID(),
+  });
+  check(
+    concept.status === 201 &&
+      concept.data.exercise?.type === "choice" &&
+      concept.data.exercise.choices?.length === 3 &&
+      !Object.hasOwn(concept.data.exercise, "answers"),
+    "tense concepts offer visible choices instead of arbitrary free-text keys",
   );
   for (const topicId of Object.keys(grade4.stats)) {
     const ordinary = await authenticated("/sessions", {

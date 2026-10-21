@@ -7,6 +7,7 @@ import grade4 from "../../content/grade4-tense-release.v1.json";
 import grade4Current from "../../content/grade4-tense-release.latest.json";
 import grade4CuesV2 from "../../content/grade4-tense-release.cues-v2.json";
 import grade4Review from "../../content/grade4-language-review.v1.json";
+import grade4Concepts from "../../content/grade4-tense-concepts.v1.json";
 import patterns from "../../content/pattern-release.v1.json";
 import vocabulary from "../../content/vocabulary-release.v1.json";
 import { ketRelease } from "../domain/ketVocabulary";
@@ -76,7 +77,10 @@ export const grade4LanguageReview = grade4Review as unknown as {
   items: PrivateExercise[];
 };
 const reviewedItems = new Map(
-  grade4LanguageReview.items
+  [
+    ...grade4LanguageReview.items,
+    ...(grade4Concepts.items as unknown as PrivateExercise[]),
+  ]
     .filter((i) => !i.id.startsWith("g4."))
     .map((i) => [i.id, i]),
 );
@@ -212,8 +216,8 @@ export const grade4TenseRelease = grade4Current as unknown as {
   stats: typeof topicRelease.stats;
 };
 export const topicCatalog = {
-  id: "topic-catalog-v4",
-  manifestHash: grade4Current.manifestHash,
+  id: "topic-catalog-v5",
+  manifestHash: grade4Concepts.manifestHash,
   items: [...topicRelease.items, ...grade4TenseRelease.items].map(
     (item) => reviewedItems.get(item.id) ?? item,
   ),
@@ -227,6 +231,9 @@ export const topicPublicationReleases = (topicId: string): string[] =>
           topicRelease.id,
           ...(grade4LanguageReview.items.some((i) => i.topicId === topicId)
             ? [grade4LanguageReview.id]
+            : []),
+          ...(grade4Concepts.topics.includes(topicId)
+            ? [grade4Concepts.id]
             : []),
         ]
       : [];

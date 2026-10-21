@@ -11,8 +11,13 @@ const release = JSON.parse(
   languageReview = JSON.parse(
     await readFile("content/grade4-language-review.v1.json", "utf8"),
   ),
+  conceptReview = JSON.parse(
+    await readFile("content/grade4-tense-concepts.v1.json", "utf8"),
+  ),
   byId = new Map(
-    [...release.items, ...languageReview.items].map((i) => [i.id, i]),
+    [...release.items, ...languageReview.items, ...conceptReview.items].map(
+      (i) => [i.id, i],
+    ),
   );
 const jar = new Map(),
   children = [];
@@ -137,6 +142,16 @@ try {
       "reviewed answer saves and uses the existing review policy",
     );
   }
+  const concept = await open({
+    exerciseId: "bank.tense.past-contrast.37.input",
+  });
+  check(
+    concept.status === 201 &&
+      concept.data.exercise.type === "choice" &&
+      concept.data.exercise.choices.length === 3 &&
+      (await answer(concept.data)).outcome !== "incorrect",
+    "tense-concept choices are visible and their recognized answer saves",
+  );
   for (const topic of Object.keys(release.stats)) {
     const cycle = await request("/training/cycles", {
       topicId: topic,

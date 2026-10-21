@@ -65,4 +65,4 @@ M1-04n,M1,紧凑复习流程,一组真实任务与主操作并删除重复空卡
 M1-04o,M1,撤下儿童离线推广入口,首页复习和普通答题不再推广离线且已有答案和同步路径保留,offline-child-promotion-removed-legacy-sync-retained-deployed,docs/89-offline-entry-cleanup.md；597项单元及本地原有档案只读入口核验通过
 M1-04p,M1,四年级时态和不规则动词,深化28课56张对照卡并新增4专题840变体及逐词复习,grade4-tense-irregular-deployed-teaching-review-pending,docs/90-grade4-tense-and-irregular-verbs.md；602项单元与38专项运行和四种屏幕尺寸验收通过
 M1-04q,M1,共享词形卡与图标治理,移除旧伙伴贴图和重复要求并用单一Lucide来源统一公共图标,shared-word-cue-lucide-deployed,docs/91-shared-word-cue-and-icons.md；603项单元和四尺寸答题保存恢复验收通过
-M1-04r,M1,四年级题目语境审校,核对时态词形人称与自然表达并保持旧版本,grade4-language-local-verified-deployment-pending,docs/92-grade4-language-review.md；48课和2592变体源内容审校及613单元51专项通过；真实教师与儿童验证另待完成
+M1-04r,M1,四年级题目语境审校,核对时态词形人称与自然表达并保持旧版本,grade4-language-local-verified-deployment-pending,docs/92-grade4-language-review.md；48课和2592变体源内容审校及616单元52专项通过；真实教师与儿童验证另待完成
