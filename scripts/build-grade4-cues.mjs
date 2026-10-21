@@ -89,17 +89,24 @@ if (prior !== null && prior.replaceAll("\r\n", "\n") !== migration)
   throw Error("Immutable cue revision changed; create a new version.");
 await writeContent(path, migration);
 const byId = new Map(revised.map((i) => [i.id, i]));
-await writeContent(
-  "content/grade4-tense-release.latest.json",
-  JSON.stringify({
-    ...original,
-    id: "grade4-tense-catalog-v2",
-    editionId: original.id,
-    releases: [original.id, id],
-    manifestHash,
-    items: original.items.map((i) => byId.get(i.id) ?? i),
-  }),
-);
+const snapshot = JSON.stringify({
+  ...original,
+  id: "grade4-tense-catalog-v2",
+  editionId: original.id,
+  releases: [original.id, id],
+  manifestHash,
+  items: original.items.map((i) => byId.get(i.id) ?? i),
+});
+// Keep the already-published v2 cues available after later catalog revisions.
+const historicalPath = "content/grade4-tense-release.cues-v2.json";
+const historical = await readFile(historicalPath, "utf8").catch((e) => {
+  if (e.code === "ENOENT") return null;
+  throw e;
+});
+if (historical !== null && historical !== snapshot)
+  throw Error("Historical v2 cue snapshot changed");
+await writeContent(historicalPath, snapshot);
+await writeContent("content/grade4-tense-release.latest.json", snapshot);
 console.log(
   "Revised 360 did/restoration variants to recall from a past-form cue; v1 keys and families preserved.",
 );

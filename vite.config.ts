@@ -55,6 +55,8 @@ export default defineConfig({
         "**/content/topic-release*.json",
         "**/content/grade4-tense*.json",
         "**/content/grade4-tense*.mjs",
+        "**/content/grade4-language-review*.json",
+        "**/content/grade4-language-review*.mjs",
         "**/content/topics-*.mjs",
         "**/content/be-action-*.mjs",
         "**/content/be-action-release*.json",

@@ -224,8 +224,12 @@ const privateGrade4 = await Promise.all(
   [
     "/content/grade4-tense-release.v1.json",
     "/content/grade4-tense-release.latest.json",
+    "/content/grade4-tense-release.cues-v2.json",
     "/content/grade4-tense.v1.mjs",
+    "/content/grade4-language-review.v1.json",
+    "/content/grade4-language-review.v1.mjs",
     "/migrations/0052_grade4_tense.sql",
+    "/migrations/0054_grade4_language_review.sql",
   ].map(async (path) => {
     const response = await request(path),
       text = await response.text();
@@ -902,13 +906,37 @@ try {
   );
   check(
     course.lessons.filter((l) => l.grade === 4).length === 48 &&
-      course.lessons.filter(
-        (l) =>
-          l.releaseId === grade4.editionId &&
-          l.version === 2 &&
-          l.cards.length === 5,
-      ).length === 28,
-    "twenty-eight P4 tense lessons carry the additive teaching revision",
+      grade4.lessons.length === 28 &&
+      grade4.lessons.every(
+        (expected) =>
+          JSON.stringify(course.lessons.find((l) => l.id === expected.id)) ===
+          JSON.stringify(expected),
+      ),
+    "twenty-eight P4 tense lessons carry the current reviewed teaching version",
+  );
+  const languageReview = JSON.parse(
+    await readFile("content/grade4-language-review.v1.json", "utf8"),
+  );
+  check(
+    languageReview.lessons.every(
+      (expected) =>
+        JSON.stringify(course.lessons.find((l) => l.id === expected.id)) ===
+        JSON.stringify(expected),
+    ),
+    "all reviewed P4 lesson cards match the published version",
+  );
+  const revisedTask = languageReview.items.find(
+    (i) => i.id === "P4A-U04-L4.p8.input",
+  );
+  const revisedAssignment = await authenticated("/sessions", {
+    exerciseId: revisedTask.id,
+    clientRequestId: crypto.randomUUID(),
+  });
+  check(
+    revisedAssignment.status === 201 &&
+      revisedAssignment.data.exercise?.prompt === revisedTask.prompt &&
+      !Object.hasOwn(revisedAssignment.data.exercise, "answers"),
+    "reviewed teach-how-to example is assignable from the migrated D1",
   );
   for (const topicId of Object.keys(grade4.stats)) {
     const ordinary = await authenticated("/sessions", {

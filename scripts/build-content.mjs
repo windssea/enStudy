@@ -58,4 +58,5 @@ console.log(
 );
 await import("./build-grade4-tense.mjs");
 await import("./build-grade4-cues.mjs");
+await import("./build-grade4-language-review.mjs");
 await import("./build-concept-labs.mjs");

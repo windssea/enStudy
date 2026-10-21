@@ -8,7 +8,12 @@ assert.ok(
 const release = JSON.parse(
     await readFile("content/grade4-tense-release.latest.json", "utf8"),
   ),
-  byId = new Map(release.items.map((i) => [i.id, i]));
+  languageReview = JSON.parse(
+    await readFile("content/grade4-language-review.v1.json", "utf8"),
+  ),
+  byId = new Map(
+    [...release.items, ...languageReview.items].map((i) => [i.id, i]),
+  );
 const jar = new Map(),
   children = [];
 let checks = 0;
@@ -92,11 +97,46 @@ try {
   const metadata = (await request("/lessons")).data;
   check(
     metadata.lessons.filter((l) => l.grade === 4).length === 48 &&
-      metadata.lessons.filter((l) => l.releaseId === release.editionId)
-        .length === 28 &&
+      release.lessons.every(
+        (expected) =>
+          JSON.stringify(metadata.lessons.find((l) => l.id === expected.id)) ===
+          JSON.stringify(expected),
+      ) &&
       Object.keys(metadata.topicStats).length === 64,
     "P4 course enrichment and four topic banks are actually served",
   );
+  check(
+    languageReview.lessons.every(
+      (l) =>
+        JSON.stringify(metadata.lessons.find((m) => m.id === l.id)) ===
+        JSON.stringify(l),
+    ),
+    "all reviewed P4 lesson examples are served exactly",
+  );
+  for (const exerciseId of [
+    "g4.forms.irregular-past.did.keep.question.input",
+    "g4.forms.irregular-past.participle.grow.participle.input",
+    "g4.forms.irregular-past.participle.know.participle.input",
+    "P4A-U04-L4.p8.input",
+    "P4A-U01-L4.f2.input",
+    "bank.tense.present-contrast.1.input",
+  ]) {
+    const row = byId.get(exerciseId);
+    assert.ok(row);
+    const assigned = await open({ exerciseId });
+    check(
+      assigned.status === 201 &&
+        assigned.data.exercise.prompt === row.prompt &&
+        !Object.hasOwn(assigned.data.exercise, "answers"),
+      "reviewed question is assigned from its immutable D1 version",
+    );
+    const saved = await answer(assigned.data);
+    check(
+      saved.outcome !== "incorrect" &&
+        saved.reviewAlgorithm === "ebbinghaus-v1",
+      "reviewed answer saves and uses the existing review policy",
+    );
+  }
   for (const topic of Object.keys(release.stats)) {
     const cycle = await request("/training/cycles", {
       topicId: topic,

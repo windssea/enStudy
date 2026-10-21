@@ -5,6 +5,8 @@ import expansionLatest from "../../content/course-expansion.latest.json";
 import topics from "../../content/topic-release.v1.json";
 import grade4 from "../../content/grade4-tense-release.v1.json";
 import grade4Current from "../../content/grade4-tense-release.latest.json";
+import grade4CuesV2 from "../../content/grade4-tense-release.cues-v2.json";
+import grade4Review from "../../content/grade4-language-review.v1.json";
 import patterns from "../../content/pattern-release.v1.json";
 import vocabulary from "../../content/vocabulary-release.v1.json";
 import { ketRelease } from "../domain/ketVocabulary";
@@ -67,6 +69,20 @@ export interface PrivateExercise extends Exercise {
   evidenceTargets?: string[];
   evidenceSolutions?: { sentenceId: string; answer: string }[];
 }
+export const grade4LanguageReview = grade4Review as unknown as {
+  id: string;
+  manifestHash: string;
+  lessons: CourseLesson[];
+  items: PrivateExercise[];
+};
+const reviewedItems = new Map(
+  grade4LanguageReview.items
+    .filter((i) => !i.id.startsWith("g4."))
+    .map((i) => [i.id, i]),
+);
+const reviewedLessons = new Map(
+  grade4LanguageReview.lessons.map((l) => [l.id, l]),
+);
 export const courseRelease = course as unknown as {
   id: string;
   manifestHash: string;
@@ -81,7 +97,7 @@ export const courseExpansion = expansionLatest as unknown as {
   items: PrivateExercise[];
 };
 export const courseCatalog = {
-  id: "course-catalog-v13",
+  id: "course-catalog-v14",
   lessons: [
     ...courseRelease.lessons,
     ...courseExpansion.lessons,
@@ -97,7 +113,9 @@ export const courseCatalog = {
     ...portfolioTerm.lessons,
   ].map(
     (lesson) =>
-      grade4.lessons.find((revised) => revised.id === lesson.id) ?? lesson,
+      reviewedLessons.get(lesson.id) ??
+      grade4.lessons.find((revised) => revised.id === lesson.id) ??
+      lesson,
   ) as CourseLesson[],
   items: [
     ...courseRelease.items,
@@ -112,7 +130,7 @@ export const courseCatalog = {
     ...cooperationTerm.items,
     ...practicalTerm.items,
     ...portfolioTerm.items,
-  ] as PrivateExercise[],
+  ].map((item) => reviewedItems.get(item.id) ?? item) as PrivateExercise[],
 };
 export const storyRelease = story as unknown as {
   id: string;
@@ -194,16 +212,23 @@ export const grade4TenseRelease = grade4Current as unknown as {
   stats: typeof topicRelease.stats;
 };
 export const topicCatalog = {
-  id: "topic-catalog-v3",
+  id: "topic-catalog-v4",
   manifestHash: grade4Current.manifestHash,
-  items: [...topicRelease.items, ...grade4TenseRelease.items],
+  items: [...topicRelease.items, ...grade4TenseRelease.items].map(
+    (item) => reviewedItems.get(item.id) ?? item,
+  ),
   stats: { ...topicRelease.stats, ...grade4TenseRelease.stats },
 };
 export const topicPublicationReleases = (topicId: string): string[] =>
   Object.hasOwn(grade4TenseRelease.stats, topicId)
     ? grade4TenseRelease.releases
     : Object.hasOwn(topicRelease.stats, topicId)
-      ? [topicRelease.id]
+      ? [
+          topicRelease.id,
+          ...(grade4LanguageReview.items.some((i) => i.topicId === topicId)
+            ? [grade4LanguageReview.id]
+            : []),
+        ]
       : [];
 export const patternRelease = patterns as unknown as {
   id: string;
@@ -245,7 +270,7 @@ export const exercises = [
   ...portfolioTerm.items,
   ...phonics.items,
   ...reservedTraining.items,
-] as PrivateExercise[];
+].map((item) => reviewedItems.get(item.id) ?? item) as PrivateExercise[];
 export const reservedTrainingRelease = reservedTraining as unknown as {
   id: string;
   editionId: string;
@@ -329,6 +354,7 @@ export const phonicsRelease = phonics as unknown as {
 const versionedExercises = new Map(
   [
     ...grade4.items,
+    ...grade4CuesV2.items,
     ...reservedTrainingOriginal.items,
     ...reservedFormsOriginal.items,
     ...expansion.items,
@@ -336,6 +362,19 @@ const versionedExercises = new Map(
     ...action.items,
     ...beActionContrast.items,
     ...practicalOriginal.items,
+    ...courseRelease.items,
+    ...courseExpansion.items,
+    ...topicRelease.items,
+    ...story.items,
+    ...actionLatest.items,
+    ...discovery.items,
+    ...journey.items,
+    ...nextTerm.items,
+    ...explorerTerm.items,
+    ...neighbourhoodTerm.items,
+    ...cooperationTerm.items,
+    ...practicalTerm.items,
+    ...portfolioTerm.items,
     ...exercises,
   ].map((item) => [
     `${item.id}@${(item as PrivateExercise).version ?? 1}`,

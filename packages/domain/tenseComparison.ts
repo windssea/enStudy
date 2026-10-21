@@ -156,7 +156,7 @@ export const tenseComparisonRows: TenseComparisonRow[] = [
     before: "At three tomorrow, I ",
     verb: "will be eating",
     after: " an apple.",
-    translation: "明天下午三点，我将正在吃一个苹果。",
+    translation: "明天下午三点，我会在吃一个苹果。",
     focus: "想象明天三点时正在做什么",
     explanation: "把想象中的画面暂停在明天15:00，那时吃苹果的过程正在进行。",
     formula: "主语 + will be + 动词-ing",
