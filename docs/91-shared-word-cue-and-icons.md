@@ -1,6 +1,6 @@
 # v0.64 共享词形卡与图标治理
 
-状态：本地603项单元测试、四种尺寸的答题界面与保存恢复验收通过，等待完整CI和两站同步发布。
+状态：已同步发布Preview、Production与正式域名；603项单元、完整运行及两站线上检查通过。
 
 上一阶段的实际答题截图显示，WordFormCue仍有旧伙伴贴图、黄色玩具面板和重复动作要求。此次直接修正共享组件，覆盖四年级不规则动词和既有词形专题；课程、题目版本、评分和辅助证据规则不变。
 
@@ -30,4 +30,15 @@ ui-ux-pro-max的text reflow spacing查询命中Text Reflow and Spacing及Touch S
 
 本阶段没有完成全站所有旧素材替换、完整四年级教研或真实Pad/儿童研究。UI验收另观察到过去时题库的个别人称语境需审校，例如Did you keep my promise?，已作为后续内容任务记录，不能借本次图标统一宣称全部教学内容已审完。
 
-证据位于忽略目录artifacts/check-v064-final.log、format-v064.log、worker-v064.log、v064-content-compatibility.json、npm-audit-v064-final.json、v064-browser.json及v064-word-cue-*、v064-input-pad.png。实际同步发布结果待补记。
+证据位于忽略目录artifacts/check-v064-final.log、format-v064.log、worker-v064.log、v064-content-compatibility.json、npm-audit-v064-final.json、v064-browser.json及v064-word-cue-*、v064-input-pad.png。实际同步发布结果如下。
+
+
+## 实际发布
+
+北京时间2026/10/21 12:55:40，[Actions 39545362236](https://github.com/windssea/enStudy/actions/runs/39545362236)成功发布350901fa2b5f5e2097f17d69f2865a1eb1b032bd至Preview 8a24ab0c与Production 87537785，正式域名同版本。两套独立D1没有待应用迁移，仍至0053，保持原有免费资源。
+
+603项单元/75文件、1578完整运行（63基础+1515条PASS）、两站各97线上与三域名84只读检查通过。只读核对包含两站资源指纹、840不规则动词变体统计、四年级课程、KET资源、统一图标构建与完整许可原文。正式站浏览器仅检查游客首页，不提交真实儿童作答。四尺寸选择/输入、刷新恢复与辅助反馈已在隔离内存D1完成。
+
+入口/assets/index-0vMxuhRp.js SHA256 de2628727be2704fa51183c83ba6fd9469574ac2c1a9bb5dfdf23fc577ad32f8；样式/assets/index-BfyQP5lF.css SHA256 a7a9da10b94d1119019856adff2335d1dc9586b8adcc219c2b619ac35853bc05；许可SHA256 b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57。Worker 21301276字节，SHA256 3630b5a5be691f10cb2af39a6a75696dcbda803f3ec90a8055c5f6ec8e44c640，与v0.63一致。缓存壳eq-shell-v1-e5f9e03cc38e08c6共137资源、15428740字节，低于16MiB预算。
+
+证据在忽略目录artifacts/actions-v064-result.json、actions-v064-complete.log、v064-published-public.json、v064-published-browser.json和v064-published-home.png；本地词形验收截图为v064-word-cue-*与v064-input-pad.png。题目语境审校M1-04r、真实Pad与儿童研究仍待完成。
