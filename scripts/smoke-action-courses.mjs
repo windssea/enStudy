@@ -1,13 +1,18 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { run } from "./runtime.mjs";
+import { courseReviewContract } from "./course-review-contract.mjs";
 const base = "http://127.0.0.1:8788",
   jar = new Map(),
   second = new Map();
 const release = JSON.parse(
     await readFile("content/action-course-release.latest.json", "utf8"),
   ),
-  byId = new Map(release.items.map((i) => [i.id, i]));
+  languageReview = JSON.parse(
+    await readFile("content/grade4-language-review.v1.json", "utf8"),
+  ),
+  publication = courseReviewContract(release, languageReview),
+  byId = publication.byId;
 let child,
   labChild,
   checks = 0,
@@ -259,11 +264,10 @@ try {
     "D1 result totals match every saved assignment and independent subtotal",
   );
   const origin = sql(
-    `SELECT DISTINCT si.content_release_id AS origin FROM session_items si WHERE si.child_id=${quote(child)} AND si.item_id LIKE 'P%A-U04-%'`,
+    `SELECT DISTINCT si.item_id AS itemId,si.item_version AS version,si.content_release_id AS origin,l.release_id AS publishedOrigin,i.status AS itemStatus,r.status AS releaseStatus FROM session_items si JOIN items i ON i.id=si.item_id AND i.version=si.item_version JOIN lessons l ON l.id=i.lesson_id AND l.version=i.lesson_version JOIN content_releases r ON r.id=l.release_id JOIN release_items ri ON ri.release_id=l.release_id AND ri.item_id=i.id AND ri.item_version=i.version WHERE si.child_id=${quote(child)} AND si.item_id LIKE 'P%A-U04-%'`,
   );
   check(
-    JSON.stringify(origin.map((row) => row.origin).sort()) ===
-      JSON.stringify([...release.releases].sort()),
+    publication.valid(origin),
     "new assignments retain their actual release origin without copying older release memberships",
   );
   sql(
