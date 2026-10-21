@@ -42,3 +42,5 @@ ui-ux-pro-max的text reflow spacing查询命中Text Reflow and Spacing及Touch S
 入口/assets/index-0vMxuhRp.js SHA256 de2628727be2704fa51183c83ba6fd9469574ac2c1a9bb5dfdf23fc577ad32f8；样式/assets/index-BfyQP5lF.css SHA256 a7a9da10b94d1119019856adff2335d1dc9586b8adcc219c2b619ac35853bc05；许可SHA256 b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57。Worker 21301276字节，SHA256 3630b5a5be691f10cb2af39a6a75696dcbda803f3ec90a8055c5f6ec8e44c640，与v0.63一致。缓存壳eq-shell-v1-e5f9e03cc38e08c6共137资源、15428740字节，低于16MiB预算。
 
 证据在忽略目录artifacts/actions-v064-result.json、actions-v064-complete.log、v064-published-public.json、v064-published-browser.json和v064-published-home.png；本地词形验收截图为v064-word-cue-*与v064-input-pad.png。题目语境审校M1-04r、真实Pad与儿童研究仍待完成。
+
+四年级题目语境与例句已在v0.65完成本轮源内容审校并同步部署，修订22课、658个变体，详见[后续审校记录](92-grade4-language-review.md)；真实教师签审与儿童教学验证仍待完成。
