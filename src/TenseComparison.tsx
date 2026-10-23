@@ -11,6 +11,7 @@ import {
 import art from "../public/content/learning-art.v1.json";
 import { api } from "./api";
 import TenseComparisonDiagram from "./TenseComparisonDiagram";
+import TenseTimelineGame from "./TenseTimelineGame";
 
 function ComparisonRow({ row }: { row: TenseComparisonRow }) {
   const state =
@@ -63,6 +64,7 @@ export default function TenseComparison({ childId }: { childId?: string }) {
   const [reference, setReference] = useState<TimeReference>("past"),
     [shown, setShown] = useState(false),
     [all, setAll] = useState(false),
+    [gameShown, setGameShown] = useState(false),
     [loading, setLoading] = useState(false),
     [error, setError] = useState("");
   const request = useRef<AbortController | null>(null),
@@ -73,6 +75,7 @@ export default function TenseComparison({ childId }: { childId?: string }) {
     request.current = null;
     setShown(false);
     setAll(false);
+    setGameShown(false);
     setLoading(false);
     setError("");
     return () => {
@@ -80,7 +83,7 @@ export default function TenseComparison({ childId }: { childId?: string }) {
       request.current?.abort();
     };
   }, [childId]);
-  async function open(next: TimeReference | "all") {
+  async function open(next: TimeReference | "all", game = false) {
     if (request.current) return;
     const controller = new AbortController(),
       current = generation.current;
@@ -106,7 +109,8 @@ export default function TenseComparison({ childId }: { childId?: string }) {
           throw Error("时态对比版本有变化，请重新打开。");
       }
       if (controller.signal.aborted || current !== generation.current) return;
-      if (next === "all") setAll(true);
+      if (game) setGameShown(true);
+      else if (next === "all") setAll(true);
       else {
         setReference(next);
         setShown(true);
@@ -128,9 +132,18 @@ export default function TenseComparison({ childId }: { childId?: string }) {
           <h2>同一个动作，时态怎么变？</h2>
           <p>吃一个苹果 · 换个时间看一看</p>
         </div>
-        {!shown && (
+        {!gameShown && (
           <button
             className="primary"
+            disabled={loading}
+            onClick={() => void open("all", true)}
+          >
+            {loading ? "正在打开…" : "玩时态小游戏"}
+          </button>
+        )}
+        {!shown && (
+          <button
+            className="secondary"
             disabled={loading}
             onClick={() => void open(reference)}
           >
@@ -143,6 +156,7 @@ export default function TenseComparison({ childId }: { childId?: string }) {
           {error}
         </p>
       )}
+      {gameShown && <TenseTimelineGame />}
       {shown && (
         <>
           <p className="tense-clock">

@@ -72,6 +72,22 @@
       "alt": "吃完后留下的苹果核，示意本例中吃完的结果",
       "bytes": 89748,
       "sha256": "f8d3371db344990bd97ac1fd6774a6c30a974155b622acf8dc380f154b279e6b"
+    },
+    "tense-apple-child": {
+      "url": "/art/concepts/sports-v1/tense-apple-child.webp",
+      "width": 1024,
+      "height": 1536,
+      "alt": "穿青绿色运动服、举着咬过的红苹果正在吃的小人，作为可拖动的时间标记",
+      "bytes": 99596,
+      "sha256": "9a81988a498c872521a28cb6dd9ea175d196b769cffecc36e4cf4e87c1fba35f"
+    },
+    "tense-timeline": {
+      "url": "/art/concepts/sports-v1/tense-timeline.webp",
+      "width": 2106,
+      "height": 162,
+      "alt": "带箭头和三个时间节点的透明底时间轴，过去到未来从左到右排列",
+      "bytes": 50168,
+      "sha256": "945b16c8916ea061cdf232cac1dcdac843356e29b9608911eb138beeb11338c7"
     }
   }
 }

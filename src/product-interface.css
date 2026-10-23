@@ -1,4 +1,168 @@
 /* Shared product controls. Loaded after historical illustration/layout styles. */
+.tense-game {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+}
+.tense-game-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.tense-game-heading h3 {
+  margin: 0;
+  font-size: 22px;
+}
+.tense-game-heading p {
+  margin: 8px 0 16px;
+  max-width: 48em;
+  line-height: 1.6;
+}
+.tense-game-progress {
+  font-size: 14px;
+}
+.tense-game-aspects {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tense-game-stage {
+  --character-width: 112px;
+  --character-height: 168px;
+  position: relative;
+  height: 242px;
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 16px;
+}
+.tense-game-zones {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 100%;
+}
+.tense-game-zones span {
+  padding: 12px;
+  font-size: 14px;
+  text-align: center;
+}
+.tense-game-rail {
+  position: absolute;
+  bottom: 44px;
+  left: 0;
+  width: 100%;
+  height: auto;
+  transform: translateY(50%);
+  pointer-events: none;
+}
+.tense-game-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  position: absolute;
+  left: calc(15% - var(--character-width) / 2);
+  bottom: 42px;
+  width: calc(70% + var(--character-width));
+  height: var(--character-height);
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.tense-game-slider:active {
+  cursor: grabbing;
+}
+.tense-game-slider::-webkit-slider-runnable-track {
+  height: var(--character-height);
+  background: transparent;
+}
+.tense-game-slider::-moz-range-track {
+  height: var(--character-height);
+  background: transparent;
+}
+.tense-game-slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: var(--character-width);
+  height: var(--character-height);
+  border: 0;
+  background: var(--tense-character) center / contain no-repeat;
+}
+.tense-game-slider::-moz-range-thumb {
+  width: var(--character-width);
+  height: var(--character-height);
+  border: 0;
+  border-radius: 0;
+  background: var(--tense-character) center / contain no-repeat;
+}
+.tense-game-times {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-block: 12px 20px;
+}
+.tense-game-times button {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.tense-game-times span {
+  font-size: 14px;
+  font-weight: 400;
+}
+.tense-game-result {
+  padding: 18px;
+  border-radius: 14px;
+}
+.tense-game-result-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+}
+.tense-game-result-heading span {
+  font-size: 14px;
+}
+.tense-game-result p {
+  line-height: 1.7;
+  margin: 10px 0 0;
+}
+.tense-game-result p[lang="en"] {
+  font-size: clamp(22px, 2.5vw, 28px);
+  overflow-wrap: anywhere;
+}
+.tense-game-note {
+  margin-bottom: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+@media (max-width: 550px) {
+  .tense-game {
+    padding: 12px;
+  }
+  .tense-game-stage {
+    --character-width: 76px;
+    --character-height: 114px;
+    height: 190px;
+  }
+  .tense-game-aspects {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tense-game-times button.secondary {
+    padding-inline: 4px;
+    font-size: 16px;
+  }
+  .tense-game-times span {
+    font-size: 12px;
+  }
+}
 .tense-comparison {
   margin-block: 20px;
   padding: 24px;
@@ -364,7 +528,11 @@
   opacity: 0.55;
 }
 .app-shell.child-shell
-  :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  :is(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    select,
+    textarea
+  ) {
   min-height: 52px;
   max-width: 100%;
   padding: 12px 14px;

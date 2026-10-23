@@ -10,6 +10,7 @@ import {
 } from "../packages/domain/tenseComparison";
 import TenseComparisonDiagram from "../src/TenseComparisonDiagram";
 import TenseComparison from "../src/TenseComparison";
+import TenseTimelineGame, { timelineReference } from "../src/TenseTimelineGame";
 describe("one action across time references", () => {
   it("covers all twelve unique time/aspect combinations with the same action and explicit contexts", () => {
     expect(tenseComparisonRows).toHaveLength(12);
@@ -70,8 +71,31 @@ describe("one action across time references", () => {
   it("requires explicit opening before exposing sentences for a selected child", () => {
     const html = renderToStaticMarkup(<TenseComparison childId="test-child" />);
     expect(html).toContain("打开时态对比");
+    expect(html).toContain("玩时态小游戏");
+    expect(html).not.toContain('type="range"');
     for (const row of tenseComparisonRows)
       expect(html).not.toContain(comparisonSentence(row));
     expect(html).not.toContain("tense-comparison-row");
+  });
+  it("keeps yesterday, today and tomorrow stable at the slider region boundaries", () => {
+    for (const position of [0, 24])
+      expect(timelineReference(position)).toBe("past");
+    for (const position of [25, 50, 75])
+      expect(timelineReference(position)).toBe("present");
+    for (const position of [76, 100])
+      expect(timelineReference(position)).toBe("future");
+  });
+  it("opens at the current ongoing action with keyboard and tap alternatives", () => {
+    const html = renderToStaticMarkup(<TenseTimelineGame />);
+    expect(html).toContain('type="range"');
+    expect(html).toContain('value="50"');
+    expect(html).toContain(
+      'aria-valuetext="现在，现在进行时：I am eating an apple now."',
+    );
+    expect(html).toContain('aria-label="移动到时间点"');
+    expect(html).toContain('aria-live="polite"');
+    expect(html).toContain("小人标记观察的时间");
+    expect(html).toContain("tense-apple-child.webp");
+    expect(html).toContain("tense-timeline.webp");
   });
 });

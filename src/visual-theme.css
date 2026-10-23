@@ -288,7 +288,11 @@
   color: var(--teal);
 }
 .child-shell
-  :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  :is(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    select,
+    textarea
+  ) {
   min-height: 52px;
   max-width: 100%;
   padding: 12px 14px;
@@ -1311,4 +1315,35 @@
 }
 .child-shell .review-overview > details > summary {
   display: list-item;
+}
+.tense-game {
+  background: var(--surface);
+}
+.tense-game-heading p,
+.tense-game-progress,
+.tense-game-note,
+.tense-game-result-heading span {
+  color: var(--muted);
+}
+.tense-game-zones span {
+  background: var(--playground);
+  color: var(--muted);
+}
+.tense-game-zones span[data-active="true"] {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.tense-game-result {
+  background: var(--primary-soft);
+}
+.tense-game-result p[lang="en"] strong,
+.tense-game-focus {
+  color: var(--primary);
+}
+.tense-game-stage:focus-within {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+.child-shell .tense-game-slider:focus-visible {
+  outline: none;
 }

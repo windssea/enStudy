@@ -1,6 +1,35 @@
 # 生图交付记录
 
-模式：内置imagegen，透明背景；下列保留生成与修订提示。实际选用版本以`public/content/learning-art.v1.json`登记为准；课程人物采用文末v2，首轮人物试稿未发布。先前写实/Pixar试稿未接入产品。生产图只作WebP格式压缩，不裁剪、重绘或缩放，原尺寸与alpha通道逐字节核对保持。
+## 2026-10-23 拖动时态小游戏 · 内置 imagegen
+
+复用 sports-clean-3d-v1，以现有 course-students-v2 基准检查造型。时间轴与人物均为内置 image_gen 工具生成的真实透明底 PNG；PNG 原件在 art-source/，站点使用保留 alpha 的 quality=85 WebP。人物保持原尺寸1024×1536；时间轴仅裁去透明空白，原2172×724，裁切框[33,281,2139,443]，成品2106×162。人物alpha范围0–254，时间轴0–255；分别99596、50168字节。来源为用户授权的原创AI生成素材，不含第三方品牌、文字或水印。
+
+- 人物：art-source/tense-apple-child-sports-v1.png → /art/concepts/sports-v1/tense-apple-child.webp，原生滑块thumb背景，桌面112×168、小屏76×114 CSS像素，脚底为时间标记；无碰撞或物理模拟。
+- 时间轴：art-source/tense-timeline-sports-v1.png → /art/concepts/sports-v1/tense-timeline.webp，响应式保留纵横比，时间节点和文本叠加使用真实HTML。标签与动词不烘焙在素材中。
+- 同一人物只标记观察时间，不表示所有时态都处于正在吃的状态；结果、习惯、持续和设想由真实文本明确说明。素材登记于learning-art.v1.json，含哈希、尺寸、字节数和替代文字，纳入离线壳。
+
+### 人物最终提示
+
+```text
+Use case: illustration-story
+Asset type: transparent PNG character sprite for a children's English tense timeline game, sports-clean-3d-v1.
+Primary request: a single full-body school-age child eating a red apple, holding the visibly bitten apple up to the mouth, taking a bite with a friendly expression. Original clean stylized 3D game character: warm light beige skin, compact rounded head, simple graphic facial features, neat sculpted dark brown short hair, teal and white modern sports top, navy shorts, white sneakers. Front three-quarter view, stable upright feet, full body centered, readable at 120px high.
+Style: smooth matte surfaces, large clean color shapes, softly beveled forms, soft neutral light from upper left, tidy lightweight proportions, matching the project's existing sports students. Not toddler or doll proportions.
+Composition: only ONE child and ONE apple, tightly framed with safe transparent margin around all edges, portrait aspect ratio. No ground or scenery. Genuine transparent alpha background, no checkerboard, no text, no watermark, no outline frame.
+```
+
+### 时间轴最终提示
+
+```text
+Use case: scientific-educational
+Asset type: transparent raster timeline rail for a children's English tense dragging game, sports-clean-3d-v1.
+Primary request: one clean horizontal timeline track seen straight on, like an elegant slim 3D sports game slider rail. A continuous straight rail with a small left-pointing arrow at the far left and a right-pointing arrow at the far right. Three evenly spaced identical round waypoint discs at 15%, 50%, 85% of the total rail length, precisely on its horizontal centerline. Past third subtle sky blue, middle third mint teal, future third pale lavender, softly transitioning. All three waypoint tops aligned. Low relief satin plastic, softly beveled edges, broad neutral soft light from upper left. Minimal small contact shadow only.
+Composition: very wide horizontal isolated track about 6:1 aspect; fill canvas width with safe small margin, vertically center the slim rail with transparent space above and below. No perspective angle or curved path. This asset will be stretched horizontally under an independent draggable character, labels added as real HTML.
+Constraints: actual transparent alpha background, ONLY rail arrows and three discs. Absolutely no letters, text, numbers, clocks, people, apples, landscape, ground plane, frame, watermark or checkerboard.
+```
+
+
+模式：内置imagegen，透明背景；下列保留生成与修订提示。实际选用版本以`public/content/learning-art.v1.json`登记为准；课程人物采用文末v2，首轮人物试稿未发布。先前写实/Pixar试稿未接入产品。此前生产图只作WebP格式压缩，不裁剪、重绘或缩放；新增时间轴按本页裁切记录去除透明空白，人物保留原尺寸与alpha。
 
 ## telescope-sports-v1.png
 
